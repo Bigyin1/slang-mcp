@@ -1,0 +1,78 @@
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "slang-mcp"
+version = "0.1.0"
+description = "Read-only MCP server for semantic SystemVerilog project analysis"
+readme = "README.md"
+requires-python = ">=3.10,<3.11"
+license = { text = "MIT" }
+authors = [{ name = "slang-mcp contributors" }]
+dependencies = [
+  "mcp>=1.27,<2",
+  "pyslang==11.0.0",
+]
+
+[project.scripts]
+slang-mcp = "slang_mcp.__main__:main"
+
+[dependency-groups]
+dev = [
+  "mypy>=2.3,<2.4",
+  "pytest>=9.0,<10",
+  "pytest-asyncio>=1.2,<2",
+  "ruff>=0.16,<0.17",
+  "xenon>=0.9,<0.10",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/slang_mcp"]
+
+[tool.pytest.ini_options]
+addopts = "--strict-config --strict-markers"
+testpaths = ["tests"]
+markers = [
+  "integration: integration tests across service and MCP boundaries",
+  "realworld: network-backed tests against pinned open-source RTL",
+]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+  "A", "ARG", "B", "C4", "C90", "E", "F", "I", "N", "PERF", "PL",
+  "RET", "RUF", "SIM", "TRY", "UP", "W",
+]
+ignore = [
+  "TRY003",  # Domain exceptions intentionally own their detailed messages.
+]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.lint.pylint]
+max-args = 5
+max-branches = 12
+max-locals = 12
+max-returns = 6
+max-statements = 50
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = [
+  "PLR2004", # Literal expected values make focused semantic tests clearer.
+]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+files = ["src", "tests"]
+
+[[tool.mypy.overrides]]
+module = ["pyslang", "pyslang.*"]
+follow_imports = "skip"
+follow_imports_for_stubs = true

@@ -1,0 +1,74 @@
+"""Public semantic service independent of MCP transport and pyslang objects."""
+
+from slang_mcp.models import (
+    Diagnostic,
+    HierarchyNode,
+    InstanceDescription,
+    ProjectInfo,
+    ProjectSummary,
+    SymbolDescription,
+    SymbolReference,
+)
+from slang_mcp.project import ProjectManager
+
+_MAX_DIAGNOSTICS = 500
+_MAX_HIERARCHY_DEPTH = 50
+
+
+class SemanticService:
+    """Application API used by MCP handlers and integration tests."""
+
+    def __init__(self, manager: ProjectManager) -> None:
+        self._manager = manager
+
+    def project_load(self, logical_module: str) -> ProjectSummary:
+        if not logical_module.strip():
+            raise ValueError("logical_module must not be empty")
+        return self._manager.load(logical_module)
+
+    def project_reload(self) -> ProjectSummary:
+        return self._manager.reload()
+
+    def project_info(self) -> ProjectInfo:
+        return self._manager.info()
+
+    def get_diagnostics(
+        self,
+        limit: int = 100,
+        severity: str | None = None,
+    ) -> tuple[Diagnostic, ...]:
+        if limit < 1 or limit > _MAX_DIAGNOSTICS:
+            raise ValueError(f"limit must be between 1 and {_MAX_DIAGNOSTICS}")
+        normalized = severity.lower() if severity is not None else None
+        allowed = {"ignored", "note", "warning", "error", "fatal"}
+        if normalized is not None and normalized not in allowed:
+            raise ValueError(f"severity must be one of: {', '.join(sorted(allowed))}")
+        diagnostics = self._manager.design.diagnostics
+        selected = (
+            item for item in diagnostics if normalized is None or item.severity == normalized
+        )
+        return tuple(list(selected)[:limit])
+
+    def find_symbol(self, name: str) -> tuple[SymbolReference, ...]:
+        if not name:
+            raise ValueError("name must not be empty")
+        return self._manager.design.find_symbols(name)
+
+    def describe_symbol(self, identifier: str) -> SymbolDescription:
+        if not identifier:
+            raise ValueError("identifier must not be empty")
+        return self._manager.design.describe_symbol(identifier)
+
+    def get_hierarchy(
+        self,
+        root: str | None = None,
+        max_depth: int | None = None,
+    ) -> tuple[HierarchyNode, ...]:
+        if max_depth is not None and not 0 <= max_depth <= _MAX_HIERARCHY_DEPTH:
+            raise ValueError(f"max_depth must be between 0 and {_MAX_HIERARCHY_DEPTH}")
+        return self._manager.design.get_hierarchy(root, max_depth)
+
+    def describe_instance(self, path: str) -> InstanceDescription:
+        if not path:
+            raise ValueError("path must not be empty")
+        return self._manager.design.describe_instance(path)
