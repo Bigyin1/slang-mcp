@@ -107,10 +107,10 @@ class SlangDesign:
 
     def get_hierarchy(self, root: str | None, max_depth: int | None) -> tuple[HierarchyNode, ...]:
         roots = [record for record in self._hierarchy if not record.parent]
-        if root is not None:
-            roots = [record for record in roots if root in (record.path, record.name)]
-            if not roots:
-                raise InvalidTopError(f"unknown top module: {root}")
+        if root is not None and not (
+            roots := [record for record in roots if root in (record.path, record.name)]
+        ):
+            raise InvalidTopError(f"unknown top module: {root}")
         return tuple(self._make_node(record, max_depth, 0) for record in roots)
 
     def describe_instance(self, path: str) -> InstanceDescription:
@@ -137,21 +137,24 @@ class SlangDesign:
         )
 
     def _compile(self, config: ProjectConfig) -> Any:
+        try:
+            return self._create_compilation(config)
+        except (OSError, RuntimeError, TypeError, ValueError) as error:
+            raise CompilationError(f"Slang compilation failed: {error}") from error
+
+    def _create_compilation(self, config: ProjectConfig) -> Any:
         preprocessor = slang_parsing.PreprocessorOptions()
         preprocessor.additionalIncludePaths = list(config.include_directories)
         preprocessor.predefines = _predefines(config)
         compilation_options = slang_ast.CompilationOptions()
         compilation_options.topModules = set(config.top_modules)
         options = pyslang.Bag([preprocessor, compilation_options])
-        try:
-            paths = [str(path) for path in config.source_files]
-            tree = slang_syntax.SyntaxTree.fromFiles(paths, self._source_manager, options)
-            compilation = slang_ast.Compilation(options)
-            compilation.addSyntaxTree(tree)
-            compilation.getRoot()
-            compilation.getSemanticDiagnostics()
-        except (OSError, RuntimeError, TypeError, ValueError) as error:
-            raise CompilationError(f"Slang compilation failed: {error}") from error
+        paths = [str(path) for path in config.source_files]
+        tree = slang_syntax.SyntaxTree.fromFiles(paths, self._source_manager, options)
+        compilation = slang_ast.Compilation(options)
+        compilation.addSyntaxTree(tree)
+        compilation.getRoot()
+        compilation.getSemanticDiagnostics()
         return compilation
 
     def _convert_diagnostics(self) -> tuple[Diagnostic, ...]:
@@ -219,8 +222,7 @@ class SlangDesign:
         )
 
     def _resolve_symbol(self, identifier: str) -> _IndexedSymbol:
-        by_id = [item for item in self._symbols if item.reference.symbol_id == identifier]
-        if by_id:
+        if by_id := [item for item in self._symbols if item.reference.symbol_id == identifier]:
             return by_id[0]
         matches = [
             item
@@ -251,8 +253,7 @@ class SlangDesign:
         return [record for record in self._hierarchy if record.parent == path]
 
     def _validate_configured_tops(self) -> None:
-        missing = set(self._config.top_modules).difference(self.top_modules)
-        if missing:
+        if missing := set(self._config.top_modules).difference(self.top_modules):
             names = ", ".join(sorted(missing))
             raise InvalidTopError(f"configured top module was not elaborated: {names}")
 
@@ -299,14 +300,19 @@ def _containing_scope(qualified: str) -> str | None:
 
 
 def _source_location(raw: Any, manager: Any) -> SourceLocation:
-    location = raw.location
     try:
-        filename = manager.getFileName(location)
-        line = manager.getLineNumber(location)
-        column = manager.getColumnNumber(location)
+        filename, line, column = _location_parts(raw.location, manager)
     except RuntimeError:
         return SourceLocation()
     return SourceLocation(filename or None, line or None, column or None)
+
+
+def _location_parts(location: Any, manager: Any) -> tuple[str, int, int]:
+    return (
+        manager.getFileName(location),
+        manager.getLineNumber(location),
+        manager.getColumnNumber(location),
+    )
 
 
 def _symbol_type(raw: Any) -> tuple[str | None, int | None]:

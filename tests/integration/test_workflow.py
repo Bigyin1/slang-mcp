@@ -64,8 +64,8 @@ async def test_fastmcp_schema_and_handlers(fixture_project: FixtureProject) -> N
         "describe_instance",
     }
     assert all(tool.annotations is not None and tool.annotations.readOnlyHint for tool in tools)
-    result_data = cast("tuple[object, dict[str, Any]]", result)[1]
-    hierarchy_data = cast("tuple[object, dict[str, Any]]", hierarchy)[1]
+    result_data = cast(tuple[object, dict[str, Any]], result)[1]
+    hierarchy_data = cast(tuple[object, dict[str, Any]], hierarchy)[1]
     assert result_data["logical_module"] == "demo"
     assert hierarchy_data["roots"][0]["name"] == "top"
 
@@ -97,6 +97,8 @@ async def test_stdio_server_round_trip(
         args=["-m", "slang_mcp", "--config", str(config_path)],
     )
 
+    # Pylint cannot follow the async context manager's tuple assignment.
+    # pylint: disable=used-before-assignment
     async with (
         stdio_client(parameters) as (read_stream, write_stream),
         ClientSession(read_stream, write_stream) as session,
@@ -104,6 +106,7 @@ async def test_stdio_server_round_trip(
         await session.initialize()
         result = await session.call_tool("project_load", {"logical_module": "demo"})
         info = await session.call_tool("project_info", {})
+    # pylint: enable=used-before-assignment
 
     assert not result.isError
     assert result.structuredContent is not None

@@ -27,8 +27,8 @@
 
 ## Проверки
 
-- `make check` запускает проверку форматирования, Ruff, strict mypy, Xenon, unit и
-  integration тесты.
+- `make check` запускает проверку форматирования, Ruff, Pylint с настроенными extensions,
+  strict mypy, Xenon, unit и integration тесты.
 - `make check-all` дополнительно запускает opt-in real-world тесты на закреплённых ревизиях
   PULP `common_cells` и `axi`. Тесты используют Bender `0.32.1` для генерации sources, include
   dirs и defines и могут потребовать сеть при отсутствии локального кэша. Транзитивные

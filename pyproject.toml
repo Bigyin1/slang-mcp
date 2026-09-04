@@ -21,6 +21,7 @@ slang-mcp = "slang_mcp.__main__:main"
 [dependency-groups]
 dev = [
   "mypy>=2.3,<2.4",
+  "pylint>=4.0.8,<5",
   "pytest>=9.0,<10",
   "pytest-asyncio>=1.2,<2",
   "ruff>=0.16,<0.17",
@@ -71,6 +72,43 @@ max-statements = 50
 python_version = "3.10"
 strict = true
 files = ["src", "tests"]
+
+[tool.pylint.main]
+py-version = "3.10"
+persistent = false
+load-plugins = [
+  "pylint.extensions.bad_builtin",
+  "pylint.extensions.broad_try_clause",
+  "pylint.extensions.check_elif",
+  "pylint.extensions.code_style",
+  "pylint.extensions.comparison_placement",
+  "pylint.extensions.confusing_elif",
+  "pylint.extensions.consider_refactoring_into_while_condition",
+  "pylint.extensions.consider_ternary_expression",
+  "pylint.extensions.dict_init_mutate",
+  "pylint.extensions.for_any_all",
+  "pylint.extensions.no_self_use",
+  "pylint.extensions.overlapping_exceptions",
+  "pylint.extensions.redefined_loop_name",
+  "pylint.extensions.redefined_variable_type",
+  "pylint.extensions.set_membership",
+]
+
+[tool.pylint.format]
+max-line-length = 100
+
+[tool.pylint.messages_control]
+disable = [
+  "duplicate-code",
+  "missing-class-docstring",
+  "missing-function-docstring",
+  "redefined-outer-name",
+  "too-few-public-methods",
+  "too-many-instance-attributes",
+]
+
+[tool.pylint.typecheck]
+ignored-modules = ["pyslang"]
 
 [[tool.mypy.overrides]]
 module = ["pyslang", "pyslang.*"]

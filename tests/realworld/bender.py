@@ -112,8 +112,7 @@ def _bender_executable() -> Path:
     local = _PROJECT_ROOT / ".tools/bender"
     candidates = [Path(configured)] if configured is not None else []
     candidates.extend(Path(path) for path in (discovered, local) if path is not None)
-    executable = next((path for path in candidates if path.is_file()), None)
-    if executable is None:
+    if (executable := next((path for path in candidates if path.is_file()), None)) is None:
         pytest.fail(f"Bender not found; install {BENDER_VERSION} or set BENDER_EXECUTABLE")
     return executable
 

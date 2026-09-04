@@ -2,6 +2,7 @@
 
 PYTHON := .venv/bin/python
 RUFF := .venv/bin/ruff
+PYLINT := .venv/bin/pylint
 MYPY := .venv/bin/mypy
 PYTEST := .venv/bin/pytest
 XENON := .venv/bin/xenon
@@ -15,6 +16,7 @@ format-check:
 
 lint:
 	$(RUFF) check src tests
+	$(PYLINT) src tests
 
 typecheck:
 	$(MYPY) src tests

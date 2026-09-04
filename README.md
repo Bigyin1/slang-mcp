@@ -112,8 +112,9 @@ make test-integration
 make check
 ```
 
-`make check` runs formatting, strict Ruff, strict mypy, Xenon complexity gates, unit tests, and
-integration tests. Integration includes a real MCP stdio subprocess round trip.
+`make check` runs formatting, strict Ruff, Pylint with the configured extension checks, strict
+mypy, Xenon complexity gates, unit tests, and integration tests. Integration includes a real MCP
+stdio subprocess round trip.
 
 The network-backed suite requires Bender `0.32.1` and uses exact revisions of:
 

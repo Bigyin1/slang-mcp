@@ -59,8 +59,7 @@ def _validate_paths(config: ProjectConfig) -> None:
 
 
 def _require_path(path: Path, label: str, *, expect_directory: bool) -> None:
-    valid = path.is_dir() if expect_directory else path.is_file()
-    if not valid:
+    if not (path.is_dir() if expect_directory else path.is_file()):
         raise InvalidProjectConfigError(f"missing or invalid {label}: {path}")
 
 
