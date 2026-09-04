@@ -29,9 +29,10 @@
 
 - `make check` запускает проверку форматирования, Ruff, strict mypy, Xenon, unit и
   integration тесты.
-- `make check-all` дополнительно запускает opt-in real-world тест на закреплённой ревизии
-  PULP `common_cells`. Тест использует Bender `0.32.1` для генерации sources, include dirs и
-  defines и может потребовать сеть при отсутствии локального кэша.
+- `make check-all` дополнительно запускает opt-in real-world тесты на закреплённых ревизиях
+  PULP `common_cells` и `axi`. Тесты используют Bender `0.32.1` для генерации sources, include
+  dirs и defines и могут потребовать сеть при отсутствии локального кэша. Транзитивные
+  зависимости `axi` закреплены отдельным Bender lockfile в `tests/realworld`.
 - Перед завершением изменения запускайте проверки, относящиеся к его области. Для изменений
   production-кода или зависимостей запускайте `make check-all`, если внешнее окружение доступно.
 - При изменении зависимостей в `pyproject.toml` обязательно обновляйте `uv.lock`.
