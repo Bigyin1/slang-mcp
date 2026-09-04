@@ -115,15 +115,21 @@ make check
 `make check` runs formatting, strict Ruff, strict mypy, Xenon complexity gates, unit tests, and
 integration tests. Integration includes a real MCP stdio subprocess round trip.
 
-The network-backed suite uses `pulp-platform/common_cells` at exact commit
+The network-backed suite requires Bender `0.32.1` and uses
+`pulp-platform/common_cells` at exact commit
 `9afda9abb565971649c2aa0985639c096f351171` (tag `v1.38.0`). It clones into the ignored
-`.realworld-cache` directory and exercises `cf_math_pkg` plus parameterized `fifo_v3`, includes,
-defines, ports, and conditional generate elaboration:
+`.realworld-cache` directory. The test invokes `bender script flist-plus` with the `synthesis`
+target to obtain the ordered sources, include directories, and defines; no source list is
+duplicated in Python. It exercises packages, parameterized `fifo_v3`, includes, defines, ports,
+and conditional generate elaboration:
 
 ```sh
 make test-realworld
 make check-all
 ```
+
+Install Bender through its official installer or set `BENDER_EXECUTABLE` to the `0.32.1`
+binary. For local development, a binary at `.tools/bender` is also detected automatically.
 
 Normal unit and integration tests never require network access.
 
