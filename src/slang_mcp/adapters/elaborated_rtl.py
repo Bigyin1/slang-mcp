@@ -1,16 +1,16 @@
-"""Elaborated RTL query adapter and normalized access indexes."""
+"""Index an elaborated Slang design for normalized RTL queries."""
 
 from __future__ import annotations
 
-from collections import defaultdict
-from dataclasses import replace
-from typing import TYPE_CHECKING, Any
+from collections import defaultdict, deque
+from dataclasses import dataclass, replace
+from typing import TYPE_CHECKING, Any, Literal
 
 import pyslang
 from pyslang import ast, syntax
 
-from slang_mcp.adapters.rtl_references import AccessIndex, Context, direction_kind
-from slang_mcp.adapters.rtl_values import connection, location, parameters, port
+from slang_mcp.adapters.semantic_normalization import connection, location, parameters, port
+from slang_mcp.adapters.source_access import AccessContext, SourceAccessIndex, direction_kind
 from slang_mcp.errors import (
     AmbiguousSymbolError,
     InstanceNotFoundError,
@@ -18,14 +18,39 @@ from slang_mcp.errors import (
     SymbolNotFoundError,
 )
 from slang_mcp.models import ParameterDescription, SymbolDescription, SymbolReference
-from slang_mcp.rtl_models import Connection, Instance, Port, Procedure, Reference
+from slang_mcp.rtl_models import (
+    Connection,
+    ConnectivityHop,
+    ConnectivityPath,
+    ConnectivityTrace,
+    Instance,
+    Page,
+    Port,
+    Procedure,
+    Reference,
+)
 
 if TYPE_CHECKING:
     from slang_mcp.adapters.pyslang import SlangDesign
 
 
-class RtlIndex:
-    """Reuse Slang traversal once per compilation, retaining normalized query data."""
+@dataclass
+class ConnectivityTraversalState:
+    """Mutable breadth-first traversal state kept private to one trace request."""
+
+    start: str
+    pending: deque[tuple[str, tuple[ConnectivityHop, ...], frozenset[str]]]
+    paths: list[ConnectivityPath]
+    limit: int
+    considered: int = 0
+
+
+class ElaboratedRtlIndex:
+    """Own normalized facts extracted once from one elaborated Slang compilation.
+
+    The index owns no public compiler objects: it converts instance, access and
+    connectivity facts into project-owned models for the service layer.
+    """
 
     def __init__(self, design: SlangDesign, compilation: Any, manager: Any) -> None:
         self.design = design
@@ -35,7 +60,7 @@ class RtlIndex:
         self.raw_instances: dict[str, Any] = {}
         self.defaults: dict[str, Any] = {}
         self.default_compilations: list[Any] = []
-        self.access = AccessIndex(manager)
+        self.access = SourceAccessIndex(manager)
         self._collect_instances()
         self.instances = {
             path: replace(item, parent=self._parent_instance(path))
@@ -44,6 +69,7 @@ class RtlIndex:
         for raw in self.raw_instances.values():
             self._scan_instance(raw)
         self._index_references()
+        self._index_connectivity()
 
     def _collect_instances(self) -> None:
         for instance in self.compilation.getRoot().topInstances:
@@ -53,6 +79,21 @@ class RtlIndex:
         self.references_by_name: dict[str, list[Reference]] = defaultdict(list)
         for item in self.access.references:
             self.references_by_name[item.symbol.qualified_name].append(item)
+
+    def _index_connectivity(self) -> None:
+        edges = {self._connectivity_identity(item): item for item in self.access.connectivity}
+        self.connectivity = tuple(sorted(edges.values(), key=self._connectivity_key))
+        self.connectivity_by_source: dict[str, tuple[ConnectivityHop, ...]] = {}
+        self.connectivity_by_target: dict[str, tuple[ConnectivityHop, ...]] = {}
+        for edge in self.connectivity:
+            self.connectivity_by_source[edge.source] = (
+                *self.connectivity_by_source.get(edge.source, ()),
+                edge,
+            )
+            self.connectivity_by_target[edge.target] = (
+                *self.connectivity_by_target.get(edge.target, ()),
+                edge,
+            )
 
     def _parent_instance(self, path: str) -> str | None:
         while "." in path:
@@ -74,17 +115,25 @@ class RtlIndex:
         return ast.VisitAction.Advance
 
     def _scan_instance(self, raw: Any) -> None:
-        self.access.scan(raw.body, Context(str(raw.hierarchicalPath), str(raw.hierarchicalPath)))
+        self.access.scan(
+            raw.body,
+            AccessContext(str(raw.hierarchicalPath), str(raw.hierarchicalPath)),
+        )
         for item in raw.portConnections:
             if isinstance(item.port, ast.PortSymbol) and item.expression is not None:
                 self.access.port_actual(
                     item.expression,
-                    Context(
+                    AccessContext(
                         str(raw.hierarchicalPath).rsplit(".", 1)[0],
                         str(raw.hierarchicalPath),
                         direction_kind(item.port.direction.name.lower()),
                         "port_connection",
                     ),
+                )
+                self.access.port_binding(
+                    item.expression,
+                    item.port,
+                    AccessContext(str(raw.hierarchicalPath), str(raw.hierarchicalPath)),
                 )
 
     def resolve_instance(self, query: str) -> Instance:
@@ -160,6 +209,95 @@ class RtlIndex:
         if not any(item.kind == "declaration" for item in found):
             found = (self._declaration(resolved), *found)
         return found
+
+    def trace_connectivity(  # pylint: disable=too-many-locals
+        self,
+        signal: str,
+        direction: str,
+        max_depth: int,
+        limit: int,
+    ) -> ConnectivityTrace:
+        resolved = self.resolve_signal(signal).symbol
+        start = resolved.qualified_name
+        state = ConnectivityTraversalState(
+            start,
+            deque([(start, (), frozenset({start}))]),
+            [],
+            limit,
+        )
+        while state.pending and len(state.paths) < limit and state.considered < limit:
+            current, hops, visited = state.pending.popleft()
+            edges = self._trace_edges(current, direction)
+            if (stop_reason := self._trace_stop_reason(hops, edges, max_depth)) is not None:
+                state.paths.append(ConnectivityPath(start, current, hops, stop_reason))
+            else:
+                self._append_trace_edges(state, edges, hops, visited)
+        truncated = bool(state.pending) or state.considered >= limit
+        return ConnectivityTrace(
+            signal,
+            direction,
+            resolved,
+            Page(tuple(state.paths), len(state.paths), truncated),
+            state.considered,
+            max_depth,
+            truncated,
+        )
+
+    @staticmethod
+    def _trace_stop_reason(
+        hops: tuple[ConnectivityHop, ...],
+        edges: tuple[ConnectivityHop, ...],
+        max_depth: int,
+    ) -> Literal["no_edges", "max_depth"] | None:
+        if len(hops) >= max_depth:
+            return "max_depth"
+        if not edges:
+            return "no_edges"
+        return None
+
+    @staticmethod
+    def _append_trace_edges(  # pylint: disable=too-many-locals
+        state: ConnectivityTraversalState,
+        edges: tuple[ConnectivityHop, ...],
+        hops: tuple[ConnectivityHop, ...],
+        visited: frozenset[str],
+    ) -> None:
+        for edge in edges:
+            if len(state.paths) >= state.limit or state.considered >= state.limit:
+                break
+            state.considered += 1
+            next_hops = (*hops, edge)
+            if edge.target in visited:
+                state.paths.append(ConnectivityPath(state.start, edge.target, next_hops, "cycle"))
+            else:
+                state.pending.append((edge.target, next_hops, visited | {edge.target}))
+
+    def _trace_edges(  # pylint: disable=too-many-locals
+        self, signal: str, direction: str
+    ) -> tuple[ConnectivityHop, ...]:
+        forward = self.connectivity_by_source.get(signal, ()) if direction != "drivers" else ()
+        backward = self.connectivity_by_target.get(signal, ()) if direction != "loads" else ()
+        reversed_edges = tuple(
+            replace(item, source=item.target, target=item.source) for item in backward
+        )
+        return tuple(sorted((*forward, *reversed_edges), key=self._connectivity_key))
+
+    @staticmethod
+    def _connectivity_key(item: ConnectivityHop) -> tuple[Any, ...]:
+        return (
+            item.source,
+            item.target,
+            item.kind,
+            item.operation or "",
+            item.formal_port or "",
+            item.location.filename or "",
+            item.location.line or -1,
+            item.location.column or -1,
+        )
+
+    @staticmethod
+    def _connectivity_identity(item: ConnectivityHop) -> tuple[Any, ...]:
+        return (*ElaboratedRtlIndex._connectivity_key(item), item.instance_path)
 
     @staticmethod
     def _declaration(symbol: SymbolReference) -> Reference:

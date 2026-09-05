@@ -1,16 +1,18 @@
-"""Source-level access indexing using Slang's semantic visitor."""
+"""Extract source accesses and dependency edges with Slang's semantic visitor."""
 
 from dataclasses import dataclass, replace
-from typing import Any
+from typing import Any, Literal
 
 from pyslang import ast
 
-from slang_mcp.adapters.rtl_values import expression_text, location, reference
-from slang_mcp.rtl_models import Procedure, Reference, page
+from slang_mcp.adapters.semantic_normalization import expression_text, location, reference
+from slang_mcp.rtl_models import ConnectivityHop, Procedure, Reference, page
 
 
 @dataclass(frozen=True)
-class Context:
+class AccessContext:
+    """Semantic context attached to references found during one visitor traversal."""
+
     instance: str
     scope: str
     kind: str = "read"
@@ -18,16 +20,34 @@ class Context:
     block: str | None = None
 
 
-class AccessIndex:
-    """One rebuildable index; writes denote source assignments, not synthesized drivers."""
+@dataclass(frozen=True)
+class ConnectivityDependency:
+    """Raw compiler symbols and context used to create one dependency edge."""
+
+    sources: tuple[Any, ...]
+    targets: tuple[Any, ...]
+    kind: Literal["port_binding", "continuous_assignment", "procedural_assignment"]
+    source: Any
+    context: AccessContext
+    operation: str
+    formal_port: str | None = None
+
+
+class SourceAccessIndex:
+    """Collect source reads, writes, procedures and connectivity dependencies.
+
+    Writes describe source assignments and port semantics; they are not inferred
+    synthesized or simulation drivers.
+    """
 
     def __init__(self, manager: Any) -> None:
         self.manager = manager
         self.references: list[Reference] = []
         self.procedures: list[Procedure] = []
         self.block_writes: dict[str, tuple[str, ...]] = {}
+        self.connectivity: list[ConnectivityHop] = []
 
-    def scan(self, raw: Any, context: Context) -> None:
+    def scan(self, raw: Any, context: AccessContext) -> None:
         if raw is None:
             return
 
@@ -36,7 +56,7 @@ class AccessIndex:
 
         raw.visit(visit)
 
-    def _visit(self, node: Any, context: Context) -> Any:
+    def _visit(self, node: Any, context: AccessContext) -> Any:
         if isinstance(node, ast.InstanceSymbol) or (
             isinstance(node, ast.GenerateBlockSymbol) and node.isUninstantiated
         ):
@@ -49,7 +69,7 @@ class AccessIndex:
             return ast.VisitAction.Skip
         return self._visit_other(node, context)
 
-    def _visit_other(self, node: Any, context: Context) -> Any:
+    def _visit_other(self, node: Any, context: AccessContext) -> Any:
         if isinstance(node, ast.GenerateBlockSymbol):
             for member in node:
                 self.scan(member, replace(context, scope=str(node.hierarchicalPath)))
@@ -69,7 +89,7 @@ class AccessIndex:
             return ast.VisitAction.Skip
         return self._visit_symbol(node, context)
 
-    def _visit_symbol(self, node: Any, context: Context) -> Any:
+    def _visit_symbol(self, node: Any, context: AccessContext) -> Any:
         if isinstance(node, ast.ContinuousAssignSymbol):
             self.scan(node.assignment, replace(context, operation="continuous_assignment"))
             return ast.VisitAction.Skip
@@ -83,13 +103,23 @@ class AccessIndex:
             return ast.VisitAction.Skip
         return ast.VisitAction.Advance
 
-    def _initializer(self, node: Any, context: Context) -> None:
+    def _initializer(self, node: Any, context: AccessContext) -> None:
         self._record(
             node, node.location, replace(context, kind="write", operation="declaration_assignment")
         )
         self.scan(node.initializer, replace(context, kind="read"))
+        self._dependency(
+            ConnectivityDependency(
+                self._expression_symbols(node.initializer),
+                (node,),
+                "procedural_assignment",
+                node.location,
+                context,
+                "declaration_assignment",
+            )
+        )
 
-    def _assignment(self, node: Any, context: Context) -> None:
+    def _assignment(self, node: Any, context: AccessContext) -> None:  # pylint: disable=too-many-locals
         if (operation := context.operation) != "continuous_assignment":
             operation = "nonblocking_assignment" if node.isNonBlocking else "blocking_assignment"
         self._lvalue(
@@ -101,8 +131,24 @@ class AccessIndex:
             ),
         )
         self.scan(node.right, replace(context, kind="read", operation=operation))
+        sources = self._expression_symbols(node.right)
+        targets = self._expression_symbols(node.left)
+        if node.isCompound:
+            sources = (*sources, *targets)
+        self._dependency(
+            ConnectivityDependency(
+                sources,
+                targets,
+                "continuous_assignment"
+                if operation == "continuous_assignment"
+                else "procedural_assignment",
+                node.sourceRange.start,
+                context,
+                f"compound_{operation}" if node.isCompound else operation,
+            )
+        )
 
-    def _lvalue(self, node: Any, context: Context) -> None:
+    def _lvalue(self, node: Any, context: AccessContext) -> None:
         if isinstance(node, ast.ElementSelectExpression):
             self._lvalue(node.value, context)
             self.scan(node.selector, replace(context, kind="read"))
@@ -116,13 +162,68 @@ class AccessIndex:
         else:
             self.scan(node, context)
 
-    def port_actual(self, node: Any, context: Context) -> None:
+    def port_actual(self, node: Any, context: AccessContext) -> None:
         if context.kind in {"write", "read_write"}:
             self._lvalue(node, context)
         else:
             self.scan(node, context)
 
-    def _call(self, node: Any, context: Context) -> None:
+    def port_binding(  # pylint: disable=too-many-locals
+        self, node: Any, port_symbol: Any, context: AccessContext
+    ) -> None:
+        """Index only direct signal actuals, never expressions or interface ports."""
+        if (actual := self._direct_port_actual(node)) is None:
+            return
+        direction = port_symbol.direction.name.lower()
+        for source, target in _port_pairs(actual.symbol, port_symbol, direction):
+            self._dependency(
+                ConnectivityDependency(
+                    (source,),
+                    (target,),
+                    "port_binding",
+                    actual.sourceRange.start,
+                    context,
+                    direction,
+                    port_symbol.name,
+                )
+            )
+
+    @staticmethod
+    def _direct_port_actual(node: Any) -> Any | None:
+        if isinstance(node, ast.AssignmentExpression):
+            node = node.left
+        return node if isinstance(node, ast.NamedValueExpression) else None
+
+    def _expression_symbols(self, node: Any) -> tuple[Any, ...]:
+        symbols: dict[str, Any] = {}
+
+        def visit(item: Any) -> Any:
+            if isinstance(item, ast.ValueExpressionBase):
+                symbols.setdefault(reference(item.symbol, self.manager).qualified_name, item.symbol)
+            return ast.VisitAction.Advance
+
+        node.visit(visit)
+        return tuple(symbols.values())
+
+    def _dependency(self, dependency: ConnectivityDependency) -> None:  # pylint: disable=too-many-locals
+        for source_symbol in dependency.sources:
+            source_name = reference(source_symbol, self.manager).qualified_name
+            for target_symbol in dependency.targets:
+                target_name = reference(target_symbol, self.manager).qualified_name
+                if source_name != target_name:
+                    self.connectivity.append(
+                        ConnectivityHop(
+                            source_name,
+                            target_name,
+                            dependency.kind,
+                            location(dependency.source, self.manager),
+                            dependency.context.instance or None,
+                            dependency.formal_port,
+                            dependency.operation,
+                        )
+                    )
+
+    def _call(self, node: Any, context: AccessContext) -> None:
         if node.isSystemCall:
             for argument in node.arguments:
                 self.scan(argument, replace(context, kind="unknown", operation="system_call"))
@@ -142,7 +243,7 @@ class AccessIndex:
                 ),
             )
 
-    def _record(self, symbol: Any, source: Any, context: Context) -> None:
+    def _record(self, symbol: Any, source: Any, context: AccessContext) -> None:
         self.references.append(
             Reference(
                 reference(symbol, self.manager),
@@ -155,7 +256,7 @@ class AccessIndex:
             )
         )
 
-    def _procedure(self, node: Any, context: Context) -> None:
+    def _procedure(self, node: Any, context: AccessContext) -> None:
         block = self._block_id(node, context.instance)
         start = len(self.references)
         self.scan(node.body, replace(context, block=block))
@@ -197,3 +298,13 @@ def direction_kind(direction: str) -> str:
         direction,
         "unknown",
     )
+
+
+def _port_pairs(actual: Any, formal: Any, direction: str) -> tuple[tuple[Any, Any], ...]:
+    if direction == "in":
+        return ((actual, formal),)
+    if direction == "out":
+        return ((formal, actual),)
+    if direction in {"inout", "ref"}:
+        return ((actual, formal), (formal, actual))
+    return ()

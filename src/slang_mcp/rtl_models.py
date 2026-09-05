@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Generic, TypeVar
+from typing import Generic, Literal, TypeVar
 
 from slang_mcp.models import (
     ParameterDescription,
@@ -134,6 +134,42 @@ class InstanceInspection:
     parameters: Parameters
     connections: Page[Connection]
     children: Page[Instance]
+
+
+@dataclass(frozen=True)
+class ConnectivityHop:
+    """One source-level dependency used by a bounded connectivity route."""
+
+    source: str
+    target: str
+    kind: Literal["port_binding", "continuous_assignment", "procedural_assignment"]
+    location: SourceLocation
+    instance_path: str | None
+    formal_port: str | None = None
+    operation: str | None = None
+
+
+@dataclass(frozen=True)
+class ConnectivityPath:
+    """A bounded route ending at a leaf, cycle, or requested depth."""
+
+    start: str
+    end: str
+    hops: tuple[ConnectivityHop, ...]
+    stop_reason: Literal["no_edges", "max_depth", "cycle"]
+
+
+@dataclass(frozen=True)
+class ConnectivityTrace:
+    """The bounded source-level routes for one resolved signal."""
+
+    query: str
+    direction: str
+    resolved_start: SymbolReference
+    paths: Page[ConnectivityPath]
+    edges_considered: int
+    max_depth: int
+    truncated: bool
 
 
 @dataclass(frozen=True)

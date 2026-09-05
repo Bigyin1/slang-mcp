@@ -1,4 +1,9 @@
-"""Normalize Slang ports, connections and locations at the adapter boundary."""
+"""Normalize raw Slang values into project-owned semantic models.
+
+This module deliberately contains stateless conversion functions instead of
+classes: each function accepts a raw compiler object and returns a typed value
+that is safe to expose outside the adapter boundary.
+"""
 
 from typing import Any
 

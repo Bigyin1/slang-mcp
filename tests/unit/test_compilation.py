@@ -54,6 +54,39 @@ def test_semantic_error_is_structured(tmp_path: Path) -> None:
     assert all(item.code for item in diagnostics)
 
 
+def test_open_port_does_not_abort_project_indexing(tmp_path: Path) -> None:
+    service = _service_for_text(
+        tmp_path,
+        """
+        module leaf(input logic in_data, output logic out_data);
+          assign out_data = in_data;
+        endmodule
+        module top(input logic in_data);
+          leaf u_leaf (.in_data(in_data), .out_data());
+        endmodule
+        """,
+    )
+
+    service.project_load("bad")
+
+    assert service.get_hierarchy()[0].children[0].path == "top.u_leaf"
+    connection = next(
+        item
+        for item in service.rtl.get_instance_connections("top.u_leaf").items
+        if item.port.name == "out_data"
+    )
+    assert connection.kind == "unconnected"
+    assert connection.expression is None
+    assert (
+        next(
+            item
+            for item in service.describe_instance("top.u_leaf").connections
+            if item.port == "out_data"
+        ).expression
+        is None
+    )
+
+
 def test_missing_source_fails_before_compilation(tmp_path: Path) -> None:
     config = ProjectConfig("bad", (tmp_path / "missing.sv",))
     service = SemanticService(ProjectManager(StaticProjectProvider({"bad": config})))
