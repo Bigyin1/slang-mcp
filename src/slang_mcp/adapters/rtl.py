@@ -36,7 +36,7 @@ class RtlIndex:
         self.defaults: dict[str, Any] = {}
         self.default_compilations: list[Any] = []
         self.access = AccessIndex(manager)
-        compilation.getRoot().visit(self._collect)
+        self._collect_instances()
         self.instances = {
             path: replace(item, parent=self._parent_instance(path))
             for path, item in self.instances.items()
@@ -44,6 +44,10 @@ class RtlIndex:
         for raw in self.raw_instances.values():
             self._scan_instance(raw)
         self._index_references()
+
+    def _collect_instances(self) -> None:
+        for instance in self.compilation.getRoot().topInstances:
+            instance.visit(self._collect)
 
     def _index_references(self) -> None:
         self.references_by_name: dict[str, list[Reference]] = defaultdict(list)
