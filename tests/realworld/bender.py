@@ -9,6 +9,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import pytest
+from git import Repo
 
 BENDER_VERSION = "0.32.1"
 _DEFINE_PREFIX = "+define+"
@@ -73,21 +74,10 @@ def checkout_repository(repository: str, revision: str, cache_name: str) -> Path
     root = _PROJECT_ROOT / ".realworld-cache" / cache_name
     if not (root / ".git").is_dir():
         root.parent.mkdir(parents=True, exist_ok=True)
-        subprocess.run(
-            ["git", "clone", "--filter=blob:none", repository, str(root)],
-            check=True,
-        )
-    current = subprocess.run(
-        ["git", "-C", str(root), "rev-parse", "HEAD"],
-        check=True,
-        capture_output=True,
-        text=True,
-    ).stdout.strip()
-    if current != revision:
-        subprocess.run(
-            ["git", "-C", str(root), "checkout", "--detach", revision],
-            check=True,
-        )
+        Repo.clone_from(repository, root, filter="blob:none").close()
+    with Repo(root) as repo:
+        if repo.head.commit.hexsha != revision:
+            repo.git.checkout("--detach", revision)
     return root
 
 

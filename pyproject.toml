@@ -20,6 +20,7 @@ slang-mcp = "slang_mcp.__main__:main"
 
 [dependency-groups]
 dev = [
+  "gitpython>=3.1,<4",
   "mypy>=2.3,<2.4",
   "pylint>=4.0.8,<5",
   "pytest>=9.0,<10",
@@ -70,8 +71,7 @@ max-statements = 35
   "S101", # Assertions are the pytest API.
 ]
 "tests/realworld/bender.py" = [
-  "S603", # Commands use pinned fixture inputs and a developer-selected Bender binary.
-  "S607", # Git is intentionally resolved through the developer's PATH.
+  "S603", # Commands use fixture inputs and a developer-selected Bender binary.
 ]
 
 [tool.mypy]

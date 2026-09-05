@@ -120,7 +120,7 @@ Linting includes security, logging, pytest, pathlib, and blanket-suppression che
 mypy also checks unreachable code. Ruff and Pylint limit functions to 6 branches,
 5 local variables, 4 returns, and 35 statements. Pylint additionally limits nesting to 3 blocks and
 modules to 500 lines. Security exceptions are scoped to pytest assertions and the
-Bender fixture helper's Git/Bender subprocess calls.
+Bender fixture helper's subprocess calls. Git checkouts use GitPython.
 
 The network-backed suite requires Bender `0.32.1` and uses exact revisions of:
 
