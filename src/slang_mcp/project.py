@@ -6,6 +6,8 @@ from slang_mcp.adapters import SlangDesign
 from slang_mcp.errors import InvalidProjectConfigError, ProjectNotLoadedError
 from slang_mcp.models import ProjectConfig, ProjectInfo, ProjectSummary
 from slang_mcp.providers import ProjectProvider
+from slang_mcp.rtl_models import SemanticDiff
+from slang_mcp.semantic_snapshot import compare, snapshot
 
 
 class ProjectManager:
@@ -15,6 +17,8 @@ class ProjectManager:
         self._provider = provider
         self._config: ProjectConfig | None = None
         self._design: SlangDesign | None = None
+        self._previous_snapshot: dict[str, str] | None = None
+        self._snapshot: dict[str, str] = {}
 
     @property
     def design(self) -> SlangDesign:
@@ -26,9 +30,21 @@ class ProjectManager:
         config = self._provider.resolve(logical_module)
         _validate_paths(config)
         design = SlangDesign(config)
+        normalized = snapshot(design)
+        self._previous_snapshot = (
+            self._snapshot
+            if self._config is not None and (self._config.logical_module == logical_module)
+            else None
+        )
+        self._snapshot = normalized
         self._config = config
         self._design = design
         return _summary(config, design)
+
+    def semantic_diff(self, limit: int = 100) -> SemanticDiff:
+        if self._design is None:
+            raise ProjectNotLoadedError("no project is loaded")
+        return compare(self._previous_snapshot, self._snapshot, limit)
 
     def reload(self) -> ProjectSummary:
         if self._config is None:

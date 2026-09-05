@@ -79,10 +79,96 @@ memory; they never modify source files.
 
 ## Architecture and providers
 
+### RTL inspection tools
+
+The following tools extend the original eight tools. Collections use
+`{"items": [...], "total_count": N, "truncated": false}`. Their `limit` defaults to 100
+(10 for `inspect_signal`) and must be between 1 and 500.
+
+| Tool | Arguments besides `limit` | Result |
+| --- | --- | --- |
+| `get_references` | `symbol`, optional `kind` | Declaration and elaborated semantic uses |
+| `list_symbols` | `scope`, optional `kind` | Direct scope members; kinds match `find_symbol` |
+| `get_ports` | `sv_module` | Default port types, packed widths, fixed unpacked dimensions, interface/modport |
+| `get_parameters` | `target` | Module defaults or effective values for a nested instance path |
+| `get_instance_parameters` | `instance_path` | Effective parameters, including top instances |
+| `get_instance_connections` | `instance_path` | Formal ports, actual expression text and referenced symbols |
+| `list_instances` | optional `sv_module`, `name`, `path_prefix` | Elaborated instance occurrences |
+| `find_instance` | `query` (no `limit`) | Exact path or unique exact name; ambiguity lists candidates |
+| `get_signal_reads`, `get_signal_writes` | `signal` | Access locations and assignment/port contexts |
+| `get_drivers`, `get_loads` | `signal` | Source-level writes and reads, respectively |
+| `get_procedural_blocks` | `sv_module` | Elaborated blocks, sensitivity syntax and bounded read/write sets |
+| `get_state_elements` | `sv_module` | Variables written in `always_ff` blocks |
+| `inspect_signal` | `signal` | Description, reference count and capped access summaries |
+| `inspect_module` | `sv_module` | Default signature, declaration count and elaborated usage summaries |
+| `inspect_instance` | `instance_path` | Effective parameters, resolved connections and child instances |
+| `semantic_diff` | none | Bounded changes since the preceding successful same-project load |
+
+For example, `get_parameters("leaf")` returns `value_kind: "declared_default"`, while
+`get_instance_parameters("top.u_leaf")` returns `value_kind: "effective"`. A default `WIDTH=32`
+and an overridden `WIDTH=64` are evaluated in separate Slang elaborations. Bare top names in
+`get_parameters` denote declarations; use the explicit instance tool for effective top values.
+Default-scope member IDs start with `default:` and can be passed to `describe_symbol`.
+Nested module definitions that cannot be independently instantiated report an explicit unavailable
+default-signature error; their effective instance queries still work. Snapshots retain their
+definition and mark `signature_unavailable`, without preventing project loading.
+
+Connections distinguish `signal`, `expression`, `unconnected`, and `interface`. Actual expression
+text is capped at 1,000 characters; referenced symbols are capped at 500 with `symbol_count` and
+`symbols_truncated` metadata. For `.d(a & b)`,
+the actual remains an expression with both resolved symbols; it is not collapsed to one signal.
+Named, positional, wildcard and unconnected ports are supported. Interface connections expose
+the resolved interface and formal modport; individual modport driver paths are not expanded.
+`describe_instance` retains its original compact schema; `inspect_instance` adds richer connections.
+
+The access index uses Slang's semantic visitor, not token matching. Reads and writes are derived
+from assignments, selectors, increments, declaration initializers, user subroutine arguments and
+port directions. `read_write` participates in both sets. References retain source locations,
+scope, instance and procedural block identity. Fully qualified port names resolve to their internal
+signal for these new queries; identical short names in different instances remain ambiguous.
+Module references include declaration and instantiation entries. Parameter value references are
+classified separately. System-call arguments are conservatively `unknown`; exhaustive type-use
+indexing, macro expansion provenance and transitive subroutine side-effect analysis are unsupported.
+Empty results do not prove that an unsupported construct has no effects.
+
+Drivers and loads describe source uses, not synthesized hardware. Counts are access sites, not
+unique hardware drivers or execution counts; accesses in subroutine bodies are not expanded at
+each call. Procedure summaries cover active elaborated instances of the requested module and may
+therefore contain multiple specializations. State discovery covers `always_ff` only; generic edge
+triggered `always`, inferred latches and reset behavior are not inferred. Module diagnostic counts
+are file-level counts. Optional fan-in/fan-out is deferred until these unsupported cases can be
+represented reliably. Existing unbounded MVP tools retain their schemas for compatibility.
+
+### Semantic diff lifecycle
+
+Initial load reports `status: "no_previous_state"`. A successful load/reload of the same logical
+project compares its previous and current normalized snapshots. Loading a different logical project
+starts a new baseline. Failed path validation, construction, elaboration or snapshot creation leaves
+both the active project and the previous diff intact. As in the original API, a completed compilation
+with error diagnostics is accepted, so an agent can inspect errors and their changes.
+
+Changes contain `category`, `identity`, `before` and `after`; null denotes an addition/removal.
+Compound values are deterministic JSON strings. Categories cover definitions, default ports and
+parameters, effective instance parameters, instance presence/type and diagnostics. Port snapshots
+omit declaration positions so shifting source lines alone does not change a port. Diagnostics
+include positions, so moving a diagnostic is an addition/removal. Internal signal changes and
+connection changes are not currently diffed. Snapshots contain no compiler pointers and are captured
+before activating a new design; no old compilation is retained for diffing.
+
+For example, a parameter override change includes:
+
+```json
+{"category": "effective_parameter", "identity": "top.u_leaf.WIDTH",
+ "before": "{\"is_local\": false, \"name\": \"WIDTH\", \"type\": \"int\", \"value\": \"32\"}",
+ "after": "{\"is_local\": false, \"name\": \"WIDTH\", \"type\": \"int\", \"value\": \"64\"}"}
+```
+
+### Implementation layers
+
 Thin MCP handlers call `SemanticService`, which uses `ProjectManager` for the active compilation.
 `ProjectManager` depends only on the `ProjectProvider` protocol. `StaticProjectProvider` can be
 constructed from typed in-memory `ProjectConfig` objects or the JSON format above. All dynamic
-`pyslang` interaction and object traversal stays inside `adapters/pyslang.py`; only project-owned
+`pyslang` interaction and object traversal stays inside `adapters/`; only project-owned
 dataclasses cross that boundary.
 
 A future `SVBuildProjectProvider` should implement only:
@@ -154,7 +240,8 @@ Normal unit and integration tests never require network access.
 - Module descriptions use the first elaborated representative for parameterized port details;
   uninstantiated definitions therefore have declaration identity but may lack a signature.
 - Port connection text is best-effort because some elaborated expressions have no source syntax.
-- Driver/load and fan-in/fan-out connectivity are not implemented. No pseudo-netlist is inferred.
+- Driver/load queries cover conservative source-level accesses. Fan-in/fan-out and synthesized
+  netlist connectivity are not implemented.
 - This is an MCP server, not an LSP, source rewriter, SVBuild implementation, or Bender parser.
 
 The recommended next milestone is `SVBuildProjectProvider`.

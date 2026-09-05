@@ -11,6 +11,8 @@ from pyslang import ast as slang_ast
 from pyslang import parsing as slang_parsing
 from pyslang import syntax as slang_syntax
 
+from slang_mcp.adapters.rtl import RtlIndex
+from slang_mcp.adapters.rtl_values import parameters as _parameters
 from slang_mcp.errors import (
     AmbiguousSymbolError,
     CompilationError,
@@ -73,6 +75,44 @@ class SlangDesign:
         self._symbols = self._index_symbols()
         self._hierarchy = self._index_hierarchy()
         self._validate_configured_tops()
+        self._default_symbols: dict[str, _IndexedSymbol] = {}
+        self.rtl = RtlIndex(self, self._compilation, self._source_manager)
+
+    def scope_members(self, scope: str) -> tuple[SymbolReference, ...]:
+        resolved = self._resolve_symbol(scope)
+        if isinstance(resolved.raw, slang_ast.DefinitionSymbol):
+            return self._default_members(resolved.raw.name)
+        return tuple(
+            item.reference
+            for item in self._symbols
+            if item.reference.containing_scope == resolved.reference.qualified_name
+        )
+
+    def definitions(self) -> tuple[SymbolReference, ...]:
+        return tuple(
+            item.reference
+            for item in self._symbols
+            if item.reference.kind in {"module", "interface", "package"}
+        )
+
+    def _default_members(self, name: str) -> tuple[SymbolReference, ...]:
+        body = self.rtl.default_instance(name).body
+        return tuple(
+            self._default_member(raw, name)
+            for raw in (*body.portList, *body)
+            if raw.kind.name in _SEARCHABLE_KINDS
+        )
+
+    def _default_member(self, raw: Any, scope: str) -> SymbolReference:
+        indexed = self._to_indexed(raw, _public_kind(raw))
+        normalized = replace(
+            indexed.reference,
+            symbol_id=f"default:{indexed.reference.kind}:{scope}.{raw.name}",
+            qualified_name=f"{scope}.{raw.name}",
+            containing_scope=scope,
+        )
+        self._default_symbols[normalized.symbol_id] = _IndexedSymbol(normalized, raw)
+        return normalized
 
     @property
     def diagnostics(self) -> tuple[Diagnostic, ...]:
@@ -214,6 +254,8 @@ class SlangDesign:
         )
 
     def _resolve_symbol(self, identifier: str) -> _IndexedSymbol:
+        if identifier in self._default_symbols:
+            return self._default_symbols[identifier]
         if by_id := [item for item in self._symbols if item.reference.symbol_id == identifier]:
             return by_id[0]
         matches = [
@@ -331,25 +373,6 @@ def _direction(raw: Any) -> str | None:
     if isinstance(raw, (slang_ast.PortSymbol, slang_ast.FormalArgumentSymbol)):
         return str(raw.direction.name).lower()
     return None
-
-
-def _parameters(raw: Any) -> tuple[ParameterDescription, ...]:
-    result: list[ParameterDescription] = []
-    for parameter in raw.body.parameters:
-        if isinstance(parameter, slang_ast.ParameterSymbol):
-            result.append(
-                ParameterDescription(
-                    parameter.name,
-                    str(parameter.type),
-                    str(parameter.value),
-                    parameter.isLocalParam,
-                )
-            )
-        elif isinstance(parameter, slang_ast.TypeParameterSymbol):
-            result.append(
-                ParameterDescription(parameter.name, "type", str(parameter.targetType), False)
-            )
-    return tuple(result)
 
 
 def _ports(raw: Any) -> tuple[PortDescription, ...]:

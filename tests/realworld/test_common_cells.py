@@ -62,3 +62,12 @@ def test_pulp_common_cells_fifo() -> None:
         "gen_fifo",
         "gen_pass_through",
     }
+    _check_rtl_queries(service)
+
+
+def _check_rtl_queries(service: SemanticService) -> None:
+    assert service.rtl.get_ports("fifo_v3").total_count >= 10
+    assert service.rtl.get_parameters("fifo_v3").parameters.total_count >= 5
+    assert service.rtl.get_signal_reads("fifo_v3.push_i").total_count > 0
+    assert service.rtl.get_procedural_blocks("fifo_v3").total_count > 0
+    assert service.rtl.get_state_elements("fifo_v3").total_count > 0

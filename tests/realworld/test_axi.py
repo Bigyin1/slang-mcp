@@ -68,3 +68,15 @@ def test_pulp_axi_fifo() -> None:
     assert len(fifo.parameters) >= 7
     assert len(fifo.ports) >= 7
     assert {child.name for child in service.get_hierarchy()[0].children} >= {"i_axi_fifo"}
+    _check_rtl_queries(service)
+
+
+def _check_rtl_queries(service: SemanticService) -> None:
+    assert service.rtl.list_instances(sv_module="axi_fifo").total_count == 1
+    assert service.rtl.get_parameters("axi_fifo").parameters.total_count >= 7
+    assert service.rtl.get_ports("axi_fifo_intf").total_count == 5
+    assert (
+        service.inspection.inspect_instance("axi_fifo_intf.i_axi_fifo").connections.total_count == 7
+    )
+    assert service.rtl.get_signal_reads("axi_fifo_intf.slv_req").total_count > 0
+    assert service.rtl.get_instance_parameters("axi_fifo_intf.i_axi_fifo").value_kind == "effective"

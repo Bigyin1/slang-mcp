@@ -10,6 +10,9 @@ from slang_mcp.models import (
     SymbolReference,
 )
 from slang_mcp.project import ProjectManager
+from slang_mcp.rtl_models import SemanticDiff
+from slang_mcp.services.inspection import InspectionService
+from slang_mcp.services.rtl import RtlService
 
 _MAX_DIAGNOSTICS = 500
 _MAX_HIERARCHY_DEPTH = 50
@@ -21,6 +24,11 @@ class SemanticService:
 
     def __init__(self, manager: ProjectManager) -> None:
         self._manager = manager
+        self.rtl = RtlService(manager)
+        self.inspection = InspectionService(self.rtl)
+
+    def semantic_diff(self, limit: int = 100) -> SemanticDiff:
+        return self._manager.semantic_diff(limit)
 
     def project_load(self, logical_module: str) -> ProjectSummary:
         if not logical_module.strip():

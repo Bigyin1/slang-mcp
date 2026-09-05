@@ -19,11 +19,17 @@
 - Источник build-конфигурации скрыт за `ProjectProvider`; MVP использует
   `StaticProjectProvider`. Не добавляйте фиктивный `SVBuildProjectProvider`.
 - Динамические объекты `pyslang` не должны выходить за границы
-  `src/slang_mcp/adapters/pyslang.py`. В сервисах и MCP-ответах используйте только
+  `src/slang_mcp/adapters/`. В сервисах и MCP-ответах используйте только
   типизированные project-owned модели.
 - Различайте `logical_module` (сущность build-системы), `sv_module` (декларация
   SystemVerilog module) и `instance` (элаборированный экземпляр).
 - Полная connectivity-трассировка остаётся вне MVP; не заменяйте её анализом текста RTL.
+- RTL read/write и driver/load запросы описывают source-level семантику, не netlist.
+  Используйте встроенный visitor Slang и общий индекс обращений.
+- При reload диагностические ошибки принимаются для анализа; исключение при построении
+  не должно менять активную компиляцию и последние semantic snapshots.
+- Для сложных операций предпочитайте подходящие готовые библиотеки: обход Slang AST —
+  встроенный visitor; работа с Git в real-world тестах — GitPython.
 
 ## Проверки
 

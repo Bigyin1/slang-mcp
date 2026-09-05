@@ -35,3 +35,7 @@ class InstanceNotFoundError(SlangMcpError):
 
 class InvalidTopError(SlangMcpError):
     """Raised when a requested hierarchy root is not a top instance."""
+
+
+class SignatureUnavailableError(SlangMcpError):
+    """A declaration cannot be independently elaborated with default parameters."""
