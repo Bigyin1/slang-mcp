@@ -116,6 +116,12 @@ make check
 mypy, Xenon complexity gates, unit tests, and integration tests. Integration includes a real MCP
 stdio subprocess round trip.
 
+Linting includes security, logging, pytest, pathlib, and blanket-suppression checks;
+mypy also checks unreachable code. Ruff and Pylint limit functions to 6 branches,
+4 returns, and 35 statements. Pylint additionally limits nesting to 3 blocks and
+modules to 500 lines. Security exceptions are scoped to pytest assertions and the
+Bender fixture helper's Git/Bender subprocess calls.
+
 The network-backed suite requires Bender `0.32.1` and uses exact revisions of:
 
 - `pulp-platform/common_cells` commit `9afda9abb565971649c2aa0985639c096f351171`

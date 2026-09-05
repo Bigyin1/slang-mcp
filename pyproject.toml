@@ -46,8 +46,9 @@ src = ["src", "tests"]
 
 [tool.ruff.lint]
 select = [
-  "A", "ARG", "B", "C4", "C90", "E", "F", "I", "N", "PERF", "PL",
-  "RET", "RUF", "SIM", "TRY", "UP", "W",
+  "A", "ARG", "B", "C4", "C90", "DTZ", "E", "ERA", "F", "FLY", "G",
+  "I", "ICN", "INP", "LOG", "N", "PERF", "PGH", "PIE", "PL", "PTH",
+  "PT", "Q", "RET", "RUF", "S", "SIM", "SLOT", "TRY", "UP", "W",
 ]
 ignore = [
   "TRY003",  # Domain exceptions intentionally own their detailed messages.
@@ -58,19 +59,26 @@ max-complexity = 10
 
 [tool.ruff.lint.pylint]
 max-args = 5
-max-branches = 12
+max-branches = 6
 max-locals = 12
-max-returns = 6
-max-statements = 50
+max-returns = 4
+max-statements = 35
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**/*.py" = [
   "PLR2004", # Literal expected values make focused semantic tests clearer.
+  "S101", # Assertions are the pytest API.
+]
+"tests/realworld/bender.py" = [
+  "S603", # Commands use pinned fixture inputs and a developer-selected Bender binary.
+  "S607", # Git is intentionally resolved through the developer's PATH.
 ]
 
 [tool.mypy]
 python_version = "3.10"
 strict = true
+show_error_codes = true
+warn_unreachable = true
 files = ["src", "tests"]
 
 [tool.pylint.main]
@@ -96,6 +104,20 @@ load-plugins = [
 
 [tool.pylint.format]
 max-line-length = 100
+# The dynamic Slang adapter groups related queries in one module.
+max-module-lines = 500
+
+[tool.pylint.design]
+max-args = 5
+max-positional-arguments = 5
+max-bool-expr = 4
+max-branches = 6
+max-locals = 12
+max-returns = 4
+max-statements = 35
+
+[tool.pylint.refactoring]
+max-nested-blocks = 3
 
 [tool.pylint.messages_control]
 disable = [
