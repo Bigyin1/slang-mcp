@@ -164,3 +164,60 @@ module top; endmodule
     assert project.service.rtl.get_references("module:unused", "instantiation").total_count == 0
     assert project.service.rtl.get_ports("unused").total_count == 3
     assert project.service.rtl.get_parameters("unused").parameters.items[0].value == "8"
+
+
+def test_packed_struct_ports_and_interface_modports_are_normalized(tmp_path: Path) -> None:
+    project = load_rtl(
+        tmp_path,
+        """
+package packet_types;
+  typedef struct packed {
+    logic valid;
+    logic [7:0] data;
+  } packet_t;
+endpackage
+interface packet_if;
+  import packet_types::*;
+  packet_t packet;
+  logic ready;
+  modport producer(output packet, input ready);
+  modport consumer(input packet, output ready);
+endinterface
+module writer(input packet_types::packet_t input_packet, packet_if.producer link);
+  assign link.packet = input_packet;
+endmodule
+module reader(packet_if.consumer link, output packet_types::packet_t output_packet);
+  assign output_packet = link.packet;
+endmodule
+module top(
+  input packet_types::packet_t input_packet,
+  output packet_types::packet_t output_packet
+);
+  packet_if channel();
+  writer u_writer(.input_packet(input_packet), .link(channel));
+  reader u_reader(.link(channel), .output_packet(output_packet));
+endmodule
+""",
+    )
+
+    writer_ports = {port.name: port for port in project.service.rtl.get_ports("writer").items}
+    assert writer_ports["input_packet"].width == 9
+    assert "packet_t" in writer_ports["input_packet"].type
+    assert writer_ports["link"].direction == "interface"
+    assert writer_ports["link"].interface == "packet_if"
+    assert writer_ports["link"].modport == "producer"
+
+    writer_connections = {
+        item.port.name: item
+        for item in project.service.rtl.get_instance_connections("top.u_writer").items
+    }
+    assert writer_connections["input_packet"].kind == "signal"
+    assert writer_connections["input_packet"].symbols == ("top.input_packet",)
+    assert writer_connections["input_packet"].actual_width == 9
+    assert writer_connections["link"].kind == "interface"
+    assert writer_connections["link"].symbols == ("top.channel", "top.channel.producer")
+
+    reader_port = project.service.rtl.get_ports("reader").items[0]
+    assert reader_port.interface == "packet_if"
+    assert reader_port.modport == "consumer"
+    assert project.service.describe_symbol("port:top.input_packet").width == 9
