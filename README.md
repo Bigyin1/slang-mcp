@@ -97,6 +97,7 @@ The following tools extend the original eight tools. Collections use
 | `find_instance` | `query` (no `limit`) | Exact path or unique exact name; ambiguity lists candidates |
 | `get_signal_reads`, `get_signal_writes` | `signal` | Access locations and assignment/port contexts |
 | `get_drivers`, `get_loads` | `signal` | Source-level writes and reads, respectively |
+| `trace_connectivity` | `signal`, optional `direction`, `max_depth` | Bounded source-level routes through direct port bindings and assignments |
 | `get_procedural_blocks` | `sv_module` | Elaborated blocks, sensitivity syntax and bounded read/write sets |
 | `get_state_elements` | `sv_module` | Variables written in `always_ff` blocks |
 | `inspect_signal` | `signal` | Description, reference count and capped access summaries |
@@ -120,6 +121,21 @@ the actual remains an expression with both resolved symbols; it is not collapsed
 Named, positional, wildcard and unconnected ports are supported. Interface connections expose
 the resolved interface and formal modport; individual modport driver paths are not expanded.
 `describe_instance` retains its original compact schema; `inspect_instance` adds richer connections.
+
+`trace_connectivity` follows `loads` forward and `drivers` backward; `both` explores both
+directions. It returns bounded breadth-first routes, with a terminal reason of `no_edges`,
+`max_depth`, or `cycle`. A child input produces an actual-to-formal hop and a child output a
+formal-to-actual hop; `inout` ports provide both. For example, a trace from `top.a` can pass
+through `top.u_leaf.d`, a continuous assignment, and `top.u_leaf.q` to an output actual:
+
+```text
+trace_connectivity("top.a", direction="loads", max_depth=5)
+```
+
+Only direct resolved-signal actuals create port hops. Open ports, interfaces, constants, selects,
+concatenations, casts, and other expressions are excluded from those hops. Continuous and
+procedural assignments participate as explicit source-level dependencies; they do not establish
+netlist connectivity, timing, formal proof, or simulation behavior.
 
 The access index uses Slang's semantic visitor, not token matching. Reads and writes are derived
 from assignments, selectors, increments, declaration initializers, user subroutine arguments and
@@ -245,3 +261,17 @@ Normal unit and integration tests never require network access.
 - This is an MCP server, not an LSP, source rewriter, SVBuild implementation, or Bender parser.
 
 The recommended next milestone is `SVBuildProjectProvider`.
+
+## Agent benchmark
+
+The standalone Python 3.10 harness compares `text-only`, `mcp` and `mcp+skill` through the
+system Copilot CLI. Start with one case and one repetition (three agent runs):
+
+```sh
+.venv/bin/python -m benchmarks run --case hier_generate --repetitions 1 \
+  --model auto --output benchmark_smoke/simple
+```
+
+See [benchmarks/README.md](benchmarks/README.md) for the 50-case corpus, offline checks,
+resume behavior, result artifacts and the limitations of the user-selected `auto` model and
+workspace isolation. The 90-run pilot and 450-run full experiment are separate opt-in commands.
