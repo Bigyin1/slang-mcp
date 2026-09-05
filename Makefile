@@ -8,21 +8,21 @@ PYTEST := .venv/bin/pytest
 XENON := .venv/bin/xenon
 
 format:
-	$(RUFF) format src tests
-	$(RUFF) check --fix src tests
+	$(RUFF) format src tests benchmarks
+	$(RUFF) check --fix src tests benchmarks
 
 format-check:
-	$(RUFF) format --check src tests
+	$(RUFF) format --check src tests benchmarks
 
 lint:
-	$(RUFF) check src tests
-	$(PYLINT) src tests
+	$(RUFF) check src tests benchmarks
+	$(PYLINT) src tests benchmarks
 
 typecheck:
-	$(MYPY) src tests
+	$(MYPY) src tests benchmarks
 
 complexity:
-	$(XENON) --max-absolute B --max-modules B --max-average A src
+	$(XENON) --max-absolute B --max-modules B --max-average A src benchmarks
 
 test-unit:
 	$(PYTEST) tests/unit

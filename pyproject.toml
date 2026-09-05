@@ -22,6 +22,7 @@ slang-mcp = "slang_mcp.__main__:main"
 dev = [
   "gitpython>=3.1,<4",
   "mypy>=2.3,<2.4",
+  "matplotlib>=3.10,<3.11",
   "pylint>=4.0.8,<5",
   "pytest>=9.0,<10",
   "pytest-asyncio>=1.2,<2",
@@ -43,7 +44,7 @@ markers = [
 [tool.ruff]
 target-version = "py310"
 line-length = 100
-src = ["src", "tests"]
+src = ["src", "tests", "benchmarks"]
 
 [tool.ruff.lint]
 select = [
@@ -74,12 +75,34 @@ max-statements = 35
   "S603", # Commands use fixture inputs and a developer-selected Bender binary.
 ]
 
+"benchmarks/reporting/*.py" = [
+  "RUF001", # Russian report labels intentionally contain Cyrillic text.
+]
+"benchmarks/runner/process.py" = [
+  "S603", # Argument vectors are built by the controller, never by an agent answer.
+]
+"benchmarks/runner/projects.py" = [
+  "S603", # Bender command arguments come from the versioned project manifest.
+]
+"benchmarks/adapters/preflight.py" = [
+  "S603", # Read-only CLI inspection with a fixed argument vector.
+]
+"benchmarks/adapters/copilot.py" = [
+  "S603", # Uses the user-requested system CLI, resolved with shutil.which.
+]
+"benchmarks/runner/schedule.py" = [
+  "S311", # Seeded experimental randomization, not cryptography.
+]
+"benchmarks/reporting/statistics.py" = [
+  "RUF001", "S311", # Russian labels and reproducible statistical resampling.
+]
+
 [tool.mypy]
 python_version = "3.10"
 strict = true
 show_error_codes = true
 warn_unreachable = true
-files = ["src", "tests"]
+files = ["src", "tests", "benchmarks"]
 
 [tool.pylint.main]
 py-version = "3.10"

@@ -9,3 +9,7 @@ __pycache__/
 .realworld-cache/
 dist/
 build/
+
+benchmark_results/
+benchmark_smoke/
+.matplotlib/
