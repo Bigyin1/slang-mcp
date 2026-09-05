@@ -116,6 +116,23 @@ def _register_access_summary(server: FastMCP[None], service: SemanticService) ->
     def get_loads(signal: str, limit: int = 100) -> dict[str, Any]:
         return model_dict(safe(lambda: service.rtl.get_loads(signal, limit)))
 
+    @server.tool(
+        description=(
+            "Bounded source-level connectivity through direct port bindings and assignments; "
+            "not netlist, timing, formal, or simulation evidence."
+        ),
+        annotations=READ_ONLY,
+    )
+    def trace_connectivity(
+        signal: str,
+        direction: str = "both",
+        max_depth: int = 5,
+        limit: int = 100,
+    ) -> dict[str, Any]:
+        return model_dict(
+            safe(lambda: service.rtl.trace_connectivity(signal, direction, max_depth, limit))
+        )
+
 
 def _register_4(server: FastMCP[None], service: SemanticService) -> None:
 

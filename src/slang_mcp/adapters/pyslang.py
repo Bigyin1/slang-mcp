@@ -11,8 +11,8 @@ from pyslang import ast as slang_ast
 from pyslang import parsing as slang_parsing
 from pyslang import syntax as slang_syntax
 
-from slang_mcp.adapters.rtl import RtlIndex
-from slang_mcp.adapters.rtl_values import parameters as _parameters
+from slang_mcp.adapters.elaborated_rtl import ElaboratedRtlIndex
+from slang_mcp.adapters.semantic_normalization import parameters as _parameters
 from slang_mcp.errors import (
     AmbiguousSymbolError,
     CompilationError,
@@ -76,7 +76,7 @@ class SlangDesign:
         self._hierarchy = self._index_hierarchy()
         self._validate_configured_tops()
         self._default_symbols: dict[str, _IndexedSymbol] = {}
-        self.rtl = RtlIndex(self, self._compilation, self._source_manager)
+        self.rtl = ElaboratedRtlIndex(self, self._compilation, self._source_manager)
 
     def scope_members(self, scope: str) -> tuple[SymbolReference, ...]:
         resolved = self._resolve_symbol(scope)

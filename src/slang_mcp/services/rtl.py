@@ -3,7 +3,9 @@
 from slang_mcp.models import SymbolReference
 from slang_mcp.project import ProjectManager
 from slang_mcp.rtl_models import (
+    MAX_RESULTS,
     Connection,
+    ConnectivityTrace,
     Instance,
     Page,
     Parameters,
@@ -25,6 +27,8 @@ _REFERENCE_KINDS = {
     "type_reference",
     "instantiation",
 }
+_TRACE_DIRECTIONS = {"drivers", "loads", "both"}
+_MAX_TRACE_DEPTH = 50
 
 
 class RtlService:
@@ -132,6 +136,21 @@ class RtlService:
 
     def get_loads(self, signal: str, limit: int = 100) -> Page[Reference]:
         return self.get_signal_reads(signal, limit)
+
+    def trace_connectivity(
+        self,
+        signal: str,
+        direction: str = "both",
+        max_depth: int = 5,
+        limit: int = 100,
+    ) -> ConnectivityTrace:
+        if direction not in _TRACE_DIRECTIONS:
+            raise ValueError(f"unknown trace direction: {direction}")
+        if not 0 <= max_depth <= _MAX_TRACE_DEPTH:
+            raise ValueError(f"max_depth must be between 0 and {_MAX_TRACE_DEPTH}")
+        if not 1 <= limit <= MAX_RESULTS:
+            raise ValueError("limit must be between 1 and 500")
+        return self.manager.design.rtl.trace_connectivity(signal, direction, max_depth, limit)
 
     def get_procedural_blocks(self, sv_module: str, limit: int = 100) -> Page[Procedure]:
         return page(self.manager.design.rtl.procedures(sv_module), limit)

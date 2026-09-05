@@ -26,6 +26,7 @@ from tests.conftest import FixtureProject
         ("get_signal_writes", {"signal": "top.data"}, "items"),
         ("get_drivers", {"signal": "top.data"}, "items"),
         ("get_loads", {"signal": "top.data"}, "items"),
+        ("trace_connectivity", {"signal": "top.data"}, "paths"),
         ("get_procedural_blocks", {"sv_module": "leaf"}, "items"),
         ("get_state_elements", {"sv_module": "leaf"}, "items"),
         ("inspect_signal", {"signal": "top.data"}, "reference_count"),

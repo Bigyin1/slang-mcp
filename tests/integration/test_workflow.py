@@ -70,6 +70,7 @@ async def test_fastmcp_schema_and_handlers(fixture_project: FixtureProject) -> N
         "get_signal_writes",
         "get_drivers",
         "get_loads",
+        "trace_connectivity",
         "get_procedural_blocks",
         "get_state_elements",
         "inspect_signal",
