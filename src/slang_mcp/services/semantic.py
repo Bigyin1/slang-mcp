@@ -13,6 +13,7 @@ from slang_mcp.project import ProjectManager
 
 _MAX_DIAGNOSTICS = 500
 _MAX_HIERARCHY_DEPTH = 50
+_DIAGNOSTIC_SEVERITIES = {"ignored", "note", "warning", "error", "fatal"}
 
 
 class SemanticService:
@@ -40,12 +41,14 @@ class SemanticService:
         if limit < 1 or limit > _MAX_DIAGNOSTICS:
             raise ValueError(f"limit must be between 1 and {_MAX_DIAGNOSTICS}")
         normalized = severity.lower() if severity is not None else None
-        allowed = {"ignored", "note", "warning", "error", "fatal"}
-        if normalized is not None and normalized not in allowed:
-            raise ValueError(f"severity must be one of: {', '.join(sorted(allowed))}")
-        diagnostics = self._manager.design.diagnostics
+        if normalized is not None and normalized not in _DIAGNOSTIC_SEVERITIES:
+            raise ValueError(
+                f"severity must be one of: {', '.join(sorted(_DIAGNOSTIC_SEVERITIES))}"
+            )
         selected = (
-            item for item in diagnostics if normalized is None or item.severity == normalized
+            item
+            for item in self._manager.design.diagnostics
+            if normalized is None or item.severity == normalized
         )
         return tuple(list(selected)[:limit])
 

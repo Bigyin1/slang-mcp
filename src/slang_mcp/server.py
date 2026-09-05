@@ -28,6 +28,13 @@ def create_server(provider: ProjectProvider) -> FastMCP[None]:
         "slang-mcp",
         instructions="Read-only semantic queries for configured SystemVerilog projects.",
     )
+    _register_project_tools(server, service)
+    _register_symbol_tools(server, service)
+    _register_hierarchy_tools(server, service)
+    return server
+
+
+def _register_project_tools(server: FastMCP[None], service: SemanticService) -> None:
 
     @server.tool(
         description="Resolve and compile a logical SystemVerilog project.",
@@ -49,6 +56,9 @@ def create_server(provider: ProjectProvider) -> FastMCP[None]:
     )
     def project_info() -> dict[str, Any]:
         return _model_dict(_safe(service.project_info))
+
+
+def _register_symbol_tools(server: FastMCP[None], service: SemanticService) -> None:
 
     @server.tool(
         description="Return bounded structured Slang diagnostics.",
@@ -73,6 +83,9 @@ def create_server(provider: ProjectProvider) -> FastMCP[None]:
     def describe_symbol(identifier: str) -> dict[str, Any]:
         return _model_dict(_safe(lambda: service.describe_symbol(identifier)))
 
+
+def _register_hierarchy_tools(server: FastMCP[None], service: SemanticService) -> None:
+
     @server.tool(
         description="Return the elaborated instance and generate hierarchy.",
         annotations=_READ_ONLY,
@@ -90,8 +103,6 @@ def create_server(provider: ProjectProvider) -> FastMCP[None]:
     )
     def describe_instance(path: str) -> dict[str, Any]:
         return _model_dict(_safe(lambda: service.describe_instance(path)))
-
-    return server
 
 
 def _safe(call: Callable[[], _Result]) -> _Result:

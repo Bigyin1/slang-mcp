@@ -92,17 +92,18 @@ class SlangDesign:
 
     def describe_symbol(self, identifier: str) -> SymbolDescription:
         indexed = self._resolve_symbol(identifier)
-        raw = indexed.raw
-        type_name, width = _symbol_type(raw)
-        direction = _direction(raw)
-        parameters, ports = self._definition_details(raw)
-        members = tuple(
-            item.reference
-            for item in self._symbols
-            if item.reference.containing_scope == indexed.reference.qualified_name
-        )
+        type_name, width = _symbol_type(indexed.raw)
         return SymbolDescription(
-            indexed.reference, type_name, width, direction, parameters, ports, members
+            indexed.reference,
+            type_name,
+            width,
+            _direction(indexed.raw),
+            *self._definition_details(indexed.raw),
+            members=tuple(
+                item.reference
+                for item in self._symbols
+                if item.reference.containing_scope == indexed.reference.qualified_name
+            ),
         )
 
     def get_hierarchy(self, root: str | None, max_depth: int | None) -> tuple[HierarchyNode, ...]:
@@ -122,18 +123,14 @@ class SlangDesign:
         if not matches:
             raise InstanceNotFoundError(f"unknown elaborated instance path: {path}")
         record = matches[0]
-        parameters, ports = _instance_signature(record.raw)
-        connections = _port_connections(record.raw)
-        children = tuple(self._make_node(item, 0, 0) for item in self._children(path))
         return InstanceDescription(
             record.path,
             record.name,
             record.sv_module or "",
             _source_location(record.raw, self._source_manager),
-            parameters,
-            ports,
-            connections,
-            children,
+            *_instance_signature(record.raw),
+            _port_connections(record.raw),
+            tuple(self._make_node(item, 0, 0) for item in self._children(path)),
         )
 
     def _compile(self, config: ProjectConfig) -> Any:
@@ -143,14 +140,10 @@ class SlangDesign:
             raise CompilationError(f"Slang compilation failed: {error}") from error
 
     def _create_compilation(self, config: ProjectConfig) -> Any:
-        preprocessor = slang_parsing.PreprocessorOptions()
-        preprocessor.additionalIncludePaths = list(config.include_directories)
-        preprocessor.predefines = _predefines(config)
-        compilation_options = slang_ast.CompilationOptions()
-        compilation_options.topModules = set(config.top_modules)
-        options = pyslang.Bag([preprocessor, compilation_options])
-        paths = [str(path) for path in config.source_files]
-        tree = slang_syntax.SyntaxTree.fromFiles(paths, self._source_manager, options)
+        options = _compilation_options(config)
+        tree = slang_syntax.SyntaxTree.fromFiles(
+            [str(path) for path in config.source_files], self._source_manager, options
+        )
         compilation = slang_ast.Compilation(options)
         compilation.addSyntaxTree(tree)
         compilation.getRoot()
@@ -162,11 +155,10 @@ class SlangDesign:
         converted: list[Diagnostic] = []
         for item in self._compilation.getAllDiagnostics():
             severity = engine.getSeverity(item.code, item.location).name.lower()
-            code = repr(item.code).removeprefix("DiagCode(").removesuffix(")")
             converted.append(
                 Diagnostic(
                     severity,
-                    code,
+                    repr(item.code).removeprefix("DiagCode(").removesuffix(")"),
                     engine.formatMessage(item),
                     _source_location(item, self._source_manager),
                 )
@@ -277,6 +269,15 @@ class SlangDesign:
 
 def _predefines(config: ProjectConfig) -> list[str]:
     return [name if value is None else f"{name}={value}" for name, value in config.defines.items()]
+
+
+def _compilation_options(config: ProjectConfig) -> Any:
+    preprocessor = slang_parsing.PreprocessorOptions()
+    preprocessor.additionalIncludePaths = list(config.include_directories)
+    preprocessor.predefines = _predefines(config)
+    compilation = slang_ast.CompilationOptions()
+    compilation.topModules = set(config.top_modules)
+    return pyslang.Bag([preprocessor, compilation])
 
 
 def _definition_kind(raw: Any) -> str:

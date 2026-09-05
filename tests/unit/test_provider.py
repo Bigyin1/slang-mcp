@@ -13,14 +13,14 @@ from slang_mcp.providers import StaticProjectProvider
 def test_resolve_preserves_complete_project_config(tmp_path: Path) -> None:
     first = tmp_path / "first.sv"
     second = tmp_path / "second.sv"
-    include = tmp_path / "include"
-    config = ProjectConfig("core", (first, second), (include,), {"WIDTH": "32"}, ("top",))
-    provider = StaticProjectProvider({"core": config})
+    config = ProjectConfig(
+        "core", (first, second), (tmp_path / "include",), {"WIDTH": "32"}, ("top",)
+    )
 
-    resolved = provider.resolve("core")
+    resolved = StaticProjectProvider({"core": config}).resolve("core")
 
     assert resolved.source_files == (first, second)
-    assert resolved.include_directories == (include,)
+    assert resolved.include_directories == (tmp_path / "include",)
     assert resolved.defines == {"WIDTH": "32"}
     assert resolved.top_modules == ("top",)
 

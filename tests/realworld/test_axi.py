@@ -23,9 +23,7 @@ _REVISION = "a256a3b86394fedf19e361047fccfdd7f6ef83e4"
 _LOCKFILE = Path(__file__).with_name("axi-v0.39.9.Bender.lock")
 
 
-@pytest.mark.realworld
-@pytest.mark.skipif(not _ENABLED, reason="set SLANG_MCP_REALWORLD=1 to fetch external RTL")
-def test_pulp_axi_fifo() -> None:
+def _axi_config() -> ProjectConfig:
     checkout = checkout_repository(_REPOSITORY, _REVISION, "axi")
     install_lockfile(checkout, _LOCKFILE)
     source_list = generate_source_list(
@@ -36,7 +34,7 @@ def test_pulp_axi_fifo() -> None:
             top="axi_fifo_intf",
         )
     )
-    config = ProjectConfig(
+    return ProjectConfig(
         logical_module="pulp_axi_fifo",
         source_files=source_list.sources,
         include_directories=source_list.include_directories,
@@ -48,21 +46,25 @@ def test_pulp_axi_fifo() -> None:
             "source_list_generator": f"bender {BENDER_VERSION}",
         },
     )
+
+
+@pytest.mark.realworld
+@pytest.mark.skipif(not _ENABLED, reason="set SLANG_MCP_REALWORLD=1 to fetch external RTL")
+def test_pulp_axi_fifo() -> None:
+    config = _axi_config()
     service = SemanticService(
         ProjectManager(StaticProjectProvider({config.logical_module: config}))
     )
 
     summary = service.project_load(config.logical_module)
-    package = service.find_symbol("axi_pkg")
     fifo = service.describe_symbol("module:axi_fifo")
-    hierarchy = service.get_hierarchy()[0]
 
     assert summary.diagnostic_error_count == 0
     assert summary.source_file_count == 4
     assert summary.include_directory_count == 2
     assert summary.define_count == 3
     assert summary.top_modules == ("axi_fifo_intf",)
-    assert package[0].kind == "package"
+    assert service.find_symbol("axi_pkg")[0].kind == "package"
     assert len(fifo.parameters) >= 7
     assert len(fifo.ports) >= 7
-    assert {child.name for child in hierarchy.children} >= {"i_axi_fifo"}
+    assert {child.name for child in service.get_hierarchy()[0].children} >= {"i_axi_fifo"}

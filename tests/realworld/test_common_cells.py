@@ -23,10 +23,9 @@ _REVISION = "9afda9abb565971649c2aa0985639c096f351171"
 @pytest.mark.realworld
 @pytest.mark.skipif(not _ENABLED, reason="set SLANG_MCP_REALWORLD=1 to fetch external RTL")
 def test_pulp_common_cells_fifo() -> None:
-    checkout = checkout_repository(_REPOSITORY, _REVISION, "common_cells")
     source_list = generate_source_list(
         BenderRequest(
-            checkout,
+            checkout_repository(_REPOSITORY, _REVISION, "common_cells"),
             target="synthesis",
             defines=("COMMON_CELLS_ASSERTS_OFF",),
             no_dependencies=True,
@@ -49,16 +48,17 @@ def test_pulp_common_cells_fifo() -> None:
     )
 
     summary = service.project_load(config.logical_module)
-    package = service.find_symbol("cf_math_pkg")
     fifo = service.describe_symbol("module:fifo_v3")
-    hierarchy = service.get_hierarchy()[0]
 
     assert summary.diagnostic_error_count == 0
     assert summary.source_file_count == 94
     assert summary.include_directory_count == 1
     assert summary.define_count == 3
     assert summary.top_modules == ("fifo_v3",)
-    assert package[0].kind == "package"
+    assert service.find_symbol("cf_math_pkg")[0].kind == "package"
     assert len(fifo.parameters) >= 5
     assert len(fifo.ports) >= 10
-    assert {child.name for child in hierarchy.children} & {"gen_fifo", "gen_pass_through"}
+    assert {child.name for child in service.get_hierarchy()[0].children} & {
+        "gen_fifo",
+        "gen_pass_through",
+    }

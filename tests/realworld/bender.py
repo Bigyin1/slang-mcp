@@ -38,17 +38,7 @@ class BenderSourceList:
 
 def generate_source_list(request: BenderRequest) -> BenderSourceList:
     """Generate ordered sources, include directories, and defines with Bender."""
-    bender = _bender_executable()
-    _require_bender_version(bender)
-    base = [str(bender), "script", "flist-plus", "-t", request.target]
-    if request.no_dependencies:
-        base.append("--no-deps")
-    if request.top is not None:
-        base.extend(("--top", request.top))
-    for define in request.defines:
-        base.extend(("-D", define))
-    base.extend(("-d", str(request.checkout)))
-
+    base = _bender_command(request)
     sources = tuple(Path(line) for line in _bender_lines(base, "--only-sources"))
     includes = tuple(
         Path(line.removeprefix(_INCLUDE_PREFIX))
@@ -61,6 +51,21 @@ def generate_source_list(request: BenderRequest) -> BenderSourceList:
         if line.startswith(_DEFINE_PREFIX)
     )
     return BenderSourceList(sources, includes, defines)
+
+
+def _bender_command(request: BenderRequest) -> list[str]:
+    bender = _bender_executable()
+    _require_bender_version(bender)
+    base = [str(bender), "script", "flist-plus", "-t", request.target]
+    if request.no_dependencies:
+        base.append("--no-deps")
+    if request.top is not None:
+        base.extend(("--top", request.top))
+    for define in request.defines:
+        base.extend(("-D", define))
+    base.extend(("-d", str(request.checkout)))
+
+    return base
 
 
 def checkout_repository(repository: str, revision: str, cache_name: str) -> Path:

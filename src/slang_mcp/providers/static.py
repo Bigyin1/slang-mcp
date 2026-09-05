@@ -34,8 +34,7 @@ class StaticProjectProvider:
             raise InvalidProjectConfigError(message) from error
         if not isinstance(raw, dict):
             raise InvalidProjectConfigError("static project config must be a JSON object")
-        projects = _parse_projects(cast("Mapping[str, object]", raw), path.parent)
-        return cls(projects)
+        return cls(_parse_projects(cast("Mapping[str, object]", raw), path.parent))
 
 
 def _parse_projects(raw: Mapping[str, object], base: Path) -> dict[str, ProjectConfig]:
@@ -43,18 +42,21 @@ def _parse_projects(raw: Mapping[str, object], base: Path) -> dict[str, ProjectC
     for name, value in raw.items():
         if not isinstance(value, dict):
             raise InvalidProjectConfigError(f"project '{name}' must be a JSON object")
-        item = cast("Mapping[str, object]", value)
-        projects[name] = _parse_project(name, item, base)
+        projects[name] = _parse_project(name, cast("Mapping[str, object]", value), base)
     return projects
 
 
 def _parse_project(name: str, raw: Mapping[str, object], base: Path) -> ProjectConfig:
-    sources = _path_tuple(raw.get("source_files"), base, "source_files", required=True)
-    includes = _path_tuple(raw.get("include_directories", []), base, "include_directories")
-    tops = _string_tuple(raw.get("top_modules", []), "top_modules")
-    defines = _defines(raw.get("defines", {}))
-    metadata = _string_mapping(raw.get("metadata", {}), "metadata")
-    return ProjectConfig(name, sources, includes, defines, tops, metadata)
+    return ProjectConfig(
+        logical_module=name,
+        source_files=_path_tuple(raw.get("source_files"), base, "source_files", required=True),
+        include_directories=_path_tuple(
+            raw.get("include_directories", []), base, "include_directories"
+        ),
+        top_modules=_string_tuple(raw.get("top_modules", []), "top_modules"),
+        defines=_defines(raw.get("defines", {})),
+        metadata=_string_mapping(raw.get("metadata", {}), "metadata"),
+    )
 
 
 def _path_tuple(
