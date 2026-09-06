@@ -78,6 +78,9 @@ async def test_fastmcp_schema_and_handlers(fixture_project: FixtureProject) -> N
         "semantic_diff",
     }
     assert all(tool.annotations is not None and tool.annotations.readOnlyHint for tool in tools)
+    reload_tool = next(tool for tool in tools if tool.name == "project_reload")
+    assert reload_tool.description is not None
+    assert "only after RTL or build inputs change" in reload_tool.description
     assert cast(tuple[object, dict[str, Any]], result)[1]["logical_module"] == "top"
     assert cast(tuple[object, dict[str, Any]], hierarchy)[1]["roots"][0]["name"] == "top"
 

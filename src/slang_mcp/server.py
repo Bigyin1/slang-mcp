@@ -58,7 +58,10 @@ def _register_project_tools(server: FastMCP[None], service: SemanticService) -> 
         )
 
     @server.tool(
-        description="Rebuild the active project from the same direct build inputs.",
+        description=(
+            "Rebuild and reindex the active project from the same direct build inputs. Call it "
+            "only after RTL or build inputs change; batch semantic queries against one load."
+        ),
         annotations=_READ_ONLY,
     )
     def project_reload() -> dict[str, Any]:

@@ -46,7 +46,8 @@ A minimal stdio client configuration is:
 
 - `project_load(source_file_lists, top_module, include_directory_lists, defines)` reads,
   validates, compiles, and activates one project.
-- `project_reload()` rebuilds the active project from the same file lists and inputs.
+- `project_reload()` rebuilds and reindexes the active project from the same file lists and
+  inputs. Call it only after RTL or build inputs change, then batch semantic queries.
 - `project_info()` reports build inputs, configured and elaborated tops, metadata, and version.
 - `get_diagnostics(limit=100, severity=null)` returns structured Slang diagnostics. The hard
   limit is 500; severity can be `ignored`, `note`, `warning`, `error`, or `fatal`.
