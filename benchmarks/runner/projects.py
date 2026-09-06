@@ -78,7 +78,27 @@ def _checkout(spec: dict[str, object], destination: Path) -> None:
         shutil.copytree(cache / ".bender", destination / ".bender", symlinks=False)
     if "lockfile" in spec:
         shutil.copyfile(ROOT / "cases" / string(spec["lockfile"]), destination / "Bender.lock")
+    _copy_cached_directories(spec, cache, destination)
     _copy_generated_files(spec, cache, destination)
+
+
+def _copy_cached_directories(spec: dict[str, object], cache: Path, destination: Path) -> None:
+    """Restore pinned source submodules that Bender manifests address as local paths."""
+    for value in cast("list[str]", spec.get("cached_directories", [])):
+        _copy_cached_directory(cache, destination, Path(value))
+
+
+def _copy_cached_directory(cache: Path, destination: Path, relative: Path) -> None:
+    source = cache / relative
+    if not source.is_dir():
+        raise RuntimeError(f"Missing cached RTL directory: {relative}")
+    shutil.copytree(
+        source,
+        destination / relative,
+        dirs_exist_ok=True,
+        symlinks=False,
+        ignore=shutil.ignore_patterns(".git"),
+    )
 
 
 def _copy_generated_files(spec: dict[str, object], cache: Path, destination: Path) -> None:

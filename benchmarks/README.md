@@ -30,7 +30,7 @@ Larger studies are opt-in; they have **not** been run as part of the initial smo
 # 10 predefined cases x 3 modes x 3 repetitions = 90 agent runs
 .venv/bin/python -m benchmarks run --profile pilot --repetitions 3 --output benchmark_results/pilot
 
-# 50 cases x 3 modes x 3 repetitions = 450 agent runs
+# 15 cases x 3 modes x 3 repetitions = 135 agent runs
 .venv/bin/python -m benchmarks run --profile full --repetitions 3 --output benchmark_results/full
 ```
 
@@ -63,12 +63,13 @@ are disabled through CLI options. Preflight rejects inherited MCP server configu
 of silently contaminating the baseline. This is practical workspace isolation, not a security
 boundary or proof that the agent cannot access external answers.
 
-The corpus has 30 synthetic and 20 real-world cases, with a frozen ten-case pilot. Real-world
-provenance is a separate dimension from semantic category. Expected answers and human-readable
-rationales are controller-only. They come from explicit source declarations, manually evaluated
-expressions and build configuration, not solely from the server under test. Compiler checks
-are supplemental. Diagnosis questions identify source issues; not every issue is a compiler error
-(e.g. width truncation or equivalent redeclarations can be warnings).
+The curated corpus has six synthetic semantic edge cases and nine multi-file real-world cases,
+including four CVA6 cases using the pinned `pulp-v3` revision and the
+`cv64a6_imafdc_sv39` Bender target. The frozen ten-case pilot combines the six synthetic cases
+with the four CVA6 cases. Real-world provenance is a separate dimension from semantic category.
+Expected answers and human-readable rationales are controller-only. They come from explicit
+source declarations, manually evaluated expressions and build configuration, not solely from
+the server under test. Compiler checks are supplemental.
 
 ## Results and resuming
 
