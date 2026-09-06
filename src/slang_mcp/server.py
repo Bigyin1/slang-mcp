@@ -16,7 +16,7 @@ from slang_mcp.transport import model_dict as _model_dict
 from slang_mcp.transport import safe as _safe
 
 
-def create_server(provider: ProjectProvider) -> FastMCP[None]:
+def create_server(provider: ProjectProvider | None = None) -> FastMCP[None]:
     """Create a configured read-only MCP server."""
     service = SemanticService(ProjectManager(provider))
     server: FastMCP[None] = FastMCP(
@@ -33,14 +33,31 @@ def create_server(provider: ProjectProvider) -> FastMCP[None]:
 def _register_project_tools(server: FastMCP[None], service: SemanticService) -> None:
 
     @server.tool(
-        description="Resolve and compile a logical SystemVerilog project.",
+        description=(
+            "Compile one SystemVerilog top from ordered file lists. Each non-empty list entry "
+            "must be an absolute path; source order is preserved."
+        ),
         annotations=_READ_ONLY,
     )
-    def project_load(logical_module: str) -> dict[str, Any]:
-        return _model_dict(_safe(lambda: service.project_load(logical_module)))
+    def project_load(
+        source_file_lists: list[str],
+        top_module: str,
+        include_directory_lists: list[str] | None = None,
+        defines: dict[str, str | None] | None = None,
+    ) -> dict[str, Any]:
+        return _model_dict(
+            _safe(
+                lambda: service.project_load_file_lists(
+                    source_file_lists,
+                    top_module,
+                    include_directory_lists,
+                    defines,
+                )
+            )
+        )
 
     @server.tool(
-        description="Re-resolve and rebuild the active logical project.",
+        description="Rebuild the active project from the same direct build inputs.",
         annotations=_READ_ONLY,
     )
     def project_reload() -> dict[str, Any]:

@@ -3,7 +3,7 @@
 Python 3.10 controller around the **system `copilot` executable**. Authentication belongs to
 Copilot: log in normally with `copilot login`. No JavaScript wrappers, credential extraction,
 private CLI APIs, copied runtime, sockets or proxy servers are used. MCP modes launch
-`.venv/bin/slang-mcp --config <workspace>/projects.json` directly over stdio.
+`.venv/bin/slang-mcp` directly over stdio and give the agent absolute-path file lists.
 
 Start small (three agent calls, one simple case, one repetition):
 

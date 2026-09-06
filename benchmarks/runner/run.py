@@ -31,8 +31,10 @@ class RunRequest:
 
 def prompt(case: Case, mode: str) -> str:
     base = (
-        "Analyze the supplied SystemVerilog RTL. Build inputs are in projects.json; "
-        f"the logical project is {case.project}. Use that configuration. "
+        "Analyze the supplied SystemVerilog RTL. Read workspace/projects.json and "
+        "workspace/top_module.txt. Call project_load once with absolute paths (obtain the "
+        "workspace path with pwd) to workspace/source_files.f and "
+        "workspace/include_directories.f, the defines from projects.json, and that top_module. "
         "Do not modify RTL. Return only the requested response format.\n\n"
         f"{case.question}"
     )

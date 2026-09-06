@@ -1,15 +1,16 @@
 # Справочник MCP tools
 
-`slang-mcp` — read-only MCP-сервер для семантического анализа уже
-сконфигурированных SystemVerilog-проектов. Все tools возвращают JSON-совместимые
-данные и не меняют RTL, build-конфигурацию или файлы проекта.
+`slang-mcp` — read-only MCP-сервер для семантического анализа SystemVerilog.
+Все tools возвращают JSON-совместимые данные и не меняют RTL, build-конфигурацию
+или файлы проекта.
 
 Сначала вызовите `project_load`, затем выполняйте запросы к активному проекту.
-`project_reload` заново разрешает и компилирует тот же logical module.
+`project_reload` заново компилирует те же build inputs.
 
 ## Общие правила
 
-- `logical_module` — имя build-конфигурации, а не SystemVerilog module.
+- `top_module` — единственный SystemVerilog module, который Slang использует
+  как top для элаборации.
 - `sv_module` — имя объявления `module` или `interface`.
 - `instance_path` — элаборированный путь, например `top.u_fifo`.
 - `signal` принимает полное имя сигнала; короткое имя допускается только если оно
@@ -19,8 +20,8 @@
 - Постраничный ответ имеет вид
   `{"items": [...], "total_count": N, "truncated": false}`. `truncated: true`
   означает, что по указанному limit возвращена только часть результата.
-- Контролируемые ошибки MCP включают отсутствие активного проекта, неизвестный
-  logical module, отсутствующий или неоднозначный symbol/instance и неверные
+- Контролируемые ошибки MCP включают отсутствие активного проекта, отсутствующий
+  file list, отсутствующий или неоднозначный symbol/instance и неверные
   границы параметров.
 
 ## Жизненный цикл проекта
@@ -28,17 +29,24 @@
 ### `project_load`
 
 ```json
-{"logical_module": "demo"}
+{
+  "source_file_lists": ["/work/filelists/packages.f", "/work/filelists/rtl.f"],
+  "include_directory_lists": ["/work/filelists/includes.f"],
+  "defines": {"SYNTHESIS": null},
+  "top_module": "top"
+}
 ```
 
-Разрешает build-конфигурацию, проверяет source/include paths и создаёт Slang
-compilation. Возвращает `logical_module`, количества source files, include dirs и
-defines, configured tops и количество error/warning diagnostics. Успешная
+Читает переданные file lists и создаёт Slang compilation. Каждая непустая строка
+list-файла должна быть абсолютным путём: в `source_file_lists` — к source file,
+в `include_directory_lists` — к каталогу. Порядок source paths сохраняется,
+дубликаты устраняются. Возвращает количества source files, include dirs и
+defines, configured top и количество error/warning diagnostics. Успешная
 компиляция с diagnostics всё равно доступна для анализа.
 
 ### `project_reload`
 
-Не принимает аргументы. Пересобирает активный logical module и возвращает ту же
+Не принимает аргументы. Пересобирает активные build inputs и возвращает ту же
 сводку, что `project_load`. Предыдущая успешная semantic snapshot сохраняется для
 `semantic_diff`.
 

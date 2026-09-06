@@ -4,8 +4,8 @@ question. Treat every tool result as evidence, not as a reason to explore unrela
 1. Read the requested response contract first. Identify every required field and whether it asks
    for an elaborated path, an effective parameter, a direct actual expression, a resolved symbol,
    a declaration property, or a source-level access.
-2. Load the logical project from projects.json once before semantic queries. Do not reload it unless
-   the task explicitly depends on RTL changes made during this session. Check diagnostics only when
+2. Load the project from the supplied absolute-path file lists once before semantic queries. Do not
+   reload it unless the task explicitly depends on RTL changes made during this session. Check diagnostics only when
    compilation state is relevant to the answer or a semantic query fails unexpectedly.
 3. Use the narrowest query that proves each field. For generated hierarchy, query the smallest
    relevant root and depth. Do not use unfiltered list_instances when an exact path, name, module,

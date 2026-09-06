@@ -18,12 +18,13 @@ def main(argv: Sequence[str] | None = None) -> None:
         "--config",
         type=Path,
         default=os.environ.get(_CONFIG_ENV),
-        help=f"static project JSON file (or set {_CONFIG_ENV})",
+        help=(
+            "optional legacy static project JSON file "
+            f"(or set {_CONFIG_ENV}); project_load accepts file lists directly"
+        ),
     )
     args = parser.parse_args(argv)
-    if args.config is None:
-        parser.error(f"--config is required when {_CONFIG_ENV} is not set")
-    provider = StaticProjectProvider.from_json(args.config.resolve())
+    provider = StaticProjectProvider.from_json(args.config.resolve()) if args.config else None
     create_server(provider).run(transport="stdio")
 
 

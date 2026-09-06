@@ -27,7 +27,28 @@ def prepare_project(name: str, workspace: Path) -> dict[str, object]:
     else:
         config, provenance = _realworld(spec, workspace)
     (workspace / "projects.json").write_text(json.dumps({name: config}, indent=2) + "\n")
+    _write_file_lists(config, workspace)
     return provenance
+
+
+def _write_file_lists(config: dict[str, object], workspace: Path) -> None:
+    """Export agent-visible direct-load inputs while retaining legacy JSON for validation."""
+    _write_paths(workspace / "source_files.f", cast("list[str]", config["source_files"]), workspace)
+    _write_paths(
+        workspace / "include_directories.f",
+        cast("list[str]", config["include_directories"]),
+        workspace,
+    )
+    tops = cast("list[str]", config["top_modules"])
+    (workspace / "top_module.txt").write_text(tops[0] + "\n", encoding="utf-8")
+
+
+def _write_paths(destination: Path, values: list[str], workspace: Path) -> None:
+    paths = [
+        str((workspace / item).resolve()) if not Path(item).is_absolute() else item
+        for item in values
+    ]
+    destination.write_text("\n".join(paths) + "\n", encoding="utf-8")
 
 
 def _synthetic(spec: dict[str, object], workspace: Path) -> dict[str, object]:

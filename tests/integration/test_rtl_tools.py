@@ -6,7 +6,7 @@ import pytest
 
 from slang_mcp.providers import StaticProjectProvider
 from slang_mcp.server import create_server
-from tests.conftest import FixtureProject
+from tests.conftest import FixtureProject, project_load_arguments
 
 
 @pytest.mark.integration
@@ -43,7 +43,7 @@ async def test_rtl_mcp_tools(
     key: str,
 ) -> None:
     server = create_server(StaticProjectProvider({"demo": fixture_project.config}))
-    await server.call_tool("project_load", {"logical_module": "demo"})
+    await server.call_tool("project_load", project_load_arguments(fixture_project))
     assert key in cast(tuple[object, dict[str, Any]], await server.call_tool(tool, arguments))[1]
 
 
@@ -51,7 +51,7 @@ async def test_rtl_mcp_tools(
 @pytest.mark.asyncio
 async def test_instance_query_filters_over_mcp(fixture_project: FixtureProject) -> None:
     server = create_server(StaticProjectProvider({"demo": fixture_project.config}))
-    await server.call_tool("project_load", {"logical_module": "demo"})
+    await server.call_tool("project_load", project_load_arguments(fixture_project))
 
     parameters = cast(
         tuple[object, dict[str, Any]],
@@ -97,7 +97,7 @@ async def test_instance_query_filters_over_mcp(fixture_project: FixtureProject) 
 @pytest.mark.asyncio
 async def test_mcp_reload_diff(fixture_project: FixtureProject) -> None:
     server = create_server(StaticProjectProvider({"demo": fixture_project.config}))
-    await server.call_tool("project_load", {"logical_module": "demo"})
+    await server.call_tool("project_load", project_load_arguments(fixture_project))
     fixture_project.design_file.write_text(
         fixture_project.design_file.read_text(encoding="utf-8").replace("WIDTH(32)", "WIDTH(16)"),
         encoding="utf-8",

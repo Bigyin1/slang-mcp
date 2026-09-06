@@ -13,7 +13,7 @@ from slang_mcp.semantic_snapshot import compare, snapshot
 class ProjectManager:
     """Resolve, validate, compile, and retain one logical project."""
 
-    def __init__(self, provider: ProjectProvider) -> None:
+    def __init__(self, provider: ProjectProvider | None = None) -> None:
         self._provider = provider
         self._config: ProjectConfig | None = None
         self._design: SlangDesign | None = None
@@ -27,13 +27,18 @@ class ProjectManager:
         return self._design
 
     def load(self, logical_module: str) -> ProjectSummary:
+        if self._provider is None:
+            raise ValueError("logical-module loading is not configured")
         config = self._provider.resolve(logical_module)
+        return self.load_config(config)
+
+    def load_config(self, config: ProjectConfig) -> ProjectSummary:
         _validate_paths(config)
         design = SlangDesign(config)
         normalized = snapshot(design)
         self._previous_snapshot = (
             self._snapshot
-            if self._config is not None and (self._config.logical_module == logical_module)
+            if self._config is not None and (self._config.logical_module == config.logical_module)
             else None
         )
         self._snapshot = normalized
@@ -49,7 +54,7 @@ class ProjectManager:
     def reload(self) -> ProjectSummary:
         if self._config is None:
             raise ProjectNotLoadedError("no project is loaded")
-        return self.load(self._config.logical_module)
+        return self.load_config(self._config)
 
     def info(self) -> ProjectInfo:
         if self._config is None:
