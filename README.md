@@ -272,6 +272,6 @@ system Copilot CLI. Start with one case and one repetition (three agent runs):
   --model auto --output benchmark_smoke/simple
 ```
 
-See [benchmarks/README.md](benchmarks/README.md) for the curated 17-case corpus, offline checks,
+See [benchmarks/README.md](benchmarks/README.md) for the curated 19-case corpus, offline checks,
 resume behavior, result artifacts and the limitations of the user-selected `auto` model and
-workspace isolation. The 90-run pilot and 153-run full experiment are separate opt-in commands.
+workspace isolation. The 90-run pilot and 171-run full experiment are separate opt-in commands.

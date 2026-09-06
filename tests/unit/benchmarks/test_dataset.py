@@ -14,7 +14,7 @@ from benchmarks.validation import validate
 
 
 def test_frozen_corpus() -> None:
-    assert validate()["cases"] == 17
+    assert validate()["cases"] == 19
     assert sum(case.pilot for case in load_cases()) == 10
 
 

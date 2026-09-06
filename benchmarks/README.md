@@ -63,10 +63,10 @@ are disabled through CLI options. Preflight rejects inherited MCP server configu
 of silently contaminating the baseline. This is practical workspace isolation, not a security
 boundary or proof that the agent cannot access external answers.
 
-The curated corpus has six synthetic semantic edge cases and eleven multi-file real-world cases,
-including six CVA6 cases using the pinned `pulp-v3` revision and the
+The curated corpus has six synthetic semantic edge cases and thirteen multi-file real-world cases,
+including eight CVA6 cases using the pinned `pulp-v3` revision and the
 `cv64a6_imafdc_sv39` Bender target. The frozen ten-case pilot combines the six synthetic cases
-with four of the CVA6 cases. The two additional CVA6 cases are reserved for the full experiment
+with four of the CVA6 cases. The four additional CVA6 cases are reserved for the full experiment
 and targeted comparisons. Real-world provenance is a separate dimension from semantic category.
 Expected answers and human-readable rationales are controller-only. They come from explicit
 source declarations, manually evaluated expressions and build configuration, not solely from

@@ -348,6 +348,112 @@
       },
       "rationale": "The cv64a6_imafdc_sv39 configuration selects the write-through cache generate branch. The elaborated wt_cache_subsystem instance exposes these direct bindings in the cva6 top scope.",
       "pilot": false
+    },
+    {
+      "id": "cva6_mmu_tlb_actual_expressions_v2",
+      "category": "types/parameters",
+      "project": "cva6_cv64a6_imafdc_sv39",
+      "question": "The elaborated MMU instance cva6.ex_stage_i.lsu_i.gen_mmu.i_cva6_mmu contains instruction and data TLBs. Return one JSON object with exactly two keys, itlb and dtlb. Each value must contain path (the elaborated instance path), entries (effective TLB_ENTRIES as a decimal integer), and actual_expressions (a map of formal inputs update_i, lu_asid_i, and lu_vaddr_i to their complete direct actual expressions). Use the expression field of the elaborated port binding exactly as reported, including a member select such as icache_areq_i.fetch_vaddr. Preserve this nesting and include no other keys.",
+      "response_contract": "object",
+      "oracle": {
+        "itlb": {
+          "path": "cva6.ex_stage_i.lsu_i.gen_mmu.i_cva6_mmu.i_itlb",
+          "entries": 16,
+          "actual_expressions": {
+            "update_i": "update_itlb",
+            "lu_asid_i": "itlb_lu_asid",
+            "lu_vaddr_i": "icache_areq_i.fetch_vaddr"
+          }
+        },
+        "dtlb": {
+          "path": "cva6.ex_stage_i.lsu_i.gen_mmu.i_cva6_mmu.i_dtlb",
+          "entries": 16,
+          "actual_expressions": {
+            "update_i": "update_dtlb",
+            "lu_asid_i": "dtlb_lu_asid",
+            "lu_vaddr_i": "lsu_vaddr_i"
+          }
+        }
+      },
+      "rationale": "This new version explicitly requests direct actual expressions, rather than the distinct resolved base-symbol representation. Slang reports the selected effective parameter and each expression after elaboration.",
+      "pilot": false
+    },
+    {
+      "id": "cva6_fifo_effective_inventory",
+      "category": "types/parameters",
+      "project": "cva6_cv64a6_imafdc_sv39",
+      "question": "In elaborated top cva6, return a JSON object keyed by every instance whose sv_module is exactly cva6_fifo_v3. Each value must contain exactly these fields: DEPTH (decimal integer), DATA_WIDTH (decimal integer), FALL_THROUGH (decimal integer), and dtype (the exact effective type string). Include generated and nested instances across the whole elaborated design. Use effective instance parameters, not declaration defaults, and do not shorten scope-qualified dtype names.",
+      "response_contract": "object",
+      "oracle": {
+        "cva6.i_frontend.i_instr_queue.gen_instr_fifo[0].i_fifo_instr_data": {
+          "DEPTH": 4,
+          "DATA_WIDTH": 32,
+          "FALL_THROUGH": 0,
+          "dtype": "instr_queue.instr_data_t"
+        },
+        "cva6.i_frontend.i_instr_queue.gen_instr_fifo[1].i_fifo_instr_data": {
+          "DEPTH": 4,
+          "DATA_WIDTH": 32,
+          "FALL_THROUGH": 0,
+          "dtype": "instr_queue.instr_data_t"
+        },
+        "cva6.i_frontend.i_instr_queue.i_fifo_address": {
+          "DEPTH": 2,
+          "DATA_WIDTH": 64,
+          "FALL_THROUGH": 0,
+          "dtype": "logic[63:0]"
+        },
+        "cva6.ex_stage_i.lsu_i.i_store_unit.genblk1.i_amo_buffer.i_amo_fifo": {
+          "DEPTH": 1,
+          "DATA_WIDTH": 32,
+          "FALL_THROUGH": 0,
+          "dtype": "amo_buffer.amo_op_t"
+        },
+        "cva6.gen_cache_wt.i_cache_subsystem.i_wt_dcache.i_wt_dcache_wbuffer.i_rtrn_id_fifo": {
+          "DEPTH": 4,
+          "DATA_WIDTH": 2,
+          "FALL_THROUGH": 0,
+          "dtype": "logic[1:0]"
+        },
+        "cva6.gen_cache_wt.i_cache_subsystem.i_adapter.i_icache_data_fifo": {
+          "DEPTH": 2,
+          "DATA_WIDTH": 32,
+          "FALL_THROUGH": 0,
+          "dtype": "wt_axi_adapter.icache_req_t"
+        },
+        "cva6.gen_cache_wt.i_cache_subsystem.i_adapter.i_dcache_data_fifo": {
+          "DEPTH": 2,
+          "DATA_WIDTH": 32,
+          "FALL_THROUGH": 0,
+          "dtype": "wt_axi_adapter.dcache_req_t"
+        },
+        "cva6.gen_cache_wt.i_cache_subsystem.i_adapter.i_rd_icache_id": {
+          "DEPTH": 4,
+          "DATA_WIDTH": 2,
+          "FALL_THROUGH": 0,
+          "dtype": "logic[1:0]"
+        },
+        "cva6.gen_cache_wt.i_cache_subsystem.i_adapter.i_rd_dcache_id": {
+          "DEPTH": 4,
+          "DATA_WIDTH": 2,
+          "FALL_THROUGH": 0,
+          "dtype": "logic[1:0]"
+        },
+        "cva6.gen_cache_wt.i_cache_subsystem.i_adapter.i_wr_dcache_id": {
+          "DEPTH": 4,
+          "DATA_WIDTH": 2,
+          "FALL_THROUGH": 0,
+          "dtype": "logic[1:0]"
+        },
+        "cva6.gen_cache_wt.i_cache_subsystem.i_adapter.i_b_fifo": {
+          "DEPTH": 4,
+          "DATA_WIDTH": 5,
+          "FALL_THROUGH": 1,
+          "dtype": "logic[4:0]"
+        }
+      },
+      "rationale": "Slang elaborates eleven cva6_fifo_v3 instances in the configured CV64A6 design. Their values combine generated instruction queues, LSU buffering, and the selected write-through cache subsystem; dtype retains its effective normalized scope.",
+      "pilot": false
     }
   ]
 }
