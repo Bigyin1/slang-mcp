@@ -87,6 +87,22 @@ def test_connections(rtl_service: SemanticService) -> None:
     assert rtl_service.rtl.get_instance_connections("top.u_pos").items[1].kind == "unconnected"
 
 
+def test_instance_query_name_filters(rtl_service: SemanticService) -> None:
+    parameters = rtl_service.rtl.get_instance_parameters(
+        "top.u_leaf", names=["MISSING", "WIDTH"]
+    ).parameters
+    connections = rtl_service.rtl.get_instance_connections("top.u_leaf", ports=["q", "d"])
+
+    assert [(item.name, item.value) for item in parameters.items] == [("WIDTH", "64")]
+    assert parameters.total_count == 1
+    assert [item.port.name for item in connections.items] == ["d", "q"]
+    assert connections.total_count == 2
+    assert rtl_service.rtl.get_instance_connections(
+        "top.u_leaf", limit=1, ports=["d", "q"]
+    ).truncated
+    assert rtl_service.rtl.get_instance_connections("top.u_leaf", ports=["missing"]).items == ()
+
+
 def test_instances(rtl_service: SemanticService) -> None:
     assert rtl_service.rtl.list_instances(sv_module="leaf").total_count == 4
     assert rtl_service.rtl.find_instance("top.gen[1].u_gen").sv_module == "leaf"

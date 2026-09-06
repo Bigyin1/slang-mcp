@@ -47,18 +47,36 @@ def _register_1(server: FastMCP[None], service: SemanticService) -> None:
         return model_dict(safe(lambda: service.rtl.get_parameters(target, limit)))
 
     @server.tool(
-        description="Effective parameters of an elaborated instance, including a top.",
+        description=(
+            "Effective parameters of an elaborated instance, including a top. "
+            "Optional names selects exact parameter names."
+        ),
         annotations=READ_ONLY,
     )
-    def get_instance_parameters(instance_path: str, limit: int = 100) -> dict[str, Any]:
-        return model_dict(safe(lambda: service.rtl.get_instance_parameters(instance_path, limit)))
+    def get_instance_parameters(
+        instance_path: str,
+        limit: int = 100,
+        names: list[str] | None = None,
+    ) -> dict[str, Any]:
+        return model_dict(
+            safe(lambda: service.rtl.get_instance_parameters(instance_path, limit, names))
+        )
 
     @server.tool(
-        description="Resolved formal ports and actual expressions; source-level connectivity.",
+        description=(
+            "Resolved formal ports, actual expressions, and referenced symbols; source-level "
+            "connectivity. Optional ports selects exact formal names."
+        ),
         annotations=READ_ONLY,
     )
-    def get_instance_connections(instance_path: str, limit: int = 100) -> dict[str, Any]:
-        return model_dict(safe(lambda: service.rtl.get_instance_connections(instance_path, limit)))
+    def get_instance_connections(
+        instance_path: str,
+        limit: int = 100,
+        ports: list[str] | None = None,
+    ) -> dict[str, Any]:
+        return model_dict(
+            safe(lambda: service.rtl.get_instance_connections(instance_path, limit, ports))
+        )
 
 
 def _register_2(server: FastMCP[None], service: SemanticService) -> None:

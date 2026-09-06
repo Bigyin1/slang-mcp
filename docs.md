@@ -117,19 +117,27 @@ packed width, unpacked dimensions, default value и сведения об interf
 
 ### `get_instance_parameters`
 
-Аргументы: `instance_path`, `limit=100`.
+Аргументы: `instance_path`, `limit=100`, необязательный `names`.
 
 Возвращает evaluated parameters элаборированного instance с
-`value_kind: "effective"`, включая top instances.
+`value_kind: "effective"`, включая top instances. `names` выбирает параметры по
+точному имени; элементы сохраняют declaration order, а отсутствующие имена не
+создают ошибку. Используйте его, когда нужен один effective parameter, чтобы не
+передавать агенту все типовые и конфигурационные параметры instance.
 
 ### `get_instance_connections`
 
-Аргументы: `instance_path`, `limit=100`.
+Аргументы: `instance_path`, `limit=100`, необязательный `ports`.
 
 Возвращает formal port, actual expression text, referenced symbols, source
 location, actual type и width. `kind` имеет значения `signal`, `expression`,
 `unconnected` или `interface`. Списки symbols и expression text ограничены, а
 соответствующие признаки truncation передаются в ответе.
+
+`ports` выбирает formal ports по точному имени и сохраняет порядок declaration;
+отсутствующие имена не создают ошибку. `expression` — полный direct actual,
+например `request.address`; `symbols` — разрешённые базовые symbols, например
+`request`. Указывайте в вопросе, какое из этих представлений требуется.
 
 ### `list_instances`
 

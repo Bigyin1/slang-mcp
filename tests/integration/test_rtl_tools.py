@@ -48,6 +48,31 @@ async def test_rtl_mcp_tools(
 
 @pytest.mark.integration
 @pytest.mark.asyncio
+async def test_instance_query_filters_over_mcp(fixture_project: FixtureProject) -> None:
+    server = create_server(StaticProjectProvider({"demo": fixture_project.config}))
+    await server.call_tool("project_load", {"logical_module": "demo"})
+
+    parameters = cast(
+        tuple[object, dict[str, Any]],
+        await server.call_tool(
+            "get_instance_parameters",
+            {"instance_path": "top.u_a", "names": ["WIDTH"]},
+        ),
+    )[1]
+    connections = cast(
+        tuple[object, dict[str, Any]],
+        await server.call_tool(
+            "get_instance_connections",
+            {"instance_path": "top.u_a", "ports": ["o"]},
+        ),
+    )[1]
+
+    assert [item["name"] for item in parameters["parameters"]["items"]] == ["WIDTH"]
+    assert [item["port"]["name"] for item in connections["items"]] == ["o"]
+
+
+@pytest.mark.integration
+@pytest.mark.asyncio
 async def test_mcp_reload_diff(fixture_project: FixtureProject) -> None:
     server = create_server(StaticProjectProvider({"demo": fixture_project.config}))
     await server.call_tool("project_load", {"logical_module": "demo"})

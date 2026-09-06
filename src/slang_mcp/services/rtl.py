@@ -1,5 +1,8 @@
 """Bounded RTL services shared by primitive and aggregate queries."""
 
+from collections.abc import Callable
+from typing import TypeVar
+
 from slang_mcp.models import SymbolReference
 from slang_mcp.project import ProjectManager
 from slang_mcp.rtl_models import (
@@ -29,6 +32,7 @@ _REFERENCE_KINDS = {
 }
 _TRACE_DIRECTIONS = {"drivers", "loads", "both"}
 _MAX_TRACE_DEPTH = 50
+T = TypeVar("T")
 
 
 class RtlService:
@@ -85,18 +89,39 @@ class RtlService:
             ),
         )
 
-    def get_instance_parameters(self, instance_path: str, limit: int = 100) -> Parameters:
+    def get_instance_parameters(
+        self,
+        instance_path: str,
+        limit: int = 100,
+        names: list[str] | None = None,
+    ) -> Parameters:
         return Parameters(
             instance_path,
             "effective",
             page(
-                self.manager.design.rtl.parameters(instance_path, effective=True),
+                _named(
+                    self.manager.design.rtl.parameters(instance_path, effective=True),
+                    names,
+                    lambda item: item.name,
+                ),
                 limit,
             ),
         )
 
-    def get_instance_connections(self, instance_path: str, limit: int = 100) -> Page[Connection]:
-        return page(self.manager.design.rtl.connections(instance_path), limit)
+    def get_instance_connections(
+        self,
+        instance_path: str,
+        limit: int = 100,
+        ports: list[str] | None = None,
+    ) -> Page[Connection]:
+        return page(
+            _named(
+                self.manager.design.rtl.connections(instance_path),
+                ports,
+                lambda item: item.port.name,
+            ),
+            limit,
+        )
 
     def list_instances(
         self,
@@ -177,6 +202,20 @@ class RtlService:
         return StateElement(
             symbol.symbol, symbol.type, symbol.width, block.block_id, block.location
         )
+
+
+def _named(
+    items: tuple[T, ...],
+    names: list[str] | None,
+    identifier: Callable[[T], str],
+) -> tuple[T, ...]:
+    """Keep declaration-order items matching optional exact names."""
+    if names is None:
+        return items
+    if len(names) > MAX_RESULTS:
+        raise ValueError("names must contain at most 500 items")
+    requested = frozenset(names)
+    return tuple(item for item in items if identifier(item) in requested)
 
 
 def _instance_matches(
