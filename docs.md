@@ -48,6 +48,38 @@ defines, configured tops и количество error/warning diagnostics. Ус
 конфигурацию: source files, include directories, defines, configured tops,
 metadata, Slang version и summary.
 
+## `ElaboratedRtlIndex`
+
+После построения Slang compilation `project_load` формирует один
+`ElaboratedRtlIndex` для активного проекта. При `project_reload` создаются новая
+compilation и новый index; прежний index не используется для последующих
+semantic-запросов. Построение index — часть времени загрузки проекта, поэтому не
+вызывайте reload, если RTL и build inputs не менялись.
+
+Index обходит элаборированное дерево tops и generate blocks и сохраняет
+нормализованные project-owned данные, без выдачи объектов `pyslang` наружу:
+
+- все elaborated instances с path, module type, location и parent;
+- effective parameters и resolved formal-to-actual port connections, получаемые
+  по конкретному instance;
+- source-level reads, writes, declarations и port-connection references, с
+  обратным индексом по resolved signal;
+- направленные source-level connectivity edges для прямых port bindings,
+  continuous assignments и procedural assignments.
+
+Эти данные используют `list_instances`, `find_instance`,
+`get_instance_parameters`, `get_instance_connections`, `list_instance_facts`,
+`get_references`, signal read/write/driver/load tools, inspections и
+`trace_connectivity`. Результаты остаются semantic source-level facts: index не
+создаёт netlist, не разворачивает expression actual в межинстансный port hop и не
+доказывает timing, simulation, formal, synthesis, CDC или фактическую
+электрическую connectivity.
+
+Default signature декларации module/interface не является частью обхода всех
+elaborated instances. Когда tool запрашивает default ports или declared
+parameters, index при необходимости создаёт и кэширует отдельный минимальный
+default instance для этой декларации.
+
 ## Symbols, diagnostics и hierarchy
 
 ### `get_diagnostics`
