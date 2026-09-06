@@ -169,7 +169,7 @@ class RtlService:
     def _state_elements(self, block: Procedure) -> tuple[StateElement, ...]:
         return tuple(
             self._state_element(name, block)
-            for name in self.manager.design.rtl.access.block_writes[block.block_id]
+            for name in self.manager.design.rtl.procedure_writes(block.block_id)
         )
 
     def _state_element(self, name: str, block: Procedure) -> StateElement:
