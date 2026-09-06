@@ -78,10 +78,18 @@ class PortDescription:
 
 @dataclass(frozen=True)
 class ParameterDescription:
+    """One declared or elaborated parameter with its rendered and numeric values.
+
+    ``value`` preserves Slang's SystemVerilog rendering. ``integer_value`` is set
+    only for integral constants without X or Z bits, so clients need not parse
+    Verilog literals when a JSON integer is sufficient.
+    """
+
     name: str
     type: str
     value: str | None
     is_local: bool
+    integer_value: int | None = None
 
 
 @dataclass(frozen=True)

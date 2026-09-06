@@ -2,36 +2,6 @@
   "version": 1,
   "cases": [
     {
-      "id": "hier_direct",
-      "category": "hierarchy",
-      "project": "hierarchy",
-      "question": "What module type is instantiated at top.u_direct? Return only the module name.",
-      "response_contract": "string",
-      "oracle": "worker",
-      "rationale": "Explicit worker instantiation.",
-      "pilot": false
-    },
-    {
-      "id": "hier_nested",
-      "category": "hierarchy",
-      "project": "hierarchy",
-      "question": "Return only the full instance path of u_leaf below top.u_branch.",
-      "response_contract": "path",
-      "oracle": "top.u_branch.u_leaf",
-      "rationale": "branch declares worker u_leaf.",
-      "pilot": false
-    },
-    {
-      "id": "hier_array",
-      "category": "hierarchy",
-      "project": "hierarchy",
-      "question": "How many elaborated instances belong to top.u_array? Return only the integer.",
-      "response_contract": "integer",
-      "oracle": 3,
-      "rationale": "Inclusive instance range [2:0] has three elements.",
-      "pilot": false
-    },
-    {
       "id": "hier_generate",
       "category": "hierarchy",
       "project": "hierarchy",
@@ -40,36 +10,6 @@
       "oracle": "worker",
       "rationale": "N=4 unrolls i=0..3; body instantiates worker.",
       "pilot": true
-    },
-    {
-      "id": "hier_conditional",
-      "category": "hierarchy",
-      "project": "hierarchy",
-      "question": "Return only the active named conditional generate block directly below top: enabled or disabled.",
-      "response_contract": "string",
-      "oracle": "enabled",
-      "rationale": "N=4 satisfies N>2.",
-      "pilot": false
-    },
-    {
-      "id": "hier_parameter",
-      "category": "hierarchy",
-      "project": "hierarchy",
-      "question": "How many elaborated worker module instances are below top in total, including descendants? Return only the integer.",
-      "response_contract": "integer",
-      "oracle": 10,
-      "rationale": "1 direct + 1 branch leaf + 3 array + 4 lanes + 1 selected branch leaf = 10.",
-      "pilot": false
-    },
-    {
-      "id": "symbol_module",
-      "category": "symbols",
-      "project": "symbols",
-      "question": "Which module declares the input port value? Return only the module name.",
-      "response_contract": "string",
-      "oracle": "top",
-      "rationale": "top port list contains value.",
-      "pilot": false
     },
     {
       "id": "symbol_package",
@@ -82,85 +22,6 @@
       "pilot": true
     },
     {
-      "id": "symbol_ports",
-      "category": "symbols",
-      "project": "symbols",
-      "question": "List the input ports of top as an alphabetically sorted JSON array of names.",
-      "response_contract": "array",
-      "oracle": [
-        "clk",
-        "value"
-      ],
-      "rationale": "Input port declarations clk and value; ready is output.",
-      "pilot": false
-    },
-    {
-      "id": "symbol_net",
-      "category": "symbols",
-      "project": "symbols",
-      "question": "Is top.link declared as a net or a variable? Return only net or variable.",
-      "response_contract": "string",
-      "oracle": "net",
-      "rationale": "wire is a net declaration.",
-      "pilot": false
-    },
-    {
-      "id": "symbol_function",
-      "category": "symbols",
-      "project": "symbols",
-      "question": "Return only the name of the function declared in top.",
-      "response_contract": "string",
-      "oracle": "increment",
-      "rationale": "twice belongs to the package; increment belongs to top.",
-      "pilot": false
-    },
-    {
-      "id": "symbol_task_scope",
-      "category": "symbols",
-      "project": "symbols",
-      "question": "Return a JSON object with keys task and nested_scope: the task name in top and the full named scope containing nested.",
-      "response_contract": "object",
-      "oracle": {
-        "task": "clear",
-        "nested_scope": "top.inner"
-      },
-      "rationale": "clear is the task; nested is in generated scope inner.",
-      "pilot": false
-    },
-    {
-      "id": "symbol_ambiguous",
-      "category": "symbols",
-      "project": "symbols",
-      "question": "List the two full elaborated paths of signals named flag as a sorted JSON array.",
-      "response_contract": "array",
-      "oracle": [
-        "top.left.flag",
-        "top.right.flag"
-      ],
-      "rationale": "leaf.flag is instantiated under left and right.",
-      "pilot": false
-    },
-    {
-      "id": "type_signal_width",
-      "category": "types/parameters",
-      "project": "types",
-      "question": "What is the packed bit width of top.bus? Return only the integer.",
-      "response_contract": "integer",
-      "oracle": 10,
-      "rationale": "[BASE+2:0] = [9:0], ten bits.",
-      "pilot": false
-    },
-    {
-      "id": "type_typedef",
-      "category": "types/parameters",
-      "project": "types",
-      "question": "What is the packed bit width of top.payload after typedef resolution? Return only the integer.",
-      "response_contract": "integer",
-      "oracle": 9,
-      "rationale": "payload_t is logic [8:0].",
-      "pilot": false
-    },
-    {
       "id": "type_override",
       "category": "types/parameters",
       "project": "types",
@@ -169,30 +30,6 @@
       "oracle": 10,
       "rationale": "BASE+3 = 7+3 = 10.",
       "pilot": true
-    },
-    {
-      "id": "type_propagation",
-      "category": "types/parameters",
-      "project": "types",
-      "question": "What is the packed bit width of top.u_unit.wide? Return only the integer.",
-      "response_contract": "integer",
-      "oracle": 20,
-      "rationale": "DOUBLE = 2*effective WIDTH = 20; range DOUBLE-1:0.",
-      "pilot": false
-    },
-    {
-      "id": "type_enum",
-      "category": "types/parameters",
-      "project": "types",
-      "question": "Return a JSON object mapping IDLE, RUN, DONE to their integer enum values.",
-      "response_contract": "object",
-      "oracle": {
-        "IDLE": 0,
-        "RUN": 2,
-        "DONE": 3
-      },
-      "rationale": "Explicit enum values in widths::state_t.",
-      "pilot": false
     },
     {
       "id": "pre_define",
@@ -205,36 +42,6 @@
       "pilot": true
     },
     {
-      "id": "pre_include",
-      "category": "preprocessing",
-      "project": "preprocess",
-      "question": "What is the packed width of top.bus after processing the include? Return only the integer.",
-      "response_contract": "integer",
-      "oracle": 13,
-      "rationale": "width.svh defines BUS_WIDTH=13.",
-      "pilot": false
-    },
-    {
-      "id": "pre_conditional",
-      "category": "preprocessing",
-      "project": "preprocess",
-      "question": "Using projects.json, what is the value of top.LATENCY? Return only the integer.",
-      "response_contract": "integer",
-      "oracle": 3,
-      "rationale": "FAST is not defined, so else branch assigns 3.",
-      "pilot": false
-    },
-    {
-      "id": "diag_syntax",
-      "category": "diagnostics",
-      "project": "diag_syntax",
-      "question": "Which closing punctuation character is missing from the packed dimension? Return only that character.",
-      "response_contract": "string",
-      "oracle": "]",
-      "rationale": "[3:0 lacks ].",
-      "pilot": false
-    },
-    {
       "id": "diag_unknown",
       "category": "diagnostics",
       "project": "diag_unknown",
@@ -245,36 +52,6 @@
       "pilot": true
     },
     {
-      "id": "diag_width",
-      "category": "diagnostics",
-      "project": "diag_width",
-      "question": "How many high-order bits are discarded by the assignment to target? Return only the integer.",
-      "response_contract": "integer",
-      "oracle": 8,
-      "rationale": "A 16-bit RHS is assigned to an 8-bit target.",
-      "pilot": false
-    },
-    {
-      "id": "diag_duplicate",
-      "category": "diagnostics",
-      "project": "diag_duplicate",
-      "question": "Which identifier is declared twice in the same scope? Return only its name.",
-      "response_contract": "string",
-      "oracle": "duplicate",
-      "rationale": "Two logic declarations with identical name.",
-      "pilot": false
-    },
-    {
-      "id": "diag_instance",
-      "category": "diagnostics",
-      "project": "diag_instance",
-      "question": "Which instantiated module type is undefined? Return only its name.",
-      "response_contract": "string",
-      "oracle": "absent_module",
-      "rationale": "No declaration of absent_module is provided.",
-      "pilot": false
-    },
-    {
       "id": "local_priority",
       "category": "local reasoning",
       "project": "local",
@@ -283,174 +60,6 @@
       "oracle": "loaded",
       "rationale": "load branch precedes enable branch.",
       "pilot": true
-    },
-    {
-      "id": "local_reset",
-      "category": "local reasoning",
-      "project": "local",
-      "question": "What integer value is assigned to count_q on the falling edge of rst_n? Return only the integer.",
-      "response_contract": "integer",
-      "oracle": 0,
-      "rationale": "Asynchronous active-low reset assigns zero.",
-      "pilot": false
-    },
-    {
-      "id": "local_boolean",
-      "category": "local reasoning",
-      "project": "local",
-      "question": "For a=0, b=1, mask=1, what is fire? Return only 0 or 1.",
-      "response_contract": "integer",
-      "oracle": 0,
-      "rationale": "(0 || 1) && !1 = 0.",
-      "pilot": false
-    },
-    {
-      "id": "local_comment",
-      "category": "local reasoning",
-      "project": "local",
-      "question": "Which signal does the comment explicitly say holds its value when enable and load are low? Return only its name.",
-      "response_contract": "string",
-      "oracle": "count_q",
-      "rationale": "Comment names count_q.",
-      "pilot": false
-    },
-    {
-      "id": "cc_outputs",
-      "category": "symbols",
-      "project": "common_cells",
-      "question": "List fifo_v3 output port names as an alphabetically sorted JSON array.",
-      "response_contract": "array",
-      "oracle": [
-        "data_o",
-        "empty_o",
-        "full_o",
-        "usage_o"
-      ],
-      "rationale": "fifo_v3 port declarations have these four outputs.",
-      "pilot": true
-    },
-    {
-      "id": "cc_addr_depth",
-      "category": "types/parameters",
-      "project": "common_cells",
-      "question": "With the provided default top configuration, what is fifo_v3.ADDR_DEPTH? Return only the integer.",
-      "response_contract": "integer",
-      "oracle": 3,
-      "rationale": "DEPTH=8; clog2(8)=3.",
-      "pilot": true
-    },
-    {
-      "id": "cc_generate",
-      "category": "hierarchy",
-      "project": "common_cells",
-      "question": "At default fifo_v3 parameters, which status-flag generate block is active: gen_fifo or gen_pass_through? Return only its name.",
-      "response_contract": "string",
-      "oracle": "gen_fifo",
-      "rationale": "DEPTH=8, not zero.",
-      "pilot": false
-    },
-    {
-      "id": "cc_package",
-      "category": "symbols",
-      "project": "common_cells",
-      "question": "Which package declares idx_width? Return only the package name.",
-      "response_contract": "string",
-      "oracle": "cf_math_pkg",
-      "rationale": "src/cf_math_pkg.sv declares the function.",
-      "pilot": false
-    },
-    {
-      "id": "cc_payload",
-      "category": "types/parameters",
-      "project": "common_cells",
-      "question": "At default fifo_v3 parameters, what is the bit width of data_o? Return only the integer.",
-      "response_contract": "integer",
-      "oracle": 32,
-      "rationale": "dtype defaults to logic [DATA_WIDTH-1:0], DATA_WIDTH=32.",
-      "pilot": false
-    },
-    {
-      "id": "cc_include",
-      "category": "preprocessing",
-      "project": "common_cells",
-      "question": "Which include file is directly included by src/fifo_v3.sv? Return only the path inside its quotes.",
-      "response_contract": "path",
-      "oracle": "common_cells/assertions.svh",
-      "rationale": "The explicit include at the start of fifo_v3.sv.",
-      "pilot": false
-    },
-    {
-      "id": "cc_counter",
-      "category": "types/parameters",
-      "project": "common_cells",
-      "question": "At default fifo_v3 parameters, how many packed bits does status_cnt_q have? Return only the integer.",
-      "response_contract": "integer",
-      "oracle": 4,
-      "rationale": "logic [ADDR_DEPTH:0], ADDR_DEPTH=3, four bits.",
-      "pilot": false
-    },
-    {
-      "id": "cc_function",
-      "category": "local reasoning",
-      "project": "common_cells",
-      "question": "What value does cf_math_pkg::idx_width(1) return? Return only the integer.",
-      "response_contract": "integer",
-      "oracle": 1,
-      "rationale": "Conditional returns 1 when num_idx is not greater than 1.",
-      "pilot": false
-    },
-    {
-      "id": "cc_source",
-      "category": "symbols",
-      "project": "common_cells",
-      "question": "Return the repository-relative path declaring module fifo_v3.",
-      "response_contract": "path",
-      "oracle": "src/fifo_v3.sv",
-      "rationale": "Module declaration occurs in that source file.",
-      "pilot": false
-    },
-    {
-      "id": "cc_handshake",
-      "category": "local reasoning",
-      "project": "common_cells",
-      "question": "In fifo_v3 gen_pass_through (DEPTH=0), if push_i=1 and pop_i=0, return a JSON object with integer keys values for empty_o and full_o.",
-      "response_contract": "object",
-      "oracle": {
-        "empty_o": 0,
-        "full_o": 1
-      },
-      "rationale": "empty_o=~push_i and full_o=~pop_i.",
-      "pilot": false
-    },
-    {
-      "id": "axi_child",
-      "category": "hierarchy",
-      "project": "axi",
-      "question": "What module type is instantiated at axi_fifo_intf.i_axi_fifo? Return only the module name.",
-      "response_contract": "string",
-      "oracle": "axi_fifo",
-      "rationale": "axi_fifo_intf explicitly instantiates axi_fifo.",
-      "pilot": true
-    },
-    {
-      "id": "axi_depth",
-      "category": "types/parameters",
-      "project": "axi",
-      "question": "What is the effective Depth parameter of axi_fifo_intf.i_axi_fifo in the provided default top configuration? Return only the integer.",
-      "response_contract": "integer",
-      "oracle": 0,
-      "rationale": "Parent DEPTH defaults to 0 and overrides child Depth default 1.",
-      "pilot": true
-    },
-    {
-      "id": "axi_ports",
-      "category": "symbols",
-      "project": "axi",
-      "question": "How many ports does axi_fifo_intf declare, counting each interface port once? Return only the integer.",
-      "response_contract": "integer",
-      "oracle": 5,
-      "rationale": "clk_i, rst_ni, test_i, slv, mst.",
-      "pilot": false
     },
     {
       "id": "floonoc_fifo_count",
@@ -496,26 +105,6 @@
         }
       },
       "rationale": "Slang elaboration selects gen_axi_fifo and reports DEPTH=1, FALL_THROUGH=0, and DATA_WIDTH=32 for every fifo_v3 child.",
-      "pilot": false
-    },
-    {
-      "id": "axi_macro",
-      "category": "preprocessing",
-      "project": "axi",
-      "question": "Which macro creates axi_req_t inside axi_fifo_intf? Return only its name without the backtick.",
-      "response_contract": "string",
-      "oracle": "AXI_TYPEDEF_REQ_T",
-      "rationale": "Explicit macro invocation in wrapper.",
-      "pilot": false
-    },
-    {
-      "id": "axi_modport",
-      "category": "symbols",
-      "project": "axi",
-      "question": "Which AXI_BUS modport is declared for axi_fifo_intf.slv? Return only its name.",
-      "response_contract": "string",
-      "oracle": "Slave",
-      "rationale": "Port declared AXI_BUS.Slave slv.",
       "pilot": false
     },
     {
@@ -642,6 +231,228 @@
         }
       },
       "rationale": "Slang lists eight cc_stream_fifo instances and reports their effective Depth and FallThrough values after the iDMA synthesis-wrapper parameter propagation.",
+      "pilot": false
+    },
+    {
+      "id": "cva6_pipeline_stage_map",
+      "category": "hierarchy",
+      "project": "cva6_cv64a6_imafdc_sv39",
+      "question": "In elaborated top cva6, return a JSON object mapping exactly these direct pipeline instance paths to their instantiated module types: cva6.i_frontend, cva6.id_stage_i, cva6.issue_stage_i, cva6.ex_stage_i, and cva6.commit_stage_i.",
+      "response_contract": "object",
+      "oracle": {
+        "cva6.i_frontend": "frontend",
+        "cva6.id_stage_i": "id_stage",
+        "cva6.issue_stage_i": "issue_stage",
+        "cva6.ex_stage_i": "ex_stage",
+        "cva6.commit_stage_i": "commit_stage"
+      },
+      "rationale": "The elaborated cva6 top instantiates these five configured pipeline-stage modules directly.",
+      "pilot": true
+    },
+    {
+      "id": "cva6_execution_units",
+      "category": "hierarchy",
+      "project": "cva6_cv64a6_imafdc_sv39",
+      "question": "In elaborated top cva6, return a lexicographically sorted JSON array of the five direct child instance paths of cva6.ex_stage_i whose module types are alu_wrapper, branch_unit, csr_buffer, mult, and load_store_unit. Do not include the generated floating-point or AES units.",
+      "response_contract": "array",
+      "oracle": [
+        "cva6.ex_stage_i.alu_wrapper_i",
+        "cva6.ex_stage_i.branch_unit_i",
+        "cva6.ex_stage_i.csr_buffer_i",
+        "cva6.ex_stage_i.i_mult",
+        "cva6.ex_stage_i.lsu_i"
+      ],
+      "rationale": "The active CV64 configuration elaborates the named integer execution children under ex_stage_i; FPU and AES are separately generated.",
+      "pilot": true
+    },
+    {
+      "id": "cva6_mmu_subtree",
+      "category": "hierarchy",
+      "project": "cva6_cv64a6_imafdc_sv39",
+      "question": "For the elaborated MMU instance cva6.ex_stage_i.lsu_i.gen_mmu.i_cva6_mmu, return a JSON object mapping exactly its direct child instance paths for the instruction TLB, data TLB, shared TLB, and page-table walker to their module types.",
+      "response_contract": "object",
+      "oracle": {
+        "cva6.ex_stage_i.lsu_i.gen_mmu.i_cva6_mmu.i_dtlb": "cva6_tlb",
+        "cva6.ex_stage_i.lsu_i.gen_mmu.i_cva6_mmu.i_itlb": "cva6_tlb",
+        "cva6.ex_stage_i.lsu_i.gen_mmu.i_cva6_mmu.i_ptw": "cva6_ptw",
+        "cva6.ex_stage_i.lsu_i.gen_mmu.i_cva6_mmu.i_shared_tlb": "cva6_shared_tlb"
+      },
+      "rationale": "The selected target enables the MMU and elaborates i_cva6_mmu below the LSU generate block with these four direct children.",
+      "pilot": true
+    },
+    {
+      "id": "cva6_generated_compute_blocks",
+      "category": "hierarchy",
+      "project": "cva6_cv64a6_imafdc_sv39",
+      "question": "In elaborated top cva6, return a lexicographically sorted JSON array of the four fpnew_opgroup_block instance paths below cva6.ex_stage_i.fpu_gen.fpu_i.fpu_gen.i_fpnew_bulk. Include one path for each elaborated gen_operation_groups index and no descendants.",
+      "response_contract": "array",
+      "oracle": [
+        "cva6.ex_stage_i.fpu_gen.fpu_i.fpu_gen.i_fpnew_bulk.gen_operation_groups[0].i_opgroup_block",
+        "cva6.ex_stage_i.fpu_gen.fpu_i.fpu_gen.i_fpnew_bulk.gen_operation_groups[1].i_opgroup_block",
+        "cva6.ex_stage_i.fpu_gen.fpu_i.fpu_gen.i_fpnew_bulk.gen_operation_groups[2].i_opgroup_block",
+        "cva6.ex_stage_i.fpu_gen.fpu_i.fpu_gen.i_fpnew_bulk.gen_operation_groups[3].i_opgroup_block"
+      ],
+      "rationale": "The configured FPNEW bulk instance elaborates four operation groups, each with a direct fpnew_opgroup_block child.",
+      "pilot": true
+    },
+    {
+      "id": "cva6_mmu_tlb_binding_comparison",
+      "category": "types/parameters",
+      "project": "cva6_cv64a6_imafdc_sv39",
+      "question": "The elaborated MMU instance cva6.ex_stage_i.lsu_i.gen_mmu.i_cva6_mmu contains instruction and data TLBs. Return one JSON object with exactly two keys, itlb and dtlb. Each value must contain path (the elaborated instance path), entries (effective TLB_ENTRIES as a decimal integer), and actuals (a map of the four formal inputs s_st_enbl_i, g_st_enbl_i, lu_access_i, and lu_vaddr_i to their single fully qualified parent signal). Resolve names in the elaborated design, preserve this exact nesting, and include no other keys.",
+      "response_contract": "object",
+      "oracle": {
+        "itlb": {
+          "path": "cva6.ex_stage_i.lsu_i.gen_mmu.i_cva6_mmu.i_itlb",
+          "entries": 16,
+          "actuals": {
+            "s_st_enbl_i": "cva6.ex_stage_i.lsu_i.gen_mmu.i_cva6_mmu.enable_translation_i",
+            "g_st_enbl_i": "cva6.ex_stage_i.lsu_i.gen_mmu.i_cva6_mmu.enable_g_translation_i",
+            "lu_access_i": "cva6.ex_stage_i.lsu_i.gen_mmu.i_cva6_mmu.itlb_lu_access",
+            "lu_vaddr_i": "cva6.ex_stage_i.lsu_i.gen_mmu.i_cva6_mmu.icache_areq_i"
+          }
+        },
+        "dtlb": {
+          "path": "cva6.ex_stage_i.lsu_i.gen_mmu.i_cva6_mmu.i_dtlb",
+          "entries": 16,
+          "actuals": {
+            "s_st_enbl_i": "cva6.ex_stage_i.lsu_i.gen_mmu.i_cva6_mmu.en_ld_st_translation_i",
+            "g_st_enbl_i": "cva6.ex_stage_i.lsu_i.gen_mmu.i_cva6_mmu.en_ld_st_g_translation_i",
+            "lu_access_i": "cva6.ex_stage_i.lsu_i.gen_mmu.i_cva6_mmu.dtlb_lu_access",
+            "lu_vaddr_i": "cva6.ex_stage_i.lsu_i.gen_mmu.i_cva6_mmu.lsu_vaddr_i"
+          }
+        }
+      },
+      "rationale": "The selected target elaborates both cva6_tlb instances below the MMU. Slang reports the inherited TLB_ENTRIES value as 16 and resolves each selected actual through the MMU scope, including the ITLB virtual-address struct member's parent signal.",
+      "pilot": false
+    },
+    {
+      "id": "cva6_active_cache_binding_inventory",
+      "category": "hierarchy",
+      "project": "cva6_cv64a6_imafdc_sv39",
+      "question": "For the active cache subsystem elaborated below cva6, return a JSON object with exactly instance, module, and actuals keys. instance is its elaborated path; module is its instantiated module type; actuals maps exactly these formal ports to their single fully qualified top-level actual signals: busy_o, icache_areq_i, icache_areq_o, dcache_req_ports_i, dcache_req_ports_o, noc_req_o, noc_resp_i, and wbuffer_empty_o. Use the cache subsystem selected by the supplied CV64A6 build manifest, resolve names in the elaborated design, and include no other keys.",
+      "response_contract": "object",
+      "oracle": {
+        "instance": "cva6.gen_cache_wt.i_cache_subsystem",
+        "module": "wt_cache_subsystem",
+        "actuals": {
+          "busy_o": "cva6.busy_cache_ctrl",
+          "icache_areq_i": "cva6.icache_areq_ex_cache",
+          "icache_areq_o": "cva6.icache_areq_cache_ex",
+          "dcache_req_ports_i": "cva6.dcache_req_to_cache",
+          "dcache_req_ports_o": "cva6.dcache_req_from_cache",
+          "noc_req_o": "cva6.noc_req_o",
+          "noc_resp_i": "cva6.noc_resp_i",
+          "wbuffer_empty_o": "cva6.dcache_commit_wbuffer_empty"
+        }
+      },
+      "rationale": "The cv64a6_imafdc_sv39 configuration selects the write-through cache generate branch. The elaborated wt_cache_subsystem instance exposes these direct bindings in the cva6 top scope.",
+      "pilot": false
+    },
+    {
+      "id": "cva6_mmu_tlb_actual_expressions_v2",
+      "category": "types/parameters",
+      "project": "cva6_cv64a6_imafdc_sv39",
+      "question": "The elaborated MMU instance cva6.ex_stage_i.lsu_i.gen_mmu.i_cva6_mmu contains instruction and data TLBs. Return one JSON object with exactly two keys, itlb and dtlb. Each value must contain path (the elaborated instance path), entries (effective TLB_ENTRIES as a decimal integer), and actual_expressions (a map of formal inputs update_i, lu_asid_i, and lu_vaddr_i to their complete direct actual expressions). Use the expression field of the elaborated port binding exactly as reported, including a member select such as icache_areq_i.fetch_vaddr. Preserve this nesting and include no other keys.",
+      "response_contract": "object",
+      "oracle": {
+        "itlb": {
+          "path": "cva6.ex_stage_i.lsu_i.gen_mmu.i_cva6_mmu.i_itlb",
+          "entries": 16,
+          "actual_expressions": {
+            "update_i": "update_itlb",
+            "lu_asid_i": "itlb_lu_asid",
+            "lu_vaddr_i": "icache_areq_i.fetch_vaddr"
+          }
+        },
+        "dtlb": {
+          "path": "cva6.ex_stage_i.lsu_i.gen_mmu.i_cva6_mmu.i_dtlb",
+          "entries": 16,
+          "actual_expressions": {
+            "update_i": "update_dtlb",
+            "lu_asid_i": "dtlb_lu_asid",
+            "lu_vaddr_i": "lsu_vaddr_i"
+          }
+        }
+      },
+      "rationale": "This new version explicitly requests direct actual expressions, rather than the distinct resolved base-symbol representation. Slang reports the selected effective parameter and each expression after elaboration.",
+      "pilot": false
+    },
+    {
+      "id": "cva6_fifo_effective_inventory",
+      "category": "types/parameters",
+      "project": "cva6_cv64a6_imafdc_sv39",
+      "question": "In elaborated top cva6, return a JSON object keyed by every instance whose sv_module is exactly cva6_fifo_v3. Each value must contain exactly these fields: DEPTH (decimal integer), DATA_WIDTH (decimal integer), FALL_THROUGH (decimal integer), and dtype (the exact effective type string). Include generated and nested instances across the whole elaborated design. Use effective instance parameters, not declaration defaults, and do not shorten scope-qualified dtype names.",
+      "response_contract": "object",
+      "oracle": {
+        "cva6.i_frontend.i_instr_queue.gen_instr_fifo[0].i_fifo_instr_data": {
+          "DEPTH": 4,
+          "DATA_WIDTH": 32,
+          "FALL_THROUGH": 0,
+          "dtype": "instr_queue.instr_data_t"
+        },
+        "cva6.i_frontend.i_instr_queue.gen_instr_fifo[1].i_fifo_instr_data": {
+          "DEPTH": 4,
+          "DATA_WIDTH": 32,
+          "FALL_THROUGH": 0,
+          "dtype": "instr_queue.instr_data_t"
+        },
+        "cva6.i_frontend.i_instr_queue.i_fifo_address": {
+          "DEPTH": 2,
+          "DATA_WIDTH": 64,
+          "FALL_THROUGH": 0,
+          "dtype": "logic[63:0]"
+        },
+        "cva6.ex_stage_i.lsu_i.i_store_unit.genblk1.i_amo_buffer.i_amo_fifo": {
+          "DEPTH": 1,
+          "DATA_WIDTH": 32,
+          "FALL_THROUGH": 0,
+          "dtype": "amo_buffer.amo_op_t"
+        },
+        "cva6.gen_cache_wt.i_cache_subsystem.i_wt_dcache.i_wt_dcache_wbuffer.i_rtrn_id_fifo": {
+          "DEPTH": 4,
+          "DATA_WIDTH": 2,
+          "FALL_THROUGH": 0,
+          "dtype": "logic[1:0]"
+        },
+        "cva6.gen_cache_wt.i_cache_subsystem.i_adapter.i_icache_data_fifo": {
+          "DEPTH": 2,
+          "DATA_WIDTH": 32,
+          "FALL_THROUGH": 0,
+          "dtype": "wt_axi_adapter.icache_req_t"
+        },
+        "cva6.gen_cache_wt.i_cache_subsystem.i_adapter.i_dcache_data_fifo": {
+          "DEPTH": 2,
+          "DATA_WIDTH": 32,
+          "FALL_THROUGH": 0,
+          "dtype": "wt_axi_adapter.dcache_req_t"
+        },
+        "cva6.gen_cache_wt.i_cache_subsystem.i_adapter.i_rd_icache_id": {
+          "DEPTH": 4,
+          "DATA_WIDTH": 2,
+          "FALL_THROUGH": 0,
+          "dtype": "logic[1:0]"
+        },
+        "cva6.gen_cache_wt.i_cache_subsystem.i_adapter.i_rd_dcache_id": {
+          "DEPTH": 4,
+          "DATA_WIDTH": 2,
+          "FALL_THROUGH": 0,
+          "dtype": "logic[1:0]"
+        },
+        "cva6.gen_cache_wt.i_cache_subsystem.i_adapter.i_wr_dcache_id": {
+          "DEPTH": 4,
+          "DATA_WIDTH": 2,
+          "FALL_THROUGH": 0,
+          "dtype": "logic[1:0]"
+        },
+        "cva6.gen_cache_wt.i_cache_subsystem.i_adapter.i_b_fifo": {
+          "DEPTH": 4,
+          "DATA_WIDTH": 5,
+          "FALL_THROUGH": 1,
+          "dtype": "logic[4:0]"
+        }
+      },
+      "rationale": "Slang elaborates eleven cva6_fifo_v3 instances in the configured CV64A6 design. Their values combine generated instruction queues, LSU buffering, and the selected write-through cache subsystem; dtype retains its effective normalized scope.",
       "pilot": false
     }
   ]

@@ -3,7 +3,7 @@
 Python 3.10 controller around the **system `copilot` executable**. Authentication belongs to
 Copilot: log in normally with `copilot login`. No JavaScript wrappers, credential extraction,
 private CLI APIs, copied runtime, sockets or proxy servers are used. MCP modes launch
-`.venv/bin/slang-mcp --config <workspace>/projects.json` directly over stdio.
+`.venv/bin/slang-mcp` directly over stdio and give the agent absolute-path file lists.
 
 Start small (three agent calls, one simple case, one repetition):
 
@@ -30,11 +30,11 @@ Larger studies are opt-in; they have **not** been run as part of the initial smo
 # 10 predefined cases x 3 modes x 3 repetitions = 90 agent runs
 .venv/bin/python -m benchmarks run --profile pilot --repetitions 3 --output benchmark_results/pilot
 
-# 50 cases x 3 modes x 3 repetitions = 450 agent runs
+# 15 cases x 3 modes x 3 repetitions = 135 agent runs
 .venv/bin/python -m benchmarks run --profile full --repetitions 3 --output benchmark_results/full
 ```
 
-Filters: `--case`, `--category`, `--mode`; limits: `--timeout` (default 300 seconds),
+Filters: repeatable `--case`, `--category`, `--mode`; limits: `--timeout` (default 300 seconds),
 `--repetitions`; randomization: `--seed` (default 20260905). One agent runs at a time.
 The installed version must be 1.0.83. Version is checked before each run. In this installation,
 `--no-auto-update` caused the system launcher to select its older bundled runtime; the harness
@@ -63,12 +63,14 @@ are disabled through CLI options. Preflight rejects inherited MCP server configu
 of silently contaminating the baseline. This is practical workspace isolation, not a security
 boundary or proof that the agent cannot access external answers.
 
-The corpus has 30 synthetic and 20 real-world cases, with a frozen ten-case pilot. Real-world
-provenance is a separate dimension from semantic category. Expected answers and human-readable
-rationales are controller-only. They come from explicit source declarations, manually evaluated
-expressions and build configuration, not solely from the server under test. Compiler checks
-are supplemental. Diagnosis questions identify source issues; not every issue is a compiler error
-(e.g. width truncation or equivalent redeclarations can be warnings).
+The curated corpus has six synthetic semantic edge cases and thirteen multi-file real-world cases,
+including eight CVA6 cases using the pinned `pulp-v3` revision and the
+`cv64a6_imafdc_sv39` Bender target. The frozen ten-case pilot combines the six synthetic cases
+with four of the CVA6 cases. The four additional CVA6 cases are reserved for the full experiment
+and targeted comparisons. Real-world provenance is a separate dimension from semantic category.
+Expected answers and human-readable rationales are controller-only. They come from explicit
+source declarations, manually evaluated expressions and build configuration, not solely from
+the server under test. Compiler checks are supplemental.
 
 ## Results and resuming
 

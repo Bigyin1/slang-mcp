@@ -12,7 +12,7 @@ from benchmarks.models import MODES, Case, RunKey, Settings
 class Selection:
     mode: str | None = None
     category: str | None = None
-    case: str | None = None
+    case: tuple[str, ...] = ()
 
 
 def select_cases(
@@ -47,11 +47,14 @@ def _block(block: tuple[str, int], rng: random.Random, selection: Selection) -> 
 
 def _matches(case: Case, selection: Selection) -> bool:
     return (selection.category is None or case.category == selection.category) and (
-        selection.case is None or case.id == selection.case
+        not selection.case or case.id in selection.case
     )
 
 
-def _profile_cases(cases: tuple[Case, ...], profile: str, case_id: str | None) -> tuple[Case, ...]:
+def _profile_cases(
+    cases: tuple[Case, ...], profile: str, case_ids: tuple[str, ...]
+) -> tuple[Case, ...]:
     if profile == "smoke":
-        return tuple(case for case in cases if case.id == (case_id or "hier_generate"))
+        selected = case_ids or ("hier_generate",)
+        return tuple(case for case in cases if case.id in selected)
     return tuple(case for case in cases if profile == "full" or case.pilot)

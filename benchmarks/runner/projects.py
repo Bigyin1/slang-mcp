@@ -27,7 +27,28 @@ def prepare_project(name: str, workspace: Path) -> dict[str, object]:
     else:
         config, provenance = _realworld(spec, workspace)
     (workspace / "projects.json").write_text(json.dumps({name: config}, indent=2) + "\n")
+    _write_file_lists(config, workspace)
     return provenance
+
+
+def _write_file_lists(config: dict[str, object], workspace: Path) -> None:
+    """Export agent-visible direct-load inputs while retaining legacy JSON for validation."""
+    _write_paths(workspace / "source_files.f", cast("list[str]", config["source_files"]), workspace)
+    _write_paths(
+        workspace / "include_directories.f",
+        cast("list[str]", config["include_directories"]),
+        workspace,
+    )
+    tops = cast("list[str]", config["top_modules"])
+    (workspace / "top_module.txt").write_text(tops[0] + "\n", encoding="utf-8")
+
+
+def _write_paths(destination: Path, values: list[str], workspace: Path) -> None:
+    paths = [
+        str((workspace / item).resolve()) if not Path(item).is_absolute() else item
+        for item in values
+    ]
+    destination.write_text("\n".join(paths) + "\n", encoding="utf-8")
 
 
 def _synthetic(spec: dict[str, object], workspace: Path) -> dict[str, object]:
@@ -78,7 +99,27 @@ def _checkout(spec: dict[str, object], destination: Path) -> None:
         shutil.copytree(cache / ".bender", destination / ".bender", symlinks=False)
     if "lockfile" in spec:
         shutil.copyfile(ROOT / "cases" / string(spec["lockfile"]), destination / "Bender.lock")
+    _copy_cached_directories(spec, cache, destination)
     _copy_generated_files(spec, cache, destination)
+
+
+def _copy_cached_directories(spec: dict[str, object], cache: Path, destination: Path) -> None:
+    """Restore pinned source submodules that Bender manifests address as local paths."""
+    for value in cast("list[str]", spec.get("cached_directories", [])):
+        _copy_cached_directory(cache, destination, Path(value))
+
+
+def _copy_cached_directory(cache: Path, destination: Path, relative: Path) -> None:
+    source = cache / relative
+    if not source.is_dir():
+        raise RuntimeError(f"Missing cached RTL directory: {relative}")
+    shutil.copytree(
+        source,
+        destination / relative,
+        dirs_exist_ok=True,
+        symlinks=False,
+        ignore=shutil.ignore_patterns(".git"),
+    )
 
 
 def _copy_generated_files(spec: dict[str, object], cache: Path, destination: Path) -> None:

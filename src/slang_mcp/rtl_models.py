@@ -88,6 +88,18 @@ class Connection:
 
 
 @dataclass(frozen=True)
+class InstanceFacts:
+    """Selected effective facts for one elaborated instance.
+
+    Nested pages make bounds explicit independently of the outer instance page.
+    """
+
+    instance: Instance
+    parameters: Page[ParameterDescription]
+    connections: Page[Connection]
+
+
+@dataclass(frozen=True)
 class Procedure:
     block_id: str
     kind: str

@@ -1,5 +1,8 @@
 """Bounded RTL services shared by primitive and aggregate queries."""
 
+from collections.abc import Callable
+from typing import TypeVar
+
 from slang_mcp.models import SymbolReference
 from slang_mcp.project import ProjectManager
 from slang_mcp.rtl_models import (
@@ -7,6 +10,7 @@ from slang_mcp.rtl_models import (
     Connection,
     ConnectivityTrace,
     Instance,
+    InstanceFacts,
     Page,
     Parameters,
     Port,
@@ -29,6 +33,7 @@ _REFERENCE_KINDS = {
 }
 _TRACE_DIRECTIONS = {"drivers", "loads", "both"}
 _MAX_TRACE_DEPTH = 50
+T = TypeVar("T")
 
 
 class RtlService:
@@ -85,18 +90,89 @@ class RtlService:
             ),
         )
 
-    def get_instance_parameters(self, instance_path: str, limit: int = 100) -> Parameters:
+    def get_instance_parameters(
+        self,
+        instance_path: str,
+        limit: int = 100,
+        names: list[str] | None = None,
+    ) -> Parameters:
         return Parameters(
             instance_path,
             "effective",
             page(
-                self.manager.design.rtl.parameters(instance_path, effective=True),
+                _named(
+                    self.manager.design.rtl.parameters(instance_path, effective=True),
+                    names,
+                    lambda item: item.name,
+                ),
                 limit,
             ),
         )
 
-    def get_instance_connections(self, instance_path: str, limit: int = 100) -> Page[Connection]:
-        return page(self.manager.design.rtl.connections(instance_path), limit)
+    def get_instance_connections(
+        self,
+        instance_path: str,
+        limit: int = 100,
+        ports: list[str] | None = None,
+    ) -> Page[Connection]:
+        return page(
+            _named(
+                self.manager.design.rtl.connections(instance_path),
+                ports,
+                lambda item: item.port.name,
+            ),
+            limit,
+        )
+
+    def list_instance_facts(  # pylint: disable=too-many-locals
+        self,
+        sv_module: str,
+        parameter_names: list[str] | None = None,
+        port_names: list[str] | None = None,
+        limit: int = 100,
+        fact_limit: int = 100,
+    ) -> Page[InstanceFacts]:
+        """Return selected effective facts for instances of one module type.
+
+        The outer page limits instances; every nested fact collection is paged
+        separately to retain bounded MCP responses.
+        """
+        _validate_names(parameter_names, "parameter_names")
+        _validate_names(port_names, "port_names")
+        instances = page(
+            tuple(
+                item
+                for item in self.manager.design.rtl.instances.values()
+                if _instance_matches(item, sv_module, None, None)
+            ),
+            limit,
+        )
+        return Page(
+            tuple(
+                InstanceFacts(
+                    instance,
+                    page(
+                        _named(
+                            self.manager.design.rtl.parameters(instance.path, effective=True),
+                            parameter_names,
+                            lambda item: item.name,
+                        ),
+                        fact_limit,
+                    ),
+                    page(
+                        _named(
+                            self.manager.design.rtl.connections(instance.path),
+                            port_names,
+                            lambda item: item.port.name,
+                        ),
+                        fact_limit,
+                    ),
+                )
+                for instance in instances.items
+            ),
+            instances.total_count,
+            instances.truncated,
+        )
 
     def list_instances(
         self,
@@ -177,6 +253,24 @@ class RtlService:
         return StateElement(
             symbol.symbol, symbol.type, symbol.width, block.block_id, block.location
         )
+
+
+def _named(
+    items: tuple[T, ...],
+    names: list[str] | None,
+    identifier: Callable[[T], str],
+) -> tuple[T, ...]:
+    """Keep declaration-order items matching optional exact names."""
+    if names is None:
+        return items
+    _validate_names(names, "names")
+    requested = frozenset(names)
+    return tuple(item for item in items if identifier(item) in requested)
+
+
+def _validate_names(names: list[str] | None, argument: str) -> None:
+    if names is not None and len(names) > MAX_RESULTS:
+        raise ValueError(f"{argument} must contain at most 500 items")
 
 
 def _instance_matches(

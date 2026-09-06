@@ -1,15 +1,16 @@
 # Справочник MCP tools
 
-`slang-mcp` — read-only MCP-сервер для семантического анализа уже
-сконфигурированных SystemVerilog-проектов. Все tools возвращают JSON-совместимые
-данные и не меняют RTL, build-конфигурацию или файлы проекта.
+`slang-mcp` — read-only MCP-сервер для семантического анализа SystemVerilog.
+Все tools возвращают JSON-совместимые данные и не меняют RTL, build-конфигурацию
+или файлы проекта.
 
 Сначала вызовите `project_load`, затем выполняйте запросы к активному проекту.
-`project_reload` заново разрешает и компилирует тот же logical module.
+`project_reload` заново компилирует те же build inputs.
 
 ## Общие правила
 
-- `logical_module` — имя build-конфигурации, а не SystemVerilog module.
+- `top_module` — единственный SystemVerilog module, который Slang использует
+  как top для элаборации.
 - `sv_module` — имя объявления `module` или `interface`.
 - `instance_path` — элаборированный путь, например `top.u_fifo`.
 - `signal` принимает полное имя сигнала; короткое имя допускается только если оно
@@ -19,8 +20,8 @@
 - Постраничный ответ имеет вид
   `{"items": [...], "total_count": N, "truncated": false}`. `truncated: true`
   означает, что по указанному limit возвращена только часть результата.
-- Контролируемые ошибки MCP включают отсутствие активного проекта, неизвестный
-  logical module, отсутствующий или неоднозначный symbol/instance и неверные
+- Контролируемые ошибки MCP включают отсутствие активного проекта, отсутствующий
+  file list, отсутствующий или неоднозначный symbol/instance и неверные
   границы параметров.
 
 ## Жизненный цикл проекта
@@ -28,17 +29,25 @@
 ### `project_load`
 
 ```json
-{"logical_module": "demo"}
+{
+  "source_file_lists": ["/work/filelists/packages.f", "/work/filelists/rtl.f"],
+  "include_directory_lists": ["/work/filelists/includes.f"],
+  "defines": {"SYNTHESIS": null},
+  "top_module": "top"
+}
 ```
 
-Разрешает build-конфигурацию, проверяет source/include paths и создаёт Slang
-compilation. Возвращает `logical_module`, количества source files, include dirs и
-defines, configured tops и количество error/warning diagnostics. Успешная
+Читает переданные file lists и создаёт Slang compilation. В `source_file_lists`
+сначала передавайте lists packages, затем RTL и models. Каждая непустая строка
+list-файла должна быть абсолютным путём: в `source_file_lists` — к source file,
+в `include_directory_lists` — к каталогу. Порядок source paths и дубликаты
+сохраняются. Возвращает количества source files, include dirs и
+defines, configured top и количество error/warning diagnostics. Успешная
 компиляция с diagnostics всё равно доступна для анализа.
 
 ### `project_reload`
 
-Не принимает аргументы. Пересобирает активный logical module и возвращает ту же
+Не принимает аргументы. Пересобирает активные build inputs и возвращает ту же
 сводку, что `project_load`. Предыдущая успешная semantic snapshot сохраняется для
 `semantic_diff`.
 
@@ -47,6 +56,38 @@ defines, configured tops и количество error/warning diagnostics. Ус
 Не принимает аргументы. Не запускает compilation и возвращает активную build
 конфигурацию: source files, include directories, defines, configured tops,
 metadata, Slang version и summary.
+
+## `ElaboratedRtlIndex`
+
+После построения Slang compilation `project_load` формирует один
+`ElaboratedRtlIndex` для активного проекта. При `project_reload` создаются новая
+compilation и новый index; прежний index не используется для последующих
+semantic-запросов. Построение index — часть времени загрузки проекта, поэтому не
+вызывайте reload, если RTL и build inputs не менялись.
+
+Index обходит элаборированное дерево tops и generate blocks и сохраняет
+нормализованные project-owned данные, без выдачи объектов `pyslang` наружу:
+
+- все elaborated instances с path, module type, location и parent;
+- effective parameters и resolved formal-to-actual port connections, получаемые
+  по конкретному instance;
+- source-level reads, writes, declarations и port-connection references, с
+  обратным индексом по resolved signal;
+- направленные source-level connectivity edges для прямых port bindings,
+  continuous assignments и procedural assignments.
+
+Эти данные используют `list_instances`, `find_instance`,
+`get_instance_parameters`, `get_instance_connections`, `list_instance_facts`,
+`get_references`, signal read/write/driver/load tools, inspections и
+`trace_connectivity`. Результаты остаются semantic source-level facts: index не
+создаёт netlist, не разворачивает expression actual в межинстансный port hop и не
+доказывает timing, simulation, formal, synthesis, CDC или фактическую
+электрическую connectivity.
+
+Default signature декларации module/interface не является частью обхода всех
+elaborated instances. Когда tool запрашивает default ports или declared
+parameters, index при необходимости создаёт и кэширует отдельный минимальный
+default instance для этой декларации.
 
 ## Symbols, diagnostics и hierarchy
 
@@ -117,19 +158,45 @@ packed width, unpacked dimensions, default value и сведения об interf
 
 ### `get_instance_parameters`
 
-Аргументы: `instance_path`, `limit=100`.
+Аргументы: `instance_path`, `limit=100`, необязательный `names`.
 
 Возвращает evaluated parameters элаборированного instance с
-`value_kind: "effective"`, включая top instances.
+`value_kind: "effective"`, включая top instances. `names` выбирает параметры по
+точному имени; элементы сохраняют declaration order, а отсутствующие имена не
+создают ошибку. Используйте его, когда нужен один effective parameter, чтобы не
+передавать агенту все типовые и конфигурационные параметры instance.
+
+У non-type parameters поле `value` сохраняет SystemVerilog-представление, а
+`integer_value` содержит JSON integer, только если Slang вычислил известную
+целую константу. Для type parameters и значений с X/Z `integer_value` равен
+`null`.
 
 ### `get_instance_connections`
 
-Аргументы: `instance_path`, `limit=100`.
+Аргументы: `instance_path`, `limit=100`, необязательный `ports`.
 
 Возвращает formal port, actual expression text, referenced symbols, source
 location, actual type и width. `kind` имеет значения `signal`, `expression`,
 `unconnected` или `interface`. Списки symbols и expression text ограничены, а
 соответствующие признаки truncation передаются в ответе.
+
+`ports` выбирает formal ports по точному имени и сохраняет порядок declaration;
+отсутствующие имена не создают ошибку. `expression` — полный direct actual,
+например `request.address`; `symbols` — разрешённые базовые symbols, например
+`request`. Указывайте в вопросе, какое из этих представлений требуется.
+
+### `list_instance_facts`
+
+Аргументы: `sv_module`, необязательные `parameter_names`, `port_names`,
+`limit=100`, `fact_limit=100`.
+
+Возвращает page elaborated instances заданного module type. В каждой записи есть
+`instance`, page effective `parameters` и page resolved `connections`.
+`parameter_names` и `port_names` выбирают точные имена в declaration order.
+`limit` ограничивает число instances, `fact_limit` — каждую вложенную коллекцию;
+оба значения должны быть от 1 до 500. Это предпочтительный запрос для inventory
+нескольких однотипных instances: он не требует сначала перечислять пути, а затем
+вызывать `get_instance_parameters` для каждого из них.
 
 ### `list_instances`
 

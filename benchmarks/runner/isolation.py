@@ -26,7 +26,7 @@ def mcp_configuration(root: Path, enabled: bool) -> Path:
         servers["slang_benchmark"] = {
             "type": "local",
             "command": str(ROOT.parent / ".venv/bin/slang-mcp"),
-            "args": ["--config", str(root / "workspace/projects.json")],
+            "args": [],
             "tools": ["*"],
         }
     path = root / "mcp.json"

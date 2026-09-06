@@ -5,8 +5,9 @@ SystemVerilog. It uses the Python bindings for Slang as a compiler frontend, so
 queries operate on resolved and elaborated semantics rather than regular-expression
 parsing or raw syntax nodes.
 
-The MVP loads one logical project at a time over stdio. It requires CPython 3.10
-and is intentionally constrained to `>=3.10,<3.11`.
+The server loads one project at a time over stdio from agent-supplied absolute-path
+file lists and one `top_module`. It requires CPython 3.10 and is intentionally
+constrained to `>=3.10,<3.11`.
 
 ## Install and run
 
@@ -16,35 +17,17 @@ Create the pinned development environment:
 uv sync --python 3.10
 ```
 
-Create a static project file, for example `projects.json`:
-
-```json
-{
-  "chip": {
-    "source_files": ["rtl/types_pkg.sv", "rtl/leaf.sv", "rtl/top.sv"],
-    "include_directories": ["rtl/include"],
-    "defines": {
-      "SYNTHESIS": null,
-      "DATA_WIDTH": "32"
-    },
-    "top_modules": ["top"],
-    "metadata": {
-      "owner": "rtl-team"
-    }
-  }
-}
-```
-
-Paths are resolved relative to the JSON file. Source order is preserved. A `null`
-define has no replacement text; a string becomes `NAME=value`.
-
-Run the server directly:
+Start the server without a build manifest:
 
 ```sh
-.venv/bin/slang-mcp --config projects.json
-# or
-SLANG_MCP_CONFIG=projects.json .venv/bin/python -m slang_mcp
+.venv/bin/slang-mcp
 ```
+
+`project_load` accepts ordered paths to plain UTF-8 file lists. Every non-empty
+line must be an absolute path: source lists contain source files and include lists
+contain directories. Pass package lists first, then RTL and model lists. Source
+order and duplicate paths are preserved. A
+`null` define has no replacement text; a string becomes `NAME=value`.
 
 A minimal stdio client configuration is:
 
@@ -53,7 +36,7 @@ A minimal stdio client configuration is:
   "mcpServers": {
     "slang": {
       "command": "/absolute/path/to/slang-mcp/.venv/bin/slang-mcp",
-      "args": ["--config", "/absolute/path/to/projects.json"]
+      "args": []
     }
   }
 }
@@ -61,8 +44,9 @@ A minimal stdio client configuration is:
 
 ## Tools
 
-- `project_load(logical_module)` resolves, validates, compiles, and activates a project.
-- `project_reload()` rebuilds the active logical project from its provider.
+- `project_load(source_file_lists, top_module, include_directory_lists, defines)` reads,
+  validates, compiles, and activates one project.
+- `project_reload()` rebuilds the active project from the same file lists and inputs.
 - `project_info()` reports build inputs, configured and elaborated tops, metadata, and version.
 - `get_diagnostics(limit=100, severity=null)` returns structured Slang diagnostics. The hard
   limit is 500; severity can be `ignored`, `note`, `warning`, `error`, or `fatal`.
@@ -93,6 +77,7 @@ The following tools extend the original eight tools. Collections use
 | `get_parameters` | `target` | Module defaults or effective values for a nested instance path |
 | `get_instance_parameters` | `instance_path` | Effective parameters, including top instances |
 | `get_instance_connections` | `instance_path` | Formal ports, actual expression text and referenced symbols |
+| `list_instance_facts` | `sv_module`, optional parameter / port name filters | Effective facts for a bounded page of elaborated instances |
 | `list_instances` | optional `sv_module`, `name`, `path_prefix` | Elaborated instance occurrences |
 | `find_instance` | `query` (no `limit`) | Exact path or unique exact name; ambiguity lists candidates |
 | `get_signal_reads`, `get_signal_writes` | `signal` | Access locations and assignment/port contexts |
@@ -109,6 +94,10 @@ For example, `get_parameters("leaf")` returns `value_kind: "declared_default"`, 
 `get_instance_parameters("top.u_leaf")` returns `value_kind: "effective"`. A default `WIDTH=32`
 and an overridden `WIDTH=64` are evaluated in separate Slang elaborations. Bare top names in
 `get_parameters` denote declarations; use the explicit instance tool for effective top values.
+Every non-type parameter also carries `integer_value` when Slang evaluated it to an integral
+constant without X or Z bits; `value` retains the SystemVerilog rendering. For inventory
+questions, `list_instance_facts("leaf", parameter_names=["WIDTH"])` avoids a separate parameter
+query for each elaborated `leaf` instance.
 Default-scope member IDs start with `default:` and can be passed to `describe_symbol`.
 Nested module definitions that cannot be independently instantiated report an explicit unavailable
 default-signature error; their effective instance queries still work. Snapshots retain their
@@ -157,9 +146,9 @@ represented reliably. Existing unbounded MVP tools retain their schemas for comp
 
 ### Semantic diff lifecycle
 
-Initial load reports `status: "no_previous_state"`. A successful load/reload of the same logical
-project compares its previous and current normalized snapshots. Loading a different logical project
-starts a new baseline. Failed path validation, construction, elaboration or snapshot creation leaves
+Initial load reports `status: "no_previous_state"`. A successful reload compares the previous and
+current normalized snapshots for the same direct build inputs. A newly loaded project starts a new
+baseline. Failed path validation, construction, elaboration or snapshot creation leaves
 both the active project and the previous diff intact. As in the original API, a completed compilation
 with error diagnostics is accepted, so an agent can inspect errors and their changes.
 
@@ -182,22 +171,13 @@ For example, a parameter override change includes:
 ### Implementation layers
 
 Thin MCP handlers call `SemanticService`, which uses `ProjectManager` for the active compilation.
-`ProjectManager` depends only on the `ProjectProvider` protocol. `StaticProjectProvider` can be
-constructed from typed in-memory `ProjectConfig` objects or the JSON format above. All dynamic
-`pyslang` interaction and object traversal stays inside `adapters/`; only project-owned
-dataclasses cross that boundary.
+`project_load` converts the direct file-list inputs into `ProjectConfig`. The retained
+`StaticProjectProvider` is a compatibility adapter for local tests and does not define the public
+MCP contract. All dynamic `pyslang` interaction and object traversal stays inside `adapters/`;
+only project-owned dataclasses cross that boundary.
 
-A future `SVBuildProjectProvider` should implement only:
-
-```python
-def resolve(logical_module: str) -> ProjectConfig: ...
-```
-
-It should translate SVBuild's ordered sources, include directories, defines, tops, and metadata
-into `ProjectConfig`. No MCP handler or semantic query needs to change.
-
-The public terminology is deliberate: `logical_module` is a build-system entity, `sv_module` is
-a SystemVerilog module declaration, and `instance` is an elaborated occurrence.
+The public terminology is deliberate: `top_module` is the selected SystemVerilog elaboration top,
+`sv_module` is a SystemVerilog module declaration, and `instance` is an elaborated occurrence.
 
 ## Development and tests
 
@@ -250,7 +230,7 @@ Normal unit and integration tests never require network access.
 
 ## MVP limitations
 
-- Only one active logical project is retained.
+- Only one active project is retained.
 - Reload is a complete rebuild; there is no incremental compilation.
 - Symbol search is exact-name only. Stable IDs should be used to resolve ambiguity.
 - Module descriptions use the first elaborated representative for parameterized port details;
@@ -272,6 +252,6 @@ system Copilot CLI. Start with one case and one repetition (three agent runs):
   --model auto --output benchmark_smoke/simple
 ```
 
-See [benchmarks/README.md](benchmarks/README.md) for the 50-case corpus, offline checks,
+See [benchmarks/README.md](benchmarks/README.md) for the curated 19-case corpus, offline checks,
 resume behavior, result artifacts and the limitations of the user-selected `auto` model and
-workspace isolation. The 90-run pilot and 450-run full experiment are separate opt-in commands.
+workspace isolation. The 90-run pilot and 171-run full experiment are separate opt-in commands.

@@ -17,6 +17,26 @@ class FixtureProject:
     design_file: Path
 
 
+def project_load_arguments(project: FixtureProject) -> dict[str, object]:
+    """Write simple absolute-path lists for the public MCP load contract."""
+    root = project.design_file.parent
+    sources = root / "sources.f"
+    includes = root / "includes.f"
+    sources.write_text(
+        "\n".join(str(path) for path in project.config.source_files) + "\n", encoding="utf-8"
+    )
+    includes.write_text(
+        "\n".join(str(path) for path in project.config.include_directories) + "\n",
+        encoding="utf-8",
+    )
+    return {
+        "source_file_lists": [str(sources)],
+        "include_directory_lists": [str(includes)],
+        "defines": dict(project.config.defines),
+        "top_module": "top",
+    }
+
+
 @pytest.fixture
 def fixture_project(tmp_path: Path) -> FixtureProject:
     include_dir = tmp_path / "include"

@@ -7,7 +7,7 @@ from mcp.server.fastmcp.exceptions import ToolError
 
 from slang_mcp.providers import StaticProjectProvider
 from slang_mcp.server import create_server
-from tests.conftest import FixtureProject
+from tests.conftest import FixtureProject, project_load_arguments
 
 
 @pytest.mark.integration
@@ -32,7 +32,7 @@ async def test_unloaded_rtl_queries_report_controlled_error(
     server = create_server(StaticProjectProvider({"demo": fixture_project.config}))
     with pytest.raises(ToolError, match="no project is loaded"):
         await server.call_tool(tool, arguments)
-    await server.call_tool("project_load", {"logical_module": "demo"})
+    await server.call_tool("project_load", project_load_arguments(fixture_project))
     assert isinstance(await server.call_tool(tool, arguments), tuple)
 
 
@@ -59,7 +59,7 @@ async def test_invalid_rtl_query_does_not_poison_session(
     message: str,
 ) -> None:
     server = create_server(StaticProjectProvider({"demo": fixture_project.config}))
-    await server.call_tool("project_load", {"logical_module": "demo"})
+    await server.call_tool("project_load", project_load_arguments(fixture_project))
     with pytest.raises(ToolError, match=message):
         await server.call_tool(tool, arguments)
     assert (
@@ -81,7 +81,7 @@ async def test_invalid_rtl_query_does_not_poison_session(
 @pytest.mark.asyncio
 async def test_failed_mcp_reload_preserves_nonempty_diff(fixture_project: FixtureProject) -> None:
     server = create_server(StaticProjectProvider({"demo": fixture_project.config}))
-    await server.call_tool("project_load", {"logical_module": "demo"})
+    await server.call_tool("project_load", project_load_arguments(fixture_project))
     fixture_project.design_file.write_text(
         fixture_project.design_file.read_text(encoding="utf-8").replace("WIDTH(32)", "WIDTH(16)"),
         encoding="utf-8",

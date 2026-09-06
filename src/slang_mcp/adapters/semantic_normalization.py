@@ -7,6 +7,7 @@ that is safe to expose outside the adapter boundary.
 
 from typing import Any
 
+import pyslang
 from pyslang import ast
 
 from slang_mcp.models import ParameterDescription, SourceLocation, SymbolReference
@@ -57,7 +58,21 @@ def parameters(raw: Any) -> tuple[ParameterDescription, ...]:
 def parameter(raw: Any) -> ParameterDescription:
     if isinstance(raw, ast.TypeParameterSymbol):
         return ParameterDescription(raw.name, "type", str(raw.targetType.type), raw.isLocalParam)
-    return ParameterDescription(raw.name, str(raw.type), str(raw.value), raw.isLocalParam)
+    return ParameterDescription(
+        raw.name,
+        str(raw.type),
+        str(raw.value),
+        raw.isLocalParam,
+        _integer_value(raw.value),
+    )
+
+
+def _integer_value(value: Any) -> int | None:
+    """Return a JSON integer only when Slang evaluated an integral known constant."""
+    constant = value.value
+    if isinstance(constant, pyslang.SVInt) and not constant.hasUnknown:
+        return int(constant)
+    return constant if isinstance(constant, int) and not isinstance(constant, bool) else None
 
 
 def dimensions(raw: Any) -> tuple[str, ...]:

@@ -88,7 +88,7 @@ def _opening(
         f"запланированных запусков. "
         + _composition(metadata)
         + " "
-        + "Полный эксперимент на 450 запусков отложен.\n\n"
+        + "Полный эксперимент отложен.\n\n"
         + _gains(modes, records),
         "## 2. Экспериментальная установка\n\nСистемный `copilot` со штатной авторизацией; "
         "Slang подключён непосредственно по stdio. В text-only MCP отключён; в mcp доступен; "
@@ -277,7 +277,8 @@ def _gains(modes: dict[str, Record], records: list[Record]) -> str:
 def _composition(metadata: Record) -> str:
     planned = cast("list[Record]", metadata.get("planned", []))
     return (
-        f"Корпус: 50 кейсов. Текущая выборка — кейсы: {len({p['case_id'] for p in planned})}; "
+        f"Корпус: {len(load_cases())} кейсов. "
+        f"Текущая выборка — кейсы: {len({p['case_id'] for p in planned})}; "
         f"режимы: {len({p['mode'] for p in planned})}; "
         f"повторы: {len({p['repetition'] for p in planned})}. "
         "Проверка одного кейса является smoke, а не исследованием качества."

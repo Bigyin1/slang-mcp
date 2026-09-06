@@ -10,6 +10,7 @@ from slang_mcp.models import (
     SymbolReference,
 )
 from slang_mcp.project import ProjectManager
+from slang_mcp.providers.file_lists import project_from_file_lists
 from slang_mcp.rtl_models import SemanticDiff
 from slang_mcp.services.inspection import InspectionService
 from slang_mcp.services.rtl import RtlService
@@ -34,6 +35,22 @@ class SemanticService:
         if not logical_module.strip():
             raise ValueError("logical_module must not be empty")
         return self._manager.load(logical_module)
+
+    def project_load_file_lists(
+        self,
+        source_file_lists: list[str],
+        top_module: str,
+        include_directory_lists: list[str] | None = None,
+        defines: dict[str, str | None] | None = None,
+    ) -> ProjectSummary:
+        return self._manager.load_config(
+            project_from_file_lists(
+                source_file_lists,
+                include_directory_lists or [],
+                defines or {},
+                top_module,
+            )
+        )
 
     def project_reload(self) -> ProjectSummary:
         return self._manager.reload()

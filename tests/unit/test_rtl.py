@@ -73,6 +73,8 @@ def test_parameters(rtl_service: SemanticService) -> None:
     assert rtl_service.rtl.get_parameters("top.u_leaf").value_kind == "effective"
     assert rtl_service.rtl.get_ports("leaf").items[0].width == 32
     assert rtl_service.rtl.get_parameters("leaf").parameters.items[1].value == "logic"
+    assert rtl_service.rtl.get_parameters("leaf").parameters.items[0].integer_value == 32
+    assert rtl_service.rtl.get_parameters("leaf").parameters.items[1].integer_value is None
     rtl_service.project_reload()
     assert rtl_service.semantic_diff().changes.total_count == 0
 
@@ -85,6 +87,39 @@ def test_connections(rtl_service: SemanticService) -> None:
     )
     assert rtl_service.rtl.get_instance_connections("top.u_leaf").items[1].symbols == ("top.wide",)
     assert rtl_service.rtl.get_instance_connections("top.u_pos").items[1].kind == "unconnected"
+
+
+def test_instance_query_name_filters(rtl_service: SemanticService) -> None:
+    parameters = rtl_service.rtl.get_instance_parameters(
+        "top.u_leaf", names=["MISSING", "WIDTH"]
+    ).parameters
+    connections = rtl_service.rtl.get_instance_connections("top.u_leaf", ports=["q", "d"])
+
+    assert [(item.name, item.value) for item in parameters.items] == [("WIDTH", "64")]
+    assert parameters.total_count == 1
+    assert [item.port.name for item in connections.items] == ["d", "q"]
+    assert connections.total_count == 2
+    assert rtl_service.rtl.get_instance_connections(
+        "top.u_leaf", limit=1, ports=["d", "q"]
+    ).truncated
+    assert rtl_service.rtl.get_instance_connections("top.u_leaf", ports=["missing"]).items == ()
+
+
+def test_list_instance_facts(rtl_service: SemanticService) -> None:
+    facts = rtl_service.rtl.list_instance_facts(
+        "leaf",
+        parameter_names=["WIDTH"],
+        port_names=["q"],
+    )
+
+    generated = tuple(item for item in facts.items if item.instance.path.startswith("top.gen"))
+    assert [item.parameters.items[0].integer_value for item in generated] == [1, 1]
+    assert [item.connections.items[0].port.name for item in generated] == ["q", "q"]
+    assert all(item.connections.items[0].kind == "unconnected" for item in generated)
+    assert rtl_service.rtl.list_instance_facts("leaf", limit=1).truncated
+    assert rtl_service.rtl.list_instance_facts("leaf", fact_limit=1).items[0].parameters.truncated
+    with pytest.raises(ValueError, match="parameter_names"):
+        rtl_service.rtl.list_instance_facts("leaf", parameter_names=["x"] * 501)
 
 
 def test_instances(rtl_service: SemanticService) -> None:

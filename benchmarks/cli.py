@@ -28,7 +28,7 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--seed", type=int, default=20260905)
     result.add_argument("--mode", choices=MODES)
     result.add_argument("--category")
-    result.add_argument("--case")
+    result.add_argument("--case", action="append")
     result.add_argument("--output", type=Path, default=Path("benchmark_results"))
     result.add_argument("--dry-run", action="store_true")
     result.add_argument("--force", action="store_true")
@@ -60,8 +60,9 @@ def _settings(args: argparse.Namespace) -> Settings:
 
 def _experiment(args: argparse.Namespace) -> None:
     settings = _settings(args)
-    cases = select_cases(load_cases(), settings, Selection(args.mode, args.category, args.case))
-    plan = _plan(cases, settings, Selection(args.mode, args.category, args.case))
+    selection = Selection(args.mode, args.category, tuple(args.case or ()))
+    cases = select_cases(load_cases(), settings, selection)
+    plan = _plan(cases, settings, selection)
     if args.command == "list" or args.dry_run:
         print(json.dumps(plan, indent=2))
         return
@@ -69,7 +70,7 @@ def _experiment(args: argparse.Namespace) -> None:
     output.mkdir(parents=True, exist_ok=True)
     _manifest(output, settings, plan)
     run_plan(
-        Experiment(settings, Selection(args.mode, args.category, args.case), output, args.force),
+        Experiment(settings, selection, output, args.force),
         cases,
     )
     _terminal(generate_report(output), output)
