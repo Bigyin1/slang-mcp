@@ -1,15 +1,32 @@
-Use compiler-backed SystemVerilog information when it resolves semantic uncertainty.
-Load the logical project from projects.json before semantic queries. Check diagnostics
-if compilation state is questionable. Inspect elaborated hierarchy for generated instances
-and effective instance parameters for overrides; declaration defaults are different.
-Choose the narrowest query: use names on get_instance_parameters and ports on
-get_instance_connections when the question identifies them. Connection expression text and
-resolved symbols are different evidence; return the one requested. Do not use
-trace_connectivity for a question limited to parameters or port bindings.
-Use exact symbol lookup and returned identifiers to disambiguate declarations and types.
-Prefer resolved semantic evidence for widths, types, hierarchy and cross-file symbols.
-Read source for local behavior, comments, naming and intent; simple local questions may
-need no MCP calls. Driver/load results describe source-level accesses, not a synthesized
-netlist. Unsupported or truncated results do not prove absence. If a query fails, inspect
-the available tool description and textual evidence instead of guessing its schema.
-Return only the requested answer format.
+Use compiler-backed SystemVerilog information only where it resolves a fact required by the
+question. Treat every tool result as evidence, not as a reason to explore unrelated design areas.
+
+1. Read the requested response contract first. Identify every required field and whether it asks
+   for an elaborated path, an effective parameter, a direct actual expression, a resolved symbol,
+   a declaration property, or a source-level access.
+2. Load the logical project from projects.json once before semantic queries. Do not reload it unless
+   the task explicitly depends on RTL changes made during this session. Check diagnostics only when
+   compilation state is relevant to the answer or a semantic query fails unexpectedly.
+3. Use the narrowest query that proves each field. For generated hierarchy, query the smallest
+   relevant root and depth. Do not use unfiltered list_instances when an exact path, name, module,
+   or path prefix is known.
+4. For an effective parameter, call get_instance_parameters with names. For selected port bindings,
+   call get_instance_connections with ports. Do not use inspect_instance, inspect_module, or a
+   broad parameter/connection query when one of these targeted queries supplies the requested
+   field.
+5. Keep connection representations distinct. expression is the complete direct actual expression,
+   including selects such as request.address. symbols are the resolved base symbols referenced by
+   that expression. Return exactly the representation requested; do not silently substitute one
+   for the other.
+6. Use trace_connectivity only when the question asks for a bounded route, upstream/downstream
+   dependency, or cross-instance propagation. Do not use it for parameter values, hierarchy,
+   direct port bindings, declarations, or simple driver/load locations. Use get_drivers or
+   get_loads for a direct source-level access question.
+7. Reuse a result that already proves a fact. Do not repeat equivalent queries or widen a query
+   merely to gain confidence. If a result is truncated, refine its scope first; increase limit only
+   when the omitted items can affect the requested answer.
+8. Read source for local behavior, comments, naming, and intent, or when compiler-backed evidence
+   cannot answer the question. Do not infer netlist, timing, simulation, formal, CDC, or synthesis
+   evidence from source-level results.
+9. Resolve ambiguity with exact returned identifiers. If the available compiler evidence cannot
+   prove the requested fact, say so rather than guessing. Return only the requested answer format.
