@@ -57,6 +57,21 @@ def test_accesses(rtl_service: SemanticService) -> None:
     assert rtl_service.rtl.get_references("top.c", kind="declaration").total_count == 1
 
 
+def test_access_and_connectivity_indexes_are_lazy(rtl_service: SemanticService) -> None:
+    index = rtl_service._manager.design.rtl  # pylint: disable=protected-access
+
+    assert not _access_indexed(index)
+    assert not _connectivity_indexed(index)
+    assert rtl_service.rtl.get_instance_parameters("top.u_leaf").parameters.items[0].value == "64"
+    assert not _access_indexed(index)
+
+    assert rtl_service.rtl.get_signal_reads("top.a").total_count >= 4
+    assert _access_indexed(index)
+
+    rtl_service.rtl.trace_connectivity("top.a", "loads")
+    assert _connectivity_indexed(index)
+
+
 def test_procedures(rtl_service: SemanticService) -> None:
     assert {item.kind for item in rtl_service.rtl.get_procedural_blocks("top").items} == {
         "AlwaysFF",
@@ -151,6 +166,14 @@ def test_scoped_symbols(rtl_service: SemanticService) -> None:
         ).width
         == 32
     )
+
+
+def _connectivity_indexed(index: object) -> bool:
+    return bool(vars(index)["_connectivity_indexed"])
+
+
+def _access_indexed(index: object) -> bool:
+    return vars(index)["access"] is not None
 
 
 def _source_service(tmp_path: Path, source: str) -> SemanticService:

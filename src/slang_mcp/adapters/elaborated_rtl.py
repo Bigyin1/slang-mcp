@@ -60,31 +60,34 @@ class ElaboratedRtlIndex:
         self.raw_instances: dict[str, Any] = {}
         self.defaults: dict[str, Any] = {}
         self.default_compilations: list[Any] = []
-        self.access = SourceAccessIndex(manager)
+        self.access: SourceAccessIndex | None = None
+        self.references_by_name: dict[str, list[Reference]] = {}
+        self.connectivity: tuple[ConnectivityHop, ...] = ()
+        self.connectivity_by_source: dict[str, tuple[ConnectivityHop, ...]] = {}
+        self.connectivity_by_target: dict[str, tuple[ConnectivityHop, ...]] = {}
         self._collect_instances()
         self.instances = {
             path: replace(item, parent=self._parent_instance(path))
             for path, item in self.instances.items()
         }
-        for raw in self.raw_instances.values():
-            self._scan_instance(raw)
-        self._index_references()
-        self._index_connectivity()
+        self._access_indexed: bool = False
+        self._connectivity_indexed: bool = False
 
     def _collect_instances(self) -> None:
         for instance in self.compilation.getRoot().topInstances:
             instance.visit(self._collect)
 
     def _index_references(self) -> None:
-        self.references_by_name: dict[str, list[Reference]] = defaultdict(list)
-        for item in self.access.references:
+        access = self._access()
+        self.references_by_name = defaultdict(list)
+        for item in access.references:
             self.references_by_name[item.symbol.qualified_name].append(item)
 
     def _index_connectivity(self) -> None:
-        edges = {self._connectivity_identity(item): item for item in self.access.connectivity}
+        edges = {self._connectivity_identity(item): item for item in self._access().connectivity}
         self.connectivity = tuple(sorted(edges.values(), key=self._connectivity_key))
-        self.connectivity_by_source: dict[str, tuple[ConnectivityHop, ...]] = {}
-        self.connectivity_by_target: dict[str, tuple[ConnectivityHop, ...]] = {}
+        self.connectivity_by_source = {}
+        self.connectivity_by_target = {}
         for edge in self.connectivity:
             self.connectivity_by_source[edge.source] = (
                 *self.connectivity_by_source.get(edge.source, ()),
@@ -94,6 +97,27 @@ class ElaboratedRtlIndex:
                 *self.connectivity_by_target.get(edge.target, ()),
                 edge,
             )
+
+    def _ensure_access_index(self) -> None:
+        if self._access_indexed:
+            return
+        self.access = SourceAccessIndex(self.manager)
+        for raw in self.raw_instances.values():
+            self._scan_instance(raw)
+        self._index_references()
+        self._access_indexed = True
+
+    def _ensure_connectivity_index(self) -> None:
+        if self._connectivity_indexed:
+            return
+        self._ensure_access_index()
+        self._index_connectivity()
+        self._connectivity_indexed = True
+
+    def _access(self) -> SourceAccessIndex:
+        if self.access is None:
+            raise RuntimeError("source access index has not been built")
+        return self.access
 
     def _parent_instance(self, path: str) -> str | None:
         while "." in path:
@@ -115,13 +139,14 @@ class ElaboratedRtlIndex:
         return ast.VisitAction.Advance
 
     def _scan_instance(self, raw: Any) -> None:
-        self.access.scan(
+        access = self._access()
+        access.scan(
             raw.body,
             AccessContext(str(raw.hierarchicalPath), str(raw.hierarchicalPath)),
         )
         for item in raw.portConnections:
             if isinstance(item.port, ast.PortSymbol) and item.expression is not None:
-                self.access.port_actual(
+                access.port_actual(
                     item.expression,
                     AccessContext(
                         str(raw.hierarchicalPath).rsplit(".", 1)[0],
@@ -130,7 +155,7 @@ class ElaboratedRtlIndex:
                         "port_connection",
                     ),
                 )
-                self.access.port_binding(
+                access.port_binding(
                     item.expression,
                     item.port,
                     AccessContext(str(raw.hierarchicalPath), str(raw.hierarchicalPath)),
@@ -200,12 +225,13 @@ class ElaboratedRtlIndex:
 
     def references(self, symbol: str) -> tuple[Reference, ...]:
         resolved = self.resolve_signal(symbol).symbol
+        if resolved.kind in {"module", "interface"}:
+            return self._definition_references(resolved)
+        self._ensure_access_index()
         found = tuple(
             replace(item, symbol=resolved)
             for item in self.references_by_name.get(resolved.qualified_name, ())
         )
-        if resolved.kind in {"module", "interface"}:
-            return self._definition_references(resolved)
         if not any(item.kind == "declaration" for item in found):
             found = (self._declaration(resolved), *found)
         return found
@@ -217,6 +243,7 @@ class ElaboratedRtlIndex:
         max_depth: int,
         limit: int,
     ) -> ConnectivityTrace:
+        self._ensure_connectivity_index()
         resolved = self.resolve_signal(signal).symbol
         start = resolved.qualified_name
         state = ConnectivityTraversalState(
@@ -339,9 +366,14 @@ class ElaboratedRtlIndex:
         return self.design.scope_members(scope)
 
     def procedures(self, name: str) -> tuple[Procedure, ...]:
+        self._ensure_access_index()
         name = self.definition(name).name
         return tuple(
             item
-            for item in self.access.procedures
+            for item in self._access().procedures
             if self.instances[item.instance].sv_module == name
         )
+
+    def procedure_writes(self, block_id: str) -> tuple[str, ...]:
+        self._ensure_access_index()
+        return self._access().block_writes[block_id]
