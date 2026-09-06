@@ -125,6 +125,11 @@ packed width, unpacked dimensions, default value и сведения об interf
 создают ошибку. Используйте его, когда нужен один effective parameter, чтобы не
 передавать агенту все типовые и конфигурационные параметры instance.
 
+У non-type parameters поле `value` сохраняет SystemVerilog-представление, а
+`integer_value` содержит JSON integer, только если Slang вычислил известную
+целую константу. Для type parameters и значений с X/Z `integer_value` равен
+`null`.
+
 ### `get_instance_connections`
 
 Аргументы: `instance_path`, `limit=100`, необязательный `ports`.
@@ -138,6 +143,19 @@ location, actual type и width. `kind` имеет значения `signal`, `ex
 отсутствующие имена не создают ошибку. `expression` — полный direct actual,
 например `request.address`; `symbols` — разрешённые базовые symbols, например
 `request`. Указывайте в вопросе, какое из этих представлений требуется.
+
+### `list_instance_facts`
+
+Аргументы: `sv_module`, необязательные `parameter_names`, `port_names`,
+`limit=100`, `fact_limit=100`.
+
+Возвращает page elaborated instances заданного module type. В каждой записи есть
+`instance`, page effective `parameters` и page resolved `connections`.
+`parameter_names` и `port_names` выбирают точные имена в declaration order.
+`limit` ограничивает число instances, `fact_limit` — каждую вложенную коллекцию;
+оба значения должны быть от 1 до 500. Это предпочтительный запрос для inventory
+нескольких однотипных instances: он не требует сначала перечислять пути, а затем
+вызывать `get_instance_parameters` для каждого из них.
 
 ### `list_instances`
 

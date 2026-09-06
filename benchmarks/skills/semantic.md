@@ -10,9 +10,11 @@ question. Treat every tool result as evidence, not as a reason to explore unrela
 3. Use the narrowest query that proves each field. For generated hierarchy, query the smallest
    relevant root and depth. Do not use unfiltered list_instances when an exact path, name, module,
    or path prefix is known.
-4. For an effective parameter, call get_instance_parameters with names. For selected port bindings,
-   call get_instance_connections with ports. Do not use inspect_instance, inspect_module, or a
-   broad parameter/connection query when one of these targeted queries supplies the requested
+4. For an effective parameter on one instance, call get_instance_parameters with names. For an
+   inventory of instances of the same module type, call list_instance_facts with parameter_names
+   and port_names instead of one parameter query per instance. For selected port bindings on one
+   instance, call get_instance_connections with ports. Do not use inspect_instance, inspect_module,
+   or a broad parameter/connection query when one of these targeted queries supplies the requested
    field.
 5. Keep connection representations distinct. expression is the complete direct actual expression,
    including selects such as request.address. symbols are the resolved base symbols referenced by

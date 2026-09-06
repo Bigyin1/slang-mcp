@@ -10,6 +10,7 @@ from slang_mcp.rtl_models import (
     Connection,
     ConnectivityTrace,
     Instance,
+    InstanceFacts,
     Page,
     Parameters,
     Port,
@@ -123,6 +124,56 @@ class RtlService:
             limit,
         )
 
+    def list_instance_facts(  # pylint: disable=too-many-locals
+        self,
+        sv_module: str,
+        parameter_names: list[str] | None = None,
+        port_names: list[str] | None = None,
+        limit: int = 100,
+        fact_limit: int = 100,
+    ) -> Page[InstanceFacts]:
+        """Return selected effective facts for instances of one module type.
+
+        The outer page limits instances; every nested fact collection is paged
+        separately to retain bounded MCP responses.
+        """
+        _validate_names(parameter_names, "parameter_names")
+        _validate_names(port_names, "port_names")
+        instances = page(
+            tuple(
+                item
+                for item in self.manager.design.rtl.instances.values()
+                if _instance_matches(item, sv_module, None, None)
+            ),
+            limit,
+        )
+        return Page(
+            tuple(
+                InstanceFacts(
+                    instance,
+                    page(
+                        _named(
+                            self.manager.design.rtl.parameters(instance.path, effective=True),
+                            parameter_names,
+                            lambda item: item.name,
+                        ),
+                        fact_limit,
+                    ),
+                    page(
+                        _named(
+                            self.manager.design.rtl.connections(instance.path),
+                            port_names,
+                            lambda item: item.port.name,
+                        ),
+                        fact_limit,
+                    ),
+                )
+                for instance in instances.items
+            ),
+            instances.total_count,
+            instances.truncated,
+        )
+
     def list_instances(
         self,
         sv_module: str | None = None,
@@ -212,10 +263,14 @@ def _named(
     """Keep declaration-order items matching optional exact names."""
     if names is None:
         return items
-    if len(names) > MAX_RESULTS:
-        raise ValueError("names must contain at most 500 items")
+    _validate_names(names, "names")
     requested = frozenset(names)
     return tuple(item for item in items if identifier(item) in requested)
+
+
+def _validate_names(names: list[str] | None, argument: str) -> None:
+    if names is not None and len(names) > MAX_RESULTS:
+        raise ValueError(f"{argument} must contain at most 500 items")
 
 
 def _instance_matches(

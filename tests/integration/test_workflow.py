@@ -63,6 +63,7 @@ async def test_fastmcp_schema_and_handlers(fixture_project: FixtureProject) -> N
         "get_ports",
         "get_parameters",
         "get_instance_connections",
+        "list_instance_facts",
         "list_instances",
         "find_instance",
         "get_instance_parameters",

@@ -93,6 +93,7 @@ The following tools extend the original eight tools. Collections use
 | `get_parameters` | `target` | Module defaults or effective values for a nested instance path |
 | `get_instance_parameters` | `instance_path` | Effective parameters, including top instances |
 | `get_instance_connections` | `instance_path` | Formal ports, actual expression text and referenced symbols |
+| `list_instance_facts` | `sv_module`, optional parameter / port name filters | Effective facts for a bounded page of elaborated instances |
 | `list_instances` | optional `sv_module`, `name`, `path_prefix` | Elaborated instance occurrences |
 | `find_instance` | `query` (no `limit`) | Exact path or unique exact name; ambiguity lists candidates |
 | `get_signal_reads`, `get_signal_writes` | `signal` | Access locations and assignment/port contexts |
@@ -109,6 +110,10 @@ For example, `get_parameters("leaf")` returns `value_kind: "declared_default"`, 
 `get_instance_parameters("top.u_leaf")` returns `value_kind: "effective"`. A default `WIDTH=32`
 and an overridden `WIDTH=64` are evaluated in separate Slang elaborations. Bare top names in
 `get_parameters` denote declarations; use the explicit instance tool for effective top values.
+Every non-type parameter also carries `integer_value` when Slang evaluated it to an integral
+constant without X or Z bits; `value` retains the SystemVerilog rendering. For inventory
+questions, `list_instance_facts("leaf", parameter_names=["WIDTH"])` avoids a separate parameter
+query for each elaborated `leaf` instance.
 Default-scope member IDs start with `default:` and can be passed to `describe_symbol`.
 Nested module definitions that cannot be independently instantiated report an explicit unavailable
 default-signature error; their effective instance queries still work. Snapshots retain their

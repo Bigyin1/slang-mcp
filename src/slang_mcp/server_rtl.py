@@ -102,6 +102,33 @@ def _register_2(server: FastMCP[None], service: SemanticService) -> None:
     def find_instance(query: str) -> dict[str, Any]:
         return model_dict(safe(lambda: service.rtl.find_instance(query)))
 
+    @server.tool(
+        description=(
+            "Selected effective parameters and resolved port connections for every elaborated "
+            "instance of one module type. Optional parameter_names and port_names select exact "
+            "names; limit bounds instances and fact_limit bounds each nested collection."
+        ),
+        annotations=READ_ONLY,
+    )
+    def list_instance_facts(
+        sv_module: str,
+        parameter_names: list[str] | None = None,
+        port_names: list[str] | None = None,
+        limit: int = 100,
+        fact_limit: int = 100,
+    ) -> dict[str, Any]:
+        return model_dict(
+            safe(
+                lambda: service.rtl.list_instance_facts(
+                    sv_module,
+                    parameter_names,
+                    port_names,
+                    limit,
+                    fact_limit,
+                )
+            )
+        )
+
 
 def _register_3(server: FastMCP[None], service: SemanticService) -> None:
 
