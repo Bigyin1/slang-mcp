@@ -17,7 +17,7 @@ from slang_mcp.transport import safe as _safe
 
 
 def create_server(provider: ProjectProvider | None = None) -> FastMCP[None]:
-    """Create a configured read-only MCP server."""
+    """Create a read-only MCP server; provider injection is test-only."""
     service = SemanticService(ProjectManager(provider))
     server: FastMCP[None] = FastMCP(
         "slang-mcp",

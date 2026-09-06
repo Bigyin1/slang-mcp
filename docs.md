@@ -9,6 +9,10 @@
 его только после изменения RTL или build inputs; затем выполняйте все нужные
 semantic-запросы к одной загруженной compilation.
 
+`StaticProjectProvider` и static JSON manifests сохранены только для unit,
+integration и offline benchmark validation. Stdio server не принимает static
+config и загружает production-проекты только через `project_load` file lists.
+
 ## Общие правила
 
 - `top_module` — единственный SystemVerilog module, который Slang использует

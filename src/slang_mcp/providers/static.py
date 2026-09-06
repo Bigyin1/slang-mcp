@@ -1,4 +1,8 @@
-"""Static in-memory and JSON-backed project provider."""
+"""Test-only static project provider for fixtures and offline validation.
+
+The public MCP API loads projects from direct absolute-path file lists. Do not
+wire this adapter into production server startup.
+"""
 
 from __future__ import annotations
 
@@ -12,7 +16,7 @@ from slang_mcp.models import ProjectConfig
 
 
 class StaticProjectProvider:
-    """Resolve logical modules from an immutable in-memory mapping."""
+    """Test-only resolver for logical-module fixtures and validation manifests."""
 
     def __init__(self, projects: Mapping[str, ProjectConfig]) -> None:
         self._projects = dict(projects)

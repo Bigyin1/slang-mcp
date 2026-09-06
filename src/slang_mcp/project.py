@@ -11,7 +11,11 @@ from slang_mcp.semantic_snapshot import compare, snapshot
 
 
 class ProjectManager:
-    """Resolve, validate, compile, and retain one logical project."""
+    """Validate, compile, and retain one project.
+
+    ``provider`` supports test-only legacy fixtures. Production code calls
+    ``load_config`` with direct file-list inputs normalized by the service.
+    """
 
     def __init__(self, provider: ProjectProvider | None = None) -> None:
         self._provider = provider
@@ -27,6 +31,7 @@ class ProjectManager:
         return self._design
 
     def load(self, logical_module: str) -> ProjectSummary:
+        """Load a test-only legacy logical-module fixture."""
         if self._provider is None:
             raise ValueError("logical-module loading is not configured")
         config = self._provider.resolve(logical_module)

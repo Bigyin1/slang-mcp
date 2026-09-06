@@ -173,8 +173,9 @@ For example, a parameter override change includes:
 
 Thin MCP handlers call `SemanticService`, which uses `ProjectManager` for the active compilation.
 `project_load` converts the direct file-list inputs into `ProjectConfig`. The retained
-`StaticProjectProvider` is a compatibility adapter for local tests and does not define the public
-MCP contract. All dynamic `pyslang` interaction and object traversal stays inside `adapters/`;
+`StaticProjectProvider` is a **test-only** compatibility adapter for local fixtures and offline
+benchmark validation; production server startup does not import or configure it. It does not define
+the public MCP contract. All dynamic `pyslang` interaction and object traversal stays inside `adapters/`;
 only project-owned dataclasses cross that boundary.
 
 The public terminology is deliberate: `top_module` is the selected SystemVerilog elaboration top,
