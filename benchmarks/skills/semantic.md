@@ -2,6 +2,8 @@ Use compiler-backed SystemVerilog information when it resolves semantic uncertai
 Load the logical project from projects.json before semantic queries. Check diagnostics
 if compilation state is questionable. Inspect elaborated hierarchy for generated instances
 and effective instance parameters for overrides; declaration defaults are different.
+Project reload recompiles and reindexes the full configured RTL. Call it only after changing
+RTL or build inputs, then make all required semantic queries against that one loaded project.
 Use exact symbol lookup and returned identifiers to disambiguate declarations and types.
 Prefer resolved semantic evidence for widths, types, hierarchy and cross-file symbols.
 Read source for local behavior, comments, naming and intent; simple local questions may

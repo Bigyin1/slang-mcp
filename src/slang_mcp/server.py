@@ -40,7 +40,11 @@ def _register_project_tools(server: FastMCP[None], service: SemanticService) -> 
         return _model_dict(_safe(lambda: service.project_load(logical_module)))
 
     @server.tool(
-        description="Re-resolve and rebuild the active logical project.",
+        description=(
+            "Re-resolve and rebuild the active logical project. This recompiles and reindexes "
+            "all configured RTL, so call it only after RTL or build inputs change; batch all "
+            "semantic queries against the resulting loaded project."
+        ),
         annotations=_READ_ONLY,
     )
     def project_reload() -> dict[str, Any]:
