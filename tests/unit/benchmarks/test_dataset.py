@@ -77,6 +77,13 @@ def test_default_cli_only_schedules_three_runs() -> None:
     assert len(schedule(cases, settings, Selection())) == 3
 
 
+def test_cli_accepts_multiple_case_filters() -> None:
+    args = parser().parse_args(["list", "--case", "hier_generate", "--case", "type_override"])
+    selection = Selection(case=tuple(args.case))
+    cases = select_cases(load_cases(), Settings(), selection)
+    assert {case.id for case in cases} == {"hier_generate", "type_override"}
+
+
 def test_json_scalar_not_accepted_for_array() -> None:
     with pytest.raises(ValueError, match="shape"):
         normalize("3", "array")

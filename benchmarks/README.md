@@ -34,7 +34,7 @@ Larger studies are opt-in; they have **not** been run as part of the initial smo
 .venv/bin/python -m benchmarks run --profile full --repetitions 3 --output benchmark_results/full
 ```
 
-Filters: `--case`, `--category`, `--mode`; limits: `--timeout` (default 300 seconds),
+Filters: repeatable `--case`, `--category`, `--mode`; limits: `--timeout` (default 300 seconds),
 `--repetitions`; randomization: `--seed` (default 20260905). One agent runs at a time.
 The installed version must be 1.0.83. Version is checked before each run. In this installation,
 `--no-auto-update` caused the system launcher to select its older bundled runtime; the harness
