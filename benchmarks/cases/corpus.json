@@ -294,6 +294,60 @@
       ],
       "rationale": "The configured FPNEW bulk instance elaborates four operation groups, each with a direct fpnew_opgroup_block child.",
       "pilot": true
+    },
+    {
+      "id": "cva6_mmu_tlb_binding_comparison",
+      "category": "types/parameters",
+      "project": "cva6_cv64a6_imafdc_sv39",
+      "question": "The elaborated MMU instance cva6.ex_stage_i.lsu_i.gen_mmu.i_cva6_mmu contains instruction and data TLBs. Return one JSON object with exactly two keys, itlb and dtlb. Each value must contain path (the elaborated instance path), entries (effective TLB_ENTRIES as a decimal integer), and actuals (a map of the four formal inputs s_st_enbl_i, g_st_enbl_i, lu_access_i, and lu_vaddr_i to their single fully qualified parent signal). Resolve names in the elaborated design, preserve this exact nesting, and include no other keys.",
+      "response_contract": "object",
+      "oracle": {
+        "itlb": {
+          "path": "cva6.ex_stage_i.lsu_i.gen_mmu.i_cva6_mmu.i_itlb",
+          "entries": 16,
+          "actuals": {
+            "s_st_enbl_i": "cva6.ex_stage_i.lsu_i.gen_mmu.i_cva6_mmu.enable_translation_i",
+            "g_st_enbl_i": "cva6.ex_stage_i.lsu_i.gen_mmu.i_cva6_mmu.enable_g_translation_i",
+            "lu_access_i": "cva6.ex_stage_i.lsu_i.gen_mmu.i_cva6_mmu.itlb_lu_access",
+            "lu_vaddr_i": "cva6.ex_stage_i.lsu_i.gen_mmu.i_cva6_mmu.icache_areq_i"
+          }
+        },
+        "dtlb": {
+          "path": "cva6.ex_stage_i.lsu_i.gen_mmu.i_cva6_mmu.i_dtlb",
+          "entries": 16,
+          "actuals": {
+            "s_st_enbl_i": "cva6.ex_stage_i.lsu_i.gen_mmu.i_cva6_mmu.en_ld_st_translation_i",
+            "g_st_enbl_i": "cva6.ex_stage_i.lsu_i.gen_mmu.i_cva6_mmu.en_ld_st_g_translation_i",
+            "lu_access_i": "cva6.ex_stage_i.lsu_i.gen_mmu.i_cva6_mmu.dtlb_lu_access",
+            "lu_vaddr_i": "cva6.ex_stage_i.lsu_i.gen_mmu.i_cva6_mmu.lsu_vaddr_i"
+          }
+        }
+      },
+      "rationale": "The selected target elaborates both cva6_tlb instances below the MMU. Slang reports the inherited TLB_ENTRIES value as 16 and resolves each selected actual through the MMU scope, including the ITLB virtual-address struct member's parent signal.",
+      "pilot": false
+    },
+    {
+      "id": "cva6_active_cache_binding_inventory",
+      "category": "hierarchy",
+      "project": "cva6_cv64a6_imafdc_sv39",
+      "question": "For the active cache subsystem elaborated below cva6, return a JSON object with exactly instance, module, and actuals keys. instance is its elaborated path; module is its instantiated module type; actuals maps exactly these formal ports to their single fully qualified top-level actual signals: busy_o, icache_areq_i, icache_areq_o, dcache_req_ports_i, dcache_req_ports_o, noc_req_o, noc_resp_i, and wbuffer_empty_o. Use the cache subsystem selected by the supplied CV64A6 build manifest, resolve names in the elaborated design, and include no other keys.",
+      "response_contract": "object",
+      "oracle": {
+        "instance": "cva6.gen_cache_wt.i_cache_subsystem",
+        "module": "wt_cache_subsystem",
+        "actuals": {
+          "busy_o": "cva6.busy_cache_ctrl",
+          "icache_areq_i": "cva6.icache_areq_ex_cache",
+          "icache_areq_o": "cva6.icache_areq_cache_ex",
+          "dcache_req_ports_i": "cva6.dcache_req_to_cache",
+          "dcache_req_ports_o": "cva6.dcache_req_from_cache",
+          "noc_req_o": "cva6.noc_req_o",
+          "noc_resp_i": "cva6.noc_resp_i",
+          "wbuffer_empty_o": "cva6.dcache_commit_wbuffer_empty"
+        }
+      },
+      "rationale": "The cv64a6_imafdc_sv39 configuration selects the write-through cache generate branch. The elaborated wt_cache_subsystem instance exposes these direct bindings in the cva6 top scope.",
+      "pilot": false
     }
   ]
 }

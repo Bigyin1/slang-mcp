@@ -12,7 +12,7 @@ from slang_mcp.project import ProjectManager
 from slang_mcp.providers.static import StaticProjectProvider
 from slang_mcp.services import SemanticService
 
-CORPUS_SIZE = 15
+CORPUS_SIZE = 17
 PILOT_SIZE = 10
 
 
@@ -23,7 +23,7 @@ def validate() -> dict[str, object]:
         if case.project not in projects:
             raise ValueError(f"Unknown project: {case.project}")
     if len(cases) != CORPUS_SIZE or sum(case.pilot for case in cases) != PILOT_SIZE:
-        raise ValueError("Expected curated 15-case corpus and 10-case pilot")
+        raise ValueError("Expected curated 17-case corpus and 10-case pilot")
     return {
         "cases": len(cases),
         "pilot": sum(case.pilot for case in cases),
