@@ -37,10 +37,11 @@
 }
 ```
 
-Читает переданные file lists и создаёт Slang compilation. Каждая непустая строка
+Читает переданные file lists и создаёт Slang compilation. В `source_file_lists`
+сначала передавайте lists packages, затем RTL и models. Каждая непустая строка
 list-файла должна быть абсолютным путём: в `source_file_lists` — к source file,
-в `include_directory_lists` — к каталогу. Порядок source paths сохраняется,
-дубликаты устраняются. Возвращает количества source files, include dirs и
+в `include_directory_lists` — к каталогу. Порядок source paths и дубликаты
+сохраняются. Возвращает количества source files, include dirs и
 defines, configured top и количество error/warning diagnostics. Успешная
 компиляция с diagnostics всё равно доступна для анализа.
 

@@ -34,8 +34,9 @@ def _register_project_tools(server: FastMCP[None], service: SemanticService) -> 
 
     @server.tool(
         description=(
-            "Compile one SystemVerilog top from ordered file lists. Each non-empty list entry "
-            "must be an absolute path; source order is preserved."
+            "Compile one SystemVerilog top from ordered file lists. Pass package lists first, "
+            "then RTL and model lists. Each non-empty list entry must be an absolute path; "
+            "source order and duplicates are preserved."
         ),
         annotations=_READ_ONLY,
     )

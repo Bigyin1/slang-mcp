@@ -25,7 +25,8 @@ Start the server without a build manifest:
 
 `project_load` accepts ordered paths to plain UTF-8 file lists. Every non-empty
 line must be an absolute path: source lists contain source files and include lists
-contain directories. Source order is preserved; duplicate paths are removed. A
+contain directories. Pass package lists first, then RTL and model lists. Source
+order and duplicate paths are preserved. A
 `null` define has no replacement text; a string becomes `NAME=value`.
 
 A minimal stdio client configuration is:

@@ -14,7 +14,7 @@ def project_from_file_lists(
     defines: dict[str, str | None],
     top_module: str,
 ) -> ProjectConfig:
-    """Build compiler inputs from ordered lists of absolute source and include paths."""
+    """Build compiler inputs while retaining supplied order and duplicate paths."""
     if not top_module.strip():
         raise ValueError("top_module must not be empty")
     return ProjectConfig(
@@ -38,7 +38,7 @@ def _read_paths(
         raise ValueError("source_file_lists must contain at least one file list")
     paths = _list_entries(list_files, argument)
     kind = "include directory" if expect_directory else "source file"
-    return _validated_unique_paths(paths, kind, expect_directory)
+    return _validated_paths(paths, kind, expect_directory)
 
 
 def _list_entries(  # pylint: disable=too-many-locals
@@ -56,18 +56,11 @@ def _list_entries(  # pylint: disable=too-many-locals
     return result
 
 
-def _validated_unique_paths(  # pylint: disable=too-many-locals
-    paths: list[Path], kind: str, expect_directory: bool
-) -> tuple[Path, ...]:
-    result: list[Path] = []
-    seen: set[Path] = set()
+def _validated_paths(paths: list[Path], kind: str, expect_directory: bool) -> tuple[Path, ...]:
     for item in paths:
         if not (item.is_dir() if expect_directory else item.is_file()):
             raise InvalidProjectConfigError(f"missing or invalid {kind}: {item}")
-        if item not in seen:
-            seen.add(item)
-            result.append(item)
-    return tuple(result)
+    return tuple(paths)
 
 
 def _absolute(path: Path, argument: str) -> Path:
