@@ -3,20 +3,22 @@
 from __future__ import annotations
 
 from dataclasses import asdict
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from mcp.server.fastmcp import FastMCP
 
 from slang_mcp.project import ProjectManager
-from slang_mcp.providers import ProjectProvider
 from slang_mcp.server_rtl import register_rtl_tools
 from slang_mcp.services import SemanticService
 from slang_mcp.transport import READ_ONLY as _READ_ONLY
 from slang_mcp.transport import model_dict as _model_dict
 from slang_mcp.transport import safe as _safe
 
+if TYPE_CHECKING:
+    from slang_mcp.providers.static import StaticProjectProvider
 
-def create_server(provider: ProjectProvider | None = None) -> FastMCP[None]:
+
+def create_server(provider: StaticProjectProvider | None = None) -> FastMCP[None]:
     """Create a read-only MCP server; provider injection is test-only."""
     service = SemanticService(ProjectManager(provider))
     server: FastMCP[None] = FastMCP(

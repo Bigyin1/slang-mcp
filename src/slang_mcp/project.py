@@ -1,13 +1,16 @@
 """Active compilation lifecycle management."""
 
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from slang_mcp.adapters import SlangDesign
 from slang_mcp.errors import InvalidProjectConfigError, ProjectNotLoadedError
 from slang_mcp.models import ProjectConfig, ProjectInfo, ProjectSummary
-from slang_mcp.providers import ProjectProvider
 from slang_mcp.rtl_models import SemanticDiff
 from slang_mcp.semantic_snapshot import compare, snapshot
+
+if TYPE_CHECKING:
+    from slang_mcp.providers.static import StaticProjectProvider
 
 
 class ProjectManager:
@@ -17,7 +20,7 @@ class ProjectManager:
     ``load_config`` with direct file-list inputs normalized by the service.
     """
 
-    def __init__(self, provider: ProjectProvider | None = None) -> None:
+    def __init__(self, provider: "StaticProjectProvider | None" = None) -> None:
         self._provider = provider
         self._config: ProjectConfig | None = None
         self._design: SlangDesign | None = None
