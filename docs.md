@@ -134,9 +134,10 @@ parameters, ports и непосредственных members, когда эти
 
 Аргументы: необязательные `root`, `max_depth`.
 
-Возвращает `roots`: элаборированное instance/generate tree. `root` — top instance;
-без него возвращаются все tops. `max_depth` должен быть от 0 до 50. Дочерние узлы
-содержат path, name, kind, `sv_module` и `children`.
+Возвращает `roots`: элаборированное instance/generate tree. `root` может быть точным
+path любого элаборированного instance или generate-блока; для top также поддерживается
+короткое имя. Без `root` возвращаются все tops. `max_depth` должен быть от 0 до 50.
+Дочерние узлы содержат path, name, kind, `sv_module` и `children`.
 
 ### `describe_instance`
 

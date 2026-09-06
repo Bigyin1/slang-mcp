@@ -13,6 +13,8 @@ from pyslang import ast
 from slang_mcp.models import ParameterDescription, SourceLocation, SymbolReference
 from slang_mcp.rtl_models import Connection, Port
 
+_MAX_INTEGER_VALUE_BITS = 4096
+
 
 def location(raw: Any, manager: Any) -> SourceLocation:
     if raw is None:
@@ -71,6 +73,8 @@ def _integer_value(value: Any) -> int | None:
     """Return a JSON integer only when Slang evaluated an integral known constant."""
     constant = value.value
     if isinstance(constant, pyslang.SVInt) and not constant.hasUnknown:
+        if constant.bitWidth > _MAX_INTEGER_VALUE_BITS:
+            return None
         return int(constant)
     return constant if isinstance(constant, int) and not isinstance(constant, bool) else None
 

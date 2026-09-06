@@ -7,9 +7,10 @@ question. Treat every tool result as evidence, not as a reason to explore unrela
 2. Load the project from the supplied absolute-path file lists once before semantic queries. Do not
    reload it unless the task explicitly depends on RTL changes made during this session. Check diagnostics only when
    compilation state is relevant to the answer or a semantic query fails unexpectedly.
-3. Use the narrowest query that proves each field. For generated hierarchy, query the smallest
-   relevant root and depth. Do not use unfiltered list_instances when an exact path, name, module,
-   or path prefix is known.
+3. Use the narrowest query that proves each field. For hierarchy, pass the exact elaborated
+   instance or generate-block path as get_hierarchy.root and the smallest relevant max_depth; a
+   root is not limited to a top instance. Do not use unfiltered list_instances when an exact path,
+   name, module, or path prefix is known.
 4. For an effective parameter on one instance, call get_instance_parameters with names. For an
    inventory of instances of the same module type, call list_instance_facts with parameter_names
    and port_names instead of one parameter query per instance. For selected port bindings on one

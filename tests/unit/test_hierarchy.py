@@ -52,7 +52,14 @@ def test_max_depth_bounds_result(loaded: SemanticService) -> None:
 
 def test_select_root_and_invalid_root(loaded: SemanticService) -> None:
     assert loaded.get_hierarchy(root="top")[0].name == "top"
-    with pytest.raises(InvalidTopError, match="unknown top"):
+    nested = loaded.get_hierarchy(root="top.u_b")[0]
+    assert nested.path == "top.u_b"
+    assert [child.path for child in nested.children] == ["top.u_b.u_c"]
+
+    generated = loaded.get_hierarchy(root="top.generated[0]")[0]
+    assert [child.path for child in generated.children] == ["top.generated[0].u_generated"]
+
+    with pytest.raises(InvalidTopError, match="unknown hierarchy root"):
         loaded.get_hierarchy(root="missing")
 
 

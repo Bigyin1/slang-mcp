@@ -148,11 +148,21 @@ class SlangDesign:
 
     def get_hierarchy(self, root: str | None, max_depth: int | None) -> tuple[HierarchyNode, ...]:
         roots = [record for record in self._hierarchy if not record.parent]
-        if root is not None and not (
-            roots := [record for record in roots if root in (record.path, record.name)]
-        ):
-            raise InvalidTopError(f"unknown top module: {root}")
+        if root is not None:
+            roots = self._hierarchy_roots(root, roots)
         return tuple(self._make_node(record, max_depth, 0) for record in roots)
+
+    def _hierarchy_roots(
+        self,
+        root: str,
+        top_roots: list[_HierarchyRecord],
+    ) -> list[_HierarchyRecord]:
+        """Resolve an exact elaborated path, retaining top-name shorthand."""
+        if matches := [record for record in self._hierarchy if record.path == root]:
+            return matches
+        if matches := [record for record in top_roots if record.name == root]:
+            return matches
+        raise InvalidTopError(f"unknown hierarchy root: {root}")
 
     def describe_instance(self, path: str) -> InstanceDescription:
         matches = [

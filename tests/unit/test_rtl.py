@@ -94,6 +94,32 @@ def test_parameters(rtl_service: SemanticService) -> None:
     assert rtl_service.semantic_diff().changes.total_count == 0
 
 
+def test_wide_integral_parameter_omits_json_integer_value(tmp_path: Path) -> None:
+    project = ProjectManager(
+        StaticProjectProvider(
+            {
+                "wide": ProjectConfig(
+                    "wide",
+                    (tmp_path / "wide.sv",),
+                    top_modules=("top",),
+                )
+            }
+        )
+    )
+    (tmp_path / "wide.sv").write_text(
+        "module leaf #(parameter logic [15000:0] WIDE = '1); endmodule\n"
+        "module top; leaf child(); endmodule\n",
+        encoding="utf-8",
+    )
+
+    service = SemanticService(project)
+    service.project_load("wide")
+
+    parameter = service.rtl.get_instance_parameters("top.child").parameters.items[0]
+    assert parameter.name == "WIDE"
+    assert parameter.integer_value is None
+
+
 def test_connections(rtl_service: SemanticService) -> None:
     assert rtl_service.rtl.get_instance_connections("top.u_leaf").items[0].kind == "expression"
     assert rtl_service.rtl.get_instance_connections("top.u_leaf").items[0].symbols == (

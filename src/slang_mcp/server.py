@@ -120,7 +120,10 @@ def _register_symbol_tools(  # pylint: disable=too-many-locals
 def _register_hierarchy_tools(server: FastMCP[None], service: SemanticService) -> None:
 
     @server.tool(
-        description="Return the elaborated instance and generate hierarchy.",
+        description=(
+            "Return the elaborated instance and generate hierarchy. root accepts an exact "
+            "elaborated instance or generate-block path, or a top name."
+        ),
         annotations=_READ_ONLY,
     )
     def get_hierarchy(

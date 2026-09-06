@@ -58,6 +58,7 @@ A minimal stdio client configuration is:
 - `describe_symbol(identifier)` accepts a stable returned `symbol_id`, qualified name, or an
   unambiguous exact name and reports type, width, direction, ports, parameters, and members.
 - `get_hierarchy(root=null, max_depth=null)` returns elaborated instances and generate blocks.
+  `root` accepts an exact elaborated instance or generate-block path, or a top name.
 - `describe_instance(path)` reports an elaborated instance's module type, parameters, ports,
   simple connection syntax when available, and direct hierarchy children.
 

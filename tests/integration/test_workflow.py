@@ -46,6 +46,7 @@ async def test_fastmcp_schema_and_handlers(fixture_project: FixtureProject) -> N
     tools = await server.list_tools()
     result = await server.call_tool("project_load", project_load_arguments(fixture_project))
     hierarchy = await server.call_tool("get_hierarchy", {"root": "top", "max_depth": 1})
+    nested_hierarchy = await server.call_tool("get_hierarchy", {"root": "top.u_b"})
 
     assert {tool.name for tool in tools} == {
         "project_load",
@@ -84,6 +85,7 @@ async def test_fastmcp_schema_and_handlers(fixture_project: FixtureProject) -> N
     )
     assert cast(tuple[object, dict[str, Any]], result)[1]["logical_module"] == "top"
     assert cast(tuple[object, dict[str, Any]], hierarchy)[1]["roots"][0]["name"] == "top"
+    assert cast(tuple[object, dict[str, Any]], nested_hierarchy)[1]["roots"][0]["path"] == "top.u_b"
 
 
 @pytest.mark.integration
