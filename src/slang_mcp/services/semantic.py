@@ -2,6 +2,7 @@
 
 from slang_mcp.models import (
     Diagnostic,
+    DiagnosticCodeSummary,
     HierarchyNode,
     InstanceDescription,
     ProjectInfo,
@@ -11,7 +12,7 @@ from slang_mcp.models import (
 )
 from slang_mcp.project import ProjectManager
 from slang_mcp.providers.file_lists import project_from_file_lists
-from slang_mcp.rtl_models import SemanticDiff
+from slang_mcp.rtl_models import Page, SemanticDiff, page
 from slang_mcp.services.inspection import InspectionService
 from slang_mcp.services.rtl import RtlService
 
@@ -65,17 +66,49 @@ class SemanticService:
     ) -> tuple[Diagnostic, ...]:
         if limit < 1 or limit > _MAX_DIAGNOSTICS:
             raise ValueError(f"limit must be between 1 and {_MAX_DIAGNOSTICS}")
-        normalized = severity.lower() if severity is not None else None
-        if normalized is not None and normalized not in _DIAGNOSTIC_SEVERITIES:
-            raise ValueError(
-                f"severity must be one of: {', '.join(sorted(_DIAGNOSTIC_SEVERITIES))}"
-            )
+        normalized = self._diagnostic_severity(severity)
         selected = (
             item
             for item in self._manager.design.diagnostics
             if normalized is None or item.severity == normalized
         )
         return tuple(list(selected)[:limit])
+
+    def summarize_diagnostics_by_code(  # pylint: disable=too-many-locals
+        self, severity: str | None = None, limit: int = 100
+    ) -> Page[DiagnosticCodeSummary]:
+        """Group diagnostics by compiler code before requesting individual entries."""
+        normalized = self._diagnostic_severity(severity)
+        groups: dict[str, list[Diagnostic]] = {}
+        for diagnostic in self._manager.design.diagnostics:
+            if normalized is None or diagnostic.severity == normalized:
+                groups.setdefault(diagnostic.code, []).append(diagnostic)
+        return page(
+            tuple(
+                DiagnosticCodeSummary(
+                    code,
+                    len(items),
+                    {
+                        name: sum(item.severity == name for item in items)
+                        for name in sorted({item.severity for item in items})
+                    },
+                    items[0].message,
+                    items[0].location,
+                )
+                for code, items in sorted(groups.items())
+            ),
+            limit,
+        )
+
+    @staticmethod
+    def _diagnostic_severity(severity: str | None) -> str | None:
+        """Validate and normalize an optional diagnostic severity."""
+        normalized = severity.lower() if severity is not None else None
+        if normalized is not None and normalized not in _DIAGNOSTIC_SEVERITIES:
+            raise ValueError(
+                f"severity must be one of: {', '.join(sorted(_DIAGNOSTIC_SEVERITIES))}"
+            )
+        return normalized
 
     def find_symbol(self, name: str) -> tuple[SymbolReference, ...]:
         if not name:

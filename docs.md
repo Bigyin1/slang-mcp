@@ -105,6 +105,16 @@ default instance для этой декларации.
 регистра. Результат содержит `diagnostics` и `returned_count`; каждый diagnostic
 содержит severity, Slang code, message и source location.
 
+### `summarize_diagnostics_by_code`
+
+Аргументы: необязательные `severity`, `limit=100`.
+
+Группирует diagnostics текущей compilation по Slang code. Каждая запись содержит
+`code`, общее `count`, `severity_counts`, один `example_message` и
+`first_location`. Используйте этот tool перед `get_diagnostics`, когда нужно
+понять распределение большого числа сообщений; для всех отдельных locations и
+messages вызывайте `get_diagnostics`.
+
 ### `find_symbol`
 
 Аргументы: `name`.

@@ -52,6 +52,7 @@ async def test_fastmcp_schema_and_handlers(fixture_project: FixtureProject) -> N
         "project_reload",
         "project_info",
         "get_diagnostics",
+        "summarize_diagnostics_by_code",
         "find_symbol",
         "describe_symbol",
         "get_hierarchy",

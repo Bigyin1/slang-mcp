@@ -37,6 +37,17 @@ class Diagnostic:
 
 
 @dataclass(frozen=True)
+class DiagnosticCodeSummary:
+    """One deterministic diagnostic-code group for a loaded compilation."""
+
+    code: str
+    count: int
+    severity_counts: Mapping[str, int]
+    example_message: str
+    first_location: SourceLocation
+
+
+@dataclass(frozen=True)
 class ProjectSummary:
     logical_module: str
     source_file_count: int

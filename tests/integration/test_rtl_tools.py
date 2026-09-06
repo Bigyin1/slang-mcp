@@ -15,6 +15,7 @@ from tests.conftest import FixtureProject, project_load_arguments
     ("tool", "arguments", "key"),
     [
         ("get_references", {"symbol": "top.data"}, "total_count"),
+        ("summarize_diagnostics_by_code", {}, "items"),
         ("list_symbols", {"scope": "types_pkg"}, "items"),
         ("get_ports", {"sv_module": "leaf"}, "items"),
         ("get_parameters", {"target": "leaf"}, "value_kind"),

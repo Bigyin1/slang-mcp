@@ -77,7 +77,9 @@ def _register_project_tools(server: FastMCP[None], service: SemanticService) -> 
         return _model_dict(_safe(service.project_info))
 
 
-def _register_symbol_tools(server: FastMCP[None], service: SemanticService) -> None:
+def _register_symbol_tools(  # pylint: disable=too-many-locals
+    server: FastMCP[None], service: SemanticService
+) -> None:
 
     @server.tool(
         description="Return bounded structured Slang diagnostics.",
@@ -86,6 +88,18 @@ def _register_symbol_tools(server: FastMCP[None], service: SemanticService) -> N
     def get_diagnostics(limit: int = 100, severity: str | None = None) -> dict[str, Any]:
         items = _safe(lambda: service.get_diagnostics(limit, severity))
         return {"diagnostics": [asdict(item) for item in items], "returned_count": len(items)}
+
+    @server.tool(
+        description=(
+            "Bounded diagnostic groups by Slang code, with severity counts and one example. "
+            "Use get_diagnostics for individual locations and messages."
+        ),
+        annotations=_READ_ONLY,
+    )
+    def summarize_diagnostics_by_code(
+        severity: str | None = None, limit: int = 100
+    ) -> dict[str, Any]:
+        return _model_dict(_safe(lambda: service.summarize_diagnostics_by_code(severity, limit)))
 
     @server.tool(
         description="Find semantic declarations by exact name.",

@@ -51,6 +51,8 @@ A minimal stdio client configuration is:
 - `project_info()` reports build inputs, configured and elaborated tops, metadata, and version.
 - `get_diagnostics(limit=100, severity=null)` returns structured Slang diagnostics. The hard
   limit is 500; severity can be `ignored`, `note`, `warning`, `error`, or `fatal`.
+- `summarize_diagnostics_by_code(severity=null, limit=100)` groups diagnostics by Slang code with
+  severity counts and one representative message and location.
 - `find_symbol(name)` performs exact-name lookup for definitions, packages, typedefs,
   subroutines, parameters, ports, variables, and nets.
 - `describe_symbol(identifier)` accepts a stable returned `symbol_id`, qualified name, or an
