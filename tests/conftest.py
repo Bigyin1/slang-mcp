@@ -2,8 +2,10 @@
 
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any, cast
 
 import pytest
+from mcp.types import CallToolResult, InputRequiredResult
 
 from slang_mcp.models import ProjectConfig
 from slang_mcp.project import ProjectManager
@@ -15,6 +17,13 @@ from slang_mcp.services import SemanticService
 class FixtureProject:
     config: ProjectConfig
     design_file: Path
+
+
+def structured_result(result: CallToolResult | InputRequiredResult) -> dict[str, Any]:
+    """Return the structured payload from an in-process MCP tool call."""
+    assert isinstance(result, CallToolResult)
+    assert isinstance(result.structured_content, dict)
+    return cast(dict[str, Any], result.structured_content)
 
 
 def project_load_arguments(project: FixtureProject) -> dict[str, object]:

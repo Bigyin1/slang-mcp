@@ -2,13 +2,13 @@
 
 from typing import Any
 
-from mcp.server.fastmcp import FastMCP
+from mcp.server.mcpserver import MCPServer
 
 from slang_mcp.services import SemanticService
 from slang_mcp.transport import READ_ONLY, model_dict, safe
 
 
-def register_rtl_tools(server: FastMCP[None], service: SemanticService) -> None:
+def register_rtl_tools(server: MCPServer[None], service: SemanticService) -> None:
     _register_0(server, service)
     _register_1(server, service)
     _register_2(server, service)
@@ -19,7 +19,7 @@ def register_rtl_tools(server: FastMCP[None], service: SemanticService) -> None:
     _register_inspection_extra(server, service)
 
 
-def _register_0(server: FastMCP[None], service: SemanticService) -> None:
+def _register_0(server: MCPServer[None], service: SemanticService) -> None:
 
     @server.tool(
         description="Bounded semantic references with conservative access classification.",
@@ -37,7 +37,7 @@ def _register_0(server: FastMCP[None], service: SemanticService) -> None:
         return model_dict(safe(lambda: service.rtl.get_ports(sv_module, limit)))
 
 
-def _register_1(server: FastMCP[None], service: SemanticService) -> None:
+def _register_1(server: MCPServer[None], service: SemanticService) -> None:
 
     @server.tool(
         description="Declared defaults for a module, effective values for a nested instance.",
@@ -79,7 +79,7 @@ def _register_1(server: FastMCP[None], service: SemanticService) -> None:
         )
 
 
-def _register_2(server: FastMCP[None], service: SemanticService) -> None:
+def _register_2(server: MCPServer[None], service: SemanticService) -> None:
 
     @server.tool(
         description="Filter elaborated instances by type, exact name and path prefix.",
@@ -130,7 +130,7 @@ def _register_2(server: FastMCP[None], service: SemanticService) -> None:
         )
 
 
-def _register_3(server: FastMCP[None], service: SemanticService) -> None:
+def _register_3(server: MCPServer[None], service: SemanticService) -> None:
 
     @server.tool(
         description="Source-level semantic reads including read_write accesses.",
@@ -146,7 +146,7 @@ def _register_3(server: FastMCP[None], service: SemanticService) -> None:
         return model_dict(safe(lambda: service.rtl.get_signal_writes(signal, limit)))
 
 
-def _register_access_summary(server: FastMCP[None], service: SemanticService) -> None:
+def _register_access_summary(server: MCPServer[None], service: SemanticService) -> None:
 
     @server.tool(
         description="Conservative source-level assignment and port drivers, not netlist drivers.",
@@ -179,7 +179,7 @@ def _register_access_summary(server: FastMCP[None], service: SemanticService) ->
         )
 
 
-def _register_4(server: FastMCP[None], service: SemanticService) -> None:
+def _register_4(server: MCPServer[None], service: SemanticService) -> None:
 
     @server.tool(
         description="Elaborated procedural blocks with bounded read/write sets.",
@@ -196,7 +196,7 @@ def _register_4(server: FastMCP[None], service: SemanticService) -> None:
         return model_dict(safe(lambda: service.rtl.get_state_elements(sv_module, limit)))
 
 
-def _register_5(server: FastMCP[None], service: SemanticService) -> None:
+def _register_5(server: MCPServer[None], service: SemanticService) -> None:
 
     @server.tool(
         description="Compact signal description and bounded access summaries.",
@@ -212,7 +212,7 @@ def _register_5(server: FastMCP[None], service: SemanticService) -> None:
         return model_dict(safe(lambda: service.inspection.inspect_module(sv_module, limit)))
 
 
-def _register_inspection_extra(server: FastMCP[None], service: SemanticService) -> None:
+def _register_inspection_extra(server: MCPServer[None], service: SemanticService) -> None:
 
     @server.tool(
         description="Rich effective instance signature, connections and children.",

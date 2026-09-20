@@ -11,7 +11,7 @@ requires-python = ">=3.10"
 license = { file = "LICENSE" }
 authors = [{ name = "slang-mcp contributors" }]
 dependencies = [
-  "mcp>=1.27,<2",
+  "mcp>=2.2,<3",
   "pyslang==11.0.0",
 ]
 

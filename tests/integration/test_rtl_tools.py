@@ -1,12 +1,10 @@
 """MCP contracts for the second semantic layer, including reload workflows."""
 
-from typing import Any, cast
-
 import pytest
 
 from slang_mcp.providers import StaticProjectProvider
 from slang_mcp.server import create_server
-from tests.conftest import FixtureProject, project_load_arguments
+from tests.conftest import FixtureProject, project_load_arguments, structured_result
 
 
 @pytest.mark.integration
@@ -45,7 +43,7 @@ async def test_rtl_mcp_tools(
 ) -> None:
     server = create_server(StaticProjectProvider({"demo": fixture_project.config}))
     await server.call_tool("project_load", project_load_arguments(fixture_project))
-    assert key in cast(tuple[object, dict[str, Any]], await server.call_tool(tool, arguments))[1]
+    assert key in structured_result(await server.call_tool(tool, arguments))
 
 
 @pytest.mark.integration
@@ -54,22 +52,19 @@ async def test_instance_query_filters_over_mcp(fixture_project: FixtureProject) 
     server = create_server(StaticProjectProvider({"demo": fixture_project.config}))
     await server.call_tool("project_load", project_load_arguments(fixture_project))
 
-    parameters = cast(
-        tuple[object, dict[str, Any]],
+    parameters = structured_result(
         await server.call_tool(
             "get_instance_parameters",
             {"instance_path": "top.u_a", "names": ["WIDTH"]},
-        ),
-    )[1]
-    connections = cast(
-        tuple[object, dict[str, Any]],
+        )
+    )
+    connections = structured_result(
         await server.call_tool(
             "get_instance_connections",
             {"instance_path": "top.u_a", "ports": ["o"]},
-        ),
-    )[1]
-    facts = cast(
-        tuple[object, dict[str, Any]],
+        )
+    )
+    facts = structured_result(
         await server.call_tool(
             "list_instance_facts",
             {
@@ -77,8 +72,8 @@ async def test_instance_query_filters_over_mcp(fixture_project: FixtureProject) 
                 "parameter_names": ["WIDTH"],
                 "port_names": ["o"],
             },
-        ),
-    )[1]
+        )
+    )
 
     assert [item["name"] for item in parameters["parameters"]["items"]] == ["WIDTH"]
     assert parameters["parameters"]["items"][0]["integer_value"] == 32
@@ -105,8 +100,5 @@ async def test_mcp_reload_diff(fixture_project: FixtureProject) -> None:
     )
     await server.call_tool("project_reload", {})
     assert (
-        cast(tuple[object, dict[str, Any]], await server.call_tool("semantic_diff", {}))[1][
-            "changes"
-        ]["total_count"]
-        > 0
+        structured_result(await server.call_tool("semantic_diff", {}))["changes"]["total_count"] > 0
     )

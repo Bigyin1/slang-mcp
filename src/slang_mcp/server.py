@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import asdict
 from typing import TYPE_CHECKING, Any
 
-from mcp.server.fastmcp import FastMCP
+from mcp.server.mcpserver import MCPServer
 
 from slang_mcp.project import ProjectManager
 from slang_mcp.server_rtl import register_rtl_tools
@@ -18,10 +18,10 @@ if TYPE_CHECKING:
     from slang_mcp.providers.static import StaticProjectProvider
 
 
-def create_server(provider: StaticProjectProvider | None = None) -> FastMCP[None]:
+def create_server(provider: StaticProjectProvider | None = None) -> MCPServer[None]:
     """Create a read-only MCP server; provider injection is test-only."""
     service = SemanticService(ProjectManager(provider))
-    server: FastMCP[None] = FastMCP(
+    server: MCPServer[None] = MCPServer(
         "slang-mcp",
         instructions="Read-only semantic queries for configured SystemVerilog projects.",
     )
@@ -32,7 +32,7 @@ def create_server(provider: StaticProjectProvider | None = None) -> FastMCP[None
     return server
 
 
-def _register_project_tools(server: FastMCP[None], service: SemanticService) -> None:
+def _register_project_tools(server: MCPServer[None], service: SemanticService) -> None:
 
     @server.tool(
         description=(
@@ -78,7 +78,7 @@ def _register_project_tools(server: FastMCP[None], service: SemanticService) -> 
 
 
 def _register_symbol_tools(  # pylint: disable=too-many-locals
-    server: FastMCP[None], service: SemanticService
+    server: MCPServer[None], service: SemanticService
 ) -> None:
 
     @server.tool(
@@ -117,7 +117,7 @@ def _register_symbol_tools(  # pylint: disable=too-many-locals
         return _model_dict(_safe(lambda: service.describe_symbol(identifier)))
 
 
-def _register_hierarchy_tools(server: FastMCP[None], service: SemanticService) -> None:
+def _register_hierarchy_tools(server: MCPServer[None], service: SemanticService) -> None:
 
     @server.tool(
         description=(

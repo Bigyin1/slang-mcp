@@ -5,12 +5,12 @@ from collections.abc import Callable
 from dataclasses import asdict
 from typing import Any, TypeVar
 
-from mcp.server.fastmcp.exceptions import ToolError
+from mcp.server.mcpserver.exceptions import ToolError
 from mcp.types import ToolAnnotations
 
 from slang_mcp.errors import SlangMcpError
 
-READ_ONLY = ToolAnnotations(readOnlyHint=True, destructiveHint=False, openWorldHint=False)
+READ_ONLY = ToolAnnotations(read_only_hint=True, destructive_hint=False, open_world_hint=False)
 _LOGGER = logging.getLogger(__name__)
 T = TypeVar("T")
 

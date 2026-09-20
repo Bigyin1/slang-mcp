@@ -1,7 +1,6 @@
 """End-to-end service and MCP boundary tests."""
 
 import sys
-from typing import Any, cast
 
 import pytest
 from mcp import ClientSession, StdioServerParameters
@@ -11,7 +10,12 @@ from slang_mcp.project import ProjectManager
 from slang_mcp.providers import StaticProjectProvider
 from slang_mcp.server import create_server
 from slang_mcp.services import SemanticService
-from tests.conftest import FixtureProject, project_load_arguments, replacement_design
+from tests.conftest import (
+    FixtureProject,
+    project_load_arguments,
+    replacement_design,
+    structured_result,
+)
 
 
 @pytest.mark.integration
@@ -40,13 +44,12 @@ def test_service_workflow_and_reload(fixture_project: FixtureProject) -> None:
 
 @pytest.mark.integration
 @pytest.mark.asyncio
-async def test_fastmcp_schema_and_handlers(fixture_project: FixtureProject) -> None:
+async def test_mcpserver_schema_and_handlers(fixture_project: FixtureProject) -> None:
     server = create_server(StaticProjectProvider({"demo": fixture_project.config}))
 
     tools = await server.list_tools()
     result = await server.call_tool("project_load", project_load_arguments(fixture_project))
     hierarchy = await server.call_tool("get_hierarchy", {"root": "top", "max_depth": 1})
-    nested_hierarchy = await server.call_tool("get_hierarchy", {"root": "top.u_b"})
 
     assert {tool.name for tool in tools} == {
         "project_load",
@@ -79,13 +82,18 @@ async def test_fastmcp_schema_and_handlers(fixture_project: FixtureProject) -> N
         "inspect_instance",
         "semantic_diff",
     }
-    assert all(tool.annotations is not None and tool.annotations.readOnlyHint for tool in tools)
+    assert all(tool.annotations is not None and tool.annotations.read_only_hint for tool in tools)
     assert "only after RTL or build inputs change" in next(
         tool.description or "" for tool in tools if tool.name == "project_reload"
     )
-    assert cast(tuple[object, dict[str, Any]], result)[1]["logical_module"] == "top"
-    assert cast(tuple[object, dict[str, Any]], hierarchy)[1]["roots"][0]["name"] == "top"
-    assert cast(tuple[object, dict[str, Any]], nested_hierarchy)[1]["roots"][0]["path"] == "top.u_b"
+    assert structured_result(result)["logical_module"] == "top"
+    assert structured_result(hierarchy)["roots"][0]["name"] == "top"
+    assert (
+        structured_result(await server.call_tool("get_hierarchy", {"root": "top.u_b"}))["roots"][0][
+            "path"
+        ]
+        == "top.u_b"
+    )
 
 
 @pytest.mark.integration
@@ -115,8 +123,8 @@ async def _check_stdio_session(  # pylint: disable=too-many-locals
         info = await session.call_tool("project_info", {})
     # pylint: enable=used-before-assignment
 
-    assert not result.isError
-    assert result.structuredContent is not None
-    assert result.structuredContent["logical_module"] == "top"
-    assert info.structuredContent is not None
-    assert info.structuredContent["summary"]["top_modules"] == ["top"]
+    assert not result.is_error
+    assert result.structured_content is not None
+    assert result.structured_content["logical_module"] == "top"
+    assert info.structured_content is not None
+    assert info.structured_content["summary"]["top_modules"] == ["top"]
