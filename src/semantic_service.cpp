@@ -56,8 +56,29 @@ std::vector<Json> diagnostic_groups(const std::vector<Diagnostic>& diagnostics) 
     }
     return result;
 }
+
+Json diagnostic_with_scope_hint(const Diagnostic& diagnostic) {
+    // An unresolved name can also be a typo; this never downgrades severity.
+    static const std::set<std::string> unresolved = {"UnknownModule", "UnknownClassOrPackage"};
+    Json result = diagnostic;
+    result["scope_hint"] =
+        unresolved.contains(diagnostic.code) ? "possible_missing_dependency" : "unclassified";
+    return result;
+}
+
+Json diagnostic_page(const std::vector<Diagnostic>& diagnostics, int limit) {
+    const auto selected = page(diagnostics, limit);
+    Json items = Json::array();
+    for (const auto& item : selected.items) {
+        items.push_back(diagnostic_with_scope_hint(item));
+    }
+    return {{"diagnostics", items},
+            {"returned_count", items.size()},
+            {"total_count", selected.total_count},
+            {"truncated", selected.truncated}};
+}
 } // namespace
-SemanticService::SemanticService() {
+SemanticService::SemanticService(SnapshotPolicy snapshots) : manager_(snapshots) {
     register_project_tools();
     register_symbol_tools();
     register_rtl_tools();
@@ -146,8 +167,9 @@ Json SemanticService::diagnostics(const Json& args, bool grouped) {
         return !severity || item.severity == *severity;
     });
     if (!grouped) {
-        const auto items = page(selected, limit_for(args)).items;
-        return {{"diagnostics", items}, {"returned_count", items.size()}};
+        auto result = diagnostic_page(selected, limit_for(args));
+        result["analysis"] = manager_.analysis_context();
+        return result;
     }
     return page(diagnostic_groups(selected), limit_for(args));
 }

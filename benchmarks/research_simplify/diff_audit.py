@@ -151,7 +151,9 @@ async def scope_switch(recorder: Recorder, source: Path) -> None:
 async def probe(directory: Path) -> list[dict[str, object]]:
     async with (
         stdio_client(
-            StdioServerParameters(command=str(ROOT / "build/release/slang-mcp"))
+            StdioServerParameters(
+                command=str(ROOT / "build/release/slang-mcp"), args=["--tool-profile", "full"]
+            )
         ) as streams,
         ClientSession(*streams) as session,
     ):

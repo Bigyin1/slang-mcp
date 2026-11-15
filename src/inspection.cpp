@@ -14,48 +14,100 @@ std::vector<Instance> module_children(const std::vector<Instance>& instances,
     return select(instances,
                   [&](const auto& item) { return item.parent && parents.contains(*item.parent); });
 }
+using Sections = std::map<std::string, std::function<Json()>>;
+
+std::set<std::string> inspection_fields(const Json& args, const Sections& sections) {
+    std::set<std::string> fields;
+    if (!args.contains("fields")) {
+        for (const auto& [name, section] : sections) {
+            fields.insert(name);
+        }
+        return fields;
+    }
+    if (!args.at("fields").is_array()) {
+        throw std::invalid_argument("fields must be an array of section names");
+    }
+    fields = args.at("fields").get<std::set<std::string>>();
+    for (const auto& name : fields) {
+        if (!sections.contains(name)) {
+            throw std::invalid_argument("unknown inspection field: " + name);
+        }
+    }
+    return fields;
+}
+
+Json inspect_fields(const Json& args, const Sections& sections, Json result) {
+    for (const auto& name : inspection_fields(args, sections)) {
+        result[name] = sections.at(name)();
+    }
+    return result;
+}
+
+Json inspection_query(const Json& args) {
+    auto query = args;
+    if (args.contains("parameter_names")) {
+        query["names"] = args.at("parameter_names");
+    }
+    if (args.contains("port_names")) {
+        query["ports"] = args.at("port_names");
+    }
+    return query;
+}
 } // namespace
 Json SemanticService::inspect_signal(const Json& args) {
     const auto identifier = args.at("signal").get<std::string>();
     auto query = args;
     query["limit"] = limit_for(args, 10);
-    const auto reads = references(query, "read");
-    const auto writes = references(query, "write");
-    return {{"symbol", manager_.design().signal(identifier)},
-            {"reference_count", manager_.design().references(identifier).size()},
-            {"reads", reads},
-            {"writes", writes},
-            {"drivers", writes},
-            {"loads", reads}};
+    const Sections sections = {
+        {"reference_count", [&] { return Json(manager_.design().references(identifier).size()); }},
+        {"reads", [&] { return references(query, "read"); }},
+        {"writes", [&] { return references(query, "write"); }},
+        {"drivers", [&] { return references(query, "write"); }},
+        {"loads", [&] { return references(query, "read"); }}};
+    return inspect_fields(args, sections, {{"symbol", manager_.design().signal(identifier)}});
 }
 
 Json SemanticService::inspect_instance(const Json& args) {
     const auto instance = manager_.design().instance(args.at("instance_path"));
-    Json query = args;
+    auto query = inspection_query(args);
     query["instance_path"] = instance.path;
-    const auto children = select(manager_.design().instances(),
-                                 [&](const auto& item) { return item.parent == instance.path; });
-    return {{"instance", instance},
-            {"parameters", parameters(query, true)},
-            {"connections", connections(query)},
-            {"children", page(children, limit_for(args))}};
+    const Sections sections = {
+        {"parameters", [&] { return parameters(query, true); }},
+        {"connections", [&] { return connections(query); }},
+        {"children", [&] {
+             return page(select(manager_.design().instances(),
+                                [&](const auto& item) { return item.parent == instance.path; }),
+                         limit_for(args));
+         }}};
+    return inspect_fields(args, sections, {{"instance", instance}});
 }
 
 Json SemanticService::inspect_module(const Json& args) {
-    const auto definition = manager_.design().describe(args.at("sv_module")).symbol;
-    const auto count =
-        std::ranges::count_if(manager_.design().diagnostics(), [&](const auto& item) {
-            return item.location.filename == definition.location.filename;
-        });
-    auto query = args;
+    const auto definition = manager_.design().definition_reference(args.at("sv_module"));
+    auto query = inspection_query(args);
     query["target"] = definition.symbol_id;
-    return {{"definition", definition},
-            {"parameters", parameters(query, false)},
-            {"ports", page(manager_.design().ports(definition.symbol_id), limit_for(args))},
-            {"declaration_count", manager_.design().members(definition.symbol_id).size()},
-            {"children", page(module_children(manager_.design().instances(), definition.name),
-                              limit_for(args))},
-            {"procedures", procedures(args)},
-            {"diagnostic_count", count}};
+    const Sections sections = {
+        {"parameters", [&] { return parameters(query, false); }},
+        {"ports",
+         [&] {
+             return page(named(manager_.design().ports(definition.symbol_id), args, "port_names",
+                               [](const auto& item) { return item.name; }),
+                         limit_for(args));
+         }},
+        {"declaration_count",
+         [&] { return Json(manager_.design().members(definition.symbol_id).size()); }},
+        {"children",
+         [&] {
+             return page(module_children(manager_.design().instances(), definition.name),
+                         limit_for(args));
+         }},
+        {"procedures", [&] { return procedures(args); }},
+        {"diagnostic_count", [&] {
+             return Json(
+                 std::ranges::count_if(manager_.design().diagnostics(), [&](const auto& item) {
+                     return item.location.filename == definition.location.filename;
+                 }));
+         }}};
+    return inspect_fields(args, sections, {{"definition", definition}});
 }
 } // namespace slang_mcp

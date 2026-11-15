@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "tasks": [
+    {
+      "id": "axi_batch",
+      "project": "axi_fifo_core",
+      "rtl_root": "/private/tmp/slang-focused-pilot/axi_batch/rtl",
+      "top": "axi_fifo",
+      "defaults": true,
+      "prompt": "benchmarks/research_focused/axi_batch.txt"
+    },
+    {
+      "id": "idma_partial",
+      "project": "idma_desc64",
+      "rtl_root": "/private/tmp/slang-focused-pilot/idma_partial/rtl",
+      "top": "cc_stream_fifo",
+      "defaults": true,
+      "prompt": "benchmarks/research_focused/idma_partial.txt"
+    },
+    {
+      "id": "floo_generate",
+      "project": "floonoc_nw_2tiles",
+      "rtl_root": "/private/tmp/slang-focused-pilot/floo_generate/rtl",
+      "top": "floo_fifo",
+      "defaults": true,
+      "prompt": "benchmarks/research_focused/floo_generate.txt"
+    },
+    {
+      "id": "cva6_counter",
+      "project": "cva6_cv64a6_imafdc_sv39",
+      "rtl_root": "/private/tmp/slang-focused-pilot/cva6_counter/rtl",
+      "top": "cva6_fifo_v3",
+      "defaults": true,
+      "prompt": "benchmarks/research_focused/cva6_counter.txt"
+    }
+  ]
+}

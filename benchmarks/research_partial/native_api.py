@@ -107,7 +107,9 @@ async def main() -> None:
     # pylint: disable=used-before-assignment
     async with (
         stdio_client(
-            StdioServerParameters(command=str(ROOT / "build/release/slang-mcp"), args=[])
+            StdioServerParameters(
+                command=str(ROOT / "build/release/slang-mcp"), args=["--tool-profile", "full"]
+            )
         ) as streams,
         ClientSession(*streams) as session,
     ):

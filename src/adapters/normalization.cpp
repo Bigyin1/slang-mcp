@@ -87,10 +87,27 @@ const ast::Type* symbol_type(const ast::Symbol& symbol) {
 }
 
 namespace {
+const ast::Expression* implicit_operand(const ast::Expression* expression) {
+    if (expression->syntax) {
+        return expression;
+    }
+    if (auto* conversion = expression->as_if<ast::ConversionExpression>()) {
+        return &conversion->operand();
+    }
+    if (auto* assignment = expression->as_if<ast::AssignmentExpression>();
+        assignment && assignment->isLValueArg()) {
+        return &assignment->left();
+    }
+    return expression;
+}
+
 const ast::Expression* source_expression(const ast::Expression* expression) {
-    while (expression && expression->kind == ast::ExpressionKind::Conversion &&
-           !expression->syntax) {
-        expression = &expression->as<ast::ConversionExpression>().operand();
+    while (expression) {
+        const auto* operand = implicit_operand(expression);
+        if (operand == expression) {
+            break;
+        }
+        expression = operand;
     }
     return expression;
 }
@@ -169,9 +186,6 @@ struct SymbolCollector : ast::ASTVisitor<SymbolCollector, ast::VisitFlags::AllGo
 };
 
 std::string connection_kind(const ast::Expression* expression) {
-    while (expression && expression->kind == ast::ExpressionKind::Conversion) {
-        expression = &expression->as<ast::ConversionExpression>().operand();
-    }
     if (!expression) {
         return "unconnected";
     }
@@ -202,7 +216,7 @@ Connection connection(const ast::PortConnection& value, const slang::SourceManag
         result.location = result.port.location;
         return result;
     }
-    const auto* expression = value.getExpression();
+    const auto* expression = source_expression(value.getExpression());
     result.kind = connection_kind(expression);
     result.expression = expression_text(expression);
     if (expression) {

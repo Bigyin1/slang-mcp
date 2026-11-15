@@ -28,6 +28,7 @@ def test_direct_system_cli_and_direct_mcp(tmp_path: Path, monkeypatch: pytest.Mo
     config = json.loads((tmp_path / "mcp.json").read_text())
     server = config["mcpServers"]["slang_benchmark"]
     assert server["command"].endswith("/build/cpp/slang-mcp")
+    assert server["args"] == ["--tool-profile", "full"]
     assert not any("proxy" in value for value in server["args"])
     mcp_configuration(tmp_path, False)
     assert json.loads((tmp_path / "mcp.json").read_text())["mcpServers"] == {}

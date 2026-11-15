@@ -113,9 +113,16 @@ measurements are in [research_partial](research_partial/README.md),
 The follow-up [catalog simplification study](research_simplify/README.md) audits
 semantic_diff usage and upstream reports, then compares 30 versus 12 tools with
 two fresh Terra Max workers choosing their own fragment source files.
+The [focused analysis study](research_focused/README.md) extends this to eight
+fresh task/profile runs, selected-field payload comparisons, and malformed-RTL
+process checks. Its core/full profiles are enforced by the C++ server itself.
 The 29-tool measurements predate the additive partial-load tool. Historical Python
 results and the new native measurements must not be pooled.
 
 The current baseline prompt no longer asks text-only agents to call unavailable
 MCP tools, and workspace paths now match the launch directory. This correction
 does not retroactively repair old experimental results.
+
+The historical runner and older research scripts explicitly launch
+`--tool-profile full` to preserve their tool surface. New native profile experiments
+use the bridge's `--server-profile core|full`; the executable itself defaults to core.

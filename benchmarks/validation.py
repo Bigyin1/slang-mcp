@@ -51,7 +51,9 @@ async def _compile_workspace(name: str, workspace: Path) -> dict[str, object]:
     # Pylint cannot follow the async context manager's tuple assignment.
     # pylint: disable=used-before-assignment
     async with (
-        stdio_client(StdioServerParameters(command=str(server_binary()), args=[])) as streams,
+        stdio_client(
+            StdioServerParameters(command=str(server_binary()), args=["--tool-profile", "full"])
+        ) as streams,
         ClientSession(*streams) as session,
     ):
         await session.initialize()

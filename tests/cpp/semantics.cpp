@@ -83,6 +83,23 @@ TEST_CASE("Successful reload reports effective parameter changes") {
                 .at("integer_value") == 19);
 }
 
+TEST_CASE("Sessions without diff snapshots retain queries and atomic reload") {
+    Project project;
+    project.write("design.sv", hierarchy_rtl);
+    SemanticService service(SnapshotPolicy::Disabled);
+    (void)service.call("project_load", project.arguments());
+    REQUIRE_THROWS_AS(service.call("semantic_diff", {}), std::invalid_argument);
+    REQUIRE(service.call("list_instances", {{"sv_module", "leaf"}}).at("total_count") == 4);
+    project.write("design.sv", "module top #(parameter int WIDTH=19); endmodule\n");
+    (void)service.call("project_reload", {});
+    const auto parameters = service.call("get_instance_parameters", {{"instance_path", "top"}});
+    REQUIRE(parameters.at("parameters").at("items").front().at("integer_value") == 19);
+    std::filesystem::remove(project.path("design.sv"));
+    REQUIRE_THROWS_AS(service.call("project_reload", {}), std::invalid_argument);
+    REQUIRE(service.call("get_instance_parameters", {{"instance_path", "top"}}) == parameters);
+    REQUIRE_THROWS_AS(service.call("semantic_diff", {}), std::invalid_argument);
+}
+
 TEST_CASE("Bounds and invalid inputs are explicit errors") {
     Project project;
     project.write("design.sv", hierarchy_rtl);
@@ -169,5 +186,60 @@ TEST_CASE("Error diagnostics are accepted and grouped") {
             service.call("get_diagnostics", {{"severity", "error"}}));
     REQUIRE(service.call("summarize_diagnostics_by_code", {{"severity", "Error"}}) ==
             service.call("summarize_diagnostics_by_code", {{"severity", "error"}}));
+}
+
+TEST_CASE("Partial syntax errors and unresolved dependencies stay visible together") {
+    Project project;
+    project.write("design.sv", R"sv(
+module top(input logic a, output logic y);
+  missing_child u_child();
+  assign y = a
+endmodule
+)sv");
+    SemanticService service(SnapshotPolicy::Disabled);
+    REQUIRE(
+        service
+            .call("project_load_partial",
+                  {{"source_files", {project.path("design.sv").string()}}, {"top_module", "top"}})
+            .at("diagnostic_error_count") >= 2);
+    const auto result = service.call("get_diagnostics", {{"severity", "error"}});
+    REQUIRE(result.at("analysis").at("analysis_scope") == "fragment");
+    REQUIRE(result.at("analysis").at("completeness") == "not_verified");
+    REQUIRE(std::ranges::any_of(result.at("diagnostics"), [](const auto& item) {
+        return item.at("code") == "UnknownModule" &&
+               item.at("scope_hint") == "possible_missing_dependency";
+    }));
+    REQUIRE(std::ranges::any_of(result.at("diagnostics"), [](const auto& item) {
+        return item.at("scope_hint") == "unclassified";
+    }));
+    const auto bounded = service.call("get_diagnostics", {{"severity", "error"}, {"limit", 1}});
+    REQUIRE(bounded.at("returned_count") == 1);
+    REQUIRE(bounded.at("total_count") == result.at("total_count"));
+    REQUIRE(bounded.at("truncated") == true);
+    REQUIRE(service.call("inspect_module", {{"sv_module", "top"}, {"fields", {"ports"}}})
+                .at("ports")
+                .at("total_count") == 2);
+}
+
+TEST_CASE("Type errors do not become expected fragment boundary errors") {
+    Project project;
+    project.write("design.sv", R"sv(
+module top(input logic a, output logic y);
+  assign y = a.no_field;
+endmodule
+)sv");
+    SemanticService service(SnapshotPolicy::Disabled);
+    (void)service.call(
+        "project_load_partial",
+        {{"source_files", {project.path("design.sv").string()}}, {"top_module", "top"}});
+    const auto result = service.call("get_diagnostics", {{"severity", "error"}});
+    REQUIRE_FALSE(result.at("diagnostics").empty());
+    for (const auto& diagnostic : result.at("diagnostics")) {
+        REQUIRE(diagnostic.at("scope_hint") == "unclassified");
+        REQUIRE(diagnostic.at("severity") == "error");
+    }
+    REQUIRE(service.call("inspect_module", {{"sv_module", "top"}, {"fields", {"ports"}}})
+                .at("ports")
+                .at("total_count") == 2);
 }
 } // namespace slang_mcp::test

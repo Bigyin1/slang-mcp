@@ -48,6 +48,60 @@ endmodule
                 .at("stop_reason") == "no_edges");
 }
 
+TEST_CASE("Port connections retain actual expressions through implicit binding wrappers") {
+    Project project;
+    project.write("design.sv", R"sv(
+module leaf(input logic [7:0] d, output logic [1:0] q); assign q=d[1:0]; endmodule
+module top;
+  logic [3:0] source;
+  logic [1:0] direct;
+  logic [1:0] indexed [2][2];
+  logic high, low;
+  leaf u_direct(.d(source), .q(direct));
+  leaf u_indexed(.d(source), .q(indexed[1][0]));
+  leaf u_concat(.d(source), .q({high, low}));
+endmodule
+)sv");
+    SemanticService service;
+    REQUIRE(service.call("project_load", project.arguments()).at("diagnostic_error_count") == 0);
+    const auto instance = GENERATE("u_direct", "u_indexed", "u_concat");
+    const auto connections =
+        service
+            .call("get_instance_connections", {{"instance_path", std::string("top.") + instance}})
+            .at("items");
+    REQUIRE(connections.front().at("expression") == "source");
+    REQUIRE(connections.front().at("actual_width") == 4);
+    REQUIRE(connections.front().at("port").at("width") == 8);
+    REQUIRE(connections.back().at("actual_width") == 2);
+    if (std::string_view(instance) == "u_direct") {
+        REQUIRE(connections.back().at("expression") == "direct");
+        REQUIRE(connections.back().at("kind") == "signal");
+        REQUIRE(connections.back().at("symbols") == Json::array({"top.direct"}));
+    } else if (std::string_view(instance) == "u_indexed") {
+        REQUIRE(connections.back().at("expression") == "indexed[1][0]");
+        REQUIRE(connections.back().at("kind") == "expression");
+        REQUIRE(connections.back().at("symbols") == Json::array({"top.indexed"}));
+    } else {
+        REQUIRE(connections.back().at("expression") == "{high, low}");
+        REQUIRE(connections.back().at("kind") == "expression");
+        REQUIRE(connections.back().at("symbols") == Json::array({"top.high", "top.low"}));
+    }
+}
+
+TEST_CASE("Invalid output actuals retain diagnostics without invented symbol bindings") {
+    Project project;
+    project.write("design.sv", R"sv(
+module leaf(output logic q); assign q=1'b0; endmodule
+module top; leaf u(.q(1'b0)); endmodule
+)sv");
+    SemanticService service;
+    REQUIRE(service.call("project_load", project.arguments()).at("diagnostic_error_count") > 0);
+    const auto connections =
+        service.call("get_instance_connections", {{"instance_path", "top.u"}}).at("items");
+    REQUIRE(connections.front().at("symbols").empty());
+    REQUIRE(connections.front().at("kind") != "signal");
+}
+
 TEST_CASE("Connectivity reports cycles and honors bounded traversal") {
     Project project;
     project.write("design.sv", "module top; logic a,b; assign a=b; assign b=a; endmodule\n");
@@ -264,5 +318,92 @@ TEST_CASE("A fragment top does not inherit unavailable parent parameter override
     REQUIRE(service.call("project_info", {}) == active);
     project.write("design.sv", hierarchy_rtl);
     REQUIRE_FALSE(service.call("project_load", project.arguments()).contains("analysis_scope"));
+}
+TEST_CASE("Focused inspections preserve selected legacy sections and identity") {
+    Project project;
+    project.write("design.sv", hierarchy_rtl);
+    SemanticService service;
+    (void)service.call("project_load", project.arguments());
+    const auto tool = GENERATE("inspect_module", "inspect_instance", "inspect_signal");
+    Json args = {{"sv_module", "leaf"}, {"instance_path", "top.u_a"}, {"signal", "top.data"}};
+    const auto complete = service.call(tool, args);
+    for (const auto& [field, value] : complete.items()) {
+        args["fields"] = Json::array({field});
+        if (field == "definition" || field == "instance" || field == "symbol") {
+            continue;
+        }
+        const auto focused = service.call(tool, args);
+        REQUIRE(focused.size() == 2);
+        REQUIRE(focused.at(field) == value);
+    }
+    args["fields"] = Json::array();
+    REQUIRE(service.call(tool, args).size() == 1);
+    args["fields"] = Json::array({"not_a_section"});
+    REQUIRE_THROWS_AS(service.call(tool, args), std::invalid_argument);
+    args["fields"] = Json::array({42});
+    REQUIRE_THROWS(service.call(tool, args));
+    args["fields"] = nullptr;
+    REQUIRE_THROWS_AS(service.call(tool, args), std::invalid_argument);
+}
+
+TEST_CASE("Focused module inspections validate target kind before selecting sections") {
+    Project project;
+    project.write("design.sv", "package types; endpackage\nmodule top; logic data; endmodule\n");
+    SemanticService service;
+    (void)service.call("project_load", project.arguments());
+    const auto target = GENERATE("top.data", "types");
+    const auto fields = GENERATE(Json::array(), Json::array({"declaration_count"}),
+                                 Json::array({"diagnostic_count"}));
+    REQUIRE_THROWS_AS(service.call("inspect_module", {{"sv_module", target}, {"fields", fields}}),
+                      std::invalid_argument);
+}
+
+TEST_CASE("Focused signature filters apply before bounded pagination") {
+    Project project;
+    project.write("design.sv", hierarchy_rtl);
+    SemanticService service;
+    (void)service.call("project_load", project.arguments());
+    const auto tool = GENERATE("inspect_module", "inspect_instance");
+    const auto result = service.call(tool, {{"sv_module", "leaf"},
+                                            {"instance_path", "top.u_a"},
+                                            {"fields", {"parameters"}},
+                                            {"parameter_names", {"WIDTH"}},
+                                            {"limit", 1}});
+    REQUIRE(result.at("parameters").at("parameters").at("total_count") == 1);
+    REQUIRE(result.at("parameters").at("parameters").at("items").front().at("integer_value") ==
+            (std::string_view(tool) == "inspect_module" ? 8 : 32));
+    const auto field = std::string_view(tool) == "inspect_module" ? "ports" : "connections";
+    const auto ports = service.call(tool, {{"sv_module", "leaf"},
+                                           {"instance_path", "top.u_a"},
+                                           {"fields", Json::array({field})},
+                                           {"port_names", {"o"}},
+                                           {"limit", 1}});
+    REQUIRE(ports.at(field).at("total_count") == 1);
+    REQUIRE(ports.at(field).at("items").size() == 1);
+    REQUIRE(ports.at(field).at("truncated") == false);
+}
+
+TEST_CASE("Focused inspections do not evaluate unrequested query sections") {
+    Project project;
+    project.write("design.sv", hierarchy_rtl);
+    SemanticService service;
+    (void)service.call("project_load", project.arguments());
+    REQUIRE(service
+                .call("inspect_instance", {{"instance_path", "top.u_a"},
+                                           {"fields", {"children"}},
+                                           {"parameter_names", 42},
+                                           {"port_names", 42}})
+                .size() == 2);
+    REQUIRE(service
+                .call("inspect_module", {{"sv_module", "leaf"},
+                                         {"fields", {"declaration_count"}},
+                                         {"parameter_names", 42},
+                                         {"port_names", 42}})
+                .size() == 2);
+    REQUIRE(service
+                .call("inspect_signal", {{"signal", "top.data"},
+                                         {"fields", {"reference_count"}},
+                                         {"kind", "invalid_unused_kind"}})
+                .size() == 2);
 }
 } // namespace slang_mcp::test

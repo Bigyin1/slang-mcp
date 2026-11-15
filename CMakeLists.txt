@@ -62,6 +62,7 @@ if(APPLE AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     endif()
 endif()
 
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS src/contract.json)
 file(READ "${CMAKE_CURRENT_SOURCE_DIR}/src/contract.json" SLANG_MCP_CONTRACT)
 configure_file(src/contract.hpp.in generated/contract.hpp @ONLY)
 

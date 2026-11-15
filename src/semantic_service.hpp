@@ -7,7 +7,7 @@
 namespace slang_mcp {
 class SemanticService {
   public:
-    SemanticService();
+    explicit SemanticService(SnapshotPolicy snapshots = SnapshotPolicy::Track);
     [[nodiscard]] Json call(const std::string& name, const Json& arguments);
 
   private:

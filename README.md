@@ -1,9 +1,9 @@
 # slang-mcp
 
 A read-only C++26 MCP server for compiler-backed SystemVerilog analysis. It links
-directly to Slang 12.1 and retains the 29-tool `old-style` API, plus explicit partial loading: project loading,
-diagnostics, symbols, hierarchy, RTL accesses, bounded connectivity, inspection
-summaries, and semantic reload differences.
+directly to Slang 12.1. The default `core` profile exposes 15 tools for explicit
+fragment loading, diagnostics, symbols, hierarchy, selected inspection fields and
+source accesses. `--tool-profile full` retains all 30 compatibility tools.
 
 The design was inspired by [pyslang-mcp](https://github.com/ariklapid/pyslang-mcp).
 [slang-server](https://github.com/hudson-trading/slang-server) is the reference for
@@ -49,7 +49,23 @@ Configure the MCP client to launch the executable over stdio:
 
 ## Loading projects
 
-`project_load` accepts ordered paths to UTF-8 file lists. Every non-empty source
+Start with `project_load_partial`: the agent chooses ordered absolute source paths
+and a top, inspects diagnostics, then adds dependencies only as needed. The server
+does not discover dependencies or load an entire repository automatically.
+
+```json
+{
+  "source_files": ["/work/pkg.sv", "/work/fifo.sv"],
+  "include_directories": ["/work/include"],
+  "top_module": "fifo"
+}
+```
+
+Repeat this load to change the file set or rebuild after source changes. Missing
+definitions remain diagnostics; a usable fragment does not establish completeness
+or the parameter overrides of a caller that was not loaded.
+
+In the `full` profile, `project_load` accepts ordered UTF-8 file lists. Every source
 entry must be an absolute file path; include-list entries must be absolute directory
 paths. Supply packages before RTL and models. Source order and duplicate entries are
 preserved. A null define has no replacement text; a string becomes `NAME=value`.
@@ -63,23 +79,52 @@ preserved. A null define has no replacement text; a string becomes `NAME=value`.
 }
 ```
 
-The server holds one project. `project_reload()` rebuilds the same inputs after RTL
-changes. Path validation, compilation, and snapshot creation finish before activating
+The server holds one project. In `full`, `project_reload()` rebuilds the same inputs after RTL
+changes. Path validation, compilation, and optional snapshot creation finish before activating
 the new design. A failed load preserves the previous design and diff. Completed
 compilations with error diagnostics remain available for inspection.
 
+`get_diagnostics` reports scope, total count and truncation. Unresolved modules and
+packages receive a possible-missing-dependency hint; their errors remain errors,
+since a typo can produce the same message. Recoverable syntax/type errors also stay
+visible. If no requested top can be built, the failed-load reply retains bounded
+candidate diagnostics and explicitly reports that the active project is unchanged.
+
 ## Tools
+
+Default `core` catalog:
 
 | Area | Tools |
 | --- | --- |
-| Project | `project_load`, `project_load_partial`, `project_reload`, `project_info`, `semantic_diff` |
-| Diagnostics | `get_diagnostics`, `summarize_diagnostics_by_code` |
+| Project and diagnostics | `project_load_partial`, `project_info`, `get_diagnostics` |
 | Symbols | `find_symbol`, `describe_symbol`, `list_symbols`, `get_references` |
-| Hierarchy | `get_hierarchy`, `describe_instance`, `list_instances`, `find_instance` |
-| Signatures | `get_ports`, `get_parameters`, `get_instance_parameters`, `get_instance_connections`, `list_instance_facts` |
-| Accesses | `get_signal_reads`, `get_signal_writes`, `get_drivers`, `get_loads` |
-| RTL | `trace_connectivity`, `get_procedural_blocks`, `get_state_elements` |
-| Summaries | `inspect_signal`, `inspect_module`, `inspect_instance` |
+| Hierarchy | `get_hierarchy`, `list_instances` |
+| Inspection | `inspect_module`, `inspect_instance`, `list_instance_facts` |
+| Accesses and state | `get_signal_reads`, `get_signal_writes`, `get_state_elements` |
+
+Use `inspect_module` for declaration defaults and `inspect_instance` for effective
+instance values. Select sections and exact parameter/port names to bound replies:
+
+```json
+{
+  "instance_path": "top.u_fifo",
+  "fields": ["parameters", "connections"],
+  "parameter_names": ["DEPTH"],
+  "port_names": ["data_o"]
+}
+```
+
+Unrequested sections are not evaluated. Identity is always returned; omitting
+`fields` preserves the complete response. Use `list_instance_facts` to inspect many
+instances of the same module in one call.
+
+Existing clients that use `project_load`, focused legacy getters, connectivity or
+`semantic_diff` should set MCP launch `"args": ["--tool-profile", "full"]`. The full
+profile exposes all 30 tools and preserves complete default inspection sections. Profile selection
+applies to both discovery and calls; core rejects tools it does not advertise.
+Restart the server to change profile. Core does not construct or retain diff
+snapshots. Full retains structural snapshot comparison; a zero diff does not prove
+unchanged RTL behavior.
 
 See [docs.md](docs.md) for arguments and result semantics. Input schemas and descriptions
 are retained in [src/contract.json](src/contract.json). Collections report `items`,
@@ -94,7 +139,7 @@ field `integer_value` is null when the constant is unknown or does not fit a sig
 ## Architecture
 
 Thin MCP handlers call `SemanticService`. `ProjectManager` owns the active compilation
-and compiler-independent snapshots. Slang objects stay inside `src/adapters/` behind
+and, in full mode, compiler-independent snapshots. Slang objects stay inside `src/adapters/` behind
 `Design`; normalized project-owned C++ models cross that boundary. Compiler visitors
 build a shared access index lazily. Default elaborations share immutable syntax trees
 while keeping their parameters and semantic state separate.
@@ -136,8 +181,9 @@ the C++ server. This uses Bender 0.32.1 at `.tools/bender` and may need network 
 Some generic top modules intentionally produce diagnostic errors; validation reports
 their counts. These commands make no model calls.
 
-The harness still compares `text-only`, `mcp`, and `mcp+skill`. It launches
-`build/cpp/slang-mcp` by default; `SLANG_MCP_BINARY` selects another executable.
+The historical harness still compares `text-only`, `mcp`, and `mcp+skill`. It launches
+`build/cpp/slang-mcp --tool-profile full` to preserve its existing experiment API;
+`SLANG_MCP_BINARY` selects another executable.
 Previous reports measure the former Python implementation and are not results for
 the C++ server. See [benchmarks/README.md](benchmarks/README.md) before running new
 agent experiments.
@@ -150,7 +196,11 @@ Research on the C++ server (2026-11-15) is recorded separately:
   previous 29 tools, aggregate/primitive equivalence, payloads and limitations.
 - [Terra Max pilot](benchmarks/research_agents/README.md): four exploratory arms,
   six source-checked questions each; raw answers and MCP traces are retained.
+- [Catalog audit](benchmarks/research_simplify/README.md): usage and mutation checks
+  for semantic_diff, upstream methodology review and a 30-versus-12 pilot.
+- [Focused analysis](benchmarks/research_focused/README.md): four real-design tasks,
+  native core/full profiles and exact selected-field payload comparisons.
 
-These measurements preceded the additive `project_load_partial` API. They support
-explicit small source scopes and experiments with fewer tools, but do not establish
-which tools can safely be removed across unseen tasks.
+The first three measurements predate the additive `project_load_partial` API.
+These exploratory studies support explicit small source scopes and a reversible
+compact default; they do not establish universal tool necessity or model superiority.

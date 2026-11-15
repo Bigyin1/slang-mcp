@@ -22,7 +22,9 @@ async def execute(workspace: Path, output: Path, binary: Path) -> None:
     # Pylint cannot follow SDK async context manager tuple assignment.
     # pylint: disable=used-before-assignment
     async with (
-        stdio_client(StdioServerParameters(command=str(binary), args=[])) as streams,
+        stdio_client(
+            StdioServerParameters(command=str(binary), args=["--tool-profile", "full"])
+        ) as streams,
         ClientSession(*streams) as session,
     ):
         await session.initialize()

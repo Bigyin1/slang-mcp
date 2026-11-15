@@ -172,7 +172,8 @@ Json ProjectManager::load(ProjectConfig config) {
         validate_path(include, true);
     }
     auto candidate = std::make_unique<adapters::Design>(config);
-    auto next_snapshot = snapshot(*candidate);
+    auto next_snapshot =
+        snapshot_policy_ == SnapshotPolicy::Track ? snapshot(*candidate) : Snapshot{};
     auto previous = design_ && config_.logical_module == config.logical_module
                         ? std::optional(snapshot_)
                         : std::nullopt;
@@ -226,6 +227,15 @@ Json ProjectManager::info() {
             {"slang_version", design().version()}};
 }
 
+Json ProjectManager::analysis_context() const {
+    const auto scope = config_.metadata.find("analysis_scope");
+    return {
+        {"analysis_scope", scope == config_.metadata.end() ? "configured_sources" : scope->second},
+        {"completeness", "not_verified"},
+        {"source_file_count", config_.source_files.size()},
+        {"top_modules", config_.top_modules}};
+}
+
 ProjectManager::Snapshot ProjectManager::snapshot(adapters::Design& design) {
     Snapshot result;
     for (const auto& definition : design.definitions()) {
@@ -244,6 +254,9 @@ ProjectManager::Snapshot ProjectManager::snapshot(adapters::Design& design) {
 
 Json ProjectManager::diff(int limit) const {
     validate_limit(limit);
+    if (snapshot_policy_ == SnapshotPolicy::Disabled) {
+        throw std::invalid_argument("semantic snapshots are disabled for this session");
+    }
     if (!design_) {
         throw std::invalid_argument("no project is loaded");
     }

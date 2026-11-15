@@ -1,0 +1,90 @@
+{
+  "answers": {
+    "scope": "Standalone cc_stream_fifo top with its source defaults; no parent instance overrides and no complete project were loaded.",
+    "top_defaults": {
+      "FallThrough": 0,
+      "DataWidth": 32,
+      "Depth": 8,
+      "data_t": "logic[31:0]",
+      "UsageWidth": 4,
+      "explanation": "UsageWidth = cc_pkg::cnt_width(8) = idx_width(9) = 4. The semantic server resolved this both with and without the child definition when the package was present."
+    },
+    "child": {
+      "instance": "cc_stream_fifo.fifo_i",
+      "module": "cc_fifo",
+      "parameters": {
+        "FallThrough": 0,
+        "DataWidth": 32,
+        "Depth": 8,
+        "data_t": "cc_stream_fifo.data_t = logic[31:0]",
+        "UsageWidth": 4,
+        "FifoDepth": 8,
+        "PtrWidth": 3
+      },
+      "bindings": "push_i=push, pop_i=pop, full_o=full, empty_o=empty; usage_o and data_i/data_o connect to the corresponding top ports."
+    },
+    "equations": {
+      "push": "valid_i & ~full",
+      "pop": "ready_i & ~empty",
+      "ready_o": "~full",
+      "valid_o": "~empty",
+      "default_child_status": "With Depth=8 and FallThrough=0, full=(status_cnt_q == 8), empty=(status_cnt_q == 0), and usage_o=status_cnt_q."
+    },
+    "stored_state": {
+      "read_pointer_q": "logic[2:0]",
+      "write_pointer_q": "logic[2:0]",
+      "status_cnt_q": "logic[3:0]",
+      "mem_q": "logic[7:0][31:0], 8 packed 32-bit entries, 256 bits total",
+      "behavior": "The child next-state combinational block updates memory and write pointer for an accepted push, read pointer for an accepted pop, and the occupancy count; simultaneous accepted push and pop keep the count unchanged. The always_ff blocks have posedge clk_i and negedge rst_ni sensitivity. Both clear and flush clear the pointers and count; clear resets memory, while flush does not itself clear memory or prevent a concurrent normal write."
+    },
+    "boundaries": {
+      "missing_package_child_present": "Experimentally, Slang still found fifo_i and resolved the independent top and child defaults FallThrough=0, DataWidth=32, Depth=8 and data_t=32-bit, and child FifoDepth=8. Top and child UsageWidth and child PtrWidth were <unset>; child usage_o had error type and no width. Do not treat package-dependent widths or downstream conclusions that depend on them as established from that fragment.",
+      "package_present_missing_child": "Experimentally, Slang resolved the top defaults including UsageWidth=4, and located the top pop continuous driver, but reported UnknownModule cc_fifo and listed no elaborated children. Parent-local equations and parameter-override syntax remain source facts; an empty child list is not evidence that the design has no FIFO. Effective child parameters, resolved child ports and internal state cannot be established from this fragment alone.",
+      "both_missing": "Experimentally, Slang reported UnknownClassOrPackage cc_pkg and UnknownModule cc_fifo, retained the independent top defaults and the push continuous driver, left UsageWidth <unset>, and returned no elaborated child."
+    }
+  },
+  "evidence": [
+    {
+      "configuration": "top only; no package or child",
+      "tools": ["project_load_partial", "get_diagnostics", "inspect_instance", "inspect_signal(push)"],
+      "finding": "Two errors: unknown cc_pkg at cc_stream_fifo.sv:22 and unknown cc_fifo at :50; UsageWidth <unset>, independent top defaults resolved, no child elaborated; push has a continuous-assignment driver at :45."
+    },
+    {
+      "configuration": "cc_pkg + top; no child",
+      "tools": ["project_load_partial", "get_diagnostics", "inspect_instance", "inspect_signal(pop)"],
+      "finding": "One UnknownModule error for cc_fifo; top UsageWidth=4, no elaborated child, and pop has a continuous-assignment driver at cc_stream_fifo.sv:46."
+    },
+    {
+      "configuration": "cc_fifo + top + include directory; no package",
+      "tools": ["project_load_partial", "get_diagnostics", "inspect_instance(top)", "inspect_instance(fifo_i)"],
+      "finding": "Three UnknownClassOrPackage errors at cc_fifo.sv:22, :44 and cc_stream_fifo.sv:22; fifo_i resolves but UsageWidth and PtrWidth are unset and usage_o has error type; independent parameters and the push/pop port bindings still resolve. Two PackedArrayConv warnings also occur."
+    },
+    {
+      "configuration": "cc_pkg + cc_fifo + top, package first",
+      "tools": ["project_load_partial", "get_diagnostics", "inspect_instance(fifo_i)", "get_state_elements(cc_fifo)", "get_procedural_blocks(cc_fifo)", "trace_connectivity(push)", "trace_connectivity(pop)"],
+      "finding": "No errors, two PackedArrayConv warnings; child instance parameters and port bindings resolved. get_state_elements reports four always_ff-written signals at cc_fifo.sv:122-126 with widths 3, 3, 4 and 256; procedural-block sensitivity is posedge clk_i or negedge rst_ni. The source-level traces identify the top continuous assignment inputs and child port bindings; the exact operators are verified against cc_stream_fifo.sv:45-48."
+    },
+    {
+      "source_locations": [
+        "cc_pkg.sv:40-54: idx_width and cnt_width",
+        "cc_stream_fifo.sv:13-22: top defaults and UsageWidth",
+        "cc_stream_fifo.sv:42-66: push/pop assignments and child override/bindings",
+        "cc_fifo.sv:16-22 and :41-55: child parameters, state declarations and usage",
+        "cc_fifo.sv:57-126: status, next-state logic and register macros",
+        "include/common_cells/registers.svh:190-204 and :213-227: macro expansions for memory and pointer/count registers"
+      ]
+    }
+  ],
+  "source_files": [
+    "/private/tmp/slang-focused-pilot/idma_partial/rtl/.bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_pkg.sv",
+    "/private/tmp/slang-focused-pilot/idma_partial/rtl/.bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_fifo.sv",
+    "/private/tmp/slang-focused-pilot/idma_partial/rtl/.bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_stream_fifo.sv"
+  ],
+  "limitations": [
+    "The complete minimal fragment used include directory /private/tmp/slang-focused-pilot/idma_partial/rtl/.bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/include for common_cells/assertions.svh and common_cells/registers.svh; no defines were supplied. Fragment completeness is not automatically verified by the server.",
+    "The resolved fragment has two PackedArrayConv warnings at cc_fifo.sv:126: implicit conversion from logic[255:0] to logic[7:0][31:0]. It has no error diagnostics; warnings remain unresolved.",
+    "The server traces expose source-level dependencies and locations, not expression text, simulation results, synthesized structure or formal proof; exact equations and clear/flush behavior were checked in the RTL and register macros at the cited semantic locations.",
+    "The missing-package and missing-child boundaries were each loaded separately, in addition to a top-only load missing both. The child state was semantically checked with both definitions available; its state enumeration under the missing-package configuration was not separately queried.",
+    "A trace request using direction upstream was rejected as unknown; it provides no evidence. The corresponding successful queries and source references above support the reported facts."
+  ]
+}

@@ -1,0 +1,178 @@
+{
+  "binary_sha256": "63bdd05d104449fc2fa56a37e7afd0db75172e3b21f4bdb1f91495828b4a4991",
+  "encoding": "UTF-8 canonical JSON; sorted keys; compact separators; SDK result aliases; nulls excluded",
+  "runs": [
+    {
+      "project": "axi_fifo_core",
+      "load": {
+        "bytes": 480,
+        "sha256": "a4dea5c4d662a9f89bf037078b554c5b7de8a88350d7c4c04ef9da1f678897fa"
+      },
+      "comparisons": [
+        {
+          "tool": "inspect_module",
+          "arguments": {
+            "sv_module": "axi_fifo",
+            "limit": 100
+          },
+          "full": {
+            "bytes": 10464,
+            "sha256": "4f5ff32930bcd854b923540ef7871450481108b6b5958a60caf325d316cf5047"
+          },
+          "selected": {
+            "bytes": 2672,
+            "sha256": "7e6dac52c4ec855d68049dae4cb7bc77978f55cf452cadb8b1a08e46e1162590"
+          },
+          "projection_equal": true,
+          "projection_sha256": "e3c707e26f5b56692a56434d2f105fd16526d912d6ad251789c68fca090a1c44"
+        },
+        {
+          "tool": "inspect_instance",
+          "arguments": {
+            "instance_path": "axi_fifo",
+            "limit": 100
+          },
+          "full": {
+            "bytes": 5246,
+            "sha256": "046ecd01328deeb0693c2ad5b26101ebcffaab9636ea2ce32b36f55a51cf9cc1"
+          },
+          "selected": {
+            "bytes": 2550,
+            "sha256": "f8604b6afc294b80d6631055af8280b8210e8271746597012271f4254a3d286f"
+          },
+          "projection_equal": true,
+          "projection_sha256": "40e3add3a5761ed3ecd1900d7bdc0c7072cd4506b3bcc424f72bc09272a1b5b7"
+        }
+      ]
+    },
+    {
+      "project": "cva6_cv64a6_imafdc_sv39",
+      "load": {
+        "bytes": 468,
+        "sha256": "a8c2937d00c52e39ec6dbb1943d7e8989b84c925a65e4a5c823d765419f1084c"
+      },
+      "comparisons": [
+        {
+          "tool": "inspect_module",
+          "arguments": {
+            "sv_module": "cva6",
+            "limit": 100
+          },
+          "full": {
+            "bytes": 48328,
+            "sha256": "4515b8139275cf276f15e39e4a365e7a649079cafeb8d91420544cce93226737"
+          },
+          "selected": {
+            "bytes": 24604,
+            "sha256": "dc5fd8589af5bf3009df90527d094738abee04977393416f8ddf0be80fdc9a0d"
+          },
+          "projection_equal": true,
+          "projection_sha256": "6d175e94c17c1b64c90821c8857b711b2c4eec31c0ab4664e391476d629b9a37"
+        },
+        {
+          "tool": "inspect_instance",
+          "arguments": {
+            "instance_path": "cva6",
+            "limit": 100
+          },
+          "full": {
+            "bytes": 30210,
+            "sha256": "61fe4ddfd1c3ed93e87284567c54e24174cdba134beae3b35c22dbac1a2eea52"
+          },
+          "selected": {
+            "bytes": 24488,
+            "sha256": "b7696768a84228c47a4c2f509b2d01364cb5958d0e8560a485c0dc71663467ae"
+          },
+          "projection_equal": true,
+          "projection_sha256": "02ba05d9af4ab7e1eed77b3cdfdb11e776407bf74691193b5bc38b8d2cfacac9"
+        }
+      ]
+    },
+    {
+      "project": "idma_desc64",
+      "load": {
+        "bytes": 522,
+        "sha256": "7725842d0e00737fb23f7516b11c6a38c56142fd448edbe357ca1e525d3ebdbf"
+      },
+      "comparisons": [
+        {
+          "tool": "inspect_module",
+          "arguments": {
+            "sv_module": "idma_desc64_synth",
+            "limit": 100
+          },
+          "full": {
+            "bytes": 15248,
+            "sha256": "e96023a202e8ed71ba9b6da2203e2dafaba24be1c66c93ac38605f997f1355ec"
+          },
+          "selected": {
+            "bytes": 4128,
+            "sha256": "3b06b86b7cc2df6aba8373df13660a728b57056985428e63884845df72be4418"
+          },
+          "projection_equal": true,
+          "projection_sha256": "fe790cbedc20d2a711834b2ec92cb3093ce513b7d6baed3248785a78cbeb603d"
+        },
+        {
+          "tool": "inspect_instance",
+          "arguments": {
+            "instance_path": "idma_desc64_synth",
+            "limit": 100
+          },
+          "full": {
+            "bytes": 4832,
+            "sha256": "2458d7a068c87c7a0607b34c735c49131733c1adc6e02a3f59ce798b831c68b1"
+          },
+          "selected": {
+            "bytes": 4006,
+            "sha256": "3415ca8e75a59673db9be9d6559530e1b644bb5ceacabd8e65d2dcdff242a4f2"
+          },
+          "projection_equal": true,
+          "projection_sha256": "af2a141bf31e9c47923a39b8e14dbbc0b2e99f66c30381d78c8255ac11f29bce"
+        }
+      ]
+    },
+    {
+      "project": "floonoc_nw_2tiles",
+      "load": {
+        "bytes": 532,
+        "sha256": "80231156b870a2429923cda807fd693b08b6180c6417c68153e9567061720027"
+      },
+      "comparisons": [
+        {
+          "tool": "inspect_module",
+          "arguments": {
+            "sv_module": "floo_synth_nw_2tiles",
+            "limit": 100
+          },
+          "full": {
+            "bytes": 15740,
+            "sha256": "7a6ec265875d669cbbc18fb05053412c6916fe4464720644c50bc24e047679ba"
+          },
+          "selected": {
+            "bytes": 1686,
+            "sha256": "4e3a934fd9a0d6704ad37ff8f5c784a9e47ac05ce3e081fffd617189ebf7d06d"
+          },
+          "projection_equal": true,
+          "projection_sha256": "381d4111e49435fadc2894f6ae97fd68a69cdbf807a031c3d5ee55e195dac13d"
+        },
+        {
+          "tool": "inspect_instance",
+          "arguments": {
+            "instance_path": "floo_synth_nw_2tiles",
+            "limit": 100
+          },
+          "full": {
+            "bytes": 3020,
+            "sha256": "d9d2bfcca84640f85eb9295971892b75ef9c46ff376347b0155f9c58c052c5fd"
+          },
+          "selected": {
+            "bytes": 1564,
+            "sha256": "b8a891d7b8f17a0bdb40e8a90ed41345164fd9c4caaf6e1f73f6df672f0903e2"
+          },
+          "projection_equal": true,
+          "projection_sha256": "fbf9bbf3a283bd53554bc5bca5a98ed10c1fafa36f2bd078cedd911c43f4c440"
+        }
+      ]
+    }
+  ]
+}

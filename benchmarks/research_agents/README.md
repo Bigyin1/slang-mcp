@@ -18,6 +18,11 @@ benchmarks/.venv/bin/python -m benchmarks.research_agents.bridge \
 
 Example requests:
 
+The bridge now explicitly defaults to `--server-profile full` for compatibility
+with these historical tasks. For native compact-profile experiments, pass
+`--server-profile core`. A bridge allowlist can further restrict the selected
+native catalog, but cannot enable tools absent from that profile.
+
 ```json
 {"method":"tools/list"}
 {"method":"tools/call","name":"project_load","arguments":{"source_file_lists":["/private/tmp/slang-partial-research/axi_fifo_core/source_files.f"],"include_directory_lists":["/private/tmp/slang-partial-research/axi_fifo_core/include_directories.f"],"top_module":"axi_fifo","defines":{"TARGET_FLIST":null,"TARGET_SYNTHESIS":null,"COMMON_CELLS_ASSERTS_OFF":null}}}

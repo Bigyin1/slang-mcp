@@ -1,5 +1,6 @@
 #include "adapters/design.hpp"
 #include "adapters/internal.hpp"
+#include "compilation_error.hpp"
 
 #include <set>
 #include <slang/diagnostics/DiagnosticEngine.h>
@@ -198,7 +199,9 @@ struct Design::Impl {
         index();
         for (const auto& top : config.top_modules) {
             if (!raw_instances.contains(top)) {
-                throw std::invalid_argument("unknown elaboration top: " + top);
+                throw CompilationError("Cannot elaborate requested top: " + top +
+                                           ". Any previously active project is unchanged.",
+                                       diagnostic_items, config);
             }
         }
     }
@@ -388,6 +391,14 @@ std::vector<SymbolReference> Design::members(const std::string& scope) {
     std::ranges::copy_if(impl_->symbols, std::back_inserter(result),
                          [&](const auto& item) { return item.containing_scope == path; });
     return result;
+}
+
+SymbolReference Design::definition_reference(const std::string& identifier) const {
+    const auto& symbol = impl_->resolve(identifier);
+    if (symbol.kind != ast::SymbolKind::Definition) {
+        throw std::invalid_argument("not a module or interface: " + identifier);
+    }
+    return reference(symbol, impl_->manager);
 }
 
 SymbolDescription Design::describe(const std::string& identifier) {

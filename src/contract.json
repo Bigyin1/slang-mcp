@@ -184,7 +184,7 @@
   },
   {
     "name": "get_diagnostics",
-    "description": "Return bounded structured Slang diagnostics.",
+    "description": "Return bounded Slang diagnostics, total_count, truncated and analysis scope. Unknown-module/package scope hints identify possible missing dependencies, never harmless errors. Syntax/type errors remain visible; completeness is not inferred.",
     "inputSchema": {
       "properties": {
         "limit": {
@@ -923,6 +923,21 @@
           "default": 10,
           "title": "Limit",
           "type": "integer"
+        },
+        "fields": {
+          "description": "Sections to return; omitted returns all sections. Identity is always included.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "reference_count",
+              "reads",
+              "writes",
+              "drivers",
+              "loads"
+            ]
+          },
+          "maxItems": 5
         }
       },
       "required": [
@@ -955,6 +970,38 @@
           "default": 100,
           "title": "Limit",
           "type": "integer"
+        },
+        "fields": {
+          "description": "Sections to return; omitted returns all sections. Identity is always included.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "parameters",
+              "ports",
+              "declaration_count",
+              "children",
+              "procedures",
+              "diagnostic_count"
+            ]
+          },
+          "maxItems": 6
+        },
+        "parameter_names": {
+          "description": "Exact names to include, filtered before the section limit.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 500
+        },
+        "port_names": {
+          "description": "Exact names to include, filtered before the section limit.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 500
         }
       },
       "required": [
@@ -1093,6 +1140,35 @@
           "default": 100,
           "title": "Limit",
           "type": "integer"
+        },
+        "fields": {
+          "description": "Sections to return; omitted returns all sections. Identity is always included.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "parameters",
+              "connections",
+              "children"
+            ]
+          },
+          "maxItems": 3
+        },
+        "parameter_names": {
+          "description": "Exact names to include, filtered before the section limit.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 500
+        },
+        "port_names": {
+          "description": "Exact names to include, filtered before the section limit.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 500
         }
       },
       "required": [
@@ -1114,7 +1190,7 @@
   },
   {
     "name": "semantic_diff",
-    "description": "Normalized semantic differences from the last successful same-project load.",
+    "description": "Compare structural semantic snapshots: signatures, parameters, hierarchy and diagnostics. Expression and procedure body changes are excluded; this is not a behavioral equivalence check.",
     "inputSchema": {
       "properties": {
         "limit": {

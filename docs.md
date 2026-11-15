@@ -4,13 +4,24 @@
 Все tools возвращают JSON-совместимые данные и не меняют RTL, build-конфигурацию
 или файлы проекта.
 
-Сначала вызовите `project_load`, затем выполняйте запросы к активному проекту.
-`project_reload` заново компилирует и индексирует те же build inputs. Вызывайте
-его только после изменения RTL или build inputs; затем выполняйте все нужные
-semantic-запросы к одной загруженной compilation.
+По умолчанию сервер запускается с профилем `core` из 15 tools. Начните с
+`project_load_partial`: агент выбирает ordered `source_files` и `top_module`,
+проверяет диагностику и явно добавляет нужные зависимости. Повторная загрузка
+заменяет активный фрагмент; ошибка построения сохраняет прежнее состояние.
+
+Для старых клиентов и дополнительных инструментов запускайте
+`slang-mcp --tool-profile full`. Он предоставляет все 30 tools, включая
+`project_load`, `project_reload`, `semantic_diff`, connectivity и старые getters.
+Скрытые инструменты недоступны и для прямого вызова. Профиль выбирается при старте.
+
+В `core` доступны: `project_load_partial`, `project_info`, `get_diagnostics`,
+`find_symbol`, `describe_symbol`, `list_symbols`, `get_references`, `get_hierarchy`,
+`list_instances`, `inspect_module`, `inspect_instance`, `list_instance_facts`,
+`get_signal_reads`, `get_signal_writes`, `get_state_elements`.
+Все остальные описанные ниже инструменты относятся только к `full`.
 
 Сервер реализован на C++26 и напрямую использует библиотеку Slang 12.1.
-Проекты загружаются через `project_load` file lists. Python остаётся только
+Полные file lists доступны через `project_load` в профиле `full`. Python остаётся только
 в отдельном стенде `benchmarks/`, который вызывает C++ сервер через MCP.
 
 ## Общие правила
@@ -50,6 +61,16 @@ list-файла должна быть абсолютным путём: в `sourc
 сохраняются. Возвращает количества source files, include dirs и
 defines, configured top и количество error/warning diagnostics. Успешная
 компиляция с diagnostics всё равно доступна для анализа.
+
+Синтаксические и семантические ошибки допустимы, пока Slang смог создать
+запрошенный top. Доступность одного локального запроса не означает корректность
+остального RTL. Если top построить нельзя, MCP возвращает `isError: true` и JSON
+со `status: "compilation_failed"`, диагностикой попытки (первые 100 сообщений,
+`returned_count`, `total_count`, `truncated`), `requested_top_modules` и
+`active_project_unchanged: true`. Поле `analysis.context: "attempted_candidate"`
+отделяет эту диагностику от активного проекта; там же указаны область анализа и
+число файлов. Новая compilation не активируется: последующие запросы относятся
+к предыдущей успешной загрузке, если она была. Это относится и к `project_load_partial`.
 
 ### `project_reload`
 
@@ -135,8 +156,19 @@ default instance для этой декларации.
 Аргументы: `limit=100`, необязательный `severity`.
 
 `severity` принимает `ignored`, `note`, `warning`, `error` или `fatal` без учёта
-регистра. Результат содержит `diagnostics` и `returned_count`; каждый diagnostic
-содержит severity, Slang code, message и source location.
+регистра. Результат содержит `diagnostics`, `returned_count`, `total_count`,
+`truncated` и `analysis` с областью анализа, tops, количеством файлов и
+`completeness: "not_verified"`. Счётчик `total_count` учитывает фильтр severity,
+но не ограничение limit. Каждый diagnostic сохраняет severity, Slang code,
+message и source location.
+
+`scope_hint: "possible_missing_dependency"` ставится только для `UnknownModule`
+и `UnknownClassOrPackage`. Это подсказка: причиной может быть ограниченный набор
+файлов, опечатка или реальный дефект RTL. Для остальных кодов — `"unclassified"`.
+Ошибки не подавляются, их severity не понижается. Проверяйте гипотезу добавлением
+нужной зависимости и повторной загрузкой. Отсутствие errors не доказывает
+полноту проекта, корректность поведения или применимость неизвестных параметров
+родительского экземпляра.
 
 ### `summarize_diagnostics_by_code`
 
@@ -336,9 +368,19 @@ netlist, timing, formal или simulation evidence.
 
 ## Aggregate inspection
 
+Все три `inspect_*` принимают необязательный `fields` — массив имён разделов ответа.
+Без него возвращается прежний полный ответ. `fields: []` возвращает только identity:
+`definition`, `instance` или `symbol`; identity включается всегда и не указывается
+в `fields`. Неизвестный раздел или неверный тип поля дают ошибку. Разделы, которые
+не запрошены, не вычисляются. Это позволяет не строить индекс accesses, когда нужны
+только параметры или порты. Фильтры непросматриваемых разделов не применяются.
+
 ### `inspect_signal`
 
-Аргументы: `signal`, `limit=10`.
+Аргументы: `signal`, `limit=10`, `fields`.
+
+Разделы: `reference_count`, `reads`, `writes`, `drivers`, `loads`.
+`drivers`/`loads` дублируют writes/reads; для компактного ответа выбирайте одну пару.
 
 Собирает в одном ответе normalized symbol description, общее число references и
 bounded lists reads, writes, drivers и loads. Default limit меньше, чем у других
@@ -346,7 +388,12 @@ tools, чтобы ответ оставался компактным.
 
 ### `inspect_module`
 
-Аргументы: `sv_module`, `limit=100`.
+Аргументы: `sv_module`, `limit=100`, `fields`, `parameter_names`, `port_names`.
+
+Разделы: `parameters`, `ports`, `declaration_count`, `children`, `procedures`,
+`diagnostic_count`. Фильтры выбирают точные имена default parameters/ports перед
+ограничением `limit`. Пустой список имён означает пустой результат; отсутствующие
+имена не являются ошибкой. Каждый фильтр допускает до 500 имён.
 
 Возвращает definition, default parameters и ports, количество direct declarations,
 children active elaborated instances, procedural blocks и количество diagnostics
@@ -354,7 +401,16 @@ children active elaborated instances, procedural blocks и количество 
 
 ### `inspect_instance`
 
-Аргументы: `instance_path`, `limit=100`.
+Аргументы: `instance_path`, `limit=100`, `fields`, `parameter_names`, `port_names`.
+
+Разделы: `parameters`, `connections`, `children`. Именованные фильтры выбирают
+effective parameters и formal ports перед `limit`, аналогично `inspect_module`.
+
+Например, вместо отдельного getter параметров:
+
+```json
+{"instance_path":"top.u_fifo","fields":["parameters"],"parameter_names":["DEPTH"]}
+```
 
 Возвращает instance identity, effective parameters, rich connections и direct
 children. Это расширенная альтернатива `describe_instance` для исследовательских
@@ -375,3 +431,9 @@ Change содержит `category`, `identity`, `before` и `after`; `null` об
 addition/removal. Snapshot включает definitions, default ports/parameters,
 effective instance parameters, instances и diagnostics. Он хранится только в
 памяти MCP process и теряется при перезапуске сервера.
+
+Доступен только в `full`; в `core` снимки вообще не строятся. Diff не сравнивает
+выражения и тела процедур: изменение арифметики может дать нулевой результат.
+Это не проверка эквивалентности поведения. Сопоставление определяется именем
+logical module, поэтому при изменении набора файлов или области анализа нужно
+самостоятельно учитывать сопоставимость состояний.

@@ -77,12 +77,12 @@ class Bridge:
             self.record(request, response, started)
 
 
-async def serve(binary: Path, log: Path, allowed: frozenset[str]) -> None:
+async def serve(server: StdioServerParameters, log: Path, allowed: frozenset[str]) -> None:
     """Keep one initialized compiler session alive until standard-input EOF."""
     # Pylint cannot follow the SDK async context-manager tuple assignment.
     # pylint: disable=used-before-assignment
     async with (
-        stdio_client(StdioServerParameters(command=str(binary), args=[])) as streams,
+        stdio_client(server) as streams,
         ClientSession(*streams) as session,
     ):
         await session.initialize()
@@ -96,8 +96,18 @@ def main() -> None:
     parser.add_argument("--binary", type=Path, required=True)
     parser.add_argument("--log", type=Path, required=True)
     parser.add_argument("--allow", action="append", default=[])
+    parser.add_argument("--server-profile", choices=("core", "full"), default="full")
     options = parser.parse_args()
-    asyncio.run(serve(options.binary.resolve(), options.log.resolve(), frozenset(options.allow)))
+    asyncio.run(
+        serve(
+            StdioServerParameters(
+                command=str(options.binary.resolve()),
+                args=["--tool-profile", options.server_profile],
+            ),
+            options.log.resolve(),
+            frozenset(options.allow),
+        )
+    )
 
 
 if __name__ == "__main__":
