@@ -31,13 +31,17 @@ class RunRequest:
 
 def prompt(case: Case, mode: str) -> str:
     base = (
-        "Analyze the supplied SystemVerilog RTL. Read workspace/projects.json and "
-        "workspace/top_module.txt. Call project_load once with absolute paths (obtain the "
-        "workspace path with pwd) to workspace/source_files.f and "
-        "workspace/include_directories.f, the defines from projects.json, and that top_module. "
+        "Analyze the supplied SystemVerilog RTL. Your working directory is the workspace. "
+        "Read projects.json and top_module.txt in that directory. "
         "Do not modify RTL. Return only the requested response format.\n\n"
-        f"{case.question}"
     )
+    if mode != "text-only":
+        base += (
+            "Slang MCP is available. Call project_load with absolute paths (obtain the "
+            "workspace path with pwd) to source_files.f and include_directories.f, "
+            "the defines from projects.json, and the top from top_module.txt.\n\n"
+        )
+    base += case.question
     if mode == "mcp+skill":
         return (ROOT / "skills/semantic.md").read_text() + "\n" + base
     return base

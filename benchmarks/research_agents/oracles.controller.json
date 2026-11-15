@@ -1,0 +1,11 @@
+{
+  "warning": "Controller-only. Never expose this file or parent repository to workload workers.",
+  "oracles": [
+    {"id": "full_hierarchy_worker_total", "answer": 10, "answerable": true, "source_reasoning": "One u_direct + one u_branch.u_leaf + three u_array elements + four lanes workers + one enabled.u_selected.u_leaf = 10. N=4 selects enabled branch."},
+    {"id": "full_types_double", "answer": 20, "answerable": true, "source_reasoning": "BASE=7; WIDTH override BASE+3 gives 10; DOUBLE=2*WIDTH gives 20."},
+    {"id": "full_local_hold", "answer": 9, "answerable": true, "source_reasoning": "No reset, load or enable branch executes; sequential variable holds its prior value."},
+    {"id": "fragment_local_fire", "answer": 0, "answerable": true, "source_reasoning": "(0 || 1) && !1 is 1 && 0 = 0."},
+    {"id": "fragment_missing_override", "answer": null, "answerable": false, "source_reasoning": "Parent may override WIDTH; declaration default does not establish effective instance parameter."},
+    {"id": "fragment_missing_define", "answer": null, "answerable": false, "source_reasoning": "Either FEATURE defined or undefined build is compatible with supplied source."}
+  ]
+}

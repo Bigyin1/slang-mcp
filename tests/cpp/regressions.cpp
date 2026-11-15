@@ -1,6 +1,7 @@
 #include "support.hpp"
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/generators/catch_generators.hpp>
 
 namespace slang_mcp::test {
 TEST_CASE("Preprocessing preserves ordered packages includes and defines") {
@@ -162,5 +163,106 @@ TEST_CASE("Omitting hierarchy depth preserves the complete hierarchy beyond fift
     }
     REQUIRE(node.at("sv_module") == "stage_0");
     REQUIRE_THROWS_AS(service.call("get_hierarchy", {{"max_depth", -1}}), std::invalid_argument);
+}
+TEST_CASE("Partial loading preserves local facts despite missing child implementations") {
+    Project project;
+    project.write("fragment.sv", R"sv(
+module fragment #(parameter int WIDTH=7)(input logic [WIDTH-1:0] data);
+  missing_child u(.data(data));
+  logic [WIDTH-1:0] local_copy;
+  assign local_copy = data;
+endmodule
+)sv");
+    project.write("unselected.sv", "this file must never be parsed\n");
+    SemanticService service;
+    const Json args = {{"source_files", {project.path("fragment.sv").string()}},
+                       {"top_module", "fragment"}};
+    const auto loaded = service.call("project_load_partial", args);
+    REQUIRE(loaded.at("analysis_scope") == "fragment");
+    REQUIRE(loaded.at("completeness") == "not_verified");
+    REQUIRE(loaded.at("parameter_context") == "standalone_top");
+    REQUIRE(loaded.at("source_file_count") == 1);
+    REQUIRE(loaded.at("diagnostic_error_count").get<int>() > 0);
+    REQUIRE(service.call("describe_symbol", {{"identifier", "fragment.local_copy"}}).at("width") ==
+            7);
+    REQUIRE(
+        service.call("get_signal_writes", {{"signal", "fragment.local_copy"}}).at("total_count") ==
+        1);
+    REQUIRE(service.call("project_reload", {}).at("analysis_scope") == "fragment");
+    REQUIRE(service.call("project_info", {}).at("metadata").at("dependency_resolution") ==
+            "provided_files_only");
+    project.write("child.sv", "module missing_child(input logic [6:0] data); endmodule\n");
+    auto expanded = args;
+    expanded["source_files"].push_back(project.path("child.sv").string());
+    REQUIRE(service.call("project_load_partial", expanded).at("diagnostic_error_count") == 0);
+    REQUIRE(service.call("find_instance", {{"query", "fragment.u"}}).at("sv_module") ==
+            "missing_child");
+}
+
+TEST_CASE("Partial loading supports ordered packages includes and build defines") {
+    Project project;
+    project.write("width.svh", "`define WIDTH 9\n");
+    project.write(
+        "types.sv",
+        "`include \"width.svh\"\npackage types; typedef logic [`WIDTH-1:0] word_t; endpackage\n");
+    project.write("fragment.sv", "module fragment(input types::word_t data); `ifdef EXTRA\nlogic "
+                                 "present;\n`endif\nendmodule\n");
+    SemanticService service;
+    REQUIRE(service
+                .call("project_load_partial",
+                      {{"source_files",
+                        {project.path("types.sv").string(), project.path("fragment.sv").string()}},
+                       {"top_module", "fragment"},
+                       {"include_directories", {project.path("").string()}},
+                       {"defines", {{"EXTRA", nullptr}}}})
+                .at("diagnostic_error_count") == 0);
+    REQUIRE(
+        service.call("get_ports", {{"sv_module", "fragment"}}).at("items").front().at("width") ==
+        9);
+    REQUIRE(service.call("find_symbol", {{"name", "present"}}).at("match_count") == 1);
+    REQUIRE(service.call("project_info", {}).at("summary").at("completeness") == "not_verified");
+}
+
+TEST_CASE("Invalid partial inputs leave the previous design active") {
+    Project project;
+    project.write("design.sv", hierarchy_rtl);
+    SemanticService service;
+    (void)service.call("project_load", project.arguments());
+    const auto previous = service.call("project_info", {});
+    const auto sources = GENERATE(Json::array(), Json::array({"relative.sv"}),
+                                  Json::array({"/missing/fragment.sv"}));
+    REQUIRE_THROWS_AS(
+        service.call("project_load_partial", {{"source_files", sources}, {"top_module", "leaf"}}),
+        std::invalid_argument);
+    REQUIRE(service.call("project_info", {}) == previous);
+}
+
+TEST_CASE("A fragment top does not inherit unavailable parent parameter overrides") {
+    Project project;
+    project.write("design.sv", hierarchy_rtl);
+    SemanticService service;
+    (void)service.call("project_load", project.arguments());
+    REQUIRE(service.call("get_instance_parameters", {{"instance_path", "top.u_a"}})
+                .at("parameters")
+                .at("items")
+                .front()
+                .at("integer_value") == 32);
+    (void)service.call("project_load_partial",
+                       {{"source_files", {project.path("design.sv").string()}},
+                        {"top_module", "leaf"},
+                        {"include_directories", nullptr},
+                        {"defines", nullptr}});
+    REQUIRE(service.call("get_instance_parameters", {{"instance_path", "leaf"}})
+                .at("parameters")
+                .at("items")
+                .front()
+                .at("integer_value") == 8);
+    REQUIRE(service.call("list_instances", {}).at("total_count") == 1);
+    const auto active = service.call("project_info", {});
+    std::filesystem::remove(project.path("design.sv"));
+    REQUIRE_THROWS_AS(service.call("project_reload", {}), std::invalid_argument);
+    REQUIRE(service.call("project_info", {}) == active);
+    project.write("design.sv", hierarchy_rtl);
+    REQUIRE_FALSE(service.call("project_load", project.arguments()).contains("analysis_scope"));
 }
 } // namespace slang_mcp::test

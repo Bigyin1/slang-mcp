@@ -72,6 +72,79 @@
     }
   },
   {
+    "name": "project_load_partial",
+    "description": "Analyze a SystemVerilog fragment from an explicit ordered source_files array and one top_module. Paths must be absolute and exist. Only supplied files and includes are compiled; dependencies are not discovered. Add required child modules and packages explicitly. Missing definitions remain diagnostics and do not prevent analysis. The selected top uses its standalone defaults, independent of unavailable parent instance overrides; completeness is not verified.",
+    "inputSchema": {
+      "properties": {
+        "top_module": {
+          "title": "Top Module",
+          "type": "string"
+        },
+        "defines": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Defines"
+        },
+        "source_files": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Files",
+          "type": "array",
+          "minItems": 1
+        },
+        "include_directories": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Include Directories"
+        }
+      },
+      "required": [
+        "source_files",
+        "top_module"
+      ],
+      "title": "project_load_partialArguments",
+      "type": "object"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "project_load_partialDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
     "name": "project_reload",
     "description": "Rebuild and reindex the active project from the same direct build inputs. Call it only after RTL or build inputs change; batch semantic queries against one load.",
     "inputSchema": {

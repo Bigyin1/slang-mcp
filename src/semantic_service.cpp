@@ -77,6 +77,9 @@ void SemanticService::register_project_tools() {
     tools_["project_load"] = [this](const Json& args) {
         return manager_.load(project_from_arguments(args));
     };
+    tools_["project_load_partial"] = [this](const Json& args) {
+        return manager_.load(partial_project_from_arguments(args));
+    };
     tools_["project_reload"] = [this](const Json&) { return manager_.reload(); };
     tools_["project_info"] = [this](const Json&) { return manager_.info(); };
     tools_["semantic_diff"] = [this](const Json& args) { return manager_.diff(limit_for(args)); };

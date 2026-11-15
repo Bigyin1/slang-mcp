@@ -15,7 +15,7 @@ TEST_CASE("Real stdio MCP retains all old-style schemas and serves queries") {
     options.connect_mode = GENERATE(mcp::ConnectMode::Legacy, mcp::ConnectMode::Auto);
     auto client = mcp::McpClient::Create(transport->Connect(), options);
     const auto tools = client->ListToolsAll().tools;
-    REQUIRE(tools.size() == 29);
+    REQUIRE(tools.size() == 30);
     for (const auto& expected : Json::parse(tool_contract)) {
         const auto tool = std::ranges::find_if(tools, [&](const auto& value) {
             return value.name == expected.at("name").get<std::string>();
@@ -37,5 +37,13 @@ TEST_CASE("Real stdio MCP retains all old-style schemas and serves queries") {
     REQUIRE(
         Json::parse(hierarchy.structured_content.value().Dump()).at("roots").front().at("path") ==
         "top");
+    const auto partial = client->CallTool(
+        "project_load_partial",
+        mcp::JsonValue::Parse(
+            Json{{"source_files", {project.path("design.sv").string()}}, {"top_module", "leaf"}}
+                .dump()));
+    REQUIRE_FALSE(partial.is_error);
+    REQUIRE(Json::parse(partial.structured_content.value().Dump()).at("analysis_scope") ==
+            "fragment");
 }
 } // namespace slang_mcp::test

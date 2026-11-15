@@ -1,7 +1,7 @@
 # slang-mcp
 
 A read-only C++26 MCP server for compiler-backed SystemVerilog analysis. It links
-directly to Slang 12.1 and retains the 29-tool `old-style` API: project loading,
+directly to Slang 12.1 and retains the 29-tool `old-style` API, plus explicit partial loading: project loading,
 diagnostics, symbols, hierarchy, RTL accesses, bounded connectivity, inspection
 summaries, and semantic reload differences.
 
@@ -72,7 +72,7 @@ compilations with error diagnostics remain available for inspection.
 
 | Area | Tools |
 | --- | --- |
-| Project | `project_load`, `project_reload`, `project_info`, `semantic_diff` |
+| Project | `project_load`, `project_load_partial`, `project_reload`, `project_info`, `semantic_diff` |
 | Diagnostics | `get_diagnostics`, `summarize_diagnostics_by_code` |
 | Symbols | `find_symbol`, `describe_symbol`, `list_symbols`, `get_references` |
 | Hierarchy | `get_hierarchy`, `describe_instance`, `list_instances`, `find_instance` |
@@ -105,6 +105,15 @@ or formal proof. Expression actuals retain their text and resolved symbols but d
 create direct port hops. State discovery covers `always_ff` only. Reload is a complete
 rebuild; symbol search is exact-name only.
 
+For a fragment, call `project_load_partial` with ordered absolute `source_files`,
+`top_module`, and optional `include_directories` and `defines`. This compiles the
+selected files and their includes without discovering missing dependencies or
+loading the rest of the project. Add dependencies explicitly in a subsequent load.
+Local queries remain available with diagnostics; the load summary identifies
+`analysis_scope: "fragment"`, `parameter_context: "standalone_top"`, and
+`completeness: "not_verified"`. Standalone defaults do not establish the parameters
+of an instance in an unavailable parent. See [docs.md](docs.md) for an example.
+
 ## Checks and experiments
 
 ```sh
@@ -132,3 +141,16 @@ The harness still compares `text-only`, `mcp`, and `mcp+skill`. It launches
 Previous reports measure the former Python implementation and are not results for
 the C++ server. See [benchmarks/README.md](benchmarks/README.md) before running new
 agent experiments.
+
+Research on the C++ server (2026-11-15) is recorded separately:
+
+- [Partial loading](benchmarks/research_partial/README.md): 72 fresh-server runs,
+  four pinned projects, source reduction and missing-dependency checks.
+- [Tool utility](benchmarks/research_tools/README.md): 217 calls exercising the
+  previous 29 tools, aggregate/primitive equivalence, payloads and limitations.
+- [Terra Max pilot](benchmarks/research_agents/README.md): four exploratory arms,
+  six source-checked questions each; raw answers and MCP traces are retained.
+
+These measurements preceded the additive `project_load_partial` API. They support
+explicit small source scopes and experiments with fewer tools, but do not establish
+which tools can safely be removed across unseen tasks.

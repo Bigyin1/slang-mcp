@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "full_design_tasks": [
+    {"id": "full_hierarchy_worker_total", "project": "hierarchy", "sources": ["benchmarks/fixtures/hierarchy/design.sv"], "top": "top", "question": "How many elaborated instances of module worker exist below top, counting direct, array, generated, and nested instances? Return an integer."},
+    {"id": "full_types_double", "project": "types", "sources": ["benchmarks/fixtures/types/design.sv"], "top": "top", "question": "What is the effective localparam DOUBLE at top.u_unit? Return an integer."},
+    {"id": "full_local_hold", "project": "local", "sources": ["benchmarks/fixtures/local/design.sv"], "top": "top", "question": "At a rising clock edge, rst_n=1, load=0, enable=0 and count_q=9. What value does count_q retain? Return an integer."}
+  ],
+  "fragment_tasks": [
+    {"id": "fragment_local_fire", "source_text": "module fragment(input logic a,b,mask,output logic fire); assign fire=(a || b) && !mask; endmodule", "question": "With a=0, b=1 and mask=1, what is fire? Return integer 0 or 1."},
+    {"id": "fragment_missing_override", "source_text": "module fragment #(parameter int WIDTH=5); localparam int DOUBLE=2*WIDTH; endmodule", "question": "What is the effective DOUBLE in the instance named chip.u_fragment in an unavailable parent design? Abstain if the supplied evidence cannot establish it."},
+    {"id": "fragment_missing_define", "source_text": "module fragment; `ifdef FEATURE logic feature_enabled; `else logic feature_disabled; `endif endmodule", "question": "Which conditional signal exists under the unavailable production build configuration? Abstain if the supplied evidence cannot establish it."}
+  ]
+}

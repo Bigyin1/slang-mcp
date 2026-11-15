@@ -135,6 +135,28 @@ ProjectConfig project_from_arguments(const Json& arguments) {
     return result;
 }
 
+ProjectConfig partial_project_from_arguments(const Json& arguments) {
+    ProjectConfig result;
+    result.logical_module = arguments.at("top_module").get<std::string>();
+    if (trim(result.logical_module).empty()) {
+        throw std::invalid_argument("top_module must not be empty");
+    }
+    result.source_files = arguments.at("source_files").get<std::vector<std::string>>();
+    if (result.source_files.empty()) {
+        throw std::invalid_argument("source_files must contain at least one source file");
+    }
+    result.include_directories =
+        option(arguments, "include_directories", std::vector<std::string>{});
+    result.defines = parse_defines(option(arguments, "defines", Json::object()));
+    result.top_modules = {result.logical_module};
+    result.metadata = {{"load_format", "absolute_paths"},
+                       {"analysis_scope", "fragment"},
+                       {"parameter_context", "standalone_top"},
+                       {"dependency_resolution", "provided_files_only"},
+                       {"completeness", "not_verified"}};
+    return result;
+}
+
 adapters::Design& ProjectManager::design() {
     if (!design_) {
         throw std::invalid_argument("no project is loaded");
@@ -173,13 +195,19 @@ Json ProjectManager::summary() {
     });
     const auto warnings = std::ranges::count_if(
         diagnostics, [](const auto& item) { return item.severity == "warning"; });
-    return {{"logical_module", config_.logical_module},
-            {"source_file_count", config_.source_files.size()},
-            {"include_directory_count", config_.include_directories.size()},
-            {"define_count", config_.defines.size()},
-            {"top_modules", design().tops()},
-            {"diagnostic_error_count", errors},
-            {"diagnostic_warning_count", warnings}};
+    Json result = {{"logical_module", config_.logical_module},
+                   {"source_file_count", config_.source_files.size()},
+                   {"include_directory_count", config_.include_directories.size()},
+                   {"define_count", config_.defines.size()},
+                   {"top_modules", design().tops()},
+                   {"diagnostic_error_count", errors},
+                   {"diagnostic_warning_count", warnings}};
+    for (const auto* key : {"analysis_scope", "parameter_context", "completeness"}) {
+        if (config_.metadata.contains(key)) {
+            result[key] = config_.metadata.at(key);
+        }
+    }
+    return result;
 }
 
 Json ProjectManager::info() {

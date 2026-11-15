@@ -1,0 +1,382 @@
+{
+  "axi.calls.json": {
+    "total": {
+      "calls": 52,
+      "response_bytes": 512778,
+      "seconds": 0.6779712059069425
+    },
+    "unique_tools": 29,
+    "errors": 0,
+    "signal": [
+      {
+        "arguments": {
+          "signal": "axi_fifo.clk_i",
+          "limit": 20
+        },
+        "aggregate": {
+          "calls": 1,
+          "response_bytes": 12587,
+          "seconds": 0.01308237505145371
+        },
+        "primitive": {
+          "calls": 2,
+          "response_bytes": 6064,
+          "seconds": 0.023567541036754847
+        }
+      },
+      {
+        "arguments": {
+          "signal": "axi_fifo.gen_axi_fifo.i_aw_fifo.status_cnt_q",
+          "limit": 20
+        },
+        "aggregate": {
+          "calls": 1,
+          "response_bytes": 45417,
+          "seconds": 0.014998583937995136
+        },
+        "primitive": {
+          "calls": 2,
+          "response_bytes": 22322,
+          "seconds": 0.025973874959163368
+        }
+      }
+    ],
+    "module": [
+      {
+        "arguments": {
+          "sv_module": "axi_fifo",
+          "limit": 20
+        },
+        "aggregate": {
+          "calls": 1,
+          "response_bytes": 10509,
+          "seconds": 0.010615707957185805
+        },
+        "primitive": {
+          "calls": 3,
+          "response_bytes": 7495,
+          "seconds": 0.03652645891997963
+        }
+      },
+      {
+        "arguments": {
+          "sv_module": "fifo_v3",
+          "limit": 20
+        },
+        "aggregate": {
+          "calls": 1,
+          "response_bytes": 41691,
+          "seconds": 0.012453582952730358
+        },
+        "primitive": {
+          "calls": 3,
+          "response_bytes": 41025,
+          "seconds": 0.04109291604254395
+        }
+      }
+    ],
+    "instance": [
+      {
+        "arguments": {
+          "instance_path": "axi_fifo",
+          "limit": 20
+        },
+        "aggregate": {
+          "calls": 1,
+          "response_bytes": 5291,
+          "seconds": 0.013111500069499016
+        },
+        "primitive": {
+          "calls": 2,
+          "response_bytes": 2352,
+          "seconds": 0.024558373959735036
+        }
+      }
+    ]
+  },
+  "cva6.calls.json": {
+    "total": {
+      "calls": 54,
+      "response_bytes": 967004,
+      "seconds": 1.704545331071131
+    },
+    "unique_tools": 29,
+    "errors": 0,
+    "signal": [
+      {
+        "arguments": {
+          "signal": "cva6.clk_i",
+          "limit": 20
+        },
+        "aggregate": {
+          "calls": 1,
+          "response_bytes": 25417,
+          "seconds": 0.01159274997189641
+        },
+        "primitive": {
+          "calls": 2,
+          "response_bytes": 12482,
+          "seconds": 0.02467245899606496
+        }
+      },
+      {
+        "arguments": {
+          "signal": "cva6.i_frontend.i_instr_queue.gen_instr_fifo[0].i_fifo_instr_data.status_cnt_q",
+          "limit": 20
+        },
+        "aggregate": {
+          "calls": 1,
+          "response_bytes": 50177,
+          "seconds": 0.01325987500604242
+        },
+        "primitive": {
+          "calls": 2,
+          "response_bytes": 24636,
+          "seconds": 0.025884081958793104
+        }
+      }
+    ],
+    "module": [
+      {
+        "arguments": {
+          "sv_module": "cva6",
+          "limit": 20
+        },
+        "aggregate": {
+          "calls": 1,
+          "response_bytes": 34483,
+          "seconds": 0.22346512496005744
+        },
+        "primitive": {
+          "calls": 3,
+          "response_bytes": 28451,
+          "seconds": 0.0514575409470126
+        }
+      },
+      {
+        "arguments": {
+          "sv_module": "cva6_fifo_v3",
+          "limit": 20
+        },
+        "aggregate": {
+          "calls": 1,
+          "response_bytes": 61275,
+          "seconds": 0.19853429205249995
+        },
+        "primitive": {
+          "calls": 3,
+          "response_bytes": 60651,
+          "seconds": 0.039148875046521425
+        }
+      }
+    ],
+    "instance": [
+      {
+        "arguments": {
+          "instance_path": "cva6",
+          "limit": 20
+        },
+        "aggregate": {
+          "calls": 1,
+          "response_bytes": 18179,
+          "seconds": 0.013012832961976528
+        },
+        "primitive": {
+          "calls": 2,
+          "response_bytes": 12224,
+          "seconds": 0.02647866599727422
+        }
+      }
+    ]
+  },
+  "floonoc.calls.json": {
+    "total": {
+      "calls": 56,
+      "response_bytes": 357244,
+      "seconds": 1.1519124150509015
+    },
+    "unique_tools": 29,
+    "errors": 0,
+    "signal": [
+      {
+        "arguments": {
+          "signal": "floo_synth_nw_2tiles.clk_i",
+          "limit": 20
+        },
+        "aggregate": {
+          "calls": 1,
+          "response_bytes": 6685,
+          "seconds": 0.01116654195357114
+        },
+        "primitive": {
+          "calls": 2,
+          "response_bytes": 3056,
+          "seconds": 0.02585279115010053
+        }
+      },
+      {
+        "arguments": {
+          "signal": "floo_synth_nw_2tiles.i_floo_nw_router1.i_req_floo_router.gen_input[0].gen_virt_input[0].i_stream_fifo.clk_i",
+          "limit": 20
+        },
+        "aggregate": {
+          "calls": 1,
+          "response_bytes": 6871,
+          "seconds": 0.012906000018119812
+        },
+        "primitive": {
+          "calls": 2,
+          "response_bytes": 2852,
+          "seconds": 0.02581220807041973
+        }
+      }
+    ],
+    "module": [
+      {
+        "arguments": {
+          "sv_module": "floo_synth_nw_2tiles",
+          "limit": 20
+        },
+        "aggregate": {
+          "calls": 1,
+          "response_bytes": 15785,
+          "seconds": 0.1252271659905091
+        },
+        "primitive": {
+          "calls": 3,
+          "response_bytes": 13897,
+          "seconds": 0.037520957994274795
+        }
+      },
+      {
+        "arguments": {
+          "sv_module": "cc_stream_fifo_optimal_wrap",
+          "limit": 20
+        },
+        "aggregate": {
+          "calls": 1,
+          "response_bytes": 33319,
+          "seconds": 0.1382634579204023
+        },
+        "primitive": {
+          "calls": 3,
+          "response_bytes": 9567,
+          "seconds": 0.0372095430502668
+        }
+      }
+    ],
+    "instance": [
+      {
+        "arguments": {
+          "instance_path": "floo_synth_nw_2tiles",
+          "limit": 20
+        },
+        "aggregate": {
+          "calls": 1,
+          "response_bytes": 3065,
+          "seconds": 0.013075999915599823
+        },
+        "primitive": {
+          "calls": 2,
+          "response_bytes": 1252,
+          "seconds": 0.025971416966058314
+        }
+      }
+    ]
+  },
+  "idma.calls.json": {
+    "total": {
+      "calls": 55,
+      "response_bytes": 409977,
+      "seconds": 1.5976830424042419
+    },
+    "unique_tools": 29,
+    "errors": 0,
+    "signal": [
+      {
+        "arguments": {
+          "signal": "idma_desc64_synth.clk_i",
+          "limit": 20
+        },
+        "aggregate": {
+          "calls": 1,
+          "response_bytes": 4027,
+          "seconds": 0.01305133302230388
+        },
+        "primitive": {
+          "calls": 2,
+          "response_bytes": 1734,
+          "seconds": 0.023672333918511868
+        }
+      },
+      {
+        "arguments": {
+          "signal": "idma_desc64_synth.i_dma_desc64.gen_spec.i_ar_gen.i_speculation_fifo.clk_i",
+          "limit": 20
+        },
+        "aggregate": {
+          "calls": 1,
+          "response_bytes": 5637,
+          "seconds": 0.013264124980196357
+        },
+        "primitive": {
+          "calls": 2,
+          "response_bytes": 2356,
+          "seconds": 0.024127458105795085
+        }
+      }
+    ],
+    "module": [
+      {
+        "arguments": {
+          "sv_module": "idma_desc64_synth",
+          "limit": 20
+        },
+        "aggregate": {
+          "calls": 1,
+          "response_bytes": 15293,
+          "seconds": 0.012686208938248456
+        },
+        "primitive": {
+          "calls": 3,
+          "response_bytes": 14053,
+          "seconds": 0.037371126119978726
+        }
+      },
+      {
+        "arguments": {
+          "sv_module": "cc_stream_fifo",
+          "limit": 20
+        },
+        "aggregate": {
+          "calls": 1,
+          "response_bytes": 15979,
+          "seconds": 0.013000415987335145
+        },
+        "primitive": {
+          "calls": 3,
+          "response_bytes": 9299,
+          "seconds": 0.03885495709255338
+        }
+      }
+    ],
+    "instance": [
+      {
+        "arguments": {
+          "instance_path": "idma_desc64_synth",
+          "limit": 20
+        },
+        "aggregate": {
+          "calls": 1,
+          "response_bytes": 4877,
+          "seconds": 0.013117542024701834
+        },
+        "primitive": {
+          "calls": 2,
+          "response_bytes": 3710,
+          "seconds": 0.02574225002899766
+        }
+      }
+    ]
+  }
+}

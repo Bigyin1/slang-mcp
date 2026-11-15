@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "full_workspace": "/private/tmp/slang-partial-research/axi_fifo_core",
+  "full_top": "axi_fifo",
+  "tasks": [
+    {"id": "real_full_fifo_inventory", "scope": "full", "question": "List the five fifo_v3 instance paths under top axi_fifo in this build. Return a sorted JSON array of full elaborated paths."},
+    {"id": "real_full_aw_binding", "scope": "full", "question": "At axi_fifo.gen_axi_fifo.i_aw_fifo, what is the complete direct actual expression on port data_o? Return a JSON string; preserve member selects."},
+    {"id": "real_full_parameter_provenance", "scope": "full", "question": "At axi_fifo.gen_axi_fifo.i_aw_fifo return JSON object with integer fields DEPTH, DATA_WIDTH, and dtype_bit_width. DATA_WIDTH means its effective named parameter, dtype_bit_width means the actual fifo data type width. Keep these concepts distinct."},
+    {"id": "real_fragment_flags", "scope": "fragment", "file": "flags.sv", "question": "For DEPTH=0, push_i=1 and pop_i=0, return JSON object with integer fields empty_o and full_o. Use only this fragment."},
+    {"id": "real_fragment_missing_child", "scope": "fragment", "file": "missing_child.sv", "question": "For the instantiated fifo_v3, what exact internal memory declaration name and internal write-pointer update expression implement storage? Use only this fragment; abstain if child implementation is unavailable."},
+    {"id": "real_fragment_missing_parent", "scope": "fragment", "file": "missing_parent.sv", "question": "What is the effective DEPTH at production instance system.u_fifo? Parent source and production configuration are unavailable. Use only this fragment and abstain if the answer cannot be established."}
+  ]
+}
