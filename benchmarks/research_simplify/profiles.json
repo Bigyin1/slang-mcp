@@ -1,0 +1,17 @@
+{
+  "full": null,
+  "compact": [
+    "project_load_partial",
+    "project_info",
+    "get_diagnostics",
+    "find_symbol",
+    "get_hierarchy",
+    "list_instances",
+    "inspect_module",
+    "inspect_instance",
+    "list_instance_facts",
+    "get_signal_reads",
+    "get_signal_writes",
+    "get_state_elements"
+  ]
+}

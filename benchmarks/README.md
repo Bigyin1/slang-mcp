@@ -110,6 +110,9 @@ Research workers used GPT-6.1 Sol; four blinded exploratory workload workers use
 GPT-6.1 Terra with max reasoning effort. Results and reproducible deterministic
 measurements are in [research_partial](research_partial/README.md),
 [research_tools](research_tools/README.md), and [research_agents](research_agents/README.md).
+The follow-up [catalog simplification study](research_simplify/README.md) audits
+semantic_diff usage and upstream reports, then compares 30 versus 12 tools with
+two fresh Terra Max workers choosing their own fragment source files.
 The 29-tool measurements predate the additive partial-load tool. Historical Python
 results and the new native measurements must not be pooled.
 

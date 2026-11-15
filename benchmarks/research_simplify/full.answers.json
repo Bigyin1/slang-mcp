@@ -1,0 +1,54 @@
+{
+  "answers": {
+    "usage_o_width": {
+      "bits": 4,
+      "resolved_type": "logic[3:0]",
+      "explanation": "The standalone top has Depth=8 and UsageWidth=4. cc_pkg::cnt_width(8) calls idx_width(9), which yields $clog2(9)=4."
+    },
+    "sequential_state": {
+      "wrapper_owns_state_directly": false,
+      "selected_subsystem_contains_state": true,
+      "child": "cc_stream_fifo.fifo_i (cc_fifo)",
+      "occupancy_state": "cc_stream_fifo.fifo_i.status_cnt_q, logic[3:0]",
+      "other_child_state": ["read_pointer_q", "write_pointer_q", "mem_q"],
+      "explanation": "The wrapper has no procedural blocks or state elements in this elaboration. The child has always_ff state including status_cnt_q; its usage_o is assigned status_cnt_q and is connected to the wrapper usage_o."
+    },
+    "push_connection": {
+      "child_formal": "cc_stream_fifo.fifo_i.push_i",
+      "direct_actual": "push",
+      "wrapper_local_assignment": "assign push = valid_i & ~full;",
+      "full_connection": "The wrapper full signal is connected to fifo_i.full_o.",
+      "explanation": "The formal receives the local signal push directly; the Boolean expression is the separate continuous assignment that drives push."
+    },
+    "caller_depth": {
+      "established_for_complete_idma_project": false,
+      "standalone_depth": 8,
+      "explanation": "The fragment elaborates cc_stream_fifo as a standalone top with default parameters. No parent iDMA instance or its parameter overrides were loaded; its effective Depth is unknown and would require the relevant caller and its project build and elaboration context."
+    }
+  },
+  "source_files": [
+    "/private/tmp/slang-catalog-pilot/rtl/src/cc_pkg.sv",
+    "/private/tmp/slang-catalog-pilot/rtl/src/cc_fifo.sv",
+    "/private/tmp/slang-catalog-pilot/rtl/src/cc_stream_fifo.sv"
+  ],
+  "limitations": {
+    "scope": "Standalone fragment only; completeness is not verified and dependencies are limited to provided files and includes. No caller or full iDMA project was analyzed.",
+    "include_directories": ["/private/tmp/slang-catalog-pilot/rtl/include"],
+    "defines": {},
+    "intermediate_incomplete_analysis": "A wrapper-only load had two errors: unknown package cc_pkg and unknown module cc_fifo. Its usage_o type was <error> and width was null. Those results do not establish the port width or child behavior. The final load added the package and child.",
+    "remaining_diagnostic_errors": [],
+    "remaining_diagnostic_warnings": ["Two PackedArrayConv warnings at cc_fifo.sv:126 report implicit conversion from logic[255:0] to logic[7:0][31:0]."],
+    "unknown": ["Effective Depth of any caller in the complete iDMA project", "Any facts that depend on an unprovided parent parameter override"],
+    "state_semantics": "State observations are source-level always_ff results for this elaboration, not synthesis or simulation evidence."
+  },
+  "evidence": [
+    {"tool": "project_load_partial and get_diagnostics", "finding": "Wrapper-only load: UnknownClassOrPackage cc_pkg at cc_stream_fifo.sv:22 and UnknownModule cc_fifo at line 50; get_ports reported usage_o width null."},
+    {"tool": "project_info and get_diagnostics", "finding": "Final three-source fragment has standalone_top parameter context, zero errors, two PackedArrayConv warnings, one include directory and no defines."},
+    {"tool": "get_instance_parameters and get_ports", "finding": "Top Depth=8, UsageWidth=4 and usage_o type logic[3:0], width 4. Child Depth=8 and UsageWidth=4."},
+    {"source": "/private/tmp/slang-catalog-pilot/rtl/src/cc_pkg.sv:43", "finding": "idx_width uses $clog2 for arguments greater than one; cnt_width passes max_cnt+1."},
+    {"tool": "get_hierarchy, get_procedural_blocks and get_state_elements", "finding": "cc_stream_fifo has child fifo_i of type cc_fifo. The wrapper has zero procedural blocks and state elements. The child has four always_ff-written state elements: read_pointer_q, write_pointer_q, status_cnt_q and mem_q."},
+    {"source": "/private/tmp/slang-catalog-pilot/rtl/src/cc_fifo.sv:55", "finding": "The child assigns usage_o = status_cnt_q; status_cnt_q is registered by FFARNC at line 124."},
+    {"tool": "get_instance_connections and get_drivers", "finding": "fifo_i.push_i has direct actual push; push has a continuous-assignment driver at cc_stream_fifo.sv:45."},
+    {"source": "/private/tmp/slang-catalog-pilot/rtl/src/cc_stream_fifo.sv:45", "finding": "The assignment is push = valid_i & ~full; fifo_i connects .full_o(full) and .push_i(push) at lines 60 and 64."}
+  ]
+}

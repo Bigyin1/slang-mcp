@@ -1,0 +1,4951 @@
+{
+  "attempts": [
+    {
+      "path": "benchmark_results/complex_axi/axi_fifo_effective_parameters/raw/axi_fifo_effective_parameters/mcp/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_DLqZGfkuSvSBoMXDK6Od3F59",
+        "call_91GFNjArw9GdEPV5RiKpq4rZ",
+        "call_YYKtIRnknTGzmgmeniYMDDVy",
+        "call_ei2LSONJp45cyfbVj1Hh0bZQ",
+        "call_TaXNAa4PadgWJs7fMSvsjMYV",
+        "call_UASdThYgAjbM306VTVIZMovV",
+        "call_l8aU5lmHCyjYTIeNWm6Oryrb"
+      ],
+      "mcp_tools": {
+        "get_hierarchy": 1,
+        "get_instance_parameters": 5,
+        "project_load": 1
+      },
+      "mcp_calls": 7
+    },
+    {
+      "path": "benchmark_results/complex_axi/axi_fifo_effective_parameters/raw/axi_fifo_effective_parameters/mcp+skill/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_fH16vCfFZM57TSauF1J5Dan1",
+        "call_DeGuifwMf5YnQj5emxYPw0VQ",
+        "call_YSenvI1nhkkKadzeda9iqyCC",
+        "call_JUPSpf0MUXE03DiffWnDITWI",
+        "call_vvrJE326ffxrVYTHUniexeu0",
+        "call_TPGoHKTYfT0yaLpJnAJVM5YS",
+        "call_WEtyOSTRqmwmYQWEXhlOExxu",
+        "call_J4Hf6NLj2wz25PWOstjzm4aj"
+      ],
+      "mcp_tools": {
+        "get_diagnostics": 1,
+        "get_hierarchy": 1,
+        "get_instance_parameters": 5,
+        "project_load": 1
+      },
+      "mcp_calls": 8
+    },
+    {
+      "path": "benchmark_results/complex_axi/axi_fifo_effective_parameters/raw/axi_fifo_effective_parameters/text-only/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "AGENT_FAILURE",
+      "call_ids": [],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/complex_axi/axi_fifo_effective_parameters/raw/axi_fifo_effective_parameters/text-only/rep_01/attempt_002",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_VJrqJmq6CDznxEENRc0mHsU8",
+        "call_apfG9DxTw9TRGDYZYDOu32u8",
+        "call_aP8lBd0uQ1iG04mIJpWFpzOD",
+        "call_jw8MnB3CPo3CyA38exNnsPMo",
+        "call_jQRt7RPyriBgn8lmUTIjEMAW"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/complex_axi/axi_lite_fifo_paths/raw/axi_lite_fifo_paths/mcp/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_RntHIc4mEXtq35AMJZGJPmXb",
+        "call_WAhNExFDiXwsO9mUyjXg9f0K",
+        "call_cu1KPyadCVuIvjXL35nNtPgB"
+      ],
+      "mcp_tools": {
+        "list_instances": 2,
+        "project_load": 1
+      },
+      "mcp_calls": 3
+    },
+    {
+      "path": "benchmark_results/complex_axi/axi_lite_fifo_paths/raw/axi_lite_fifo_paths/mcp+skill/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_UWnwXxnOfOrzrdotg0OZlHwS",
+        "call_5rlAQZn5i96LiOxGdC4sciaJ",
+        "call_n4B4s5hGr8TrINYsxyORtM4b",
+        "call_IReWLl662nN4kuZmkuPj7ZtI",
+        "call_ZXpB9hB9ETlnIdc40vaMNyNx"
+      ],
+      "mcp_tools": {
+        "get_diagnostics": 1,
+        "get_hierarchy": 1,
+        "list_instances": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 4
+    },
+    {
+      "path": "benchmark_results/complex_axi/axi_lite_fifo_paths/raw/axi_lite_fifo_paths/text-only/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "WRONG_ANSWER",
+      "call_ids": [
+        "call_NYYPxJwVbIVD2NcaCLap43h4",
+        "call_tMNQL5B4tETGrSUznDPEMVPW",
+        "call_6fWlmZpupR99FnDkJvsZG4no",
+        "call_hupq8ZjE1b7D9kgSttmm3Y0E",
+        "call_O6ioxkN1kmurKG36AGXty4Xd",
+        "call_LwejvKwTTKh3eONeQaWvjFer",
+        "call_V0PMSUAdNreAkBqkUHLiG3QM",
+        "call_OEC7DI3UZZawyx19PzZAWlMq",
+        "call_IgrHlvdzQ5viHC11zOyuLBbX",
+        "call_Ars8zM3EQdPxQboJ11xR7jDD"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/complex_floonoc/floonoc_fifo_count/raw/floonoc_fifo_count/mcp/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_X6o0UR6X7zhsxdeFjlpjKrfS",
+        "call_cYKj7OssssiAaWllqM0ulQeU",
+        "call_MBnzDOpWwVYQyYefTB6NwSz0",
+        "call_PIXibmg8bkByYaiDf1SCISBp",
+        "call_i2AFmBZiPD97wmIOULQGehJN",
+        "call_k0ezc9tvyrEH2QUDVUKVyP2V",
+        "call_WUU8AUSeQNUkDSYaVegZdwDR",
+        "call_FjIDLaLMmLEgAZgLgd0lXbdE",
+        "call_iGdU0XxwIDt0Wtv0EWmcCR84",
+        "call_9MnB4uFNbZ5HOpV1BVHEriP1",
+        "call_r5Jm0ngfYaNfGiqb002UAJRs",
+        "call_Ta3z3Q4dx5RW5AudA6QT5SJR",
+        "call_5GqjK7WvvnCgFG2zAjv66grq",
+        "call_HhB0aeJfAAC8OHLd6oxPRnOv",
+        "call_Uftr80uHVnlWJH4L490RI2Hc",
+        "call_FxJTZbmbhU2Pl8cMawKF8J7m",
+        "call_Sf6tIn9Wo06uU7wNUqPO2EHK",
+        "call_czeFv5ftJZkdIYb850DcfgkC",
+        "call_0SPnLqg0J5pTgZF7RcAH6Lpo",
+        "call_lvRF8msqsmmN2K37UHPUCFxa",
+        "call_RtEnIJdhrzyKfZdouAbI3gKL",
+        "call_DgBMpbVH22CtB6dqAmr4y2P5",
+        "call_qZys3Y9PH6F6EPiYy8KPe1bX",
+        "call_IZulrvKPkYLb7SmSC7N2IY1j"
+      ],
+      "mcp_tools": {
+        "get_hierarchy": 2,
+        "get_instance_parameters": 2,
+        "inspect_instance": 3,
+        "list_instances": 9,
+        "project_load": 1
+      },
+      "mcp_calls": 17
+    },
+    {
+      "path": "benchmark_results/complex_floonoc/floonoc_fifo_count/raw/floonoc_fifo_count/mcp/rep_01/attempt_002",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_s8HpSkBoGjfTnpwsBUybu4Z5",
+        "call_tpdeNVHi64UtzKEJETqso50q",
+        "call_EqgG0X9PAB9M29zZhI342jnI",
+        "call_fXYhGOeymaOyl5VijyhX6cod",
+        "call_r2tKQ5W4W9mEgPasv3sMJe64",
+        "call_wr2mxb9ojtmUkTHXF35HZLQw",
+        "call_pIOUFRzLoTvaAbx9Kn4hZvPJ",
+        "call_PZQNU1qzFQZ5dojIYP30vPpp",
+        "call_0nxCgqM9scYqbh8uqDIZMpFG",
+        "call_QnP1NATap5Z5h52fcSiZ4rtH",
+        "call_tx8YpG9blULcbXnVLnPhkyjT"
+      ],
+      "mcp_tools": {
+        "get_hierarchy": 1,
+        "list_instances": 7,
+        "project_load": 1
+      },
+      "mcp_calls": 9
+    },
+    {
+      "path": "benchmark_results/complex_floonoc/floonoc_fifo_count/raw/floonoc_fifo_count/mcp+skill/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_rR0VSOH5cSYy0icJlVAcdqb7",
+        "call_ZIOJ6uQgppIXxpGVgSoXFbP8",
+        "call_n9Z8td86XESlHWKYKWmUV17j",
+        "call_g2glbmeHWxG7K4Luzzx4pKBe",
+        "call_RH3vMiRa5M4rWPQLjnGIbibQ",
+        "call_yXZO0oLGKUQ9GQWfnwS34V21",
+        "call_FTsUey9IJJLUjBa20KcwqXP8",
+        "call_TNfOAhbKAXmZa7hkzB5dnKZC",
+        "call_MHKRMVFYdmSGYjFqoJuc8zoS",
+        "call_UhaXA7NPUg386pIEbJCVwrXu",
+        "call_uyyUWXU9iZrRWkyBLr78h8gl",
+        "call_S5h7MqTfdjvzj9SCFadTGt82",
+        "call_osER2ewzYlTee0pwm4hMbbke",
+        "call_RUGisYjc7pDHMb07IsrSctgf",
+        "call_6CcpxLZmYG0EMfA4mlai8NER",
+        "call_blqZAxKnJgxQeVfOUzpUU8YW",
+        "call_VfWXQI4t8ccfl5YKaT8V5ZW5",
+        "call_vT3JbOWpkkaD0I1dGtjcQzEh",
+        "call_zHGZFiaZafScKecXAN5oJsyk"
+      ],
+      "mcp_tools": {
+        "get_diagnostics": 1,
+        "get_hierarchy": 3,
+        "list_instances": 13,
+        "project_load": 1
+      },
+      "mcp_calls": 18
+    },
+    {
+      "path": "benchmark_results/complex_floonoc/floonoc_fifo_count/raw/floonoc_fifo_count/mcp+skill/rep_01/attempt_002",
+      "completed": true,
+      "execution_status": "AGENT_FAILURE",
+      "call_ids": [
+        "call_kKYkfhiSdt9afD3n8HS0UMLx",
+        "call_iiYLrG1zQr5pT9ISUwVvomor",
+        "call_pZNT7LD1wfA0fFj6CCAj00r1",
+        "call_wolyo1ajrTNca8ndB4TbYEKJ",
+        "call_8Tl4JTIR91eJInBVYDro2svR",
+        "call_203wNC60HhwmxsISOBYDHZBD",
+        "call_84xCjsIES8AbiO4CC0uR3BNx",
+        "call_6LLWUKJpzoFrPcduwQBa2Nbj",
+        "call_FG5sf6pF08dBzst15T3eoXBV",
+        "call_E0iTYcPBCllRQYrj7sjXtZI1"
+      ],
+      "mcp_tools": {
+        "get_diagnostics": 1,
+        "get_hierarchy": 1,
+        "list_instances": 4,
+        "project_load": 1
+      },
+      "mcp_calls": 7
+    },
+    {
+      "path": "benchmark_results/complex_floonoc/floonoc_fifo_count/raw/floonoc_fifo_count/mcp+skill/rep_01/attempt_003",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_RgWDoWciU54igAfZv9PW6FbR",
+        "call_7fXplTFXOBN4cuL0pJFwZ7Cx",
+        "call_jy92VzLev0ooAfMKxzmJ1YPb",
+        "call_JQX5jyzzvxuPJamE6KEaSXBp",
+        "call_a3qoxxHUfwOOlBpSNgH09cDd",
+        "call_6QpO8Q3j5yG0ZtSGnK8vtO4q",
+        "call_JTkKFrLAPiNVdXTxX2nveXve",
+        "call_PGdYSgakqsg08jNkYg8haE9G",
+        "call_83MxWNK0Mpnj45AhqaMY1f1K",
+        "call_jpfmcMFGtGfv4Ub08T4UgSyY",
+        "call_OToExuyZIzvwKFgPck6tKYcg",
+        "call_EBhZqNVRqwJ15lajgBa1CccA",
+        "call_qrog7MA6YRh2it0OMgomizel",
+        "call_2Mb8FkaZ22OoqVnDp5ND9yGY",
+        "call_KG7lihy1M8GoVxlNIRQVKvg7",
+        "call_0uG8uX3zWt1loc51NwE2EQhU",
+        "call_tPpuc2zEISu7UdjwHreyderW",
+        "call_Wb2jB04bzzUTcAnpeN7dnIUp",
+        "call_e6ZevgY64t8R4UaISUhgxOGI",
+        "call_WyiWGsVZKoWqWMVmi0AuzW5O",
+        "call_4zbLRFLRCZjzyXGfKWFBpu6u",
+        "call_ZpAoh2gPOS2fI0dl7jPxxnOY",
+        "call_ZZYUPj3YeTPh4w47BrwyA0Kg",
+        "call_04loDv0Ml7MVf41oLI3uxCPq",
+        "call_E8l2q13LkD3IiU4WRXrOwInh",
+        "call_U6LucsNH7i4jzYSWqUaHPhli",
+        "call_pmDFeFQZyGjYjVkI7zkC64vB",
+        "call_UkLG8NqhfVrhIkxLag7gEyTh",
+        "call_omuhX2gDB9amquEOBdrWAMGM",
+        "call_rcasH5rNERgMi9UalEhgMwLT"
+      ],
+      "mcp_tools": {
+        "describe_instance": 1,
+        "get_diagnostics": 1,
+        "get_hierarchy": 1,
+        "get_instance_parameters": 4,
+        "inspect_instance": 1,
+        "list_instances": 13,
+        "project_load": 1
+      },
+      "mcp_calls": 22
+    },
+    {
+      "path": "benchmark_results/complex_floonoc/floonoc_fifo_count/raw/floonoc_fifo_count/text-only/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_Mixqlisbz8ewuSI3aoDMEDmY",
+        "call_yW7ot4V63nOHM5J3NS8nV8Ch",
+        "call_QAIFbwbczcoFzHB211D4V6Im",
+        "call_xpiutzzHXc1nIN93fgqTFJIz",
+        "call_rWntORTVCiM3Tl3N0jMGcSWo",
+        "call_fYUx54FsD7EOhw94ldwi29tJ",
+        "call_TEfgUdcBWkpREHF1r0gviO7N",
+        "call_lpAFRGj03LXLa8uj4TRWzDyS",
+        "call_grp6kQ1cShWGn5OKxrF8SW6y",
+        "call_B507SoyzQT1BKAK3o7vsX1J2",
+        "call_QWv0EQ5RRCTbBKXDFvtv0qqz",
+        "call_O45kAiZk88Xi6M76Qhjj5Yzc",
+        "call_v5M2pig4ZTgZ6iuWXfNEu2Rp",
+        "call_0biLx4Ftv4eBnJ9SSsxM2FbD"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/complex_idma/idma_fifo_semantic_inventory/raw/idma_fifo_semantic_inventory/mcp/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_3qBBcQdRzbG6RbqmUn3SgQjm",
+        "call_01TJGHYVkY6TGMKh3BbamhHv",
+        "call_ggvdnJy9N6b28MD22cm5t5MC",
+        "call_UU1Jbd1zO2MvF7aqPOJyj5ok",
+        "call_gjbf90L04Qz8uG9u0m0T3Rsm",
+        "call_iMAvdPByZuyDhK6gLqEkAw1k",
+        "call_Y16IWlFqEY4haNEPraFbHGXD",
+        "call_JMexRNeWPiNCljnbloitoDRy",
+        "call_UKKd0W3Vt2XRLqzdK8mSCKmg",
+        "call_cTGkovgzGjcn9prNioIlttFm",
+        "call_jJdaugyTPmcy1aVKRxAN0nJr",
+        "call_0NxNyamOTovr3EBjzQ0mE8FA",
+        "call_89N6IMakVpGEAdFd5wqshD9b"
+      ],
+      "mcp_tools": {
+        "get_hierarchy": 1,
+        "inspect_instance": 8,
+        "list_instances": 2,
+        "project_info": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 13
+    },
+    {
+      "path": "benchmark_results/complex_idma/idma_fifo_semantic_inventory/raw/idma_fifo_semantic_inventory/mcp+skill/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_nPFeYFxiBQSQinfS1rVAzsNc",
+        "call_AwhsWg03N3qQDkKxhiKdSACe",
+        "call_1VvPTjITA0gfGJxMLOkr8aks",
+        "call_1KdFNrRwEuIdPpwSFtedlh5p",
+        "call_PM5TeS03ZiXVjB8Hce6af1BU",
+        "call_PyYDL4yshFVeJNQ3RWfMXgQj",
+        "call_3kLFgD1qjiyqKx5dMyyxUdgP",
+        "call_KjMcLKGeuFb1qU48w6G04FZ2",
+        "call_AmICwoaau6nmVWVT5NYZ3oT9",
+        "call_hkKw0r9jeuvTS4zIy8n81Dv8",
+        "call_b1MLwchAtuuSQ7HpPqoMNXpe",
+        "call_cCNw9quIlMtnho9MqSaJxuEZ",
+        "call_HVOgcPHpHAxhoX6VpTbAEtk0",
+        "call_XAFh7DGzo9z6EpxlfTedIwJG",
+        "call_2L7Wf9eNViKVyKy2W18muPho",
+        "call_UZwytoLF2p92Q8CM4ndNQhTN",
+        "call_8gIkVOGD8sC1Hsf6UsofGbuB",
+        "call_h97Mw1w2WBYBMjLTiUiILBDV",
+        "call_ocDnD3GmxTmXyU5uHzMuIIT3",
+        "call_6ccYYjvEWEppqAW2IeWnzQWG"
+      ],
+      "mcp_tools": {
+        "get_diagnostics": 1,
+        "get_hierarchy": 1,
+        "get_instance_connections": 8,
+        "get_instance_parameters": 8,
+        "list_instances": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 20
+    },
+    {
+      "path": "benchmark_results/complex_idma/idma_fifo_semantic_inventory/raw/idma_fifo_semantic_inventory/text-only/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "WRONG_ANSWER",
+      "call_ids": [
+        "call_oKGFNTb7FypBeb8fyvPKfULm",
+        "call_zJ3GxnrjSA5NjFXomxmd0cRb",
+        "call_vxuyRUpqyhFz3GWJrhslRm4L",
+        "call_OaJSqhfqu62iiIcCodvimsSl",
+        "call_zc0Wc7x7MHNuicsNStanramZ",
+        "call_R2Bsr6geSSi9CXa3v837qY1E",
+        "call_YetUzvTbHcX9iUwvL91zWjCx",
+        "call_uE61AWoPCTYg9hc9Yg9lswxC",
+        "call_4OyIf1u4kUDYyZ2hABByRdUc",
+        "call_Dwc412fg0HOe9ssJBiI1LZ9W",
+        "call_lZUs62dyGvvCHfD7hlqnf4N7",
+        "call_DYCBJYGIaBDqEijCSSQvQvlv",
+        "call_aGD83UI5fzLjtLAYiF4MfCKo",
+        "call_q35EsM4MSVgJ6uPphwZFSAnB",
+        "call_DhO4H29oy8BDASan7hyXEKzx",
+        "call_Pot6UZNpKuvgT2QCAfqhmdeF",
+        "call_9JIjS8kPmPohWVMTrv4VvlLK",
+        "call_l6IBhehCaVSMAEgni1xU7KgE",
+        "call_a71zZH9iOyBHScphjUO3lgEy",
+        "call_evLbY7dxElBanXTLRusGW78p",
+        "call_1DpPExr8GIli6M6TQomiyxHd",
+        "call_TrYDQDYfA4Bt6R8hQEKBvj5u",
+        "call_Va8lqugmgqB7egvjZYQcfyE7",
+        "call_PoII7AwHXKfaxSAq8cT7AeYx"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/complex_idma/idma_stream_fifo_count/raw/idma_stream_fifo_count/mcp/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_eZDSes2gFKZTP9DCoL6ARfn8",
+        "call_AV1IcZPI5qQa8AglFt1jH4Xa",
+        "call_uZE0s8ZOhLOWVG4qyrTmgZep"
+      ],
+      "mcp_tools": {
+        "list_instances": 2,
+        "project_load": 1
+      },
+      "mcp_calls": 3
+    },
+    {
+      "path": "benchmark_results/complex_idma/idma_stream_fifo_count/raw/idma_stream_fifo_count/mcp+skill/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_jDs8UzG5f2i0yH1ewElCPmKP",
+        "call_EcPWd2HwskXLOxgD60bid4WB",
+        "call_mR012GgO0q7v9uz7o4hSdiLO"
+      ],
+      "mcp_tools": {
+        "list_instances": 2,
+        "project_load": 1
+      },
+      "mcp_calls": 3
+    },
+    {
+      "path": "benchmark_results/complex_idma/idma_stream_fifo_count/raw/idma_stream_fifo_count/text-only/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_9Anp1WG8Y5gl9gU9oYgR8WYE",
+        "call_jKbOQPWSpjLrlm0T1k2Cbroe",
+        "call_SXIA9T3Otx8aExSwTkkUHh8j",
+        "call_JODsiRxugMrtXKM1g37co2dE",
+        "call_FLJp8A88BCA3NGeftKtsWt9F",
+        "call_RvM5pEDW0iEjK30h4xsbmz2c",
+        "call_aCFSa5QClAZEKLHMaIb6z7d6",
+        "call_6N2eZuFOgiV2f9AqFU7eviF4",
+        "call_LMaBxsIwkjwLCq8BWdx06CGL",
+        "call_0WTpCCZJs0aQriuNzT0PpT0W",
+        "call_qoca04HF3Res7dJcEVGyogOi",
+        "call_ohSfvKJJ0IURWPxjlCb8rIAn",
+        "call_9SGhmV2TipouGdDcx9d6CBTY"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/complex_idma/idma_stream_fifo_parameters/raw/idma_stream_fifo_parameters/mcp/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_UksApsqVWs2bQKIdFGaHwyVu",
+        "call_DBnV8lSzD4rLTpe2qFFaA2nl",
+        "call_xw9Hgp1kgxZFloi4uMoJC4Rg",
+        "call_PcYzSa8w62YCt8ytLqg0J2eI",
+        "call_TdKpMdDLSvWgyceqgbdWEgHp",
+        "call_jM1LYsYzQfdnqkBfwxsIcG7d",
+        "call_Ps8AQcZvgUYTJfc8udb0QCob",
+        "call_ZXpgRldZYpwbRJkoo2XqQXx1",
+        "call_cNEKVa7dm0hXPkxVlSNohW7v",
+        "call_PLABp1sBTrdfapTE2dvqEROy",
+        "call_yqde36cOMRdY3qhGfXbOvQAS",
+        "call_3HYLbULxyNpZClieGiDexhU6"
+      ],
+      "mcp_tools": {
+        "get_hierarchy": 1,
+        "get_instance_parameters": 8,
+        "list_instances": 2,
+        "project_load": 1
+      },
+      "mcp_calls": 12
+    },
+    {
+      "path": "benchmark_results/complex_idma/idma_stream_fifo_parameters/raw/idma_stream_fifo_parameters/mcp+skill/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_F6O7Ig4dsTkHc8swAPNmQafC",
+        "call_QSLYD12amiZ2qvmua7TEmTcg",
+        "call_RzZvf3DHsUYR541OHNFruN8g",
+        "call_jXH5P9WlMuE2P02g5Q9NXKgV",
+        "call_KNxJnmSEse7sz3zgMhEf8Owf",
+        "call_qsomeL4xkGlFHrbp0REmIPtv",
+        "call_6WWNDjt7S3RgVyOK0FuNJ4oY",
+        "call_IbaPwu8JZ7upO0x7keOB88Nb",
+        "call_FEsCTmxjuA4UwMGDB8ZGh5HD",
+        "call_mYOd7GTsGaV5E6nd2WSXcR5H",
+        "call_CeXkg7pseycwhSprbDokZw1o",
+        "call_1PO55IB3Pt8Ur41ZMt2m50lP"
+      ],
+      "mcp_tools": {
+        "get_diagnostics": 1,
+        "get_hierarchy": 1,
+        "get_instance_parameters": 8,
+        "list_instances": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 12
+    },
+    {
+      "path": "benchmark_results/complex_idma/idma_stream_fifo_parameters/raw/idma_stream_fifo_parameters/text-only/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_wz99NewjBtnzs3I5DrmP3kao",
+        "call_HzHiVwP1ktX7DKEQKtaQca9i",
+        "call_rHjaVWHpJuR8Zkhi6oobJLCU",
+        "call_jMJbsWgdo8G0Uakn90suFbAW",
+        "call_YdE3VomXfrOCa7tLyL7aEETV",
+        "call_IwocApwyOK9YXY88dMYtRxht",
+        "call_9rtCNrnx2tm41X4tgmLTmXpS",
+        "call_BrIIu1wKK36odAuwyh8nm6XE",
+        "call_7rGl2ioi7xAc7l5891myiNMA",
+        "call_EuqkIDMhBiErYWWFNVsBKS7o",
+        "call_Ti69DM58jdcB9CBcujOhTy2V",
+        "call_IvAP8uVLSX3blrwNzWDnAfgM",
+        "call_9oob9bmxLpIufiHtdXMihqF4",
+        "call_oiaTIxYl7vBErkZMM7ASXDGY",
+        "call_g715SFUJ6xRKroX39tt1tTqw",
+        "call_Q0qQZMEXzpFU2ZuJc3Ykol9s",
+        "call_uHp5y5v5Byl3pgEB4MnCV9BB",
+        "call_ya4zN7rlx7WTvZr4rp90fO4y",
+        "call_U5sNUCJNz0S6vCdtbt1HhKVA"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/cva6_mcp_hierarchy_fix_check/raw/cva6_mmu_tlb_actual_expressions_v2/mcp/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_g51QOdmLpmJlIS0Pootc9poy",
+        "call_Mw1Rl3SC7oKjYUphLpmDausI",
+        "call_Amdb6Rfl8Yky6z5LBnYYSQOG",
+        "call_wXifaZ4wNcVcCrkL3u3Fmxe3",
+        "call_K0fDeYzgWVp3Y6HebyrIlObc",
+        "call_OZI5JDQX7CwDoJ82qnO1NEPV",
+        "call_HUCysRWaSTWzQop89oDs1B7y",
+        "call_Rvd9HWiubQLhFJ9PTNOP7OcS",
+        "call_gmNNaCvYIxLYwgOiQsTcRBIW",
+        "call_0PJd3LvGA172xhAJzMTYlkpK",
+        "call_NYVOQf1gv6Z2Cm5x6zryXQcU",
+        "call_Kl6MLmpIHRSiLatgL18TNDv0",
+        "call_z5WtROTrpY3fF2JDls6Q8CEZ"
+      ],
+      "mcp_tools": {
+        "get_hierarchy": 1,
+        "get_instance_connections": 2,
+        "get_instance_parameters": 2,
+        "inspect_instance": 1,
+        "list_instances": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 8
+    },
+    {
+      "path": "benchmark_results/cva6_mcp_inspection_fix_check/raw/cva6_mmu_tlb_actual_expressions_v2/mcp/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_OmN3pzbZ9FCOAzRw5YyO3Mnm",
+        "call_SqGbetNdT6SYx3ki4726cXY8",
+        "call_6krSROIOqg7hq3VH6VAFdPU4",
+        "call_tC2WldRRQtoyL0geJpBXI4Ll",
+        "call_k4wUZ48A07vd0cMEeFj5jPl5",
+        "call_V2Vok4H4ScaM7MisN7TIQYaJ",
+        "call_lKTEudipGoA0DbLceO4HeYWX",
+        "call_eWzCHXcuxIbJ3avwit0uZCVl",
+        "call_rHBLFEGJbAN02J0rjUBdGiLL",
+        "call_yAm8ZVahYwTyYJRyilLP0ggj",
+        "call_hYopjPFuUiQ2MvVSXLcXHxGW"
+      ],
+      "mcp_tools": {
+        "get_hierarchy": 1,
+        "get_instance_connections": 2,
+        "get_instance_parameters": 2,
+        "list_instances": 2,
+        "project_load": 1
+      },
+      "mcp_calls": 8
+    },
+    {
+      "path": "benchmark_results/cva6_mcp_load_fix_check/raw/cva6_mmu_tlb_actual_expressions_v2/mcp/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "TIMEOUT",
+      "call_ids": [
+        "call_zjySNsQ0eq5L0Zegxe0G8DrP",
+        "call_XT1Bcw7axfvIE4jej7LOAEcn",
+        "call_x4Ln2OKy8QRJO1fAFUUTQ1jX",
+        "call_7cVQxRHASqxObNQE2jpvwd0x",
+        "call_B6cLV3eHKM2ucdOAKFWUg3QA",
+        "call_rfP06aS9lxTH5HofUIsQYQd4",
+        "call_v00hIWTOmtF6EXT1TeLwL758",
+        "call_je50UD0g8HTYlKbTlefxDysc"
+      ],
+      "mcp_tools": {
+        "describe_instance": 1,
+        "get_instance_connections": 1,
+        "get_instance_parameters": 1,
+        "inspect_instance": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 5
+    },
+    {
+      "path": "benchmark_results/cva6_mcp_skill_hierarchy_fix_check/raw/cva6_mmu_tlb_actual_expressions_v2/mcp+skill/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_1Fxi9biFrvclIX70XLeFZkVe",
+        "call_qCmbAwofYn5Czre6pnIgIejc",
+        "call_L9qy6SbW4Hz5vqTxcwevbpdk",
+        "call_MY2obc0xo6EmMiYSRWIn7gYM",
+        "call_QS5DeJgvJnD8e0cDcwrxwTSl",
+        "call_yQuNgnFt4qGmkAa8mFcB4Q1Q",
+        "call_7WZV2RiofaLdVvfmgz2OTUuU",
+        "call_tAlpfErAhNMOeP25w2WzZOWG",
+        "call_9P5cmCWeDGiE8alz1vx7XRwQ",
+        "call_KY1cPQcC8S7sUKEcjYxY60ks",
+        "call_g4lVj6X6oSbHJll6iw7VARc3"
+      ],
+      "mcp_tools": {
+        "get_hierarchy": 1,
+        "get_instance_connections": 2,
+        "get_instance_parameters": 2,
+        "project_load": 1
+      },
+      "mcp_calls": 6
+    },
+    {
+      "path": "benchmark_results/cva6_repeated_auto/raw/cva6_execution_units/mcp/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_r8zq9mVJrfiNY7vfFAV5yCrU",
+        "call_6XpHqz6bBoOqrUX52YYqSfvb",
+        "call_WtW6d0GQwXlwmra8F4Hv7HtZ",
+        "call_srGzefQT5KME4jYh5PRyk7B2",
+        "call_xdz5mA7bcxvVDGkZ5D9YcXe0",
+        "call_MZqrAN598ZyLsQeNQnZEVvJb",
+        "call_mNW3bPCSjBvkV6XgdpvVix0h",
+        "call_DfjaYTIVmIRyQelKM0RmAqki",
+        "call_onouX5t9LXTZn3VuUIxDXSxr"
+      ],
+      "mcp_tools": {
+        "describe_instance": 1,
+        "get_hierarchy": 1,
+        "list_instances": 5,
+        "project_load": 1
+      },
+      "mcp_calls": 8
+    },
+    {
+      "path": "benchmark_results/cva6_repeated_auto/raw/cva6_execution_units/mcp/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_7bZUug3EHpQSTfVKkcDximDb",
+        "call_yv3CIgUTYBRNJoRLu8mQhrpm",
+        "call_qQxUZdER2oyHcoYRmRh49xFy",
+        "call_WQDxHDEQsCRuHoxDmcbZ1UlQ",
+        "call_N6mXTt5ojsxgdXvBY0x6ZU2e",
+        "call_peGlf9uVyHj02iiaTj8ihsuO",
+        "call_JQbCHJhOaJVOXZfsx1llifid",
+        "call_vPymFeBBoR2QeQrG20CdZ25h",
+        "call_YfkxIvGcX1wwDH4IQwqljS4g"
+      ],
+      "mcp_tools": {
+        "describe_instance": 1,
+        "list_instances": 6,
+        "project_load": 1
+      },
+      "mcp_calls": 8
+    },
+    {
+      "path": "benchmark_results/cva6_repeated_auto/raw/cva6_execution_units/mcp/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_pAWFqQSazpJfvhaF0FNDeDgr",
+        "call_UM8ivcp2S2jAxY1HPXaQ4LrT",
+        "call_YpAe89dms8BH1yamUdk0vJli",
+        "call_WmtSwHdxuA9PRKA7Caz6ShF9",
+        "call_PUOdpUmhja5Ta85KTRSbYlLm",
+        "call_hnU9A5bBR6xAWkAgvpJr3ja0"
+      ],
+      "mcp_tools": {
+        "list_instances": 5,
+        "project_load": 1
+      },
+      "mcp_calls": 6
+    },
+    {
+      "path": "benchmark_results/cva6_repeated_auto/raw/cva6_execution_units/mcp+skill/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_PmtP2lskR5Qu5dK5n4RGiNpK",
+        "call_oaOZiezwzOKyVh577y8I4n71",
+        "call_a1q3JsTfDxxAirNcrMBOMNvz",
+        "call_fKh5QBc7cTeCOHtyI8bNDprm",
+        "call_tBgAl9xNrxEOUeVnFPPFIcHB",
+        "call_xgfv0pPcPwl8nnNB0GYerRTZ",
+        "call_sUZea5e4z3fn4mTumjB5eZoK",
+        "call_2C38GR2qlJTNjayiWAKxcL1o",
+        "call_3WvMh4ixtljt9KjqTcOvoj9H"
+      ],
+      "mcp_tools": {
+        "describe_instance": 1,
+        "list_instances": 6,
+        "project_load": 1
+      },
+      "mcp_calls": 8
+    },
+    {
+      "path": "benchmark_results/cva6_repeated_auto/raw/cva6_execution_units/mcp+skill/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_c3Uc7Ya1xDSPJShAfyaw6PAX",
+        "call_XJGwYbaimt117Js4u4HpzvH4",
+        "call_b2NpoepLi5afFZRWsvwG6jm0",
+        "call_E9c8XzRbUtwp6N6Y3PixIDDb",
+        "call_v6nxOFvjbUPPHVWT86HYQhcz",
+        "call_sWvjfaa1h1ww9QC4X4SsvGql",
+        "call_AQneR3mIt70qw3QaAWxJiSxn",
+        "call_cn3Liy4a72ETSW0CdC6Wu0zd",
+        "call_Bi0kyhKkRFU881pIpt4wY8GV",
+        "call_hoDeFrd1LnVptGteg1ZPoVx7",
+        "call_Y0C55FskpK09XvSmc2b9BUli"
+      ],
+      "mcp_tools": {
+        "describe_instance": 1,
+        "get_hierarchy": 1,
+        "inspect_instance": 1,
+        "list_instances": 6,
+        "project_load": 1
+      },
+      "mcp_calls": 10
+    },
+    {
+      "path": "benchmark_results/cva6_repeated_auto/raw/cva6_execution_units/mcp+skill/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_H9UDYNrXq8ZIJPr4rpFaafTI",
+        "call_nogPJxSmoQi7shwxl3ky4gJg",
+        "call_64Yu6l1nCeBwxJ5sI9o1Z0GF",
+        "call_4bf3Ey29T8GD5oiKONBERtXd",
+        "call_4efQZsy8zZOt5bb4VIJXygMV",
+        "call_JzHh8lq7D4sFOtkgKzWPyQ8g",
+        "call_G6MrgtjaoVmR8jh8YCkeUD2R"
+      ],
+      "mcp_tools": {
+        "describe_instance": 1,
+        "list_instances": 5,
+        "project_load": 1
+      },
+      "mcp_calls": 7
+    },
+    {
+      "path": "benchmark_results/cva6_repeated_auto/raw/cva6_execution_units/text-only/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_ogdn6g6p5X6hz77pjohOqtvl",
+        "call_MGC1c6U6rUJaeDQoWrjg8jVC",
+        "call_egXE8plEn1V8vh5wyhOsDIiu",
+        "call_qNzvtKWuuRkECR8i0X7wx8Zo",
+        "call_cPH8I17FOA1uTkOGUOtqe7bf",
+        "call_UfTrAG8rapZPyoJgjezZz4lI"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/cva6_repeated_auto/raw/cva6_execution_units/text-only/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_wxrjmxedf3heGb1wFrkZmWXi",
+        "call_VsY7UsO2yG9haEHRO6LTkq6C",
+        "call_ZiDDLyd6hQzjLPd7q2bYMoVU",
+        "call_FaCOP4ApZR7mC930sskbHn6g",
+        "call_6d0t555r9MyKCNMIr6nmtYAH",
+        "call_bjOgtBRJhsAgEdREmb6pFJyT",
+        "call_g2PSWA2E0DQCCyWSLlqcKQf3",
+        "call_L30LkT9944B1BIuNS9jZpGcS"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/cva6_repeated_auto/raw/cva6_execution_units/text-only/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_aFxHQt38LrT9N6vjVjzQJSDz",
+        "call_KJpYbbQXeow1airKGj1pwL12",
+        "call_pEacYse1U07pt1uuKDv6iDez",
+        "call_m37eX8zAGhYqz0IQMpKVi7aA",
+        "call_MUbmHm94IV6ZLSuTmOuuNBmm",
+        "call_RFJtPESyroZwgeJfkHRbvYw9",
+        "call_iK7NsECV9PJEShFJhjLVVogR",
+        "call_JjHVupZi8o67amzxTwUGUVx0"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/cva6_repeated_auto/raw/cva6_generated_compute_blocks/mcp/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_JJ7G7vCCFYh6qoP1KewoZtnl",
+        "call_qPmeLHLHxgGiGvMDDfndsMV7"
+      ],
+      "mcp_tools": {
+        "list_instances": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/cva6_repeated_auto/raw/cva6_generated_compute_blocks/mcp/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_A2saYzOlrwhojEk2xpDoGO6P",
+        "call_GLw1Q0CZ8K2EYkKlZqGBooPY",
+        "call_Esrg1fQGxUM5dqAbCqakfnWl"
+      ],
+      "mcp_tools": {
+        "get_hierarchy": 1,
+        "list_instances": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 3
+    },
+    {
+      "path": "benchmark_results/cva6_repeated_auto/raw/cva6_generated_compute_blocks/mcp/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_BKjr0ufkTMesVk4dpHhodLqc",
+        "call_aHboeTrwAW5IdaoBZlpRQmnS",
+        "call_lVpCWTb74MXn9eFmlwbxJL5k"
+      ],
+      "mcp_tools": {
+        "get_hierarchy": 1,
+        "list_instances": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 3
+    },
+    {
+      "path": "benchmark_results/cva6_repeated_auto/raw/cva6_generated_compute_blocks/mcp+skill/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_AU30MTgyqZtDydPjR8cjizjx",
+        "call_YD57k708gCWkhr52kZoAaTKY",
+        "call_icv7tMSBDkV2snMlNfh9Cmy3"
+      ],
+      "mcp_tools": {
+        "get_hierarchy": 1,
+        "list_instances": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 3
+    },
+    {
+      "path": "benchmark_results/cva6_repeated_auto/raw/cva6_generated_compute_blocks/mcp+skill/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_uDK0hTeRjjl4VAb1DQ8Bpl77",
+        "call_uncj1f8NgG8PmcxkL3wU3I17",
+        "call_YtpvndRQI6oGaqjS48mltUr3"
+      ],
+      "mcp_tools": {
+        "get_hierarchy": 1,
+        "list_instances": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 3
+    },
+    {
+      "path": "benchmark_results/cva6_repeated_auto/raw/cva6_generated_compute_blocks/mcp+skill/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_KV2GMc2QoLgGoWfOryv85hfR",
+        "call_lKhxPVoS37wKH3KXE5vvU3Dt",
+        "call_VvWxfubX11Yyz5GHi6B8iMA1",
+        "call_TeET1emp3FhaPtecBb1wrmZP"
+      ],
+      "mcp_tools": {
+        "get_hierarchy": 1,
+        "list_instances": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 3
+    },
+    {
+      "path": "benchmark_results/cva6_repeated_auto/raw/cva6_generated_compute_blocks/text-only/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_faa8ks6piDEugWjfrfVMPypm",
+        "call_wp1F1wZIDfYx11pouRW5MB49",
+        "call_rFfBww6Ea31819mg3UZsQ4Zh",
+        "call_1i04IbDYxdsGqgqIRin3oBi1",
+        "call_HEVSWDcYBFWrxXKmcTxbH4So",
+        "call_rHuhRquUHFEKaBPb4eehr2aw",
+        "call_fqxO3JaWohXmAXtVpfNflLoM"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/cva6_repeated_auto/raw/cva6_generated_compute_blocks/text-only/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_VA63smRKNlr7oUdIem0OY5s9",
+        "call_EzlYcE52wI5dqCunzo1hl2wZ",
+        "call_uhfCBl7J2UxJjyGtx7LufZfn",
+        "call_JQYG2hwswOI2ttO4x9T0Af5h",
+        "call_Z3LnPe7VEWo8TSiiXQi38yDK",
+        "call_wfwVhXnTNVMFqkyWODXWm3LN",
+        "call_cx7KZcwQeStqHzt3yd8BA6Pr"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/cva6_repeated_auto/raw/cva6_generated_compute_blocks/text-only/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_jt8EsAYfECdWg0o4tMv43CVA",
+        "call_fRWaoYZWNGxIpbzVab3kU6r2",
+        "call_bgIqHiqUDvgMBhdVhz4nY5Li",
+        "call_GvmCNMOK0Tb4ImmSau62P85m",
+        "call_KZv3W8eZWbLbCzxzYXOREdRK",
+        "call_VycSMZGwT4WGWLTo9WI53Kbv",
+        "call_HpPoON6zNfTKaBxdbuQH0qDp",
+        "call_G6qAblzSb8ZAJZHccGP7TpBJ",
+        "call_yCTpd4eS4JMV9ab8KjsoxlHm"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/cva6_repeated_auto/raw/cva6_mmu_subtree/mcp/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_F8mLLRMJh5SDEA5irjQcuS0s",
+        "call_UZlv50zhK5EOzIx3HzemTVZS",
+        "call_swUXywxq8G2iDUtfDCqj7JXX",
+        "call_OVRp9TlWsTAxl8G8I9XaqKy5",
+        "call_L8HyEVXJpci3nURKcVvs4NhA"
+      ],
+      "mcp_tools": {
+        "describe_instance": 1,
+        "get_hierarchy": 1,
+        "list_instances": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 4
+    },
+    {
+      "path": "benchmark_results/cva6_repeated_auto/raw/cva6_mmu_subtree/mcp/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_134AMbfMTZTUbbd3yWFEiXZL",
+        "call_S7FzVVeFtsGu7Ho1btdsnyqG",
+        "call_CNw9IC1CLExHGE2nj9MCF3U6",
+        "call_jUoUgKNuIa5vk4ulhtvOPnuN",
+        "call_7UJm9nSuuNzj9hQ1YlW81y4d"
+      ],
+      "mcp_tools": {
+        "describe_instance": 1,
+        "get_hierarchy": 1,
+        "list_instances": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 4
+    },
+    {
+      "path": "benchmark_results/cva6_repeated_auto/raw/cva6_mmu_subtree/mcp/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_9ufb8xvl24fx4E2csD0On40N",
+        "call_7nJ48xGcS706EB6wxCbawAhQ",
+        "call_BXmxCtIOujUDPxXDgOv5GVNi"
+      ],
+      "mcp_tools": {
+        "describe_instance": 1,
+        "list_instances": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 3
+    },
+    {
+      "path": "benchmark_results/cva6_repeated_auto/raw/cva6_mmu_subtree/mcp+skill/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_dq8GOTYYE07tlrjEMD4BZu7h",
+        "call_gPzsbRJey0mPdES7tekQQcds",
+        "call_uE20lAfWMnMdC7X2WzLMr7Qp",
+        "call_oLvKMLbnl6Ycw5fo5DwkqNDy",
+        "call_7sWlsGdeeNamJTrYLLjQ01rl",
+        "call_IQkItfqZK8iGyqWOrqIfUnjf"
+      ],
+      "mcp_tools": {
+        "describe_instance": 1,
+        "get_hierarchy": 1,
+        "list_instances": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 4
+    },
+    {
+      "path": "benchmark_results/cva6_repeated_auto/raw/cva6_mmu_subtree/mcp+skill/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_vsYcy5ox2IgpKDwIDYJR7e9l",
+        "call_PJ34MIMP45j3DbOf62s9aAv6",
+        "call_lrIwUNxl9Coxa3omlouQLDpK",
+        "call_axN31psXT4Nuwm7GNNtuFJOm",
+        "call_TWkV9zQLFeTunuvpboBO5skM",
+        "call_bZzXTQS9DW83GnG8aM90peAm"
+      ],
+      "mcp_tools": {
+        "describe_instance": 1,
+        "get_hierarchy": 1,
+        "inspect_instance": 1,
+        "list_instances": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 5
+    },
+    {
+      "path": "benchmark_results/cva6_repeated_auto/raw/cva6_mmu_subtree/mcp+skill/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_N71iSQoadtJwwqzB7asOLKg3",
+        "call_yVv6FkDZConZhbG2TvgzNkw6",
+        "call_bGAAr4se1jgYtzQXQu0LEqC6",
+        "call_UZ3qzkC2GGDRnD1JSIwuTBTg",
+        "call_ZkzXOpHHljrkB3VEkSFS7dIV",
+        "call_RIrTyN4bzYreeXyE6Z5O8TOG"
+      ],
+      "mcp_tools": {
+        "describe_instance": 1,
+        "get_hierarchy": 1,
+        "inspect_instance": 1,
+        "list_instances": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 5
+    },
+    {
+      "path": "benchmark_results/cva6_repeated_auto/raw/cva6_mmu_subtree/text-only/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_1K3BaKynibIR5HaFt8dZvq0D",
+        "call_ocG73DfzZ8nN4pkVHOZbOv7h",
+        "call_Cdx2FIPKc7OjnRNa6wdv5n6D",
+        "call_m2OMRJ0wyC4eN4jrUBsPUoig",
+        "call_vaFZafk6LOYmaLG2X3xvPLDz",
+        "call_Q3k7baAzH9ZUAflbAcvMD9uB",
+        "call_wXFWrI6dyyQGwfgWzYVkTQy7",
+        "call_NgsEFxoBj5l943eNRALvIryc",
+        "call_Bbfc9eUykxfqX3CjTxo5H1BI",
+        "call_yWnJxlCm7MdhZACphSL6rSV7"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/cva6_repeated_auto/raw/cva6_mmu_subtree/text-only/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_IU2KH2cLUrpvhsO48sVeXdaW",
+        "call_HgFfjupsANhU4vcyPDcIAW2i",
+        "call_hJwrw5SiuK8NtbKX59OZFdqm",
+        "call_mHHtaIqTppJBLLqUI8UbHTLs",
+        "call_HS19STqIzhw5sk43dtObJovC",
+        "call_uyDoxPVmErWDOWIJBO6Ykxl0",
+        "call_w7AjLrSuCdEaa8aaa8s9JWlO",
+        "call_ocQNjmXiiFBwOs72KcMhRPGL",
+        "call_tKTv3YvmVTeeBpgPAGRNm8xd",
+        "call_eSBxFdkc2aghib9krCRD8TpQ",
+        "call_pPb93xFNJuJaprm6h9mnfUmz",
+        "call_1huZDBTkEM4QqI3SuTaWNtnn"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/cva6_repeated_auto/raw/cva6_mmu_subtree/text-only/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_WLQ98LrpIZVTyxHiSWAEqSRH",
+        "call_jzGJkPdSsumOEIz0e3RFLRNP",
+        "call_ystmvvjLpK6RuoZUwDh57Frr",
+        "call_fhv6CWTjwTSi9ZBiUWNl8UKk",
+        "call_K8Q1rwgRzoPlsvJgJzdwZT8S",
+        "call_BtELmRl2D7OsQt3J5BTY1E8r",
+        "call_DaEgevmjkmIdPOp8q30wyWZ5",
+        "call_tnYRAzanmb31CnWA1dz217Mw",
+        "call_b4t6g8D1wmGU4HjSN2PFaiTR",
+        "call_LySmmrjQvwEx99sTbLDKFRfF",
+        "call_zXekRyffHwJv63qYvyxWdX1W",
+        "call_tMGSr5g2jwfJvhtJgkAIBpFK",
+        "call_fpKFwssfc6hnhYpCBoDHxBYn"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/cva6_repeated_auto/raw/cva6_pipeline_stage_map/mcp/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_r5Imqy2PyZ48gANo90uqTjoG",
+        "call_pFeKvIUQMdIpyea1w55g5zPd",
+        "call_Fb3q3rXi16t71wiLoRcX9b58",
+        "call_iYQy0xRd9vo8NmtGB7DvQqAu",
+        "call_tieHhDCiBhXf18tzzf2MisgH",
+        "call_rGMqUrj0hh0RIQMO1vn7BaGV"
+      ],
+      "mcp_tools": {
+        "inspect_instance": 5,
+        "project_load": 1
+      },
+      "mcp_calls": 6
+    },
+    {
+      "path": "benchmark_results/cva6_repeated_auto/raw/cva6_pipeline_stage_map/mcp/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_tNu6UdsEAVs2OUahdkVQCRPt",
+        "call_2619KZTvgPcXqeGub0fhr9bn",
+        "call_vHZ7DiaXY3gBpSo62ZNyLAeK",
+        "call_UBhtpgMBr3ivZ6Sz6GXTPPni",
+        "call_CAz04Ixp0UeH2UTaenONLzNH",
+        "call_94KZqTlbRNBoo5gPwGzqkmo7"
+      ],
+      "mcp_tools": {
+        "describe_instance": 5,
+        "project_load": 1
+      },
+      "mcp_calls": 6
+    },
+    {
+      "path": "benchmark_results/cva6_repeated_auto/raw/cva6_pipeline_stage_map/mcp/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_6ikBogF7HQRjF8XAuvAwuUZf",
+        "call_oaAJyEhKcSf7YPmx9qoqczWQ",
+        "call_EYximQ5Ysv5k9sknu3AZGgRM",
+        "call_5IYFvECWv5FYKdrRWwmcvibb",
+        "call_kMuD2CjI7KEtOU9vkkieIm1l",
+        "call_zspzvrsNzMunoz7UmMxgv9QI"
+      ],
+      "mcp_tools": {
+        "find_instance": 5,
+        "project_load": 1
+      },
+      "mcp_calls": 6
+    },
+    {
+      "path": "benchmark_results/cva6_repeated_auto/raw/cva6_pipeline_stage_map/mcp+skill/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_LVqdsxQNSTzDJwcTKVSxULh7",
+        "call_xDHglSa7Pv6J6vPGk4Nk12Q2",
+        "call_Gasu2RabTBRKKKglvELFUjxn",
+        "call_jXI4rWpn17tNZ0hhu8BgBqKS",
+        "call_xdVbwueEj3vsWu06zJLsF7Gy",
+        "call_F2nL0buuIA5RxlxZoZxzoZs7",
+        "call_0f1ZlgfiN3sy70pft3crMSeF",
+        "call_wNH9oVJBzX9bQTjLhdGnbxUl",
+        "call_Wj5qBCF95mRNVJ5t90vfcsRR"
+      ],
+      "mcp_tools": {
+        "describe_instance": 1,
+        "find_instance": 5,
+        "get_diagnostics": 1,
+        "get_hierarchy": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 9
+    },
+    {
+      "path": "benchmark_results/cva6_repeated_auto/raw/cva6_pipeline_stage_map/mcp+skill/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_TSXm7P7e9E7gEFSQrqJX6SAs",
+        "call_si1Gy3VANGBOcnZXOqnwcUVP",
+        "call_P8UxNcdwHIVEKI9P1IUS4fXk",
+        "call_b1TiqHaPfTxQ7TniXayOUO53",
+        "call_7zwTaWN226LbKT5TxgM5m5sT",
+        "call_mUO51yXT7C10TWVhHj08sLlC",
+        "call_k2IklT4zAfjFW6HiEtpL7K05",
+        "call_6JkR1aE1Nayas7sybncwoIUm",
+        "call_rwFG01K2AiVReyJvZLNlWuGe"
+      ],
+      "mcp_tools": {
+        "find_instance": 5,
+        "get_diagnostics": 1,
+        "get_hierarchy": 1,
+        "list_instances": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 9
+    },
+    {
+      "path": "benchmark_results/cva6_repeated_auto/raw/cva6_pipeline_stage_map/mcp+skill/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_3XDuFg2oOQKsSCWJiMz0eiNm",
+        "call_KTbYLHoCPNJUdFhDUxVglgKZ",
+        "call_NFM8lavXp1lTIkH30eNcBKhA",
+        "call_8qdJJJAsgKduT9GJWnivpshy",
+        "call_cCrvPVY2wwc3sy5uHXjBz8Vd",
+        "call_aucHcsJFPlw9tJFkFMN6pk9v"
+      ],
+      "mcp_tools": {
+        "describe_instance": 5,
+        "project_load": 1
+      },
+      "mcp_calls": 6
+    },
+    {
+      "path": "benchmark_results/cva6_repeated_auto/raw/cva6_pipeline_stage_map/text-only/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_AGedlELvPN4NPL2PqfhjqVFz",
+        "call_qYpTN8rkdfTV8sL6ohwJbyBp",
+        "call_DjLmSgEGtwbmsYI4P1KJDPlY",
+        "call_JsTrkdHgTc6YITnM1iWYzB4f",
+        "call_WJF7t3rsiqodQkr2QHTWRkAw",
+        "call_YAMQOLaJbrxD9wLeHfMwivuK",
+        "call_5TGpkaeiwwvaiS4dEC2iLtgM",
+        "call_vdOsvVR5xhQTPGiX8fn8gwWI",
+        "call_9Dv7uQ9hFjj3s01CKFlRqPHI",
+        "call_exyf3zWfmuUxX1CeOcCvia34",
+        "call_eWCTv7qhPj25ayduzcsO8rqL",
+        "call_LjOpx3GgjlENhVIyxWLoeOJG",
+        "call_bbw9hIcFoOk8ePj9458yvZZj",
+        "call_QCwaXrPxC084thsogSv29CRx",
+        "call_wtBcB0VuEQFEGLWFyVGjLJHy"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/cva6_repeated_auto/raw/cva6_pipeline_stage_map/text-only/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_PZjpG8jXzx3t503ws9Tg6QZL",
+        "call_hVB63f2Ej8EtOxJzPtKezhD2",
+        "call_7xSvw7mmwz9lun0PJmQtnS75",
+        "call_PQzCXMPhqoaoc81hZVojsgv7",
+        "call_EeqK5mTSUTCOZvZAyZEG3euQ",
+        "call_IyAge1kFP5h0D9qYjUn3Xzwl",
+        "call_J313AMp8JfbEn6lCJ0tFNhzQ",
+        "call_sSUIlPsJ0IbQra9cwl7qKB2f",
+        "call_MMOaRVQ0jhZgI8ejX1Rz9D1r"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/cva6_repeated_auto/raw/cva6_pipeline_stage_map/text-only/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_5wxh7Gua2sX83j6iWqv1GmBd",
+        "call_uVgFS3TOmzMycIXLsE69kzOW",
+        "call_anRVvObh1ydMnnpkbdhsk4UK",
+        "call_CUphxNc767WxpL5tXRv6dX24",
+        "call_99F2Oqd3wNN1a0tHE7UdgkJ5",
+        "call_uUPChRAu5YshKyP8ifWfOg32",
+        "call_nieII2dDVTIoTgHWUFAMrhGG"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/cva6_semantic_repeated_auto/raw/cva6_fifo_effective_inventory/mcp/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_RU2t8zbEYJVAKiLmPGviW3xC",
+        "call_3zsSeYJjgwVQ8o7xSFMOldjG",
+        "call_gGB7SsMQgAHv3vHEpEANg1a5",
+        "call_QfW6BXcsZUEk0QxZQdK96H9E",
+        "call_6SxllFespMpor5d4k49k12NO",
+        "call_660BvoPY2N8uNBGVVQekQGcW",
+        "call_Uk25cj7wsF2CgCRPF4PnbIK5",
+        "call_qso5IV3bTzPwz8EhxI5HBfQI",
+        "call_Qs7to3yifLe38ZdeHOHPSUa2",
+        "call_eSS4bO5I9d3Pa4wGlOFCLGFy",
+        "call_5vFA9YYDhBFhi8KgHyhNKs8d",
+        "call_CYv60FLkUc14c0nR85uGMYwN",
+        "call_mME3rdlY35axrQYMTCvw7q9E",
+        "call_U2fA9FE3DUorKNFFDAvhuI7C"
+      ],
+      "mcp_tools": {
+        "get_instance_parameters": 11,
+        "list_instances": 2,
+        "project_load": 1
+      },
+      "mcp_calls": 14
+    },
+    {
+      "path": "benchmark_results/cva6_semantic_repeated_auto/raw/cva6_fifo_effective_inventory/mcp/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_vQiKuoCH2y8dfOlX104yzvfz",
+        "call_k6TR6MOGy1U1KOOFx2RwI3Ix",
+        "call_OtjOE59USJCpZ66ob7vXEntr",
+        "call_Ldrrrwj9iB6zQfoAiLHKfWAx",
+        "call_VyKIwGTlTzy9WDoTlN49PylU",
+        "call_2tijBpsjfRSzhqvei7QnGQkk",
+        "call_6iVn63RfsksOF6ej730APZDX",
+        "call_El3wKYqGZLxSFKPKHoCGXP91",
+        "call_c5utYmA8fQSNDctR1Ama5d1O",
+        "call_DzU5FjH7xmMxjtaB6RFfi9bi",
+        "call_kaMPguFb08GRaUAHfEszRGY4",
+        "call_SzNlajLuJmBtjpiwGSIVmGWO",
+        "call_DAcE5s4qvqgJ3cv7ZZliN0CG",
+        "call_2s6oo0u2Il80av3xDKrqrIcL"
+      ],
+      "mcp_tools": {
+        "get_instance_parameters": 11,
+        "list_instances": 2,
+        "project_load": 1
+      },
+      "mcp_calls": 14
+    },
+    {
+      "path": "benchmark_results/cva6_semantic_repeated_auto/raw/cva6_fifo_effective_inventory/mcp/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_7vnrczLEqeVSVadWsPD5UArN",
+        "call_43okBMmytGEV4V99Ip5HTKax",
+        "call_jPfEDiWNJ1KjghU7ie5zNTS0",
+        "call_lJAE48ahB1BMa5QTlOptCNbP",
+        "call_dBF1Gd1wYHBe6QMDdvS54VqD",
+        "call_NZ13W5H4s0zuPXjG4nP70bbr",
+        "call_ywsQHlVmZ84OEXRxLY1LBAKu",
+        "call_IXhRB2EwK6RAHZgIgafqobjj",
+        "call_EGoFJpBXaZPq0PJ3YA28ISxC",
+        "call_gXLa3qq7FkCBL9UytxLtZbuC",
+        "call_ezNuHfzDgsmon25NLvJ4pYOv",
+        "call_crmAY5lxw1iH5RzO4qczu3Jm",
+        "call_6KBo8QauvCnzm7iGU5TeAIXw",
+        "call_3MD8ls1zKf6SbNTiYiJeqseC",
+        "call_DMBFETwtLo7s7AxxfKKT7sdU"
+      ],
+      "mcp_tools": {
+        "get_instance_parameters": 11,
+        "inspect_module": 1,
+        "list_instances": 2,
+        "project_load": 1
+      },
+      "mcp_calls": 15
+    },
+    {
+      "path": "benchmark_results/cva6_semantic_repeated_auto/raw/cva6_fifo_effective_inventory/mcp+skill/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_gXdBkwS19t9YXvT2jIC4NL06",
+        "call_Ntbsye3hPivLmxUar6cExhcO",
+        "call_psWS1Xg0bQu4PuVPtGuCXL9n",
+        "call_JR52ukTK6KhKWjvlbMEgtouJ",
+        "call_SvrIXdLhjp4Qx04tDdUVsM4W",
+        "call_4dGjVdbnb1qe87SHGcrQpwB7",
+        "call_aFPMkiZIou9H5Q7HeAqDJQ8X",
+        "call_PK8qU9jyKrvuf2T9ROkhR7fK",
+        "call_25s8VkLFi0m9wPpvvYoYULYl",
+        "call_po1LBz2JiQuidf5IlMUEUOVP",
+        "call_jJ3y6R1oEisdb3gF7MJPLZJu",
+        "call_B2oNWsfKkIlkU22cT60FxwA9",
+        "call_I2B1v9MH9HzLZm3Xws1NSo50"
+      ],
+      "mcp_tools": {
+        "get_instance_parameters": 11,
+        "list_instances": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 13
+    },
+    {
+      "path": "benchmark_results/cva6_semantic_repeated_auto/raw/cva6_fifo_effective_inventory/mcp+skill/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_18cNHszu6sOLuM2zMh1N8gbW",
+        "call_tF3rndXBqmg0E4iqBW4xjBxg",
+        "call_w8HtZFdNK1VaBlNigAOFGXRH",
+        "call_zsmOGaGLw5kJaLYZvRrAGMWt",
+        "call_cEEnQ7GPvRda7p4dTIhBY2tT",
+        "call_BT5pAeNbGPxUk7DmOhovWvJg",
+        "call_F2SS5ubL6Q2mSGFt7V9D2AVb",
+        "call_cQAmFpzt88vU8oDUxRUUf8dE",
+        "call_xJuDOpngwA83aCGv8Rz6gWbI",
+        "call_TsZHGxlGZCY8lFbP7s3xK1cU",
+        "call_uNtgV95X1Hakx4SXRyGb2fHd",
+        "call_jCMT7QEFFeLJHYGCADZvxQMi",
+        "call_TtOMFDkcbCcOapg3ZC6p47kZ"
+      ],
+      "mcp_tools": {
+        "get_instance_parameters": 11,
+        "list_instances": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 13
+    },
+    {
+      "path": "benchmark_results/cva6_semantic_repeated_auto/raw/cva6_fifo_effective_inventory/mcp+skill/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_hgxbojkdwuenSuyv5V7M2WsB",
+        "call_tQYwBPZNrEHCpoVv4fHWngko",
+        "call_dgWuvAnRPc7J499iEvxJXDVj",
+        "call_5BnKOc4OvSIANDrwxRYD2iE7",
+        "call_ruV51EnyUYnyQncGApBfAmu6",
+        "call_LDBppJxZfGNL4WMqtv3dqi1S",
+        "call_F8rRvMUcYJVe0diB5m2HD4L4",
+        "call_raCSnLAMXpucpkBk76XLXp2r",
+        "call_RDr3F0eCkDBinPhCr7maWTTb",
+        "call_AIOViBUpTSOzo3GVByI9YEed",
+        "call_sLAe0DfC4O9gKGWU9YsYQeZ4",
+        "call_dUink30t9qvk3a5D7GfIRxiI",
+        "call_W9luFeF2SZ1yI1s8e2PGUKmH",
+        "call_zEgevXwetk5xePU91hxjbdyg"
+      ],
+      "mcp_tools": {
+        "get_instance_parameters": 11,
+        "list_instances": 2,
+        "project_load": 1
+      },
+      "mcp_calls": 14
+    },
+    {
+      "path": "benchmark_results/cva6_semantic_repeated_auto/raw/cva6_fifo_effective_inventory/text-only/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "WRONG_ANSWER",
+      "call_ids": [
+        "call_lqpAGhheHkOL2GHTFXrnDXLF",
+        "call_Hu0yM3JUh23RhwN8t38GgASv",
+        "call_HMKRo34rkCT4Wix0QvNHfxVC",
+        "call_j4lwHMrcrbNRxZ3xhVcsJAOD",
+        "call_dccsVNO1ajeIydTO7bcxJF7C",
+        "call_zv91zkENFaFkxW4dQZVCHBaF",
+        "call_UZksQEKSMtvRujj41p3QvDKw",
+        "call_LHbec3S5v27iks7Bm79niEtW",
+        "call_qL6q02PC08T5aawgQcRoupCn",
+        "call_iPWFn2fMAgMdVTfdY7EGUYXw",
+        "call_TgbE7BZdxymFnBxZ4l14w6iH",
+        "call_wEIkj374x7fYJrnPJsN1p8sS",
+        "call_PW2ONuYAkbHfPJyKTYMT06Ia",
+        "call_kAHVk1o481khIxT2te4AcMPL",
+        "call_COd8AgasqXN9XXSPS8Rm5F8N",
+        "call_D1ZWB5j40u3CkTBPy7OJHqKp",
+        "call_Rhkd3ZypvdBCrBPRBhdELMqw",
+        "call_X4jpkz59aIq74WiYXNalwBmT",
+        "call_tjXjzDIPYgZhETLHCyedMKIU",
+        "call_MiCCfwQzMPqQBmHfdeOcO7CO",
+        "call_SzcuVLNZ3lu9hXFzx1ilbtSm",
+        "call_SXTNOTuwyY639LQ1vKmgWDfs",
+        "call_jaSNyTWTXFWuiOyUoWi4n4yi",
+        "call_ahJS0Zun3o1Cv104yVi367x5",
+        "call_PUFSVdRwomtLyKcqAQz296UB",
+        "call_UVyaqyn6z2UPssSiARnm4kkl",
+        "call_GwW72rUQEzKGOfsWFEsBlPrt",
+        "call_d8n7ElB6WhjlPXdroQ7Q7o4v",
+        "call_BiSRfSzoQhuULFyVzfaFu1gE",
+        "call_7sakbjMlnBosVw5i0U0EWHSr",
+        "call_75sZaC6oupVILIGHHWnwQkOy",
+        "call_RThbgaucg6cEflpumlGR2V7h",
+        "call_CUYzrSoVNEA3lXh49TBq9Cau",
+        "call_cGvGTD5qKh28aTCSdb3BVoIj",
+        "call_Sq6Y3ogRWX8xJuZvtbQrieQe",
+        "call_jnnKFjRYldMuteHeNwcXmKWD",
+        "call_Vsyr4ONBIFQ7ynUZb7McLu4y",
+        "call_A2eamilWWJHqzLbhypLslyH5",
+        "call_bb0gJRGIFJYwscupRu0IIr1V",
+        "call_MIfFDR4yrvhbVs9NVnXRoqxu",
+        "call_fxOHQgQVoDRyCZhJVmKnPQb9",
+        "call_XIFM6QKTMPc5DnOCDX2XMSCr",
+        "call_mkE3uXa7RUZYbjtVlDsCMfJY",
+        "call_lGa8sJwLblD9k3QJbonnD4Lk",
+        "call_A5m653G5fq83jwA0DyfshvZS",
+        "call_dAEgY9zl2sE84vsOBU8Enbfc"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/cva6_semantic_repeated_auto/raw/cva6_fifo_effective_inventory/text-only/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "WRONG_ANSWER",
+      "call_ids": [
+        "call_1vurRJhsOUUCEn4BN9CFwUCt",
+        "call_OW1XaWG3vQdBVMNLeNh0WAuC",
+        "call_aZ2QqROpNccmNPkkZRi86g0o",
+        "call_Qa4Z7bs34scjtvBa0TvNY9s1",
+        "call_IN5b2qlQQipgFbeE6wncx1bz",
+        "call_XmI4rW47cA6SteWUVcTHGKww",
+        "call_dOhOTrmofJJlnipcimwhoSAR",
+        "call_VfB0uzBduMVK9ccWARjkAAiI",
+        "call_FpIbgEZFwu10vv1k8z7x8X5k",
+        "call_HxerM25nz1HjTRkbn2YsMd6p",
+        "call_J9RFGEk8tvwStx21OyvSCsci",
+        "call_8nWne0yuC3ama4P8CsqUV799",
+        "call_H1FASqxqTGWBB0SLMqjeOsLY",
+        "call_INw9eGmib4fvyYQu4TjyHPY4",
+        "call_27lTxtjaf8NmRDuZ9lkAZGmo",
+        "call_8Z7Lsl9106iEzoVdPrloyh7H",
+        "call_i1cJ3fxsKl8qlOVTJID92A9B",
+        "call_Zj2QQ8g5zmZ3dxvJzVlNbEuY",
+        "call_ff4TfvGaAX2LKP2PfpPpARXE",
+        "call_fHofnBV8ecr2gNWihgvhmLf6",
+        "call_5GYOdQrzvsbCiwM9Vyzf405F",
+        "call_oO0t4VP6F5832PJkfetJvoLU",
+        "call_kGWWnqmSTRSpBckyO6LEmo0B",
+        "call_YNHNdW0SI8J8e1BmR4hd2rLP",
+        "call_9Jo06PcpWrV8CeZhY1Nu5Tk8",
+        "call_cLaagZAkx6AyBbQGRkNF39GS",
+        "call_Rpfyon4zNEpAS0HGXr1cypYO",
+        "call_43UECeCKpzajSrAyufIUhJ2U",
+        "call_MhY1u5RIJJwM8eKJzIFQeMgS",
+        "call_ourj12Hz9XfV8auk6wfhCuVu",
+        "call_KnJ5dYDkx6J17IGLsbIQn5EZ",
+        "call_KnO5eKD9ipPQAumqdi8faLO5",
+        "call_g5iT2s1LYquPMIxgUIW9BaeN",
+        "call_taehHlVdTw63nN0l1W0Wfps7",
+        "call_YpVXYad3lGk4l9nq0ZjccJoN",
+        "call_wHIfcELaLH8jsNyWlbNsmaQU",
+        "call_HTcgDZKO9wTCGZmkMtJGOWyO",
+        "call_bWey1EYJrTWmomd8mNzrOtJw",
+        "call_SCeQ3u1qyI3ztHeIi28LNTRy",
+        "call_HFL4mGbbPe67KiPrY1ejyUWh",
+        "call_Q0jV247W0Z2w2lr7QZNBlH18",
+        "call_LSTz8hUYZwlmYut15GUhCmuz",
+        "call_35aH6CAn8HOWuRFaSEBGUZOT",
+        "call_iJzxBAdVJklcNgzYzezGrCtF",
+        "call_ogFRCaPfGOVXVH02LrfXuLc9",
+        "call_KFd8BHVm5TRRQFhfgVqhtHOT",
+        "call_o59FkcI3wZB0HDrM0mAr2x0B",
+        "call_RPnEAlMv6ClHCU8CbDZRjkGs",
+        "call_SQuRgpusx17U27N0bPRsa80H",
+        "call_WqkdxkatTbhldVvdjtUVbrWc",
+        "call_IngTf5qSEgqc6I9vvzPdjXBi"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/cva6_semantic_repeated_auto/raw/cva6_fifo_effective_inventory/text-only/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "WRONG_ANSWER",
+      "call_ids": [
+        "call_qoBN5dXqSdrp76t31PxoID4s",
+        "call_T5uFEM1P99dOEHZrm9LUETa2",
+        "call_2Y93mIXBjE1qoP2a1oyM9BX2",
+        "call_bujSXlYrQfzigYrokhs8DL6U",
+        "call_f8xWyOG1v47YjeZC0CxYXbOt",
+        "call_DjpsnCbXRiT7e9086UzeuE7L",
+        "call_2pS0pGoixsRhCu4zRL4JIJw7",
+        "call_cZ9kWUBfbuvPk5WXGjnQkT6a",
+        "call_o6JqwTIUdhlVhe78r7zuTHwh",
+        "call_Gxjk0M3KYulgXFSBGYwHj4xB",
+        "call_KGS49tTOl9WF1MhPPjhaxky3",
+        "call_LKaJrUnNp2lLeYg8sm5WZOQL",
+        "call_eEX7nzcf0ad5XycUIzgb8Exv",
+        "call_A4ykxQSslWlKvGefaLdHtnyk",
+        "call_I1nvWAIELazpQ7IoJuP4UpQO",
+        "call_wySmq8EzQEIjzJelNHHhrK3t",
+        "call_PyUdJuVFUC9ED9ZX1Jc7fmK4",
+        "call_nTLG1h8s9LlveY2JMb0DdiWQ",
+        "call_Pku7ZWkYcHaCuttjjcx28RX3",
+        "call_gMR5cXUiguiEvrGOcmBoJ5qz",
+        "call_jcoWvoAte8bfznNBiCJjJF5p",
+        "call_j1ANLNcGVp17xLb4PeD7AM3g",
+        "call_jvmhhl5eGkrOvS2BwtEHvDYb",
+        "call_YgCtwIBkTNaiqxVS68Uu5Agz",
+        "call_RYN9MF6ZwLiaB7zlQihbow3w",
+        "call_47zu2wHCBIVAa3OioY1ZCT71",
+        "call_oiFWQ4JduS9C5PmUhOXaQGQb",
+        "call_gtWTcYn9XhhLeLrFqiBX1AJF",
+        "call_HOEiYZBmRo23pGQQGrzpTL6L"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/cva6_semantic_repeated_auto/raw/cva6_mmu_tlb_actual_expressions_v2/mcp/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_sUI3pVaTD5z8s5Lv9dZ13Us7",
+        "call_m8Mg81evu6fR1ZxB4jZIq3Go",
+        "call_6KZ1DCpNB2GuLeUglX0neAgm",
+        "call_2U2yOunKtD3k6TBrLCDMPp7m",
+        "call_3LABFOjmdUoR0aQQkkr8r2cl",
+        "call_WEhiY8jNrXlEkRBXXrmV7Piq",
+        "call_8A9RFJ2IbbJNL1RJqvH6Lh9O",
+        "call_xc585aQDopkHwY5rTEC9ugSe",
+        "call_3Q5u6Y0sNsLV8p9XG5KdY5b6",
+        "call_eNHogFoHUPuiwAWrfJVc22rs",
+        "call_Z2RQgDIy0EbwtDh9pnXHPQnx",
+        "call_rF806QhTwRh93sbuNeYOU9cR",
+        "call_5k9cEJs6nQp59VovorAxyqKn",
+        "call_tjtbzFItWDTPENls2KbR7sR2",
+        "call_kTVQuuH5gOBHR45Zo47oJvbm",
+        "call_kdck4RJWvon6gzf96EYa0Tvg",
+        "call_9pFZoqSv0Qgkud7Mzpms0WYY"
+      ],
+      "mcp_tools": {
+        "describe_instance": 1,
+        "find_instance": 2,
+        "get_hierarchy": 1,
+        "get_instance_connections": 2,
+        "get_parameters": 2,
+        "get_ports": 1,
+        "inspect_instance": 1,
+        "list_instances": 2,
+        "list_symbols": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 14
+    },
+    {
+      "path": "benchmark_results/cva6_semantic_repeated_auto/raw/cva6_mmu_tlb_actual_expressions_v2/mcp/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_Ado3pNQ5eatvSL1EzaEaGvNt",
+        "call_kfOejFfuq36ftawGuyNHyPgQ",
+        "call_aGYBTPAi1qG5eRTszACAAh0K",
+        "call_QtokVydSzhcwEAzxa5vxFmXo",
+        "call_aAGVtDFOehsZhmDLCw2r9Cam",
+        "call_oHJe6XGAwXAqyoXpEAHiXzgE",
+        "call_zwhVBys87UR4UKMJyDuZBl8I",
+        "call_mRbnxuAM1U7vwbdup6o6Stfx",
+        "call_oJNeyikEhrcMiqrWizZUwvTX",
+        "call_elE30JkDDlOA9siEdJFVk2Fr",
+        "call_U1YVME17Pqb2tl9DRRmdFpz6",
+        "call_502oq6CP9RJ787xhmpD7Iwp4",
+        "call_AWo1eYcglU9jGoKZc1IRTutM",
+        "call_BqP0S1GmxAuqWk6bu7Y51SbO",
+        "call_EBOjhSz9cPd1QlfORCkBMTO0"
+      ],
+      "mcp_tools": {
+        "describe_instance": 1,
+        "find_instance": 1,
+        "get_hierarchy": 2,
+        "get_instance_connections": 2,
+        "get_instance_parameters": 2,
+        "inspect_instance": 1,
+        "list_instances": 4,
+        "project_load": 1
+      },
+      "mcp_calls": 14
+    },
+    {
+      "path": "benchmark_results/cva6_semantic_repeated_auto/raw/cva6_mmu_tlb_actual_expressions_v2/mcp/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_5wViFiaIwbkQAeTorbmHbBV1",
+        "call_cYSIrFv5nsMz4wVJwjb7RY0V",
+        "call_1g75x7TFRLtXha2zLBm2NYHt",
+        "call_wtz8vMGZSHfOUI5KUGwCbD5P",
+        "call_xS2WY4SFg20Jhc3NYUuSr09i",
+        "call_wZnkzBxSAsU54udDFue97yYc",
+        "call_H3YpR130kcUBJtDS33Rgn2u9",
+        "call_1aUjr6NfrRI0sM0YAakO9ZQS",
+        "call_Jxel6q6T6xYWaYDtKtwsIDE6",
+        "call_XdgXQWa76JnAaa9yKuoEB7Fj",
+        "call_xXtC3ZFhhmUIQGhn98F5jnSz"
+      ],
+      "mcp_tools": {
+        "describe_instance": 1,
+        "find_symbol": 2,
+        "get_hierarchy": 1,
+        "get_instance_connections": 2,
+        "get_instance_parameters": 2,
+        "list_instances": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 10
+    },
+    {
+      "path": "benchmark_results/cva6_semantic_repeated_auto/raw/cva6_mmu_tlb_actual_expressions_v2/mcp+skill/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_yf2SQ3zrtnuEo6C18gkduxUC",
+        "call_FRxsLNyB91Lp3A6KbbKpHNJX",
+        "call_qC1sKbwIsbHl49MTTQBXRtyl",
+        "call_RNM8AG1cWOqmIr0MVc2RxdqF",
+        "call_HpudSm9iN4u67vBq0FaknAXa",
+        "call_CiZlPvLv1WxPOPDIeZKnHxwU",
+        "call_ABlBcMp8KylzGUAK9c1kQEi8",
+        "call_ksc6tJFagTfvPLyQiklf2Ctj",
+        "call_urIA2D6TXGn4M6uffa80XI1T"
+      ],
+      "mcp_tools": {
+        "describe_instance": 1,
+        "get_hierarchy": 1,
+        "get_instance_connections": 2,
+        "get_instance_parameters": 2,
+        "list_instances": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 8
+    },
+    {
+      "path": "benchmark_results/cva6_semantic_repeated_auto/raw/cva6_mmu_tlb_actual_expressions_v2/mcp+skill/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_0UrnwIBhwCN10R3DvIZ8XzGd",
+        "call_CnOvNzQGlaRRjx1lq1r5nrvu",
+        "call_vb37xNo3FoiblqtAH8QFORvI",
+        "call_JKFX7JNXUKBGvy9kbV0coebo",
+        "call_Vaz6ijEiZ1jIYOqCdbZa8azd",
+        "call_zhO65HPtt88mhOB4kH6e8h3I",
+        "call_S7hIs1QX09VzxG3jPYOqFg8N",
+        "call_4gPIsANtkjTOKyHBj10uptJ0",
+        "call_I9J137uAiHitBQtT9ay8NnFD",
+        "call_NEtAe1a6NfUEefIDXFNpvsGK",
+        "call_FKWzru35PwjYepBdDovb7cCf"
+      ],
+      "mcp_tools": {
+        "describe_instance": 1,
+        "get_hierarchy": 1,
+        "get_instance_connections": 2,
+        "get_instance_parameters": 2,
+        "list_instances": 3,
+        "project_load": 1
+      },
+      "mcp_calls": 10
+    },
+    {
+      "path": "benchmark_results/cva6_semantic_repeated_auto/raw/cva6_mmu_tlb_actual_expressions_v2/mcp+skill/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_25WzucCF0Pb6s7dB3kBOC3T3",
+        "call_EE0tlJGHcIAd7EUltYpDAFXH",
+        "call_duwUgwEUEZrG1ZMvFVjO2Mvq",
+        "call_fOo6s0itXyIboMNpag7c3SkK",
+        "call_42zHhjRMLWgUFSSm65LVL1v8",
+        "call_3DatkCwdDZSE3Fv96icHlOqL",
+        "call_jdvhDE2PhjYuwYRjygXxw23D",
+        "call_dHAaOK6PjrKhaJSwM3hMghqb"
+      ],
+      "mcp_tools": {
+        "find_instance": 1,
+        "get_hierarchy": 1,
+        "get_instance_connections": 2,
+        "get_instance_parameters": 2,
+        "list_instances": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 8
+    },
+    {
+      "path": "benchmark_results/cva6_semantic_repeated_auto/raw/cva6_mmu_tlb_actual_expressions_v2/text-only/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_xIEyUyHA5obYho9QL9YI1sjS",
+        "call_0BCVtdvwq7d9co0eiUNNxkNf",
+        "call_u4ztKGuYmtcCfxkdgd5oQiZh",
+        "call_0lVhnVBLLsgRpl3bXQ54H4Xr",
+        "call_jXFM6TKmkOHVyODE4d1ztkQR",
+        "call_L5trYmhAacM9qRij4U582s7o",
+        "call_bEuOBOiiQiqfQniWlsm2FuyT",
+        "call_egWLNcRwCTgAvqtxDJwYwWDy",
+        "call_3JrUtStlVFisdoQpDWQf66Uk"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/cva6_semantic_repeated_auto/raw/cva6_mmu_tlb_actual_expressions_v2/text-only/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_ush5hu3zwuguDyGIBJTFZczz",
+        "call_itOsMRREeVkZyXIOlb1rFQxq",
+        "call_lqQ8F8jJY66HQMRnm7KBazzx",
+        "call_OOXN460hd84Q5zb4eTXSfx5L",
+        "call_9FD6Ybq7Ph7ltS4dyf185GPD",
+        "call_pzbSHdzNmeTb4FIK2EgHqVqM",
+        "call_BGLjE2SRX4vZN2MBwGMWS65V",
+        "call_Bicq7zDzPODse4ZHk75Viqsz",
+        "call_5VtOOdEnF325Vc9laky7kqQH",
+        "call_DVuq0q99uYdXAQGU8wMNt34x",
+        "call_CyjjSZmKxDJvfofsUmHPfjsV",
+        "call_1lyHgt4rgsRg3RBSBtT3CIaA"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/cva6_semantic_repeated_auto/raw/cva6_mmu_tlb_actual_expressions_v2/text-only/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_ohIvF42ufcWdVW4ceIg6aNLQ",
+        "call_E2Hv853choAkVQpxk2dzn16g",
+        "call_3osNunPHddjTQkJ4td4lL91A",
+        "call_ZHf9j4Qn5JninHjkpSlsCTGL",
+        "call_N2nEHhiRAyqBIVghXpjeZx5B",
+        "call_kQB808oHmkl42Omm1mbDvAqL",
+        "call_mSwn03jzBpgt5T31lhdM5DyU",
+        "call_UVZ53jIQQW3UlLk2cqYCQ1Om",
+        "call_kbmKUmgjVhOZ2lOjKFluEwdX",
+        "call_Fa2NtSXQEbyhnVIEzjOp9HWP",
+        "call_DLUnyx8W7YCYqxnnawqDmFlA",
+        "call_lCyNGVKudJGNGuJpUCuCJaXS",
+        "call_eDylBIkP3aFMa7xbJcD7F10X",
+        "call_BSFzapF6v8cKOncscj5riS1p"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/cva6_text_hard_auto/raw/cva6_active_cache_binding_inventory/mcp+skill/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "AGENT_FAILURE",
+      "call_ids": [],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/cva6_text_hard_auto_system/raw/cva6_active_cache_binding_inventory/mcp/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_D5W5NlVdf0WD2zCZ4JHKfJve",
+        "call_U4whziPN1J4ziRRb8I9EETyb",
+        "call_2TnBVMS3WviCUgYmKG721PsL",
+        "call_Erqma9UMp7EuDT1XIaYxgb5V",
+        "call_st1jLkUxkFOwWJDMFvbAGGnh",
+        "call_tvgeCkLA7Vwh6HezdbBACY0C",
+        "call_fMY3fpoSLe6tk5alpotZWVMF",
+        "call_cfX9I8emHh1LgTrLVGnIiXST",
+        "call_xqEUPrWP0fVayO7xjpf5svdI",
+        "call_6ORWCYByvHHAd9EOqqAri6gt",
+        "call_Wos5Tn7fAeL5ruE00bCcIg7q",
+        "call_k1drBLNzHf3sMf07OixN53mW",
+        "call_wLpsjKg8MmpN5IcF4aEPv4Cq",
+        "call_Bt2yGIaSNJhF7nGdeM6xRe9s",
+        "call_0jzOCu2Ysl9cdxTlCOcTU0IH",
+        "call_5cKnlcBSJLnWSHsJ6GJIrGct",
+        "call_SZxQwHv5bVIbve090VwICOut"
+      ],
+      "mcp_tools": {
+        "find_symbol": 1,
+        "get_hierarchy": 1,
+        "get_instance_connections": 1,
+        "inspect_instance": 1,
+        "inspect_module": 1,
+        "list_instances": 5,
+        "project_load": 1
+      },
+      "mcp_calls": 11
+    },
+    {
+      "path": "benchmark_results/cva6_text_hard_auto_system/raw/cva6_active_cache_binding_inventory/mcp/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_SxXE2RPg44PI0LWmVxYzhGHc",
+        "call_g38ilGODKGkJTzoYC2I6iOjU",
+        "call_c1net6CV62EGhsLFpwyf8Sie",
+        "call_rKUcIe1sApjzrTj9K2mTA84Z",
+        "call_pLv4hHCXI87RZqVV8eDkZFBa",
+        "call_6PIz6pBLncOYRn0jwyb8Pcc8",
+        "call_MGou72oEEQz7SdjOJmuwoCOW",
+        "call_ip82bDoRABhkUduYCLclIqXl",
+        "call_FYC7u15SaLqso8WIrF8E7KlL",
+        "call_KeCGfyeqGxEBQAHJ0lwpy0Sb",
+        "call_I0ui6sinMPpFeHvMdkqQCcZY",
+        "call_DwhX3Qft8BheD09txFdpzBNo",
+        "call_KMEjKa0JOEIDWlrHVkuGkJel",
+        "call_UIB4YEmRwk5LvpQ27GaidEUt",
+        "call_6gXCuFbvBmnWgvUYjWVxa8rj",
+        "call_8ioEmOzvPZT9WEcFp3BrFlRm",
+        "call_g6Ns1xvWMjuasQZPJugC4lT5",
+        "call_zcJwvLWMWXdeLHeZQkAapa02",
+        "call_1FlJUobkmkSiYBJPvzXN9FR9",
+        "call_5gNmRsPKeD3HQUdwZlhbpBLG",
+        "call_Ct3nwqzD30BMfPlc6hkFyCyC"
+      ],
+      "mcp_tools": {
+        "find_instance": 2,
+        "find_symbol": 1,
+        "get_hierarchy": 2,
+        "get_instance_connections": 2,
+        "get_instance_parameters": 1,
+        "get_ports": 1,
+        "inspect_instance": 2,
+        "inspect_module": 1,
+        "list_instances": 2,
+        "list_symbols": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 16
+    },
+    {
+      "path": "benchmark_results/cva6_text_hard_auto_system/raw/cva6_active_cache_binding_inventory/mcp/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_3pQWYpw5LNW3YiEAHsFNcAMn",
+        "call_ZuJ9ERNZB135g7johd56iHvW",
+        "call_z55qZGXQ1oMufykX8xj5HKlQ",
+        "call_kRYHE8vNjr9mOMyeRzWcrpAE",
+        "call_UMlAPZ0u7cw1PEf88GDB0hTo",
+        "call_Q8awP3sm1P4l1Wn8WQLpaxtq",
+        "call_gdrCDICpL0axSjXrlSMdclJE",
+        "call_Bwe5luDmy5RZJ9QKwI1K6NDH",
+        "call_PX3oPcinEeq5OD9UiMJlBpo6",
+        "call_7Ttvet06r0ds55Ilv9F4MAmr",
+        "call_vtq8znQ03Qvoyknzoykmy0sI",
+        "call_QRz3kDGWFLNsCkCO9fsbqzkB",
+        "call_qpwDVAy5y3zgouR5MeHbZhDQ",
+        "call_lcfxnIfjzHe2zTY12U7TZMpZ",
+        "call_yjEHYIKEGy3PKsMCpBUOA7P2",
+        "call_x3emRuUgFfURNEfgyVy5K0Sb",
+        "call_71iKBqwM6c54qnznxM4iUfNH",
+        "call_I5HJ8ukCVvFdPmm6ojDQ29mG",
+        "call_Fmbd6TJFaYRbLG9E6YlD3PRu"
+      ],
+      "mcp_tools": {
+        "describe_instance": 1,
+        "find_symbol": 1,
+        "get_hierarchy": 1,
+        "get_instance_connections": 1,
+        "inspect_module": 2,
+        "list_instances": 4,
+        "list_symbols": 1,
+        "project_info": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 13
+    },
+    {
+      "path": "benchmark_results/cva6_text_hard_auto_system/raw/cva6_active_cache_binding_inventory/mcp+skill/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_pl2mjiLfK3BnjhdkMfIrLcDq",
+        "call_V5RhBiG91NRaWad5vfTEd5SZ",
+        "call_LE8kirUuFWf3mCc9afsbTLrF",
+        "call_8N2OwRAGg8QbcpFI9b5rUK1O",
+        "call_0vc2IkxR3dKz2EjRHKBQqyD2",
+        "call_h287Ih46QLIdBdCXquaLe8Dw",
+        "call_OenOelP69mBUc58dJAdx7Ky5",
+        "call_JTR37b5cKqefWwt5seWurE2m",
+        "call_v7PqxhIxwZhPCmMQSN6PcovY",
+        "call_WQYU8NoUdyS9v7zytCdLFwOs",
+        "call_VxXrA422Uxdlhs6foLCQJqWK",
+        "call_ONoEqOU665nCq3WqBVhPN0SF",
+        "call_xHcEVC3aVxAeyYQyL1ZZtAzk",
+        "call_37aIoAp9gSdMrzgGe65OZM1O",
+        "call_Sqd24LK0SFPSsvUmy0M127gR",
+        "call_SHHCIN7aHW0vjujyHa9szFOA",
+        "call_zh8skRG3J1BOfD7nRP9s4kpt",
+        "call_J3CCf5I1wcoDy6fWqrOQ77bg",
+        "call_HWZASjB43Penqz3TOG4kfBES",
+        "call_hTBHccePa9kl9YrynyxS1ELX",
+        "call_kfBRjIZNaUuydWSuNKvpyzqO",
+        "call_t4Z7VrgxC8lK4ZNi7zZo1TwN",
+        "call_x5rnFiYQLi7Xni4H4YTu84s0",
+        "call_5m7d2pW03CqM0LS8jjEmO2zo",
+        "call_r98oM6LjGtyVHIJyGLhGw2OE"
+      ],
+      "mcp_tools": {
+        "describe_instance": 2,
+        "find_instance": 1,
+        "find_symbol": 1,
+        "get_hierarchy": 1,
+        "get_instance_connections": 1,
+        "get_instance_parameters": 1,
+        "inspect_instance": 1,
+        "inspect_module": 1,
+        "list_instances": 8,
+        "project_load": 1
+      },
+      "mcp_calls": 18
+    },
+    {
+      "path": "benchmark_results/cva6_text_hard_auto_system/raw/cva6_active_cache_binding_inventory/mcp+skill/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_H3S2mlh9cjzPZgpvlTcnBwCN",
+        "call_B6YOK0sMNXKMs4oXtgO81v8j",
+        "call_QKivZY7WDY289JfnqGLDwyLL",
+        "call_jrmFM55OEGvqu2YoKAJ4WPm4",
+        "call_W505SBtTTQLFCuc7wZDgD0a7",
+        "call_HNbypZEKwjaSPXwsfbdlihhn",
+        "call_zQkCt1bZk8qOcaHtJTejpo10",
+        "call_p6jAsFcasp8Y3mheIsYOCGnC",
+        "call_rdovPR4j4XKnXfvrFlmcWW8f",
+        "call_5zaIBeEzhOzkyCoDn5WH7g2i",
+        "call_sxsaSgchbbhGG6mDR6DHVBmc",
+        "call_nAPdIF684tKaMIZvW3WTxAvE",
+        "call_z9FSEamnTThDFR4Ev05bNTgR",
+        "call_yecdD6m4jzqkEaTlvPCghlIi",
+        "call_YT3GJWYZ449PQDW84MNLnL3n",
+        "call_QXH7E3JtZvPbUu234asfuij5",
+        "call_mR2lYtVpQSxQLzby1nXxS1ps",
+        "call_8jG8saCtG9iFl5Eo6TXY8Cq9",
+        "call_1oapJRhHQCIHYBq1WR5uHLME",
+        "call_ra8IelJtJAg6LkOihMJYl9lV",
+        "call_da7VOqNyb2EkqT1xO5lsogdi",
+        "call_537Mlo1BrylNRaYHkYGKMwoj",
+        "call_iA0B1lciaHj6UWUtQrtjZNR2",
+        "call_q2aW9LOmOzM2qMjuphoSaSe3"
+      ],
+      "mcp_tools": {
+        "describe_instance": 1,
+        "get_hierarchy": 1,
+        "get_instance_connections": 1,
+        "get_instance_parameters": 1,
+        "get_ports": 1,
+        "inspect_instance": 1,
+        "inspect_module": 1,
+        "inspect_signal": 8,
+        "list_instances": 2,
+        "project_load": 1
+      },
+      "mcp_calls": 18
+    },
+    {
+      "path": "benchmark_results/cva6_text_hard_auto_system/raw/cva6_active_cache_binding_inventory/mcp+skill/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_UpFOx0w1v6Gnp3g5IwfsLqxx",
+        "call_jGsBsoQAsyrCt2gGr5GaujUi",
+        "call_nB2JtwsgvfAbUHQXhnUbSDzo",
+        "call_AaWnr9VyLYPDn2jYiQQjED6c",
+        "call_GXi0FCs2P7Oc30BFgGuJZYZ4",
+        "call_pRwon11wjoGiboUDc6gcj8Lh",
+        "call_FfG1leerC6XrmULYFzQL5azB",
+        "call_5rFkZZ1ZhnazdfENkj3Y32MC",
+        "call_zAfevths6juIlMo4I4TzagUF",
+        "call_hlMyLc0qkvk39jPro2ygSqpf",
+        "call_LirgQFRyiSTK0bdUbPv96iAf",
+        "call_UOokDjkXXKLVpWIp9TYUpCVI",
+        "call_qtlDaEzY3vjFVGXObMSHAYDc",
+        "call_kurZOiGocA4qS09864ez3NCH",
+        "call_odckXQEie1hzWzTFfztiUKB2",
+        "call_IdEqlKKLhqo5PuECBwVLn0da",
+        "call_s90wnTUo0GrOYQfJdfHZMPUr"
+      ],
+      "mcp_tools": {
+        "find_instance": 1,
+        "get_hierarchy": 1,
+        "get_instance_connections": 2,
+        "get_instance_parameters": 1,
+        "inspect_instance": 1,
+        "list_instances": 6,
+        "project_load": 1
+      },
+      "mcp_calls": 13
+    },
+    {
+      "path": "benchmark_results/cva6_text_hard_auto_system/raw/cva6_active_cache_binding_inventory/text-only/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_K6KaA8dX7BrPJMsErGYHevtu",
+        "call_zBDT9x3Hcmi0rMnKIWXn9ifN",
+        "call_vViN5usa273k87QGVQTnEaxO",
+        "call_iSUblscvpl6fKA1tpYD7Rn1k",
+        "call_kFQLanp8JgucihJbhTakP2QJ",
+        "call_himK1ksa8wbcTrQrcOGhRdt6",
+        "call_K45ZCchoZotvaJZWTRURoPho",
+        "call_XZqs1mNiPKYWT0oDQ2KK7mtt",
+        "call_St6G6RQsgIdpyfA441XGJu83"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/cva6_text_hard_auto_system/raw/cva6_active_cache_binding_inventory/text-only/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_r69jzWH2XalDY2u05pftHviM",
+        "call_c4hp6A2F1UIZrmJutdVQJx6N",
+        "call_XX9LCEggRShGjTwsb1PdufZR",
+        "call_4y0GstzprI5JTHmkszaWkYAE",
+        "call_Exnh3NXy4kVg33P7RL7hmBCF",
+        "call_TA1aNz024fHGERvTC3OxWMMF",
+        "call_eD0oWeIDgfL35DFN43CMx9bg",
+        "call_jzTjrDBMWhMOzAByet6pQIue",
+        "call_UHGiIh20sx7RBrls4ElyHrSz",
+        "call_eWE8srXGR7DCGCwwydiFjGvH",
+        "call_72pUyFJzT4w9am5KREEDyPmo",
+        "call_WGtOepiCVTMRmCpEIPo86ywr",
+        "call_Ua87eynNb7IgbG18qK4RS08m",
+        "call_q9P0Dm0YSxkZjWHv2VNYSiTm"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/cva6_text_hard_auto_system/raw/cva6_active_cache_binding_inventory/text-only/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_tCZ05GfIaxfBq0l7CzcSlJdS",
+        "call_pmAq2BdvcjBrnYNDIf4LdUKS",
+        "call_qRlB3ssLIfPQaNmOPcXqwuum",
+        "call_45DjHJmUXLKx6njRuyTZtl2F",
+        "call_Y4EETha8yD6eEJNXfspfXgRQ",
+        "call_l84wnhi0LhXSa7tDw33CoIic",
+        "call_uk5Lyoj9SiDD7RaFurpQ8Xvc",
+        "call_Po68daMtawPoOBazWIWSQugs",
+        "call_oaROQw7Tthedof8KGnTgm9g7",
+        "call_b72tGfdUDLPOhbn94Gri1MtF",
+        "call_UlJEXjbz7aG6BaGIZSSM9DNH",
+        "call_kf9tJjs13Do4z5Ji0HDkdqEk",
+        "call_gnA3HqQD5sNOQsjLvEVe3fbD"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/cva6_text_hard_auto_system/raw/cva6_mmu_tlb_binding_comparison/mcp/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "WRONG_ANSWER",
+      "call_ids": [
+        "call_hXw9R1XfPJcrEB0DwOSfB2cu",
+        "call_63neUqnf4UhQp1Q5eayEjijD",
+        "call_R8beN5q14wx19XdTbp72nlFt",
+        "call_Ggmd162AQCLEiALVOs5jZof0",
+        "call_sIU7dAQAgaXhRrsKdYgodabv",
+        "call_Ho9q33swr47QCJpDJVem6e24",
+        "call_7YF37r015PmCq6fQBvPhR2cm",
+        "call_bavCPZ3FovIQvaoJpBWWrtEd",
+        "call_XJagh2ubhd0gLtd5w7LnvDY4",
+        "call_nzoBtuRcF19KW0QQbvwKx30l",
+        "call_7WBdxi3WNKLp2yxssXynyUxP",
+        "call_9g9aKwiwo927oQcl8vty8xqu",
+        "call_o8eeY38NyZU6SDSUrCI99jFX",
+        "call_uzXMUxUaK4YfcFD3oKhqwcFG",
+        "call_nTey91BxPN9U2DqKh6mp0bxW",
+        "call_tLvjznmctpRRfjwStVFQbleX",
+        "call_0KtKJogk2xfArbYfSWQeIGKt",
+        "call_K77ToIjdAF4KLWit8potQ75D",
+        "call_J86WchK8BLU3LB0w9V7D8yVR",
+        "call_egH3w5i6x4QXMicXbeYFRrsr",
+        "call_capUFL91avQIQNHmMa2LKG8M",
+        "call_NEqXglSKlJBvXo1XnJYtnLt5",
+        "call_IBj00TG4u5stKghGDJwDdxZr",
+        "call_iNP4FeVIfZ1P1o6VNUkNTXdk",
+        "call_XcwwbEtiRtiV3WdsDMfXuGLG",
+        "call_kn7zwn3ZZmFm9MAj1zuH05qm",
+        "call_ZdTuxhN9nhb1nRcMvIgTRtmO",
+        "call_tjup8mVwXLK6gvEniiLv1W8p",
+        "call_jDhskleXURdP3D5IAur9PTd7",
+        "call_YLxE3OctnzWRuaRJRQ2cGmJ1",
+        "call_bLK2DMZSvCCKJtskOL3Bh6Vj",
+        "call_tdtdu6WghvbPgFM2667ylBrj",
+        "call_QOqM3TB3owQQ1voyKpRvseCF",
+        "call_5RIjJycNUixbOAMm8Bm1gaWM"
+      ],
+      "mcp_tools": {
+        "describe_instance": 1,
+        "get_hierarchy": 1,
+        "get_instance_connections": 3,
+        "get_instance_parameters": 3,
+        "get_ports": 1,
+        "inspect_instance": 1,
+        "inspect_module": 1,
+        "inspect_signal": 4,
+        "list_instances": 1,
+        "project_load": 1,
+        "trace_connectivity": 9
+      },
+      "mcp_calls": 26
+    },
+    {
+      "path": "benchmark_results/cva6_text_hard_auto_system/raw/cva6_mmu_tlb_binding_comparison/mcp/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "WRONG_ANSWER",
+      "call_ids": [
+        "call_5iTzziFKRGU582G5yf5w2Dw2",
+        "call_oMo74qIyyL2nQMYGbgYBYAYh",
+        "call_3mxCMRITwAe4Ewg5Gyweg5GO",
+        "call_CNWSaUqw8ha837An6al99M8G",
+        "call_VqzSsKNyA28uU0QKlB9ED2mD",
+        "call_CHSLz8UW5CoG1EFpTGMCRhLb",
+        "call_9i5nCE5sN6sk55j0FX0HBO6E",
+        "call_nsH9HHKOn3FzWwi7ui36voGQ",
+        "call_IqYbi7N7qPVROjJ6ScjJdhxm",
+        "call_GFRUDjyb63Di3uSMhezFiQ7m",
+        "call_EbdQk2O450vAodGKaUVRhIS5",
+        "call_HUPacgcXuuGsD1GXSVLziaJk",
+        "call_5SuRGBjH9LPGJviDwN4pei5Z",
+        "call_46t9LoDIXYy1JT2xBU64zCZI",
+        "call_S191US022tPCrcqMzgxzYB1r",
+        "call_SlHgxlpc7csnz8SskOa4VxOx",
+        "call_91YYePLmq8HEKEq7a40q2ijG",
+        "call_erWIV5l7um5amIVWr2ZjieiM",
+        "call_uUUKMX6Z5PZn7375CozO4R8Q",
+        "call_whDYi9TMsJWn4NpHd6dSflzW",
+        "call_mxSDAVIWc7WKJKzkzNHW8nCw",
+        "call_u8gN5rQmwYitGql8TtWxVwEZ",
+        "call_S8xbrlp5kLCRo0XqNdpFPEby",
+        "call_1yE99t7ABQGo5808eaU8U76j",
+        "call_euEWTJMOjvmMwuW4Qb8xKvd7",
+        "call_z4tKU5E0s1xxHivt4rGol008",
+        "call_bRZuJD2vOrnuAScneOJPuyCZ",
+        "call_5t1HzlSSufHJCVxDJirqjG4w",
+        "call_oval4qhRg8PcghfBcSrbjYRY",
+        "call_99nRMFLGeTLdeKTBi6qEv1YL"
+      ],
+      "mcp_tools": {
+        "describe_instance": 1,
+        "get_hierarchy": 1,
+        "get_instance_connections": 3,
+        "get_instance_parameters": 3,
+        "inspect_instance": 1,
+        "inspect_signal": 2,
+        "list_instances": 1,
+        "project_load": 1,
+        "trace_connectivity": 8
+      },
+      "mcp_calls": 21
+    },
+    {
+      "path": "benchmark_results/cva6_text_hard_auto_system/raw/cva6_mmu_tlb_binding_comparison/mcp/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "WRONG_ANSWER",
+      "call_ids": [
+        "call_nHMtf6vgiZXo0Q06F9FE66mh",
+        "call_Tbg4aTbGp4TOKxAE5uYIed2q",
+        "call_KXruq7ffE28MdkTQxutzefIp",
+        "call_RHOJfghMkUVQOsySLY2oL5hP",
+        "call_v0bUxbIMNjj43huesiZz2q74",
+        "call_PJwjhIDRKaJoKC2Ux2tByxcq",
+        "call_VHt5ybLDLwmPiwj7AAiKm70X",
+        "call_d7Sa5MT7RNnKjcvG2k9b43hZ",
+        "call_EMvBIh9T1BVptXASsbVs2xgh",
+        "call_ns3JvD5se5EU7oo1gzvQgaTp",
+        "call_31nQPpQu8L5024slhmzqYNQX",
+        "call_UqrJbBcEqydg1XGrLNrjvadO",
+        "call_rG75c83d9XrZ1JehR20vE8kn",
+        "call_KAcYhtNDHtVmBujvbKaF0Inr",
+        "call_OTKeRMKWM1QbQiBaAQekwSTR",
+        "call_OCwaoBjg2uPZdj5KrwpQOBVn",
+        "call_5njVuHip2oRcHWiG42tjpXLr",
+        "call_bbufV24pAh014Mq7pXCGOckM",
+        "call_wbBb9JvIL89VRoiFlGpFNvG7",
+        "call_uiSfHg8E9ArRT33ieVzfqKWx",
+        "call_HVSHkhXB9xnDIFtkJKbOD6Hm",
+        "call_g9XLgHeERpTws51jtTCYA0Kf",
+        "call_hNLKp9Ruvq66fnjsOY89huoD",
+        "call_2YaU78VLabkxoYfNuK2qhs1C"
+      ],
+      "mcp_tools": {
+        "get_instance_connections": 4,
+        "get_instance_parameters": 1,
+        "get_parameters": 2,
+        "inspect_instance": 3,
+        "inspect_module": 1,
+        "list_instances": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 13
+    },
+    {
+      "path": "benchmark_results/cva6_text_hard_auto_system/raw/cva6_mmu_tlb_binding_comparison/mcp+skill/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "WRONG_ANSWER",
+      "call_ids": [
+        "call_bEJFkyiSkp0eyy8uksrWLCt1",
+        "call_4qcETtBfkKdAveR8nEpYG4gB",
+        "call_Hp6lyOTYgd7yKr6Q0dOrIKMo",
+        "call_vD4QACCLNGTUV0K89XbHWQ2k",
+        "call_6G8PUU6GdvZH1dzf2lb2wuu5",
+        "call_7iJvQpucHJcFExlkwZpvcrqf",
+        "call_iiZ4Ey40j5cM8vvhRdwH4QpX",
+        "call_hdA50g8Hk4ujt5wnOBknxtWI",
+        "call_gvx7U4ijjocQqiJv2qEQGmwe",
+        "call_fmFCIzyvMheksg5co9y9aSuQ",
+        "call_G3Q5h4rjbYnIG7FPr0HGQtjY",
+        "call_AWgN1hA2XjuP7mEuq6MO1qF3",
+        "call_wBoDfF08TH4KFSW3DAjlS4hr",
+        "call_1nQW6KAiXdJ7U6g2uorTSEkO",
+        "call_u8VIHiE1lctW8NPALhiUDAHg",
+        "call_YEw5P0fUoeEOx2juZ75Apr00",
+        "call_zhj6PoNQBv154ISPvgJw5wo5",
+        "call_QHcbo6FcxVdn4jJeYLJ8P2t8",
+        "call_WeQt8DG5kQjvhaMG87u753r7",
+        "call_0gzyUHybww0nzO7d76IETOph",
+        "call_NPUAgpF0ghBNP0BrvaRXlLkS",
+        "call_4X2wVqeGr5KX5cBrvGhxymra",
+        "call_OxDvRGUVdzhpQp30LWqaQHoQ",
+        "call_hJ76n04Ypy5c8yOlaME8qE8L",
+        "call_HY3p1Ddhu7dCCdEMnvqDgPTC",
+        "call_546w5bMgx6fa4BsSljAc08mj",
+        "call_wGrzX8QtQgAD8aNA5rWpFqNN",
+        "call_tn99Z0kmL18w4TCM1VAU1GnN",
+        "call_ojFwxw65124P5hfMwnCAkfNo"
+      ],
+      "mcp_tools": {
+        "describe_instance": 1,
+        "get_hierarchy": 2,
+        "get_instance_connections": 3,
+        "get_instance_parameters": 3,
+        "get_ports": 1,
+        "inspect_instance": 1,
+        "inspect_signal": 6,
+        "list_instances": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 19
+    },
+    {
+      "path": "benchmark_results/cva6_text_hard_auto_system/raw/cva6_mmu_tlb_binding_comparison/mcp+skill/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "WRONG_ANSWER",
+      "call_ids": [
+        "call_L8fJgA0N46pZnH3hqRIgOEAR",
+        "call_PvSy4aJD3cIIK6QOHoZsjWoV",
+        "call_2FS1jgXJ6k9jxqAz62XEXsCw",
+        "call_ewFMRjExcGEw4QEpwKnkydDn",
+        "call_A6N8pPFoVLyeOyliJs2Cbkaw",
+        "call_1ohIxK6j9CMQ9ankmuaUNjEb",
+        "call_BZb4mTfD4DLvQHHOwi0Ye0sX",
+        "call_cwvDteKphH4hJNKUzOiwKpMB",
+        "call_DCJI7mXERQhLrpXRzxRKss1k",
+        "call_rKTm0DTcdOK9NeG4zsO5mdfW",
+        "call_einsqbYONyVSgxfPI5tVnUed",
+        "call_LJuc19ydEzD8VgvZKu9DldT3",
+        "call_bH8ibjIkpgFNe87gbohi7kAb",
+        "call_eOgNoQMIbVWreUZp4pjmXXmp",
+        "call_sVKNeQiA8ynXo0CBi2iJjGFT",
+        "call_4BAtyqjncfpgfi8fkjM18Yks",
+        "call_KIoAmdBROhtCbWIWqtFFET5C",
+        "call_0j8hUg9C3m3o8GXBrIZ1nUp1"
+      ],
+      "mcp_tools": {
+        "find_instance": 1,
+        "get_diagnostics": 1,
+        "get_hierarchy": 1,
+        "get_instance_connections": 3,
+        "get_instance_parameters": 2,
+        "inspect_instance": 1,
+        "list_instances": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 11
+    },
+    {
+      "path": "benchmark_results/cva6_text_hard_auto_system/raw/cva6_mmu_tlb_binding_comparison/mcp+skill/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "WRONG_ANSWER",
+      "call_ids": [
+        "call_9ZdkZO2IwpOr6kGeKLp3E7tQ",
+        "call_ameCywgIdqqsE7kdOb4NJRTT",
+        "call_IDmmv9sA356XMavJhBDifq3v",
+        "call_KWPoNVLUwXr2Z6OXG3q0CfKF",
+        "call_3VNJm0NbnR4JqMeQInb0kbI6",
+        "call_xKvHzfRFwraAzQzrZuibUjOW",
+        "call_Hye2WClIALjlc9TrUkJGARJp",
+        "call_fhCeT6Wc7JVGDCutRX05war7",
+        "call_FVET4xtgs6MWf9Y4LglkSFSG",
+        "call_P6hTSIy9mgn5JJlgcgGPS0Yy",
+        "call_Uc8DASIKns7vvC6a6zvhvFcr",
+        "call_kY9Wvkz75kyUsg7mBpu5YCbO",
+        "call_g7nLOYbP4xz2QZwfJBMngqWi",
+        "call_JJlKBim8Oeh6hrw1wpAw1CM7",
+        "call_FxPDCNkq022bMPXv9NJgRCkM",
+        "call_sfJURJI1K2Bb2rPD0EbLB8EF",
+        "call_jjaYguvwmDMzLLOr5aOkwjyU",
+        "call_BgrZX1AuEDiY5ce3H3y6s6UZ",
+        "call_k3ByYlrwKG4bFEDlC8zj0Ibl",
+        "call_g2NU9zDcB2UWH5aWQPIgG2u6",
+        "call_0DthTwvs1wod9kRwEdY16oR3",
+        "call_Nx6QaMhOAgAueHp1XeXuNDGo",
+        "call_O9FuETeWN16RHv6OnfY0N525",
+        "call_JHRMTRf4OZerhpKVpfdqijJG",
+        "call_OZKutOywqcutudffSAbejknQ"
+      ],
+      "mcp_tools": {
+        "describe_instance": 1,
+        "get_drivers": 2,
+        "get_hierarchy": 1,
+        "get_instance_connections": 2,
+        "get_instance_parameters": 2,
+        "inspect_instance": 3,
+        "inspect_signal": 4,
+        "list_instances": 3,
+        "project_load": 1
+      },
+      "mcp_calls": 19
+    },
+    {
+      "path": "benchmark_results/cva6_text_hard_auto_system/raw/cva6_mmu_tlb_binding_comparison/text-only/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "WRONG_ANSWER",
+      "call_ids": [
+        "call_18BUg0fWd43j6LH70QHfOMTT",
+        "call_t2fYiSsPXG88qPUBKuGkEXN9",
+        "call_0JN4yxB1YvxpWQeLncg0mjBp",
+        "call_AsjcpyREuetsWJi1L42hUU9i",
+        "call_mmSyiDWG8y3zLupqpKtaqdsE",
+        "call_RXdVrAYy0qcL92H5cgFO2BGz",
+        "call_maKbRYfH7zNYBSV2WKT5JNaX",
+        "call_g6MUkta6KpLzrDy8iVwKGsUs",
+        "call_vyXU4h68SFz5XnoigmuV4yEP",
+        "call_2J3iJF9ruC4U5QraBFi8muij",
+        "call_EKIiMpqCgV39gYKktOBC30FW",
+        "call_6pJFrCyb8gUA9bnGhZopkflH"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/cva6_text_hard_auto_system/raw/cva6_mmu_tlb_binding_comparison/text-only/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "WRONG_ANSWER",
+      "call_ids": [
+        "call_KYeRxl2Rwg3dICE5RUtLHHCO",
+        "call_auA2wU5Kcgu4602K4TeeeOn4",
+        "call_w9Mye9472VigLnEWXzzpZ6hk",
+        "call_8cHuUQ7JsrtC10jON4kWKEfY",
+        "call_fViqpu9KRgHKMQAvZhKDgADU",
+        "call_EqJ6s4QjJTANQHOI6RrAoYZx",
+        "call_h5xuaAkFe5Xcb4jKBciygVka",
+        "call_8ZnvPiZxjLQSojz2Nd7VxERp",
+        "call_zXaWVeUyBjvZaGjLQcybCybT",
+        "call_WosdbttKjyt1u6ikKsN8ZrQi",
+        "call_uPdu2a2b7bRGGVgiSn57fsR9",
+        "call_MU89fqZOohzSDfwnGtjlAdka",
+        "call_qFtpCQGcDAlBdFmGpMZ7yIpV",
+        "call_JvCetS6XQRyNJ6KFhnYSGOss"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/cva6_text_hard_auto_system/raw/cva6_mmu_tlb_binding_comparison/text-only/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "WRONG_ANSWER",
+      "call_ids": [
+        "call_mWLS3ApjnRtsnZVKIM9M1ZhI",
+        "call_tvBMEa9hT4q3HhwjsTkDLZtC",
+        "call_Hz0NLBKIbLlVhdhMyCW5tqug",
+        "call_D4NTlB2LGWupWseRTg864YcS",
+        "call_HgZErdEy6isl0zLpjkRKPIV2",
+        "call_Zjg1eQbRl5A6oMvv21DPCgaK",
+        "call_cxEm1nA8hM5Hyn1UkNjfUz25",
+        "call_MMlMjwlkYZ7j70ukOkWpjcqA",
+        "call_zwG9FjZYhtk3hL8ZdGo3i9Tv",
+        "call_x6LL8TAMRQ8Kj7HxtEq3nhBL",
+        "call_dyiph4ggxntcyIpwEFDsXMcC",
+        "call_8RUGPwklTxOMX3u46dDulk6Q"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/cva6_three_direct_auto/raw/cva6_active_cache_binding_inventory/mcp/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_5VrxqvUlthqoEtfhOklj9ZrR",
+        "call_DZGeF4iMm8LY4s05CE7xJZeM",
+        "call_g5SjgMSP7JtuSkCTL7N9FWU1",
+        "call_zGIg4v7NNjCLUvowAj3WXFrU",
+        "call_6zIGH4SmuUWLNJ6wWXUnLlUd",
+        "call_NkB2qXbuNIzWKzFbGTYOncQz",
+        "call_cgqzwPg3MQt98CyzoEs8LYFf",
+        "call_wvOMEfw9vRuDouHlNbB9JFKo",
+        "call_9SXjoWyTR2PBUw0jMIXrL8w8",
+        "call_PYQpzNauiksb4W86K1cmEv2s",
+        "call_rK7ymIgg9wiF0fGAJ4IGWet0",
+        "call_b1qw6AHzsOm0FsyuKVy7oBU0",
+        "call_oqFCyKEgnFJLK13WVXWRl6GX",
+        "call_sDPkSbnT4F5YJviDY1NaLES6",
+        "call_LUvdeg7RksdI9BgPJFhkNajc",
+        "call_y42ZfuULFKB4B9cCD4Lh2I3o",
+        "call_zTvJnG3hjCyLjUTE57SwO1Q4",
+        "call_0uzlBA5i0YD6Jx0XOsVdaQkf",
+        "call_iJmPu3mkv4hcTcarmNmxIQr8",
+        "call_Isr04JgEsVLF6zXjIBxmqHQX",
+        "call_pxsP7SwuCb399XkKurXjGmF4",
+        "call_JWY4jHTrCTjYEmITfgx7h0qw",
+        "call_R6kqAsxKGZ3OxBrbJOhhy3rn",
+        "call_H3PZ9TDHawjFd4nSq0oIfGuc",
+        "call_jD3n4ed6U7UxC2R0iufbscyt",
+        "call_z0WD18FyUa0GQiFJ3ymvdbba",
+        "call_vDe2rfPnqD8iXyCh583gHtXM"
+      ],
+      "mcp_tools": {
+        "project_info": 1,
+        "project_load": 4
+      },
+      "mcp_calls": 5
+    },
+    {
+      "path": "benchmark_results/cva6_three_direct_auto/raw/cva6_active_cache_binding_inventory/mcp/rep_01/attempt_002",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_m67NzvR0aUduZyvJrMKPlQPV",
+        "call_7CoSOEz0U7tsAVtEhRH72tih",
+        "call_k6gUxoynJCYqV8gjM0yy4XiO",
+        "call_NYABtP6mU8s2ptmgV6OlJy7r",
+        "call_tgoCZhSaofGuiTAp9ZNiaKUf",
+        "call_G59pzxzO69mfbCXZVUnmsPxq",
+        "call_FBQ72iAt8JhpZK6c93j327QA",
+        "call_Tiw9BCiO9Of7YcHmOy9VWRLA",
+        "call_FkMXJuS2YCjpSFcGs03abH3b",
+        "call_8lnBeqfUhhvQQSGpEql6ropd",
+        "call_tS5AlUIRr02KnlFTfjXmbV8K",
+        "call_fj5Dy4AIifVTmRUYr9b52WOG",
+        "call_JT3L9TmtxrHvz8BOe2yZH4qN",
+        "call_K49JrYEvnvW08JRhPFy2xlWC"
+      ],
+      "mcp_tools": {
+        "project_info": 1,
+        "project_load": 2
+      },
+      "mcp_calls": 3
+    },
+    {
+      "path": "benchmark_results/cva6_three_direct_auto/raw/cva6_active_cache_binding_inventory/mcp+skill/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_ED6O1C9zGlmr2C0oR6jurFcB",
+        "call_7rFykb9mzQjlbU4YICqxgZGI",
+        "call_jsrGoQtS7KVXHmzwkQP32Omx",
+        "call_aGzLmCOHmdKDLG5LqVPxvZHq",
+        "call_0tLYEgfhvxAJaPgh72kj3u2p",
+        "call_3u9F5G4DExzvCVFdKCrR584P",
+        "call_OnJ9MIFNjHaSuBKeZ3wpA7Mw",
+        "call_SS8yeeUBIy3e2g55xEvOBwxp",
+        "call_cGK6UMVfRFfzdctsx8uAFBkp",
+        "call_3MwdY53tHX9lvjkf4mZaMRTt",
+        "call_7UnNiVU5YPthN25VfBl2CrfD",
+        "call_4EV5EiHSq3pQwmswYhu5Znug",
+        "call_wJAM1a7wszaIIQsqLs7nI8GI",
+        "call_HJMk37TgC10H92jXOK3TR1im"
+      ],
+      "mcp_tools": {
+        "project_info": 1,
+        "project_load": 2
+      },
+      "mcp_calls": 3
+    },
+    {
+      "path": "benchmark_results/cva6_three_direct_auto/raw/cva6_active_cache_binding_inventory/text-only/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_Xf5vQ84diE5hc5yfzGQGRepQ",
+        "call_Y1mLzQOLR7J0Fb5OU2zItKqo",
+        "call_vZevXmMFLHRiElJA9GjAZ5bs",
+        "call_qankUDmHqXTbxsHM2RAamNRK",
+        "call_IQhelXZcafYzoB0JVnIC6x95",
+        "call_rgXNTl8BVtnaxnUYs8Dgf5H9",
+        "call_q80rustDB1wDs9rQ2lZ9rfbj",
+        "call_F1WdZ09DinUEm1GItuSdPc1R",
+        "call_U31Ma1BL2EZww7Jg5yStmAK5",
+        "call_wmtv1csTWCxyykw26TzgjPs8",
+        "call_cJjhJWDXuPHeZRQokYZcGI0i",
+        "call_zrVTFipoDkiLk8hlxVLlGqxr",
+        "call_Fq0WDdb1xWZ5Gagd3RalEQEp",
+        "call_m3N9drtWipbdQ9OdlsXuaaFg",
+        "call_ywer2ek8O8R25a8cMF4s8TRm"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/cva6_three_direct_auto/raw/cva6_active_cache_binding_inventory/text-only/rep_01/attempt_002",
+      "completed": null,
+      "execution_status": null,
+      "call_ids": [
+        "call_0caxqDHyazedDOAoIFzBLo3X",
+        "call_R39KvK3yBiLusekKETKErOXv",
+        "call_T5Q34i3BRsHvwRP7dSgWsCZk",
+        "call_wfZOM923EppYgysGKSO2ZKwz",
+        "call_cVWUm952iQ56ZTQ2V3ufV0V0",
+        "call_UZ5Z7VhRqpWTbaSO4H1F53zO",
+        "call_nVgCVgaXbFmYPpepBoT9T3HH",
+        "call_r4hkak5Vbn58EOy2CBp62i04",
+        "call_EiplAA5xNrpr7SFEWQpcGVsy",
+        "call_ZledtR2lm2xEiXCOxK62hLwc",
+        "call_2iQHGifGbeN67xGGdfZW42VK",
+        "call_YUM5BOIz5ZrHBotdvMODB1WA",
+        "call_uCPBoA9QCQZghLA0Iy0YGanE",
+        "call_Onxu26PMIyhHmNHQWo9W19v6",
+        "call_yDXtEILKajPtZVEaJXDHqKeb",
+        "call_4DlOroY7nTtwLVULDDN7zRTU",
+        "call_KZLmtpU98vLuBGkFBr9ZYPAw",
+        "call_X0aF7oiZtiw1WHV3S7L2s4Aa",
+        "call_I0Q5t1G2zRa7XuWpR2rA21Sd",
+        "call_m7y8aQEs5qCHxu5KYOSbNWqG",
+        "call_6qHTJrjhWkxs6qwRa9FgfAtV"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/cva6_three_direct_auto/raw/cva6_fifo_effective_inventory/mcp/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "WRONG_ANSWER",
+      "call_ids": [
+        "call_Ep07tpgNVvSvsSfEBx2hJS5O",
+        "call_sPWjDXMCrykwqinF0unaRZf2",
+        "call_0OwNo999vkOyqCEDmXSweVYQ",
+        "call_TpdIs1m1k1hhLUrYaUErzen4",
+        "call_iG2hbWmdk1AujKv1hnJh1Dat",
+        "call_czFLNjIsLyZwBugHhuli8u3n",
+        "call_bMG0XsHGWq5udVIR7tsyfy5w",
+        "call_BBQc465hrCFcfZBjPZOUH5f3",
+        "call_wxoRwHdGx031NWpmEVcGykVR",
+        "call_VSvF0c2inX2Ekg7DUzeScd81",
+        "call_tYE0rHdhBH6uWWdUZE3qc7UC",
+        "call_jFoIZNRUA30N87mfLo2d1H7c",
+        "call_hiYYGiw0afZldoz24dWlcY0E",
+        "call_ABDNt2Vejv6UZV2buJJIhZBx",
+        "call_lavR9NN9xfwtacmwou6dKbVl",
+        "call_moCvsSFLO6dC0JrxAobLNfov",
+        "call_7BGL2VRWO7VstH5KUeG3Neju",
+        "call_vM0m3j1QAy5vEiclwwoaCtiV",
+        "call_IBb2MIpCD2LSgSEvaLnnD4JC",
+        "call_M6fMTDX9ESX5mbExjAFbRQQT",
+        "call_wD5pkmPVTH7BLZNFK4edvcgl",
+        "call_PxKTg6U4ibIZ0m69SfNzY4zw",
+        "call_boG0WAtlWyinqxrpaIdNfhYZ",
+        "call_2cI2JJKFUEIEPfx3wsx3odPQ",
+        "call_tP6WJzTXOTObrq221HJ94Znx"
+      ],
+      "mcp_tools": {
+        "project_info": 1,
+        "project_load": 3
+      },
+      "mcp_calls": 4
+    },
+    {
+      "path": "benchmark_results/cva6_three_direct_auto/raw/cva6_fifo_effective_inventory/mcp+skill/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "WRONG_ANSWER",
+      "call_ids": [
+        "call_fkq0LFrlTnq2oCFS11xBBvCT",
+        "call_4xGbY3ShdB5VKoKa5PQJo398",
+        "call_tUklCfFRftKw1d5vU5gy3NxN",
+        "call_uiUjL0rVCDFfJ5bUR3tnTWGs",
+        "call_vxSMYpjirGQViSnwBrsGKUN1",
+        "call_y0sZVC0MxuSHl7XE9WqMcLgh",
+        "call_v4w5Rx2DPBnLBhszLW48RDm1",
+        "call_k9QLKn0haUCHoijgqKTN8yL6",
+        "call_DkaJBj8lNT4hwRrl6K726Oxg",
+        "call_bbeU6ZmxAohIodRiSuqJpl6d",
+        "call_QKzCauWWknbsR6F5XZZMqWKe",
+        "call_IncG8rbUmyrMEz0eYC1tqPow",
+        "call_L1tiyj5jDskmi5Dsg2JGNvAH",
+        "call_UOFxEDAu11gmRQGcF5iJJAav",
+        "custom_call_QfAIjRH5h6xZqxxu0TrSiXoD",
+        "call_TbfhNO3gaR1oi3JNPt2AE7AK",
+        "call_CAWwywWlWGyWOvum7DtuiWrD",
+        "call_efxOMemNp2gQAUpV1JRgKf3P",
+        "custom_call_XgIiFZN9vk8uBUwUyvRZSqoE",
+        "call_EHMB8l7AkaJnBj3SVtOf0Xme",
+        "custom_call_npcJkRgOdelrH0tjXeuFu0bY",
+        "call_RsEkp5NnBWALsJK7ibxxl1sE",
+        "call_81TdnqI45FWFIWMGpYq6Bl1E",
+        "call_YW5vpIZn69rdNsWFR9So3JfZ",
+        "call_lI6YiQ5yH30zqcN2BUtMQUjj",
+        "call_aAvbwYa1zgd9g7elJ9AItzBh",
+        "call_Kf6brsvawTLui8wFpUUBPzLN",
+        "call_ydkx9ozw1lxIU43Zx9GgJRD6",
+        "call_qyjUWfzDLwz201i9mHflFkn0",
+        "call_0rHyFO6bTsYBVgHmPzwCJlEl",
+        "call_iHbwX3rvgrgeQLQajHNldFQv",
+        "call_DTek5kYVQT68yWfPgZrqSmhT",
+        "call_24pduSpO75KNKAfwfp2sHB8C",
+        "call_zmLanBb7vQFTBDwoTAW9qDve",
+        "call_Rs5zXkQzKRXHcMqkZNy4XBN6",
+        "call_XXrpN2FWbRPCwqvIjtesQsxH",
+        "call_hikUElltikre24nh7ADsnlgF",
+        "call_fkFJ4AyBOnMvR49Utw8ASUC1",
+        "call_qpmdQJKK7bSgR5CXptjVU2TH",
+        "call_6zKOcM9MzEDyubIUmxIqOe31",
+        "call_nXuDWTkmxr0VvIuEOc7SDutD",
+        "call_7hI8WHLkpy6AZM9RU339nED6",
+        "call_rqhByNTJJDo7dqOwWZdKTXbf",
+        "call_EOS7SNbncKs9u3zezpWbGqwv",
+        "call_ICWf2VgqI3QaLywYIHgnn6Ri",
+        "call_dFNFNKloiDILoatj4YlA0Suk",
+        "call_UvdFURTnrMC3gXQ93XrF8XXg",
+        "call_VOAIllEB4Q3RZ5aCxZYASGXu",
+        "call_AHXJvctM3VgOr1pN1FozYfnH",
+        "call_8F936DZfWz0YM4qe0H1c78Ef",
+        "call_TvCRh9nKL7FodzvMqSWumZEX",
+        "call_P5yYb39UxKg3gzgIrmRX50H5",
+        "call_uawNpvOA4TsDyvgtMA7xJwle",
+        "call_QvZFoYfPsyGn5Vv2fw7qMc7k",
+        "call_vkKinchgIceYxIAIDlGsyCUl"
+      ],
+      "mcp_tools": {
+        "get_instance_parameters": 1,
+        "project_info": 1,
+        "project_load": 6
+      },
+      "mcp_calls": 8
+    },
+    {
+      "path": "benchmark_results/cva6_three_direct_auto/raw/cva6_fifo_effective_inventory/text-only/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "WRONG_ANSWER",
+      "call_ids": [
+        "call_ZzPNazyYBx0ly8o3Pus9C72A",
+        "call_R5pWkDY5P6b8OFA1UjEmPQps",
+        "call_aQVSypVPLOwDZ8H3j76wslkc",
+        "call_ch2yqQfljm68dE75oJO0NYCS",
+        "call_7AkOje8NZOZ9wC3OL5SL3Bn5",
+        "call_GoBTxGdbw6y58Z2EBHz79oWI",
+        "call_jtlFm5Oai1VWLg4reyqS2rkM",
+        "call_XFl1qoIm7Nkquo8H1bgauDuU",
+        "call_JNUcwA0rbHycnEVnQguoGcAE",
+        "call_mgbsGSWZioiC046bXg6IBA11",
+        "call_TvviWNgbzwJe2ASAnSbnkEEa",
+        "call_7Dj6GGDEjh9uxJFhlFLyp07u",
+        "call_kVsrcHO1CgqGNVjXnYYIWlXQ",
+        "call_Ht8pplUgpvSmBSiuWTQtshqj",
+        "call_aE5q1bM2blFBxgJ6eLG2cUFQ",
+        "call_DE7QtMgLEcDz1cdxaydVvbI5",
+        "call_LfjcDScdZLoorCZAe7lRcM84",
+        "call_FA0kU6CDKtjCf14pQe1HXCxV",
+        "call_dgXznKzrUrZTUzAR1ZA7c4Cu",
+        "call_KoKCakohVrl00mjXcNpH33qP",
+        "call_1rlXzWszKjIPGb4Xh0iNYz9L",
+        "call_hZtP8BSesstnY0MbeH7zAJDh",
+        "call_3Zi7i9t6p1YFrvPJCm3xWBaI",
+        "call_LxH4q53mflM0yUkDm1erY0zx",
+        "call_dMdVjCoEbUzoz65ptXGqijsD",
+        "call_QJofvMlvLSXsogWPRHTTDnq7",
+        "call_oP823ZSC6CJCl5pc19LoLs2j",
+        "call_ne7XHQ2TCvDr8AtM09TaufG0",
+        "call_MkLhcqoojEJ443ZVYuS4p7VN",
+        "call_pyPI8oRLdl9gaUSGl5FaRVEy",
+        "call_P4APrLFP7dMFflvHPSzrSVlR",
+        "call_qAMBMVcHBvuAmknpc5Ll9klS",
+        "call_zqE4lbqexvwuzGgWf25VzmUP",
+        "call_9YzL1EkGqc6Aa2InTYT13u2S",
+        "call_CpHMvE43Krtel3rnww90ntso",
+        "call_oF9gmvI7bHTUd83UnfjQgQVS",
+        "call_N4pXmpYDUimdK1udnMnd6Pbp",
+        "call_lLr6tsMHCPEgW5312x1347F5",
+        "call_PV0BOUbxXwx1rZDWe4Lw7tFE",
+        "call_0fmvIkYy2dAbWQZsqpzIDdcK",
+        "call_mADsX0XVK8Kfb2VHqcIKu1Xe",
+        "call_W62I531xqBqGPfEQXPvMSZ3I",
+        "call_OOc6537gjsY39I2hSAA7ZIO7",
+        "call_slcmCT7zDL0x31KVxNs0chyR",
+        "call_a4XmOIgacds28Wc5hq5j45eQ"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/cva6_three_direct_auto/raw/cva6_mmu_tlb_actual_expressions_v2/mcp/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_aw5mXR5t7xw9GXdT5Ws0X1Dt",
+        "call_3U12nAjynwQmvdHH4RT2X5G5",
+        "call_v5nc2bDOSeLFY3M99A1mSBAS",
+        "call_JOBYYwZ7CMQseyof7wgLIqKW",
+        "call_BTbQZgC2QiTPFCaTBpU4DKXq",
+        "call_nrTP4gSuYIUC3AGApOc8WKQE",
+        "call_vbFpWIF7qbUfly1SnIAEHWuF",
+        "call_Q75E4rw8iyHvF2SIKgQOVlqy",
+        "call_i2J1FeWsK0Rz2FJY8opsGGkX",
+        "call_5zgDbcg4xcNbrp0TyX9ab60X",
+        "call_c5J5V6d973q8wZ1jkQ0WViOh",
+        "call_fDFQW0sHQB5AevTDKP4CXnbj",
+        "call_KJKIwDgOa0BfKqoTqObgcZ2X",
+        "call_jU5K1xc4jo4fhYTERMiVdwle",
+        "call_JUGFH9wNFra0SdlEQvrQdWem",
+        "call_S35DkVDhPUzPDibqYRXvecFW",
+        "call_Mbh2HK63OZghrzSDxQedysmX",
+        "call_EYSGit6lG4zRmaHszeZ1HZca"
+      ],
+      "mcp_tools": {
+        "project_load": 1
+      },
+      "mcp_calls": 1
+    },
+    {
+      "path": "benchmark_results/cva6_three_direct_auto/raw/cva6_mmu_tlb_actual_expressions_v2/mcp+skill/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_ZAPVXEwN4e9I86lPnNkLpdvV",
+        "call_w09y4jLNV8hfoUUG0FM5LEIl",
+        "call_LoQLybSl3vApIv4xC5B1g0iG",
+        "call_LuynF3kCTpAELteZqawzj59B",
+        "call_SY1sHWpc6i7IFXJMHJZ3qGs6",
+        "call_ZYQR0WhPgZcSB5LEadsO6jTs",
+        "call_rG2KAFkaiqcrlRqhv5Oj1Xhe",
+        "call_aCMj5L4BH0VIjyd0zdvMnELd",
+        "call_uW8Nm3IFb5L8sWy3uNcThqYd",
+        "call_nym5yjWFgALnd2AqgsBJ96Tv",
+        "call_RYnwaRItQMnvTfh5d36yYbmr",
+        "call_gN1UTK2V1yA92xl1X7yjbqao",
+        "call_RHZM56qaXZy4CDqhZcp6I5Dk",
+        "call_guUwE6UAA5JnacdDq3MuAYn9",
+        "call_NULZSpp8Y6klOi1AHiFVxEJX",
+        "call_eUZ7RtYP54CoagJs1fpz2aGy",
+        "call_cddwS9onm8NPZqKuTkThm1U8",
+        "call_REpXFSek8t8kMVrz287mIY8V",
+        "call_VGnO2jlHMgIUvLSd8qBBmaef",
+        "call_LvAygBnPejaRvRENIIge78Au",
+        "call_HidcqqAdtqvxKRS2vc6CxjJB",
+        "call_L5g7OWpi3SSZvhZTQzfPPBmP",
+        "call_Au1KL5Zv7SaNWQ2WojEnr1DK",
+        "call_ODsGpCLLW3BZKxvpkJqnJqva",
+        "call_xsQrjlCkiYgkR7NTGeACk8Iq",
+        "call_gGbsg9vDqAIGvxrbi8DmtfgM",
+        "call_XK6rjDO05t0rR3X7mnkM5Mxz",
+        "call_stEZBuv5iHcFuIbwW2FSs6xn",
+        "call_EX331WFXKLINip864haalh6x",
+        "call_xztVRMe5H1DKfVyaEWw099D0",
+        "call_7N5mAlJfvaOICE1rX92H1mji"
+      ],
+      "mcp_tools": {
+        "project_info": 1,
+        "project_load": 5
+      },
+      "mcp_calls": 6
+    },
+    {
+      "path": "benchmark_results/cva6_three_direct_auto/raw/cva6_mmu_tlb_actual_expressions_v2/text-only/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_8rN7x1pKvyxIXn7MP6SiqSc9",
+        "call_7qXtiuYVrdSF0zvxOPlYteWK",
+        "call_66tEl46GjqSAhKvjvRHzlnpe",
+        "call_86wWTDtcR7dEFWp0aKEVXyXa",
+        "call_Ucs93ZgJovf1fUgBoM7yHOuq",
+        "call_xunhNrgSrta1C1k7CAOZd441",
+        "call_9qACYwQFFumRs1Ze3XLaDPci",
+        "call_P80JNNZgJzPJn6f9PJ0qbSCh",
+        "call_5rZOPwURlvXVAM32HWTd21sx",
+        "call_gr2LlyCDzUuNCWRxm8NdtKN4",
+        "call_dX29BgrlHdM1lpQq4ECMeamB",
+        "call_D7pfFSaA8vZX48P8bUYRlJrC",
+        "call_H7S32j75j7hIpaodHOY3RY1R",
+        "call_oxv0rAK4xtuNZ6ryInIYaJ65",
+        "call_CiAll9JkO5aHcSvmOzNgtpJv",
+        "call_MB803mO2WCdVjarpuCGUv74n",
+        "call_mQu7EoJR17adiEL4ZcKDcMXP",
+        "call_l9KcXWS7TwnWlhzbdPfYR2b1",
+        "call_ZSuJIToijxxXAMv2UryaPEP9",
+        "call_fkNaVKOZ1HUMAUTiAlcEL34S",
+        "call_nkJgE6HT9yOUOOxKlwZSvWMe",
+        "call_5t9kBMvRkATNfhETdV8kWPi2",
+        "call_NHbsrmxE0JThHcq7dEY8vVkB",
+        "call_ppYoZ3v7XTuMGNjBhH6QhmYL",
+        "call_xdJDDb1IUKKhrzBOvMDwg6HE",
+        "call_ZbfGQUK0mwZe5Z8mgnFiJvic"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/idma_repeated_auto_strict_skill/raw/idma_fifo_semantic_inventory/mcp/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_3pB6lA7tM6RPHgDMAiZYUDeM",
+        "call_SymxuoQSWIFBrTvLCG88dtTj",
+        "call_GcZAQ2WElFnB8Ly2IxYIC2CZ",
+        "call_504FWu2Lf3qDErOZKdtUZBmz",
+        "call_tEgx4NFDrz8cPIvDZgSGUlmZ",
+        "call_0uqr3OiJUcHLDs9xj32f7f8d",
+        "call_Ukogz8yoTg1gwiAX2KapbTS2",
+        "call_OrxyfFAo7k59EwWffBcMkN9b",
+        "call_6s07ykhLRms6wirPX36EMkmE",
+        "call_vIFmGSFq9QZZLdzvbSgwiYtb",
+        "call_hJxJziJ6BPB2auqnQjTSUSw8",
+        "call_ak76vwld7mdlTZqZLtAzmCsV"
+      ],
+      "mcp_tools": {
+        "get_hierarchy": 1,
+        "inspect_instance": 8,
+        "list_instances": 1,
+        "project_info": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 12
+    },
+    {
+      "path": "benchmark_results/idma_repeated_auto_strict_skill/raw/idma_fifo_semantic_inventory/mcp/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_74niYYFnF5A5SRfGOL3zeNA4",
+        "call_VSxDEFu7tUnlHEjvVnDvWdDR",
+        "call_auBAIFH5or4kwy75MW1Rowwd",
+        "call_bjChqREWuk7gCntQFQba1ETe",
+        "call_CcuzG6qdFNIbdftHRWUU8KEL",
+        "call_r0lhzteMaAesQytEJii19Sdy",
+        "call_GDXiFSdrc2z4ZHqCxqALJJLv",
+        "call_3SJmp7GOq4GFnM0EHkteXL95",
+        "call_00eGZLuE5apmRLNAaKmmQtd4",
+        "call_JcQwCF6FkGF11TDlMnOZAjBA",
+        "call_rCX6OQ9K3Zj8y8IFN3LpUIQf"
+      ],
+      "mcp_tools": {
+        "get_hierarchy": 1,
+        "inspect_instance": 8,
+        "list_instances": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 11
+    },
+    {
+      "path": "benchmark_results/idma_repeated_auto_strict_skill/raw/idma_fifo_semantic_inventory/mcp/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_ZfZm1X6zZf2Y6ok9C0Vtdx0M",
+        "call_VOv5QWclmB79pcu4XTpXMX5C",
+        "call_OsO6KJtGqVbXPRgyBZ5jnVLc",
+        "call_1BcuO64jivnyjfmwKN2x4CRT",
+        "call_JeCq4y5IHcfUfMw0rZttxWHV",
+        "call_gPRjV3QvQy5tapBsfx9bSGyu",
+        "call_ydq2bveheq8KmNhCas3l17tU",
+        "call_S2mTkWYBpZl1MXiqr3sN2PK9",
+        "call_PipnO8vl3PNv2ohHJ3SJk5Jj",
+        "call_r1nLERiUgiGHd8yxnBVEMHht",
+        "call_aiBoVVKPrnSUwaUWTjBkP5fT",
+        "call_w8C1eFZ4ZEGKNbkbOnJxspRM",
+        "call_tHmeLT2NkIk3LIOPqzOJVEFk",
+        "call_9pTLbOz6A8U6fP4Mo0350mW3",
+        "call_kgg1sgFkLhUVL7iki7NjtYwF",
+        "call_DfSCSSc7gvAv74NgMlHVAK6M",
+        "call_u7IcNsy0ogyXvm9LXNno5UIv",
+        "call_kxrfcCfo9QpEa1fxAJaYUjUl",
+        "call_MJj1oyW9VbPWkew2HFE95uCl",
+        "call_HUPcuk2zm8R1jNokyh1u547C",
+        "call_fG2JXkWP2h5xK0LijmSKC3Vr"
+      ],
+      "mcp_tools": {
+        "get_hierarchy": 1,
+        "get_instance_connections": 8,
+        "get_instance_parameters": 8,
+        "list_instances": 2,
+        "project_info": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 21
+    },
+    {
+      "path": "benchmark_results/idma_repeated_auto_strict_skill/raw/idma_fifo_semantic_inventory/mcp+skill/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_qYz5Q34Nfn8xQ5JbkGb1qAkW",
+        "call_5zwMlTc1eC3QOLqzFxNGBmIk",
+        "call_ujGwY2Al040aMkITxMjPa4jI",
+        "call_gVJ8cmLLsoNjtnEhs4SzEnwB",
+        "call_8WE30vArqn0T4JUCroQxrY42",
+        "call_kpEkXl7ydFnKRFkWN8NXPgp1",
+        "call_lLcPoATo6Y4mp54ublEi9Quv",
+        "call_XYZhINJrSsrANUeC4UspeqDP",
+        "call_Duj6ln2BuHus2wf5Ef5Zb3Jf",
+        "call_KnPVKi2TWX4syoM1QBfsp4sX",
+        "call_Llsc4HhyELwqMdUEEqd0Mvki",
+        "call_WcYkvxXY6u5KIkRb6KskinlW",
+        "call_WAO8kw75wLaeN3cM7uPGOQ2I",
+        "call_ZeavUoIgV94XePjA9rItCkZX",
+        "call_RcbJwkD13KJzA5ZFDB0vMwUW",
+        "call_oulRY9IGo3LFVWd4zmW8bE8E",
+        "call_oFWo3nYFMGJiaJFkozZNvyYW",
+        "call_t9DRBd42b4BuGDa0k7iT7Vvq",
+        "call_UuWNfw4Vdh5gjQNvM0VlUTgZ",
+        "call_A0gOctRoihqs791Ueq9IYMEb",
+        "call_473u1dB2kPpmZ9FWTQAY31Nq",
+        "call_Spqtxvt3InI2wH4nkSedD11R"
+      ],
+      "mcp_tools": {
+        "get_instance_connections": 8,
+        "get_instance_parameters": 8,
+        "list_instances": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 18
+    },
+    {
+      "path": "benchmark_results/idma_repeated_auto_strict_skill/raw/idma_fifo_semantic_inventory/mcp+skill/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_g9YtUYCDUhPppQXTencs2lUR",
+        "call_oubrCGvr4Qmqip39tOZje4UP",
+        "call_lBUyMVwzLNgSnso4pjBDnAFW",
+        "call_xr1yElXnyUnnazUXIyRqVAyX",
+        "call_KsFfxQIpTQJqnS1WhFxws2HZ",
+        "call_bIBi1NFPPFFA6TfoN0f8ce70",
+        "call_robpJfuYpo0ojkja1ovD9Nb7",
+        "call_tcPDIljuExeXL7uyX0jrDA2P",
+        "call_cNkhFywc8RjU1a7Sz2vIaawK",
+        "call_NGT3EjjjdNxqzn5Y6vGZ46E9",
+        "call_KfsyAbdWEOPWxKi6xwbB4Gqb",
+        "call_PYqtmByBEenff1zO1xM9NC8a",
+        "call_xhsXPw5jcBJ1rSjwdIdPbTeW",
+        "call_O3pk3F8gTDkcnDBDso7dWK2v",
+        "call_1CevWrxeqStjlzqjNTmbdKZ1",
+        "call_VR48fcAzJfu6UTEcPz45nDzS",
+        "call_UnXTogaId7CsXOMNzD0T2hxr",
+        "call_hMtrjMS8L2NmhMSH8x0SOE4u",
+        "call_GGiO7LNv23Y0gPhLKr9CUDg1",
+        "call_T3226JkhbklMLXFwuipp4Rsb",
+        "call_EoQPAcUHJJbyDU3DDAj3zyCC",
+        "call_xgPRBTUbv2u1BOqMhfArY0o4",
+        "call_qZmGiBGDkKIsUKtsCNUwGbE9"
+      ],
+      "mcp_tools": {
+        "get_instance_connections": 8,
+        "get_instance_parameters": 8,
+        "list_instances": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 18
+    },
+    {
+      "path": "benchmark_results/idma_repeated_auto_strict_skill/raw/idma_fifo_semantic_inventory/mcp+skill/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_e3mxxKZJ7Shn6sQQrczd1q2L",
+        "call_TxNq5qZCIn7pVOn3gz8DEIT7",
+        "call_7EcXWhXQTgQqqZlvQnacWXvr",
+        "call_zo4gaRAry8DeVrg9qQ4qf5th",
+        "call_jHlJ4H6zSUxVsviMy8IrzqRq",
+        "call_aWtboQmVrE0TrwDrLfiGryxK",
+        "call_BVJRgz0qWyTurbRLxZidylfG",
+        "call_Riu1GkFpOZ7ItW3JhXoUzO3J",
+        "call_xTobhwdVbO3BpxbEaI1jcgtZ",
+        "call_AIeu4UzAVIlP2FKnKO7zeL9j",
+        "call_DMGeXIybPBA5iiOiKkpIsWLo",
+        "call_gtpUmtm7yAGOEawtjBlhWprZ",
+        "call_uhOY2fvMGNnPcq8foKNzMAB0",
+        "call_Hg6o6OPDR1jghFsFuddgXOiI",
+        "call_5fIUxggfJAGRWSX4qNQ142Ta",
+        "call_01GMr8DhSsLXD9HDQnwXY7fU",
+        "call_Q0KBcPuGRONgCnyPZwZzjiau",
+        "call_wv7G2SNDeHEJt7GVFeLGj4Ne"
+      ],
+      "mcp_tools": {
+        "get_instance_connections": 8,
+        "get_instance_parameters": 8,
+        "list_instances": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 18
+    },
+    {
+      "path": "benchmark_results/idma_repeated_auto_strict_skill/raw/idma_fifo_semantic_inventory/text-only/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "WRONG_ANSWER",
+      "call_ids": [
+        "call_yZL4TINevAqo4WAPd3IiuKpY",
+        "call_Ei2v02Fib2iPeDVNS7knTBdM",
+        "call_18mFwlqNg233Bbd7FNn7o5lr",
+        "call_kKfOLjAwNytd6QxchbmIzIgP",
+        "call_wnTZcEMSFmNjBzLO5ST8sBWJ",
+        "call_7l7khJrB1gjtDA71LRFYNUs3",
+        "call_GRt8fgE2pivTzU9okSdggjfw",
+        "call_r7emYnUagduqUZTyaAPBOoz3",
+        "call_Izi9i15WBbXmCejyOTnX2j3e",
+        "call_wtrk41WxAQ0l2u6Q5T0JzDu0",
+        "call_xvo1ofi2x1hP2m8nHuRpFyzZ",
+        "call_YXgC1kiUtEf21Q9LZbh2HzDb",
+        "call_vxeBOCeYOady2muSCa4dENyG",
+        "call_9VuUx8wiy1GLdsN6KDLPmLJ2",
+        "call_5XuEiSkrB0GHJsMWH7c4e8dv",
+        "call_aSfRclZfwbd9GyECVqsbIswg",
+        "call_NBD27CINZevfEO6H9JM3mQp0",
+        "call_G3tsTony1zjMrMe06MiYR6X8",
+        "call_CKG9QLb6GxBSoPCcf2zHdBsJ",
+        "call_vpF9Hd57f5OP7guY7xYdgd9y",
+        "call_18rWPwFnKG4bwv325OxYUF2M",
+        "call_d3BomQQMem1O8cmgkqauMdvH",
+        "call_an0iNYZa2jFS4Pr2h9GA6e2t",
+        "call_6MKVi32r9xnvtObtG5BMHW2d",
+        "call_tfEIJ5PC0TJoj2inQh4C1Xn6"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/idma_repeated_auto_strict_skill/raw/idma_fifo_semantic_inventory/text-only/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "WRONG_ANSWER",
+      "call_ids": [
+        "call_AVf5zyBxQ7GD5CWhsQkl5bIA",
+        "call_wOsIkZQ9WHt7iHhGU0KQaJtI",
+        "call_HEX2sncwBGLLy0FwNl1401gj",
+        "call_IORCS2enIgI32f4K81FxhiUS",
+        "call_hlyN8HP722AapugczT8gMQxw",
+        "call_6pyY1Y2rNTsU07Px1VQrbmGY",
+        "call_9yYoyeLtoB7fcajiQGI0zFwE",
+        "call_AS0J80Bunk8nJxaTvZhKYdFi",
+        "call_9kuPfvdX0mT9BOwr6DErls2r",
+        "call_QyzGykiIURTCtwIOAILr93Wc",
+        "call_UqfXGldS9Y1wdEMOTkkpCpfq",
+        "call_qnnYfMi0RvHfBOf57Um53VhV",
+        "call_rVjFbUsRGLSOkIElMj23vvEu",
+        "call_6siOxWX4wji2Z0COLSCS6U1Q",
+        "call_fJAb6ybzEv6lZ0SStqaEzowc",
+        "call_7EBShRsQy4d8Ej3v54hXAVBl",
+        "call_9j0P8RCPcA8RDIymoXInaQTC",
+        "call_6M4wSIqbPZw44lJmEk3krwi7",
+        "call_YvYtX7CPpYsemHcCmGLh9RbF",
+        "call_oIEyQGSqy1ccvDGjJHpj9C6J",
+        "call_7BIKtkU42LDDE7hFDJexI0a0",
+        "call_pSG6CUa8hTxOzQZN8anuSFPs"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/idma_repeated_auto_strict_skill/raw/idma_fifo_semantic_inventory/text-only/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "WRONG_ANSWER",
+      "call_ids": [
+        "call_KsLaxYdsUvAPgxzCNI76rzlO",
+        "call_ONmo4V5qCItibwBW4MSc5Uvt",
+        "call_yzWMpEH5QyHvsMZv6RyjNQEZ",
+        "call_Cg2Qvjb41Z781IFAJ7B3U8iS",
+        "call_0ozTfrstPxgdmAUGJCc76GkT",
+        "call_sjcFJajt28euEeWvAWXo6t70",
+        "call_WI3QTx2TdcBQw4or5IMzLIRm",
+        "call_tUv1tgUhSMTS3b3vOKbDL6Mv",
+        "call_nF0DeW5oHH5PCdeuZLpFe8BX",
+        "call_KP9885DPxOwHxOnikn7fyhCv",
+        "call_JBBTMYXQ2wfXdZpYVtOsKl3T",
+        "call_9unA8g8MTTDIbcXU5WZ13WOU",
+        "call_VlDyiA0Zvp3i2XJGAp9ypP2D",
+        "call_ng7y5BBcuHovjWurTt1wTGPo",
+        "call_RaD0Iwpy3l3cO7Nx8p482Blf",
+        "call_3LfwcU1TJZm40JuQ0ZMUNd8d",
+        "call_0uOEsEDlRMbw9Y5fTC0q6rRh",
+        "call_2oxv4sHYn3gDi5efSQ3xqaa1"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/idma_repeated_auto_strict_skill/raw/idma_stream_fifo_parameters/mcp/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_y9xETkYP91h65PnxXu9pUE7n",
+        "call_xhpZ4LNmnDZ2N2SN191HtFLb",
+        "call_FGqK59IwB1nYIpJsfDrMbGW3",
+        "call_ggyyEMt76iWV8i8aFWqEZndS",
+        "call_wss5XwrAkLEgaI0Gc7Tnjgv0",
+        "call_KEupAJqFEj8Py197QMLOHIji",
+        "call_DgyuyHGNkKwclWTIBhuKgFd2",
+        "call_bywttclfRsCma5vcxvgDHynQ",
+        "call_aUEmmWS2o0IOijy7X3J41NYi",
+        "call_OU9XU02KQe3JQ1yDEyTjw2MS",
+        "call_OYeDSc7MuwS9LdeTTcKJEHEN",
+        "call_YJwfGKupMB8dt3Ujb4d2alGb"
+      ],
+      "mcp_tools": {
+        "get_hierarchy": 1,
+        "get_instance_parameters": 8,
+        "list_instances": 2,
+        "project_load": 1
+      },
+      "mcp_calls": 12
+    },
+    {
+      "path": "benchmark_results/idma_repeated_auto_strict_skill/raw/idma_stream_fifo_parameters/mcp/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_XKNJslFZaIns0NMDj8SQVMbL",
+        "call_2jkbFTdwiC3rtAf6pVnOpICQ",
+        "call_T9Z2bpA9e9gF81JHyFx8LtSO",
+        "call_n0IA64m8SQRCyKXEK1AdenBo",
+        "call_z1jI1dqoI8rEVQV3yhTzDKKs",
+        "call_hod5mUMTdh1TpFtzXqxuxLta",
+        "call_4oFwXCALaYG7FlZ4skv5Wwe9",
+        "call_KcbW8KKfrHRlyFxOx852Pi1Z",
+        "call_NrOfZ7N94sygq9mlbschvxMB",
+        "call_gTZB4KghT7T5ghTKR4J5r3FS",
+        "call_TF60HIl8UeKIGkFuX0bx8qNK",
+        "call_1WWzhmPaVFsab4TzEFXMkByP"
+      ],
+      "mcp_tools": {
+        "get_hierarchy": 1,
+        "get_instance_parameters": 8,
+        "list_instances": 2,
+        "project_load": 1
+      },
+      "mcp_calls": 12
+    },
+    {
+      "path": "benchmark_results/idma_repeated_auto_strict_skill/raw/idma_stream_fifo_parameters/mcp/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_zw3Z80o4bp4TYxT5NDTOPOix",
+        "call_GIgHMIxcMmjMpW3tCjM8rroj",
+        "call_XgKSbn91XQzoSgNLpQUnvROo",
+        "call_lnvhmRVbvg2WzOsNu0d6jQun",
+        "call_kpWyufBlNaJP4oFQo05GAhjv",
+        "call_GYUcTSZ1rHNHJSmqigAiYv5P",
+        "call_ZQbPRXFD8CSOQraX5yZwhPMu",
+        "call_uswtWB98LXuY22rcdQlPJMrA",
+        "call_YiyRnN4ArYXbFUAcPwfojuSG",
+        "call_mwi9XivH0SIMgy8q7uqqBXo5",
+        "call_Loe5AmRIfkEaBDQThLQcWbdo"
+      ],
+      "mcp_tools": {
+        "get_hierarchy": 1,
+        "get_instance_parameters": 8,
+        "list_instances": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 11
+    },
+    {
+      "path": "benchmark_results/idma_repeated_auto_strict_skill/raw/idma_stream_fifo_parameters/mcp+skill/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_yM3QxHFBlCoFByxcBWC1DCe4",
+        "call_P1bbGVVdviwfcncHHCQjB7Sq",
+        "call_f8MFHHbvE4B4sJVWMtSaVP2t",
+        "call_iqIKsdoFvQ6v3WF2C2ofRvBV",
+        "call_Wce0scbRFoBipSeJFTOjFXnE",
+        "call_pT2hhu0q4PO0FESVB4RCJVCt",
+        "call_3TRfz8KNMCgcKXKc8E1MCnIU",
+        "call_Nk39BePiWn1FwYf0qHULzTSE",
+        "call_Rr3hpVlCxnju4J97TyMxhUwx",
+        "call_cv0e9zqwSBpaVq7lyPoZz7Lo"
+      ],
+      "mcp_tools": {
+        "get_instance_parameters": 8,
+        "list_instances": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 10
+    },
+    {
+      "path": "benchmark_results/idma_repeated_auto_strict_skill/raw/idma_stream_fifo_parameters/mcp+skill/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_u1YGKfM1a4AUwXiXyBPGTSpO",
+        "call_CpibF5Wo6tZEAyAlUg4olzwx",
+        "call_kNuqAMbKIWcNAthlSuqoI8eA",
+        "call_xmWPelFBsefBV9GcaShkwtmU",
+        "call_w1C0i0RnTMsav3sfZfDRJl6I",
+        "call_wLZgykmJ6FN3qyOurUZgh2SX",
+        "call_2SPdJB9Sn4kpPpLHAZxO3YCQ",
+        "call_4ExJkBwfoRLM2o8p4F7OHX3U",
+        "call_UPuVuqG7C0hpyob9ziVFhhu5",
+        "call_XfANJbH54WlrXuRCcYpNOOXN"
+      ],
+      "mcp_tools": {
+        "get_instance_parameters": 8,
+        "list_instances": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 10
+    },
+    {
+      "path": "benchmark_results/idma_repeated_auto_strict_skill/raw/idma_stream_fifo_parameters/mcp+skill/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "WRONG_ANSWER",
+      "call_ids": [
+        "call_Nwop4tSRQ4fGk77oYKIs28OR",
+        "call_wgNorXBMyvKYOpmcbZhsiJPg",
+        "call_zsHL2UcLiy6dnBeMWQYWzADt",
+        "call_cTuPUg4InU3L30suz8Gsq15C",
+        "call_8HjrvrodmBcR0FL7C6qvUah1",
+        "call_LLrZ8vI7FNxX05JWX89BCRDG",
+        "call_EcoSy1IftxZ0ybpmKQQ5uHPx",
+        "call_9pr0MoVsygGkMBhZrG3Yx6hw",
+        "call_YKHedC8AdALmaU42Ju51YyQC",
+        "call_keX87oq8eTu4TdcgdWsZTMrF"
+      ],
+      "mcp_tools": {
+        "get_hierarchy": 1,
+        "get_instance_parameters": 8,
+        "project_load": 1
+      },
+      "mcp_calls": 10
+    },
+    {
+      "path": "benchmark_results/idma_repeated_auto_strict_skill/raw/idma_stream_fifo_parameters/text-only/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_qxysoxtIPFWfNFSUVd5eDn1P",
+        "call_wKyh7u3mzujPoNiUoxIkbLTF",
+        "call_SrLW8cb0v8c9b4e2n4U96Zij",
+        "call_Q6an3BbjbKaeqXGiBy4fiLnT",
+        "call_ZlaiwQZdA1FPy1tz9VxcjHSe",
+        "call_yXJY3x9AEzCzuoYBvsi8A6Dm",
+        "call_V9lqoWVGjfFquFfzhcYjcqJ6",
+        "call_C0pTOftfT9MSTcoiK5sDIsbG",
+        "call_O0kdyHiTCuHYdXNjQGP8R76y",
+        "call_KyfRG9iELvaSATGshpDksVlX",
+        "call_XaI71eTkWDHytx259lv0kp3J",
+        "call_favjF92jPuajSMTFpMnqa1a1",
+        "call_x9VVJiMWq3O7KSgK5ouCI6Q9",
+        "call_g6AonFnoD1twofjmhBP1wEKf",
+        "call_gq56vwB4coPfpZy3bASYDOnU"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/idma_repeated_auto_strict_skill/raw/idma_stream_fifo_parameters/text-only/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_jQwkpWnS76U3ROa0zKp0K7Jh",
+        "call_AHQ3cQ5y5zGZtQpQwf6TzerP",
+        "call_7EQGNJ4ZEGxxxzSrpmeufYSO",
+        "call_1h7EMRJ7D34znVVtxRjcJTDW",
+        "call_Bumv525zJMgPy0JOm4mbXqph",
+        "call_fZ0jPW3CKSmm5OMdMnR8dMg0",
+        "call_DxwiIf87HnyTa8IDteqaIVtI",
+        "call_ZgltPZgepN2nhnTrhcbETy5U",
+        "call_Qfyyy4xdXbgFGjlbOfEtytqO",
+        "call_T2i2pGpYERR053rKf72ts24n",
+        "call_Oclii8AfaDMV8zcpBHnWk8QK",
+        "call_4pcofPfsVcGxXXe8Y9b3IrT6",
+        "call_I7E2jctf12m0Cz9CMamdsEdc",
+        "call_XCTnv9dd9yyDqRWdw9zK8Kdz",
+        "call_IJmBm8tix9RZyCWvBs8eMXne"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/idma_repeated_auto_strict_skill/raw/idma_stream_fifo_parameters/text-only/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_W8l97XQSPbKqRpiLGzscY3bD",
+        "call_oXltiQmM6wefonXXLDvZz6Wu",
+        "call_OnKhOuGP8BRZQHh4LAGw7tgn",
+        "call_I9EdR0hE44HfFmGeNsQsPYag",
+        "call_2hrXmMxZisQwZhG4VdcKHzPY",
+        "call_Vu6tK1wakTknYwCpu3Q0eFHm",
+        "call_5JZ0XAtBI0dtd9SIgkcdCLCL",
+        "call_NczK5KHNkmADS05XXo0kl7hO",
+        "call_DT7CRInrk495h1gi7gBWY0l0",
+        "call_D7RRXYQ5lHjg0vlIqdXyRRhv",
+        "call_5bcTWAUd5MjhBy50aVOjkNRj",
+        "call_h4wKAIb7Lkzif2Hshqpvxrqe"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/axi_child/mcp/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_nzTkLqXY0JpRlIGi1Hyaw9p0",
+        "call_8EqiJMlnCFTn9dE9340Oqa3r"
+      ],
+      "mcp_tools": {
+        "find_instance": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/axi_child/mcp/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_qi3YhfRt4lw5duHwA35OLqoU",
+        "call_OgaTTnK1X2YU8o4sBbWnp8ha"
+      ],
+      "mcp_tools": {
+        "find_instance": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/axi_child/mcp/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_82DTCioSyMajkioucJA2oGQI",
+        "call_2B22m1lUwbzutcMWGYewlvWC"
+      ],
+      "mcp_tools": {
+        "find_instance": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/axi_child/mcp+skill/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_xFU7aEr21oEECXR8AIqvwC4E",
+        "call_6fMfwS8B2HWeGBqY1ShvK6MM"
+      ],
+      "mcp_tools": {
+        "find_instance": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/axi_child/mcp+skill/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_p7rhCsS5iOmkDEximRV13s7i",
+        "call_ImQ61HBMBUyKFnLJgFn92rro"
+      ],
+      "mcp_tools": {
+        "find_instance": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/axi_child/mcp+skill/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_34KriDIhihgSTqnzvfYaMs7m",
+        "call_lrLQyM2EKfVuY1ZOCEobci3H"
+      ],
+      "mcp_tools": {
+        "find_instance": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/axi_child/text-only/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_Mx98WwaSF8q0GjyRBaqihDxu",
+        "call_1VeWBqLAVnYew79fTqgtF9yL",
+        "call_MgdLONfkH5ClY7WzSZsEjc67",
+        "call_9dQ6NYapclNjUfGg44xe2x7t",
+        "call_SfIHwy29TnTJqeeXMMieqqpE",
+        "call_TEDor6UMohe35hYO8wFEhqEh"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/axi_child/text-only/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_c8lBHuP6CKJsxmFye92nVQMQ",
+        "call_1WkRjhLuv7qt4aTFQtXuQONS",
+        "call_kdodYWn1vCTJdtV3Iis5xDmV",
+        "call_iTILU3jU2w3JPLURkdSpKWOy",
+        "call_yJYWLasVocuwwc0Ni0DGIFXV",
+        "call_KK4L41jinRrDg2LWPIadSIkT",
+        "call_YTnp8lIJ9PhUJwYDq1QGTdSz",
+        "call_ujbYD46NqQOaKoRtcg0h2E4E",
+        "call_ChTSgK1nNT5iXdvZOzS6TJYo",
+        "call_QbinCawLW5PLY4chpRb26DjF"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/axi_child/text-only/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_RJkrhQqmAngdlvAYBXGWdOnp",
+        "call_VAu2UbFBfapQiVmfCCLPifvF",
+        "call_vN2XmHKU4OUHuV0y1cS9ybV5",
+        "call_eOAqWPyDLFWWIVDcqv9kINJn",
+        "call_HDUE80fUdnLdLd4b8eAOtLZs",
+        "call_VnBYwRJVx7TJYcZbSgtD0CSQ"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/axi_depth/mcp/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_hUzOclA6cpQl1BTQD5uCLo7k",
+        "call_eZdB3yuLtdxo74ebcP1AZl4f"
+      ],
+      "mcp_tools": {
+        "get_instance_parameters": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/axi_depth/mcp/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_3byvhPi8urFsQyZEfXyijBid",
+        "call_jWinpqBKeeV8Ky26gyv6Bv5q"
+      ],
+      "mcp_tools": {
+        "get_instance_parameters": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/axi_depth/mcp/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_P0NsaRW3OSbLs3EJEpH5Mp9A",
+        "call_errxJQuPapFUSX1BJgSrTpSE"
+      ],
+      "mcp_tools": {
+        "get_instance_parameters": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/axi_depth/mcp+skill/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_xkB6u3RAJ6rmot4qN0jMUFQ0",
+        "call_VO6BVyba4DY5CF9ssRVtZWvL"
+      ],
+      "mcp_tools": {
+        "get_instance_parameters": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/axi_depth/mcp+skill/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_u015gzcc27EJ3er5ZC4AP3kk",
+        "call_eKuCJoJjGV6GCA7J1drCZucr"
+      ],
+      "mcp_tools": {
+        "get_instance_parameters": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/axi_depth/mcp+skill/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_ppJCeWEg8IyoMPWHDmVWeJyU",
+        "call_x6adWwTHh7sSc41AZqsTietl",
+        "call_F9qx8O04PmIlBfy592QHk58l"
+      ],
+      "mcp_tools": {
+        "find_instance": 1,
+        "get_instance_parameters": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 3
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/axi_depth/text-only/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_w0EXw1Ctg0pGYIFvNvLzo9Ec",
+        "call_e7TDdRN0lf3KzWVJnOKKQMFL",
+        "call_TrJhpDdyaQdIB4jSz864Jvpz",
+        "call_psyqcfhZ74eJJVDVVAamBSof"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/axi_depth/text-only/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_Z9cDSlQagsF6H9BIMcusNora",
+        "call_QlrT4bdGi3bxXAJAcukpUtkE",
+        "call_KcmlxXfsJNvFn0ob1eoVPBdO",
+        "call_gt1lxaLQEsWkKv66BsIUc3Gm",
+        "call_z7lUc6x33fJPaYmu45GFXOAP",
+        "call_nTq69ZiWAa5FfWRu2X0Fi3lH",
+        "call_JIKyBYw0YCrTVDlX9bhOFw4G"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/axi_depth/text-only/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_k0FcpQK7OhUHOd0zOHhd3EB1",
+        "call_IY3Eal5S7pvTWhebnVi0KfoA",
+        "call_C11Wn2CdkaV2EAiHDboZArUf",
+        "call_cyEXGa5MDk7PBga2xRiUpw7Y",
+        "call_TJEgfIfzfUOISzC3AIWQ6q4S",
+        "call_483Uv8PTdciIKz5qsv83zYsr"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/cc_addr_depth/mcp/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_IB56Rx96k1apYnhK8hufCoY7",
+        "call_9IoQODFVnDCP6EDIxTSYgBcd"
+      ],
+      "mcp_tools": {
+        "get_instance_parameters": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/cc_addr_depth/mcp/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_Q53CHqgIEfiUPIneVr9i3n5A",
+        "call_E8pGmKQi1es1843MLcsRCuQF"
+      ],
+      "mcp_tools": {
+        "get_instance_parameters": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/cc_addr_depth/mcp/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_e9O0tteP7N88oYGgUIZHrDHx",
+        "call_6hygjIQlegFesRvyw4FjzxX1"
+      ],
+      "mcp_tools": {
+        "get_instance_parameters": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/cc_addr_depth/mcp+skill/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_Zv2uYgpGwvkWzlaqPbvoJD94",
+        "call_BpyNML4pisYP7pCKzjbE8k4t"
+      ],
+      "mcp_tools": {
+        "get_instance_parameters": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/cc_addr_depth/mcp+skill/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_SaF5a1mCEUkViZA6QzzvugtX",
+        "call_YsSpFBENzHEUu9oSxwRexS8q"
+      ],
+      "mcp_tools": {
+        "get_instance_parameters": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/cc_addr_depth/mcp+skill/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_U0N773460mtFhJh041jsBM9z",
+        "call_N9nxyDxSwzlR9Hf25ou5lkqk"
+      ],
+      "mcp_tools": {
+        "get_instance_parameters": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/cc_addr_depth/text-only/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_nub1Ku7w5FirDk4j9mVNm6tV",
+        "call_QDDAOPncXwtzUJRYFivZu0tr",
+        "call_0U1AOlyrFKRkTIgfAc5OgeNe",
+        "call_CJ7PpAVpsgxipOG3P9XAnBlw",
+        "call_bTcCqB42Ay2nZMtdnh0m5FcF"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/cc_addr_depth/text-only/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_pv2etiG8OUJiELAoAvzKuEcE",
+        "call_0IjZTFAZHTv7l3lo1OcemBGh",
+        "call_CY0VlFV4Dr2pTY5jnT3mt4wO",
+        "call_ng5oSYrKYoCGZk6d04ZrRFnz",
+        "call_Sm0hO50Im00c9w9axas7bDjb"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/cc_addr_depth/text-only/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_YbDqe9ADAkFpjq07kkRmU56H",
+        "call_SkeiDqoG0J1lPgrCz2JOdslh",
+        "call_o87RUmCvnaWOVX6yD63qH06B",
+        "call_NvgKwKlBrmMHqJTtfeEIADgd"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/cc_outputs/mcp/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "WRONG_ANSWER",
+      "call_ids": [
+        "call_01gRDiJAXFM4wcvlnemHQPiB",
+        "call_Vfp3L8Nm6VWx25dSpMvzPTJL"
+      ],
+      "mcp_tools": {
+        "get_ports": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/cc_outputs/mcp/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_3Vl54JkrARzHQwwV9ogknDV1",
+        "call_YMtOIYvJJej6BUPUDJpeTRXu"
+      ],
+      "mcp_tools": {
+        "get_ports": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/cc_outputs/mcp/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_GKbjhaAJNUfxmd7ACzPzhKqb",
+        "call_yeXNtnFQN7RFZvSQjsPbktNS"
+      ],
+      "mcp_tools": {
+        "get_ports": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/cc_outputs/mcp+skill/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_FHn18jd2BIE1FoSpHkQ8tdru",
+        "call_LcAQSvpCh9VsCD6V07PmB2tc"
+      ],
+      "mcp_tools": {
+        "get_ports": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/cc_outputs/mcp+skill/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_eLqH21o3uIFNUmewJ9L9Ipfj",
+        "call_4exWMtaWN9Korlc0P8vcq0Sd"
+      ],
+      "mcp_tools": {
+        "get_ports": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/cc_outputs/mcp+skill/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_6Y1370td5JB5fue3LPsu0YWV",
+        "call_WRB6wFMFemjbPssPDV0j8II8"
+      ],
+      "mcp_tools": {
+        "get_ports": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/cc_outputs/text-only/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_MuKZ524uYkRNAXR8OZ8fhbB9",
+        "call_DoVSfXySLG3bp3qZbjGx642W",
+        "call_HSHfbZey8tAD3xAAlp3Ladl3",
+        "call_E2G8wRFTZlyim3JTeRZD9WMr"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/cc_outputs/text-only/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_uD9uDfzNzPxSR9uGD2aIuP7K",
+        "call_vdZLMBbtyyA94RTtFgjaVEYj",
+        "call_jmHGqDseVpYTFYomkcJ0gQpz",
+        "call_Crp5vFvCpffqpDEM66FlVaJC"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/cc_outputs/text-only/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_CQrRaUBN0ovhU1ZKSqtuPUTL",
+        "call_18r6OhUyzzjV1BLer4wcX0Gh",
+        "call_U04fOTy6LtsS0yFZeCMv6S9k",
+        "call_srJbQK8futV09lY7yQgdxEwP",
+        "call_MHR5Zkma6UmIlOcc5a4Waml2"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/diag_unknown/mcp/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_vVpq84ANGRm1CL3FjNzJ6npR",
+        "call_zEpc8a6Hhrtow06gZbwsHxNk"
+      ],
+      "mcp_tools": {
+        "get_diagnostics": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/diag_unknown/mcp/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_YMcUVB9wri6jVUzVLcSQtyfX",
+        "call_ovxMkgAXsRzynbKHzsyodBC4"
+      ],
+      "mcp_tools": {
+        "get_diagnostics": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/diag_unknown/mcp/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_hU0kZ1OZKsVRuau8YUAYDhSF",
+        "call_nPhYH8TwAI51YsPVwV9g26MQ"
+      ],
+      "mcp_tools": {
+        "get_diagnostics": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/diag_unknown/mcp+skill/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_l4Xkx36cT77TvaewVGsWSf70",
+        "call_py0zMj8VmRd3vBiKXRRlrMtA"
+      ],
+      "mcp_tools": {
+        "get_diagnostics": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/diag_unknown/mcp+skill/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_35E610FQpbMX3hpKkGe9UVt9",
+        "call_1nGvIY5sfW2V9v3gkscUOulW"
+      ],
+      "mcp_tools": {
+        "get_diagnostics": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/diag_unknown/mcp+skill/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_fyD3X52vl4WMKPCK2RL7wX4d",
+        "call_bUL7cKgo1i7rkQU7H6xyMg7l"
+      ],
+      "mcp_tools": {
+        "get_diagnostics": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/diag_unknown/text-only/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_9zO4zj8RRl6VM4MWmW6ib1tv",
+        "call_mB1TAtlYVhepaIGkPtbi5OPH",
+        "call_70YWhMFcASkAMwiYw3rDFKik",
+        "call_scSn70ehmodZH05RYTPINqpf"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/diag_unknown/text-only/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_aOw6qJpwi8Gv5brMG23qO3TZ",
+        "call_O5KV04f1FQ6CLTJDJTmOjttV",
+        "call_DOe7KCiuM0Q9zelvONPFXuIJ"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/diag_unknown/text-only/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_cW4x4BD9BFzoZN1FIqWILbcd",
+        "call_gDfrHY9W3YWiSNfDfA5zPGbT",
+        "call_wdPHTQTsHtVvh4TN3BkRM2Gy",
+        "call_psFM4uj1wz9BJGHeKPYcO2a5"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/hier_generate/mcp/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_9XIjDvab0QgYsVNHAxXcPTsC",
+        "call_OdAndWMu1ZzqJtZmRWG5Aeha"
+      ],
+      "mcp_tools": {
+        "find_instance": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/hier_generate/mcp/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_7anT1rtCkyTVi4zDZ6SDQ3pv",
+        "call_w67G6hnGJRSCdEmRnQ41J5RK"
+      ],
+      "mcp_tools": {
+        "find_instance": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/hier_generate/mcp/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_mwkTyzmFssMbANP420QbjRiO",
+        "call_i8o6RREcSIaClM7j66RCiMpJ"
+      ],
+      "mcp_tools": {
+        "find_instance": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/hier_generate/mcp+skill/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_eIElF3hVE5vw355JENSNBVEx",
+        "call_dc6bz5WFhcbA2t2N7vDn8U90"
+      ],
+      "mcp_tools": {
+        "find_instance": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/hier_generate/mcp+skill/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_k4mHwjTRjKGJyaLGgtAB3p3X",
+        "call_4tRQLeKabUMd8WNSiyYjylbf"
+      ],
+      "mcp_tools": {
+        "find_instance": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/hier_generate/mcp+skill/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_JEHQVW6SIkEClXXFpTogUrjl",
+        "call_n8W41xFFI5N92ChvUnaBf4yK",
+        "call_9nqw2PPNEbfZbuNHQ5lwMXsz",
+        "call_zxDHltm1EgDxHMjWpuJYh3OY",
+        "call_EK49ahc7TECfULp1EVrBZedm",
+        "call_gvsdnvKLXNPiHEOwLwNIbEoP",
+        "call_r0zQu18WJcd5YOV9xM3DkG35",
+        "call_nYy36HSOcrrWO6OQ1TPUENJH",
+        "call_8YZVc7laftDd9K45s1Bapvh4"
+      ],
+      "mcp_tools": {
+        "get_hierarchy": 1,
+        "project_info": 1,
+        "project_load": 2
+      },
+      "mcp_calls": 4
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/hier_generate/text-only/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_kXoSXsJokSFzmRsvjR8JRANf",
+        "call_6uEQsamWXDFZfeYLG4BS6mrh",
+        "call_1YgjGH1E4sO5sHFpyA3Q5Skb",
+        "call_vJvodqYDKBsfQ58Lkw0Qxtaq"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/hier_generate/text-only/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_emRTC0UyxCmuOdzHnYyTxDff",
+        "call_frGxujCgvo2xUXlZplwD0kot",
+        "call_eLVPSXSVkSbYysMYf1Ej53Ge"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/hier_generate/text-only/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_HIqkCRyvh9DnsoIkiDjEfR4M",
+        "call_bY4lXc4tIwtuSryR2hitVblr",
+        "call_CbXMhLdxQeeGyF9Twq2ueCXg",
+        "call_wphQfk0HdcHoIXigGruY764B"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/local_priority/mcp/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_Y2cRCJlRzKDDECJ8J8eEvCZB",
+        "call_yEdXy65v0UO3GuBCIyqxxauc",
+        "call_ykInIQBPt5kudecHGGF9bvRi",
+        "call_eC4FJEvdk8rNUYuYXD9oBipM",
+        "call_hRS53joW5zFXH1MV3oMwSXpH",
+        "call_coLwJXdjbIv8CNG2S1P18OB2",
+        "call_gYAUeGm63f1xZSQEfsXo9Sim"
+      ],
+      "mcp_tools": {
+        "get_procedural_blocks": 1,
+        "inspect_signal": 1,
+        "list_symbols": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 4
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/local_priority/mcp/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_T5bIjJ92uMljrJVybTod9beW",
+        "call_KH1lV0uLhHyZzXdqFaKBhiOD",
+        "call_yvCmvMiG4e2abge3N2kdKi6O",
+        "call_bAkG3oyk7th8sKU5cNoqyS2B",
+        "call_HiAMZPIvh7CNkPZ9TOH9OG27",
+        "call_lqzcJaFAAJYnXnpChfTXZQia",
+        "call_KY58vYlaFoQqFOfc4Fx53edo"
+      ],
+      "mcp_tools": {
+        "find_symbol": 1,
+        "get_procedural_blocks": 1,
+        "inspect_module": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 4
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/local_priority/mcp/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_NaFIImlrrKzrCeLfkQyLHX5I",
+        "call_gorxNj8zHeU0wjIE7zClV4BZ",
+        "call_lODRGYF0Tz0vfhFynhSAaMqW",
+        "call_5xOr0T6B7DM79GQQiwN6SGG4",
+        "call_4XPrLOxrkJz9R7Rua7S2Rtqj",
+        "call_c6yNfTZtOB9cTTHY7EQN1GSK",
+        "call_FgR8484hMS7P8GDLepJjZsC6"
+      ],
+      "mcp_tools": {
+        "get_ports": 1,
+        "get_procedural_blocks": 1,
+        "get_references": 1,
+        "get_signal_reads": 1,
+        "get_signal_writes": 1,
+        "inspect_module": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 7
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/local_priority/mcp+skill/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_8LkW7sPMS2IjdngZmovaMTXX",
+        "call_DuJ2rhX5EkeQCNrgDFwGyvdT",
+        "call_RqFITqPKejlNJgtddHUgdRvY",
+        "call_7kC5R5bwnCVAThRaH2pwtDvM"
+      ],
+      "mcp_tools": {
+        "project_load": 1
+      },
+      "mcp_calls": 1
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/local_priority/mcp+skill/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_LOczsB55cODWqe3TYazjiHM2",
+        "call_PGh2x6elDVikgSe9JtBhXCfe",
+        "call_dOE28Pw5my1JIXqcPN8a9U7x",
+        "call_0q2O7ZzCKptrSsznubx95uvL",
+        "call_SweXKuHO77vUQd4vGKs3OZao",
+        "call_bzjvAVn56SPsbV6QrOrhHgdJ"
+      ],
+      "mcp_tools": {
+        "project_load": 1
+      },
+      "mcp_calls": 1
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/local_priority/mcp+skill/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_8vItigBhYO0BFVlbOEabwyUW",
+        "call_aB1eRZZJ2tTxUttHUs5bPpGk",
+        "call_WgaGO2xkyOU9ewjD7rMPVhJs",
+        "call_Rde0Qxp6q6qUC4UaXpKeecJd",
+        "call_gn9DE6uabRjHRVQWxhLfNOlY",
+        "call_BpyOt6dkbxVbeYYUcSOlG7IX"
+      ],
+      "mcp_tools": {
+        "project_load": 2
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/local_priority/text-only/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_22sTQzY7ppGe8qSbzxsbULlF",
+        "call_Mr3JkqThYFa9b2vOe4M6u5VU",
+        "call_3M9clBKZ4YRXpsIrgChnapO6",
+        "call_vIORjjp7pjIvitAQz7A7raeh",
+        "call_vBQLjlOuJ3iOJs1W2U7ezV1p"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/local_priority/text-only/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_aoz41SYxmJaGPr8lgaFeW3c6",
+        "call_wFfW21oXyLd6L7mAtDo6L6Db",
+        "call_OIP5KEPcCUUk0S2ypm6V4gPW",
+        "call_lNI5As2NTbjkfAGKEpW1QN0n"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/local_priority/text-only/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_bPAY1GRjSJR5dxzxKQssg9xc",
+        "call_11kH3YtDi1fZCilRIJ4wd9I9",
+        "call_jhAJFwf43iX1GcFwJUVrg0BG",
+        "call_8QfbnV23OWpI7ycByc44MAgM",
+        "call_zEwfTbmbtUHaI1CvxuJRJ6P3"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/pre_define/mcp/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_45LlR9q1d4GsJ3OaUJmzbOAo",
+        "call_ESLGxKmNQYDjOxmwJvNckSBO",
+        "call_wnQxQBEF0cJpzY5Tj9rkMh8R",
+        "call_cSFZWMqjXf9GZg8JVDXkKw0Z"
+      ],
+      "mcp_tools": {
+        "find_symbol": 2,
+        "list_symbols": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 4
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/pre_define/mcp/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_FNSK4PuBTmX9xnpbGrJ5ZTCt",
+        "call_VUGOmmerROSsB4sImnDBehwj",
+        "call_KnxoOhDrYmrLSfWdYlrV3scd"
+      ],
+      "mcp_tools": {
+        "find_symbol": 2,
+        "project_load": 1
+      },
+      "mcp_calls": 3
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/pre_define/mcp/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_BvXlqxcRV8d4FGh0EZYnONwt",
+        "call_RaRXzgtEYV0vp0kDvlA9IP5A"
+      ],
+      "mcp_tools": {
+        "find_symbol": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/pre_define/mcp+skill/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_zrRjp7fvQwFjN0cR5Xw7PqXf",
+        "call_LNrOKeuqRZnztzfEmDYHqlXH",
+        "call_hprl93JaNMvwDtyBqie0Tlpa"
+      ],
+      "mcp_tools": {
+        "find_symbol": 2,
+        "project_load": 1
+      },
+      "mcp_calls": 3
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/pre_define/mcp+skill/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_qabNAiozEy4KlzmXp65qaQUp",
+        "call_F0GCX9fFUHUR3W4zLEjVxx2G",
+        "call_okkq6cHeJGeNmrVV9J5CBERQ",
+        "call_6hgy4ycxIsi4H4L8Ku733pCx",
+        "call_Ugmg1V3q7ulhhdlZMllJfdTV",
+        "call_AulkRSphd1P6SgVwo0D9HoPx"
+      ],
+      "mcp_tools": {
+        "find_symbol": 2,
+        "project_load": 1
+      },
+      "mcp_calls": 3
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/pre_define/mcp+skill/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_XaJEGw0sIT2db565kxrUYfWo",
+        "call_9taes0Bem06cbAaqZGYxmBkI",
+        "call_t13whPbKQbgQWi7pfHw1iQMa",
+        "call_pADW0MEertKlZJyaG13r2KGM",
+        "call_RlO54uE8mmchabL7ZccPBHPX"
+      ],
+      "mcp_tools": {
+        "inspect_module": 1,
+        "list_symbols": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 3
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/pre_define/text-only/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_apOfDnV5BBroX2yrYDrGjQcg",
+        "call_MXcg3ugvfMXExABYlIPrXCd8",
+        "call_mSacJQd0tuP58IoBpvbCbqWN",
+        "call_cUNHlUNY3E8eXHTfcsD16N8F"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/pre_define/text-only/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_fVZLjCo1KmZbLaLPIDFkiNjP",
+        "call_ZFqfn3M4ben0QpKmbioyDP2c",
+        "call_CYlDQWiMqGyVrlm9EmzYT9b5",
+        "call_kxNdvS507fF5bwUVSECwS03v"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/pre_define/text-only/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_Nh43pemC7wcQiz3Odza9vw7O",
+        "call_GB89JZKDj3jsokHejLEZsWyU",
+        "call_wrOv9G00oc1KKd8xDyCw8Vpg",
+        "call_eFE9oNn4hhUrdyAAOBeKg9tj",
+        "call_eE0ro2vRabpnisO6FESf5V4O"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/symbol_package/mcp/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_1zT4EzCHTi5wJCe7o34Gct3X",
+        "call_4vPgk5phS8Op3eRisenz04ia"
+      ],
+      "mcp_tools": {
+        "find_symbol": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/symbol_package/mcp/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_BdjGVkKbOafcpmfTDXn6iiCE",
+        "call_Amvyd5SpJhWpOJoAOIZiK3Uj"
+      ],
+      "mcp_tools": {
+        "find_symbol": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/symbol_package/mcp/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_CsiUwIoBUryw3bYmVgdcgVsp",
+        "call_dS44o4qOdbeZe9Zh7SCNc0xA"
+      ],
+      "mcp_tools": {
+        "find_symbol": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/symbol_package/mcp+skill/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_46Lczbd4tKnNsEvC09qjL6gE",
+        "call_QHEaIAhmqkAYW28NnsMwkkY8"
+      ],
+      "mcp_tools": {
+        "find_symbol": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/symbol_package/mcp+skill/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_rDvnIemXZELkA9dgIJllCJ6X",
+        "call_5J8nmfYIm94uD87S0Vzx9VsH"
+      ],
+      "mcp_tools": {
+        "find_symbol": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/symbol_package/mcp+skill/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_emXECSTxHPmMYqeMj8Y9aeef",
+        "call_seKgOGvW3bWIhKINz7rC87gR"
+      ],
+      "mcp_tools": {
+        "find_symbol": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/symbol_package/text-only/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_wBtTp76fMAGe0xfKGpay6yFx",
+        "call_Lf8qiCX5mXvB0smSs9W61Lv2",
+        "call_2HltWfB0hbd2XzuP6Jk6h5th",
+        "call_qAzYYR0o0PEBMj3jzHVqnBR2",
+        "call_a4g5Jdh8zWrmq6zmpPRoyWHU"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/symbol_package/text-only/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_kkEa5IZNC71PcHP4H6nW6bG6",
+        "call_SjNWrG92wCxS6cCnf7Vt6ulR",
+        "call_6RcBphNeVUeUcrWH3uaxB9XL",
+        "call_PBRu0czIpnx8rnqgsRivnZsB",
+        "call_Px7RDoDl1XgWg3wMO3bSdXTK"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/symbol_package/text-only/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_eiew5mVpggpkO1Cu2ZfFnhu7",
+        "call_ByHMv3IY3z3YuSv8Ee6hzSR4",
+        "call_SDt19MhncXXU7qzRICxvpqIA",
+        "call_NpNLk5WC0BAgErbbcEWpHPVC"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/type_override/mcp/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_sN4viGN2luZFqYkdV615XLtq",
+        "call_rae0xzOyUjRFFoGEJP69jcIv"
+      ],
+      "mcp_tools": {
+        "get_instance_parameters": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/type_override/mcp/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_TRjPqznCISaasLFo8fKVQMav",
+        "call_4wVD6ifp6zsT8fr3B5mSJ47a"
+      ],
+      "mcp_tools": {
+        "get_instance_parameters": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/type_override/mcp/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_clsnIrVji9TcSITHs8qtmKj7",
+        "call_zM1nMycJAtLNFgQroCADPsn2"
+      ],
+      "mcp_tools": {
+        "get_instance_parameters": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/type_override/mcp+skill/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_3I7dqVmZxtp7EskS7XD1Fc1R",
+        "call_MTvdE9smUws3IW05C4wk9flb"
+      ],
+      "mcp_tools": {
+        "get_instance_parameters": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/type_override/mcp+skill/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_zv5wgn5dXgqLxrmZUum7wmRB",
+        "call_fr2hxI57x7qx6LblDGowFzSc"
+      ],
+      "mcp_tools": {
+        "get_instance_parameters": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/type_override/mcp+skill/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_vwEI2jIAhG2SxqHYoyDz2Wab",
+        "call_MKeNxhs75Nlw63SRTxaS0HvW"
+      ],
+      "mcp_tools": {
+        "get_instance_parameters": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/type_override/text-only/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_OsXzk9snToHw5lOc3XIs1zdL",
+        "call_MSMPGV8EtiaUHS1zJm4TdJP1",
+        "call_VXmp7mg8IcgFUg03w4XzKhWI",
+        "call_4KyTrczYaJiK8cnXL3UtDTQ7"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/type_override/text-only/rep_02/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_z4rgDjIe4MDHtUH6oHTCYZD8",
+        "call_azj4hPoXfzKqsol72BcDU4mf",
+        "call_2Ioz2KlCWfzw8DRi6VKbOSus"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_results/pilot_auto/raw/type_override/text-only/rep_03/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_0MuIUJ80KUizZhs15s9pwMAo",
+        "call_4dlrZ5CKsmklaH9H4HSBKFk2",
+        "call_CgzxwLFdWzSMNxiK9BklpP8K",
+        "call_5Qii0E8gPKhRJq0JcIRbk4eU"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    },
+    {
+      "path": "benchmark_smoke/simple/raw/hier_generate/mcp/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_goNiDzc8qnvqwNOVqlxRdaTh",
+        "call_2fIPlvaxmBwydLIRxEybvC3P"
+      ],
+      "mcp_tools": {
+        "find_instance": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_smoke/simple/raw/hier_generate/mcp+skill/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_4M9ALEpWOvZc7lAyklJUy6Cn",
+        "call_umcZwalp6C5SWyBIQZuyyTHB"
+      ],
+      "mcp_tools": {
+        "find_instance": 1,
+        "project_load": 1
+      },
+      "mcp_calls": 2
+    },
+    {
+      "path": "benchmark_smoke/simple/raw/hier_generate/text-only/rep_01/attempt_001",
+      "completed": true,
+      "execution_status": "SUCCESS",
+      "call_ids": [
+        "call_QRPPsHQlrdejt0pUDLYHuCLd",
+        "call_VtXTpIQSBkDtlsjP74WbXVtW",
+        "call_WDlW9T4uwunNejR5ait0kXwH"
+      ],
+      "mcp_tools": {},
+      "mcp_calls": 0
+    }
+  ],
+  "native_workloads": [
+    {
+      "path": "benchmarks/research_agents/core.calls.jsonl",
+      "tools": {
+        "project_load": 1,
+        "list_instances": 1,
+        "get_instance_connections": 1,
+        "get_instance_parameters": 2,
+        "get_diagnostics": 1,
+        "get_ports": 1,
+        "describe_symbol": 1
+      }
+    },
+    {
+      "path": "benchmarks/research_agents/mcp.calls.jsonl",
+      "tools": {
+        "project_load": 1,
+        "list_instance_facts": 1,
+        "get_instance_parameters": 2,
+        "get_instance_connections": 1,
+        "get_diagnostics": 1,
+        "describe_symbol": 1
+      }
+    },
+    {
+      "path": "benchmarks/research_agents/skill.calls.jsonl",
+      "tools": {
+        "project_load": 1,
+        "list_instances": 1,
+        "get_instance_parameters": 1,
+        "get_instance_connections": 1,
+        "get_diagnostics": 1
+      }
+    }
+  ],
+  "scripted_probes": [
+    {
+      "path": "benchmarks/research_tools/results/axi.calls.json",
+      "tools": {
+        "project_load": 1,
+        "project_info": 1,
+        "get_diagnostics": 1,
+        "summarize_diagnostics_by_code": 1,
+        "find_symbol": 1,
+        "describe_symbol": 1,
+        "get_hierarchy": 1,
+        "inspect_module": 2,
+        "get_ports": 2,
+        "get_procedural_blocks": 2,
+        "get_parameters": 2,
+        "get_state_elements": 2,
+        "list_symbols": 2,
+        "inspect_signal": 2,
+        "get_signal_reads": 2,
+        "get_signal_writes": 2,
+        "get_drivers": 2,
+        "get_loads": 2,
+        "get_references": 2,
+        "trace_connectivity": 2,
+        "inspect_instance": 1,
+        "get_instance_parameters": 4,
+        "get_instance_connections": 4,
+        "describe_instance": 1,
+        "find_instance": 1,
+        "list_instances": 3,
+        "list_instance_facts": 2,
+        "semantic_diff": 2,
+        "project_reload": 1
+      }
+    },
+    {
+      "path": "benchmarks/research_tools/results/cva6.calls.json",
+      "tools": {
+        "project_load": 1,
+        "project_info": 1,
+        "get_diagnostics": 1,
+        "summarize_diagnostics_by_code": 1,
+        "find_symbol": 1,
+        "describe_symbol": 1,
+        "get_hierarchy": 1,
+        "inspect_module": 2,
+        "get_ports": 2,
+        "get_procedural_blocks": 2,
+        "get_parameters": 2,
+        "get_state_elements": 2,
+        "list_symbols": 2,
+        "inspect_signal": 2,
+        "get_signal_reads": 2,
+        "get_signal_writes": 2,
+        "get_drivers": 2,
+        "get_loads": 2,
+        "get_references": 2,
+        "trace_connectivity": 2,
+        "inspect_instance": 1,
+        "get_instance_parameters": 4,
+        "get_instance_connections": 4,
+        "describe_instance": 1,
+        "find_instance": 1,
+        "list_instances": 5,
+        "list_instance_facts": 2,
+        "semantic_diff": 2,
+        "project_reload": 1
+      }
+    },
+    {
+      "path": "benchmarks/research_tools/results/floonoc.calls.json",
+      "tools": {
+        "project_load": 1,
+        "project_info": 1,
+        "get_diagnostics": 1,
+        "summarize_diagnostics_by_code": 1,
+        "find_symbol": 1,
+        "describe_symbol": 1,
+        "get_hierarchy": 1,
+        "inspect_module": 2,
+        "get_ports": 2,
+        "get_procedural_blocks": 2,
+        "get_parameters": 2,
+        "get_state_elements": 2,
+        "list_symbols": 2,
+        "inspect_signal": 2,
+        "get_signal_reads": 2,
+        "get_signal_writes": 2,
+        "get_drivers": 2,
+        "get_loads": 2,
+        "get_references": 2,
+        "trace_connectivity": 2,
+        "inspect_instance": 1,
+        "get_instance_parameters": 4,
+        "get_instance_connections": 4,
+        "describe_instance": 1,
+        "find_instance": 1,
+        "list_instances": 7,
+        "list_instance_facts": 2,
+        "semantic_diff": 2,
+        "project_reload": 1
+      }
+    },
+    {
+      "path": "benchmarks/research_tools/results/idma.calls.json",
+      "tools": {
+        "project_load": 1,
+        "project_info": 1,
+        "get_diagnostics": 1,
+        "summarize_diagnostics_by_code": 1,
+        "find_symbol": 1,
+        "describe_symbol": 1,
+        "get_hierarchy": 1,
+        "inspect_module": 2,
+        "get_ports": 2,
+        "get_procedural_blocks": 2,
+        "get_parameters": 2,
+        "get_state_elements": 2,
+        "list_symbols": 2,
+        "inspect_signal": 2,
+        "get_signal_reads": 2,
+        "get_signal_writes": 2,
+        "get_drivers": 2,
+        "get_loads": 2,
+        "get_references": 2,
+        "trace_connectivity": 2,
+        "inspect_instance": 1,
+        "get_instance_parameters": 4,
+        "get_instance_connections": 4,
+        "describe_instance": 1,
+        "find_instance": 1,
+        "list_instances": 6,
+        "list_instance_facts": 2,
+        "semantic_diff": 2,
+        "project_reload": 1
+      }
+    }
+  ]
+}
