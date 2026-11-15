@@ -6,10 +6,7 @@
 #include <mcp/server/McpServer.hpp>
 #include <mcp/transport/StdioServerTransport.hpp>
 
-#include <algorithm>
-#include <array>
 #include <iostream>
-#include <string_view>
 
 namespace slang_mcp {
 namespace {
@@ -41,6 +38,7 @@ mcp::CallToolResult compilation_error(const CompilationError& error) {
                             {"analysis_scope", error.analysis_scope},
                             {"completeness", "not_verified"},
                             {"top_modules", error.requested_top_modules},
+                            {"single_unit", error.single_unit},
                             {"source_file_count", error.source_file_count}}},
                           {"requested_top_modules", error.requested_top_modules},
                           {"active_project_unchanged", true}};
@@ -78,21 +76,9 @@ mcp::CallToolResult result_for(SemanticService& service, const std::string& name
     }
 }
 
-bool enabled_tool(ToolProfile profile, std::string_view name) {
-    constexpr std::array core_tools = {
-        "project_load_partial", "project_info",      "get_diagnostics",   "find_symbol",
-        "describe_symbol",      "list_symbols",      "get_references",    "get_hierarchy",
-        "list_instances",       "inspect_module",    "inspect_instance",  "list_instance_facts",
-        "get_signal_reads",     "get_signal_writes", "get_state_elements"};
-    return profile == ToolProfile::Full || std::ranges::contains(core_tools, name);
-}
-
-void register_tools(mcp::McpServer& server, SemanticService& service, ToolProfile profile) {
+void register_tools(mcp::McpServer& server, SemanticService& service) {
     for (const auto& tool : Json::parse(tool_contract)) {
         const auto name = tool.at("name").get<std::string>();
-        if (!enabled_tool(profile, name)) {
-            continue;
-        }
         mcp::ToolOptions options;
         options.description = tool.at("description").get<std::string>();
         options.input_schema = mcp::JsonValue::Parse(tool.at("inputSchema").dump());
@@ -108,14 +94,14 @@ void register_tools(mcp::McpServer& server, SemanticService& service, ToolProfil
 }
 } // namespace
 
-int run_server(ToolProfile profile) {
-    SemanticService service(profile == ToolProfile::Full ? SnapshotPolicy::Track
-                                                         : SnapshotPolicy::Disabled);
+int run_server() {
+    SemanticService service(SnapshotPolicy::Disabled);
     mcp::ServerOptions options;
     options.server_info = mcp::Implementation{"slang-mcp", SLANG_MCP_VERSION};
     options.server_instructions =
         "Read-only SystemVerilog source semantics. Choose ordered source_files and a top_module "
-        "for project_load_partial; expand dependencies explicitly when diagnostics require them. "
+        "for project_load; expand dependencies explicitly when diagnostics require them. "
+        "Sources share one compilation unit by default; set single_unit false for separate units. "
         "Fragment analysis uses default parameter values, not caller overrides. Use optional "
         "fields on inspection tools to request only the needed sections. Inspect diagnostics "
         "before trusting unresolved types or instances. Diagnostic scope hints are possibilities, "
@@ -128,7 +114,7 @@ int run_server(ToolProfile profile) {
     };
     auto transport = std::make_shared<DeferredStdioTransport>();
     server = mcp::McpServer::Create(transport, options);
-    register_tools(*server, service, profile);
+    register_tools(*server, service);
     transport->activate();
     server->Run();
     return 0;

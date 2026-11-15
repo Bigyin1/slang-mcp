@@ -1,5 +1,12 @@
 # Native tool utility experiment
 
+Historical API notice: reproduce the commands below with the server and harness
+revision recorded in this report. The current server has one 13-tool catalog,
+uses direct-path `project_load`, and no longer accepts core/full profile flags.
+The last revision containing both profiles and these historical entry points is
+`5b448e8`; use that checkout for the old CLI/API. Saved measurements remain unchanged.
+
+
 Measured 2026-11-15 using the native release binary and MCP Python SDK, with no external model calls. [Provenance](results/provenance.json) records the repository commit, executable SHA-256 and exact four pinned project specifications. Existing `prepare_project` workspaces from the partial-source experiment were reused read-only. This experiment changes no production behavior.
 
 Run from the repository root:

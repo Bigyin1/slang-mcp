@@ -32,7 +32,7 @@ def mcp_configuration(root: Path, enabled: bool) -> Path:
         servers["slang_benchmark"] = {
             "type": "local",
             "command": str(server_binary()),
-            "args": ["--tool-profile", "full"],
+            "args": [],
             "tools": ["*"],
         }
     path = root / "mcp.json"

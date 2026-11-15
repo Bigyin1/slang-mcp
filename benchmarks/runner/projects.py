@@ -32,7 +32,7 @@ def prepare_project(name: str, workspace: Path) -> dict[str, object]:
 
 
 def _write_file_lists(config: dict[str, object], workspace: Path) -> None:
-    """Export agent-visible direct-load inputs while retaining legacy JSON for validation."""
+    """Export ordered path inventories for agent selection and complete build validation."""
     _write_paths(workspace / "source_files.f", cast("list[str]", config["source_files"]), workspace)
     _write_paths(
         workspace / "include_directories.f",

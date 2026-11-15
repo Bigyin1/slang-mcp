@@ -96,14 +96,10 @@ def main() -> None:
     parser.add_argument("--binary", type=Path, required=True)
     parser.add_argument("--log", type=Path, required=True)
     parser.add_argument("--allow", action="append", default=[])
-    parser.add_argument("--server-profile", choices=("core", "full"), default="full")
     options = parser.parse_args()
     asyncio.run(
         serve(
-            StdioServerParameters(
-                command=str(options.binary.resolve()),
-                args=["--tool-profile", options.server_profile],
-            ),
+            StdioServerParameters(command=str(options.binary.resolve())),
             options.log.resolve(),
             frozenset(options.allow),
         )

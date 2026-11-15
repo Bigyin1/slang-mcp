@@ -29,5 +29,4 @@ class ProjectManager {
 };
 
 [[nodiscard]] ProjectConfig project_from_arguments(const Json& arguments);
-[[nodiscard]] ProjectConfig partial_project_from_arguments(const Json& arguments);
 } // namespace slang_mcp

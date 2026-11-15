@@ -1,9 +1,9 @@
 # slang-mcp
 
 A read-only C++26 MCP server for compiler-backed SystemVerilog analysis. It links
-directly to Slang 12.1. The default `core` profile exposes 15 tools for explicit
+directly to Slang 12.1. One catalog exposes 13 tools for explicit
 fragment loading, diagnostics, symbols, hierarchy, selected inspection fields and
-source accesses. `--tool-profile full` retains all 30 compatibility tools.
+source accesses. There are no compatibility profiles.
 
 The design was inspired by [pyslang-mcp](https://github.com/ariklapid/pyslang-mcp).
 [slang-server](https://github.com/hudson-trading/slang-server) is the reference for
@@ -49,7 +49,7 @@ Configure the MCP client to launch the executable over stdio:
 
 ## Loading projects
 
-Start with `project_load_partial`: the agent chooses ordered absolute source paths
+Start with `project_load`: the agent chooses ordered absolute source paths
 and a top, inspects diagnostics, then adds dependencies only as needed. The server
 does not discover dependencies or load an entire repository automatically.
 
@@ -65,23 +65,13 @@ Repeat this load to change the file set or rebuild after source changes. Missing
 definitions remain diagnostics; a usable fragment does not establish completeness
 or the parameter overrides of a caller that was not loaded.
 
-In the `full` profile, `project_load` accepts ordered UTF-8 file lists. Every source
-entry must be an absolute file path; include-list entries must be absolute directory
-paths. Supply packages before RTL and models. Source order and duplicate entries are
-preserved. A null define has no replacement text; a string becomes `NAME=value`.
+`single_unit` defaults to `true`: the ordered files share preprocessing macros and
+compilation-unit declarations. Set it to `false` for a separate compilation unit
+per source file. Defines and include directories apply to every unit; modules and
+packages remain visible across units. This option is independent of fragment size.
 
-```json
-{
-  "source_file_lists": ["/work/packages.f", "/work/rtl.f"],
-  "include_directory_lists": ["/work/includes.f"],
-  "top_module": "top",
-  "defines": {"SYNTHESIS": null, "WIDTH": "32"}
-}
-```
-
-The server holds one project. In `full`, `project_reload()` rebuilds the same inputs after RTL
-changes. Path validation, compilation, and optional snapshot creation finish before activating
-the new design. A failed load preserves the previous design and diff. Completed
+The server holds one active project. Path validation and compilation finish before
+activating a new design; a failed load preserves the previous design. Completed
 compilations with error diagnostics remain available for inspection.
 
 `get_diagnostics` reports scope, total count and truncation. Unresolved modules and
@@ -92,15 +82,15 @@ candidate diagnostics and explicitly reports that the active project is unchange
 
 ## Tools
 
-Default `core` catalog:
+Public catalog:
 
 | Area | Tools |
 | --- | --- |
-| Project and diagnostics | `project_load_partial`, `project_info`, `get_diagnostics` |
+| Project and diagnostics | `project_load`, `project_info`, `get_diagnostics` |
 | Symbols | `find_symbol`, `describe_symbol`, `list_symbols`, `get_references` |
 | Hierarchy | `get_hierarchy`, `list_instances` |
 | Inspection | `inspect_module`, `inspect_instance`, `list_instance_facts` |
-| Accesses and state | `get_signal_reads`, `get_signal_writes`, `get_state_elements` |
+| State | `get_state_elements` |
 
 Use `inspect_module` for declaration defaults and `inspect_instance` for effective
 instance values. Select sections and exact parameter/port names to bound replies:
@@ -114,17 +104,15 @@ instance values. Select sections and exact parameter/port names to bound replies
 }
 ```
 
-Unrequested sections are not evaluated. Identity is always returned; omitting
-`fields` preserves the complete response. Use `list_instance_facts` to inspect many
-instances of the same module in one call.
+Unrequested sections are not evaluated. Identity is always returned. Defaults are
+parameters + ports for modules and parameters + connections for instances; use
+`fields` for additional sections. Use `list_instance_facts` for several instances
+of one module. `get_references` with `kind: "read"` or `"write"` includes read-write
+accesses and replaces separate access getters.
 
-Existing clients that use `project_load`, focused legacy getters, connectivity or
-`semantic_diff` should set MCP launch `"args": ["--tool-profile", "full"]`. The full
-profile exposes all 30 tools and preserves complete default inspection sections. Profile selection
-applies to both discovery and calls; core rejects tools it does not advertise.
-Restart the server to change profile. Core does not construct or retain diff
-snapshots. Full retains structural snapshot comparison; a zero diff does not prove
-unchanged RTL behavior.
+The public API has one explicit-file loader and no legacy aliases, launch profiles,
+connectivity traversal or semantic diff. Historical experiments retain their original
+results and require the server revision recorded in their reports.
 
 See [docs.md](docs.md) for arguments and result semantics. Input schemas and descriptions
 are retained in [src/contract.json](src/contract.json). Collections report `items`,
@@ -139,19 +127,17 @@ field `integer_value` is null when the constant is unknown or does not fit a sig
 ## Architecture
 
 Thin MCP handlers call `SemanticService`. `ProjectManager` owns the active compilation
-and, in full mode, compiler-independent snapshots. Slang objects stay inside `src/adapters/` behind
+without constructing diff snapshots. Slang objects stay inside `src/adapters/` behind
 `Design`; normalized project-owned C++ models cross that boundary. Compiler visitors
 build a shared access index lazily. Default elaborations share immutable syntax trees
 while keeping their parameters and semantic state separate.
 
-Connectivity describes source dependencies through assignments and direct signal port
-bindings. It does not establish synthesized netlist connectivity, timing, simulation,
-or formal proof. Expression actuals retain their text and resolved symbols but do not
-create direct port hops. State discovery covers `always_ff` only. Reload is a complete
-rebuild; symbol search is exact-name only.
+Accesses describe source semantics, not synthesized netlist connectivity, timing,
+simulation or formal proof. State discovery covers `always_ff` only. Reloading is
+a complete rebuild; symbol search is exact-name only.
 
-For a fragment, call `project_load_partial` with ordered absolute `source_files`,
-`top_module`, and optional `include_directories` and `defines`. This compiles the
+For a fragment, call `project_load` with ordered absolute `source_files`,
+`top_module`, and optional `include_directories`, `defines` and `single_unit`. This compiles the
 selected files and their includes without discovering missing dependencies or
 loading the rest of the project. Add dependencies explicitly in a subsequent load.
 Local queries remain available with diagnostics; the load summary identifies
@@ -181,14 +167,17 @@ the C++ server. This uses Bender 0.32.1 at `.tools/bender` and may need network 
 Some generic top modules intentionally produce diagnostic errors; validation reports
 their counts. These commands make no model calls.
 
-The historical harness still compares `text-only`, `mcp`, and `mcp+skill`. It launches
-`build/cpp/slang-mcp --tool-profile full` to preserve its existing experiment API;
+The experiment harness compares `text-only`, `mcp`, and `mcp+skill`. It launches
+`build/cpp/slang-mcp` with the current explicit-file API;
 `SLANG_MCP_BINARY` selects another executable.
 Previous reports measure the former Python implementation and are not results for
 the C++ server. See [benchmarks/README.md](benchmarks/README.md) before running new
 agent experiments.
 
 Research on the C++ server (2026-11-15) is recorded separately:
+
+- [Unified catalog](benchmarks/research_unified/README.md): current 13-tool API,
+  compilation-unit tests, catalog size and a fresh Terra Max CVA6 smoke trial.
 
 - [Partial loading](benchmarks/research_partial/README.md): 72 fresh-server runs,
   four pinned projects, source reduction and missing-dependency checks.
@@ -201,6 +190,6 @@ Research on the C++ server (2026-11-15) is recorded separately:
 - [Focused analysis](benchmarks/research_focused/README.md): four real-design tasks,
   native core/full profiles and exact selected-field payload comparisons.
 
-The first three measurements predate the additive `project_load_partial` API.
+These historical measurements predate the current unified 13-tool API.
 These exploratory studies support explicit small source scopes and a reversible
 compact default; they do not establish universal tool necessity or model superiority.

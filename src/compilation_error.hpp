@@ -15,11 +15,12 @@ class CompilationError final : public std::invalid_argument {
           analysis_scope(config.metadata.contains("analysis_scope")
                              ? config.metadata.at("analysis_scope")
                              : "configured_sources"),
-          source_file_count(config.source_files.size()) {}
+          source_file_count(config.source_files.size()), single_unit(config.single_unit) {}
 
     const std::vector<Diagnostic> diagnostics;
     const std::vector<std::string> requested_top_modules;
     const std::string analysis_scope;
     const std::size_t source_file_count;
+    const bool single_unit;
 };
 } // namespace slang_mcp

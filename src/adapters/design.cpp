@@ -121,17 +121,28 @@ slang::Bag compilation_options(const ProjectConfig& config) {
     return options;
 }
 
+void add_unit(ast::Compilation& compilation, std::span<const std::string_view> sources,
+              slang::SourceManager& manager, const slang::Bag& options) {
+    auto tree = slang::syntax::SyntaxTree::fromFiles(sources, manager, options);
+    if (!tree) {
+        throw std::runtime_error("Slang source read failed: " + tree.error().first.message());
+    }
+    compilation.addSyntaxTree(*tree);
+}
+
 std::unique_ptr<ast::Compilation> compile(const ProjectConfig& config,
                                           slang::SourceManager& manager) {
     const auto options = compilation_options(config);
     const std::vector<std::string_view> sources(config.source_files.begin(),
                                                 config.source_files.end());
-    auto tree = slang::syntax::SyntaxTree::fromFiles(sources, manager, options);
-    if (!tree) {
-        throw std::runtime_error("Slang source read failed: " + tree.error().first.message());
-    }
     auto result = std::make_unique<ast::Compilation>(options);
-    result->addSyntaxTree(*tree);
+    if (config.single_unit) {
+        add_unit(*result, sources, manager, options);
+    } else {
+        for (const auto& source : sources) {
+            add_unit(*result, std::span(&source, 1), manager, options);
+        }
+    }
     result->getRoot();
     result->getAllDiagnostics();
     return result;

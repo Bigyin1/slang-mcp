@@ -1,5 +1,12 @@
 # Focused semantic analysis experiment
 
+Historical API notice: reproduce the commands below with the server and harness
+revision recorded in this report. The current server has one 13-tool catalog,
+uses direct-path `project_load`, and no longer accepts core/full profile flags.
+The last revision containing both profiles and these historical entry points is
+`5b448e8`; use that checkout for the old CLI/API. Saved measurements remain unchanged.
+
+
 Four single-task worker prompts are declared in `tasks.json`. They use complete copies of pinned real RTL trees under `/private/tmp/slang-focused-pilot`; workers choose concrete sources and dependencies. `source_provenance.json` records upstream pins and prior full-build provenance. It is controller evidence, not worker input. Worker prompts exclude sibling manifests, oracle files and prior results.
 
 `oracle.json` derives expectations directly from pinned source with exact lines and file hashes. It explicitly separates lexical source evidence from compiler-dependent paths, state classification and references. AXI defaults contain invalid member accesses because default request/response types are `logic`; diagnostics and this boundary are part of the task. IDMA asks about missing-package and missing-child boundaries without prescribing a loading sequence. FlooNoC tests nested parameter-dependent generation. CVA6 tests counter reference classification and staged updates. No worker outcomes are claimed here.

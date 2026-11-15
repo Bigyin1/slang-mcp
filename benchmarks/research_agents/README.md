@@ -18,14 +18,14 @@ benchmarks/.venv/bin/python -m benchmarks.research_agents.bridge \
 
 Example requests:
 
-The bridge now explicitly defaults to `--server-profile full` for compatibility
-with these historical tasks. For native compact-profile experiments, pass
-`--server-profile core`. A bridge allowlist can further restrict the selected
-native catalog, but cannot enable tools absent from that profile.
+The current bridge launches the server without profile flags. It exposes the
+current single catalog; `--allow` may restrict that catalog further. The historical
+pilot below used the API and skill of its recorded revision. Reproduce it with
+that revision's bridge/server; do not substitute the current API into old results.
 
 ```json
 {"method":"tools/list"}
-{"method":"tools/call","name":"project_load","arguments":{"source_file_lists":["/private/tmp/slang-partial-research/axi_fifo_core/source_files.f"],"include_directory_lists":["/private/tmp/slang-partial-research/axi_fifo_core/include_directories.f"],"top_module":"axi_fifo","defines":{"TARGET_FLIST":null,"TARGET_SYNTHESIS":null,"COMMON_CELLS_ASSERTS_OFF":null}}}
+{"method":"tools/call","name":"project_load","arguments":{"source_files":["/absolute/path/to/fifo.sv"],"top_module":"fifo","single_unit":true}}
 ```
 
 Use a distinct controller trace path per worker. End the PTY input after completing queries. This native route is a pilot with prompt-enforced file/tool restrictions, not OS isolation. Controller oracles remain readable to the broader host, so honest blinded workers must follow the explicit prohibition on reading them. Token counts and provider billing remain null; shell/bridge elapsed time is not total agent latency. Full worker latency must be recorded by the controller. Do not interpret missing telemetry as zero.

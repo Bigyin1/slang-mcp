@@ -71,6 +71,7 @@ Json SemanticService::inspect_instance(const Json& args) {
     const auto instance = manager_.design().instance(args.at("instance_path"));
     auto query = inspection_query(args);
     query["instance_path"] = instance.path;
+    query["fields"] = args.value("fields", Json::array({"parameters", "connections"}));
     const Sections sections = {
         {"parameters", [&] { return parameters(query, true); }},
         {"connections", [&] { return connections(query); }},
@@ -79,13 +80,14 @@ Json SemanticService::inspect_instance(const Json& args) {
                                 [&](const auto& item) { return item.parent == instance.path; }),
                          limit_for(args));
          }}};
-    return inspect_fields(args, sections, {{"instance", instance}});
+    return inspect_fields(query, sections, {{"instance", instance}});
 }
 
 Json SemanticService::inspect_module(const Json& args) {
     const auto definition = manager_.design().definition_reference(args.at("sv_module"));
     auto query = inspection_query(args);
     query["target"] = definition.symbol_id;
+    query["fields"] = args.value("fields", Json::array({"parameters", "ports"}));
     const Sections sections = {
         {"parameters", [&] { return parameters(query, false); }},
         {"ports",
@@ -108,6 +110,6 @@ Json SemanticService::inspect_module(const Json& args) {
                      return item.location.filename == definition.location.filename;
                  }));
          }}};
-    return inspect_fields(args, sections, {{"definition", definition}});
+    return inspect_fields(query, sections, {{"definition", definition}});
 }
 } // namespace slang_mcp

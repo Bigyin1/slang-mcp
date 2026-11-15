@@ -2,7 +2,6 @@
 #include "query.hpp"
 
 #include <filesystem>
-#include <fstream>
 #include <set>
 
 namespace slang_mcp {
@@ -25,39 +24,23 @@ void validate_path(const std::string& path, bool directory) {
     }
 }
 
-std::vector<std::string> read_list(const std::string& file, bool directories) {
-    std::vector<std::string> result;
-    validate_path(file, false);
-    std::ifstream input(file);
-    if (!input) {
-        throw std::invalid_argument("cannot read file list: " + file);
-    }
-    std::string line;
-    while (std::getline(input, line)) {
-        auto path = trim(line);
-        if (!path.empty()) {
-            validate_path(path, directories);
-            result.push_back(std::move(path));
-        }
-    }
-    return result;
-}
-
-std::vector<std::string> read_lists(const Json& lists, bool directories) {
-    std::vector<std::string> result;
-    for (const auto& item : lists) {
-        auto paths = read_list(item.get<std::string>(), directories);
-        result.insert(result.end(), paths.begin(), paths.end());
-    }
-    return result;
-}
-
 std::map<std::string, Text> parse_defines(const Json& values) {
     std::map<std::string, Text> result;
     for (const auto& [name, value] : values.items()) {
         result[name] = value.is_null() ? std::nullopt : Text(value.get<std::string>());
     }
     return result;
+}
+
+bool parse_single_unit(const Json& arguments) {
+    const auto value = arguments.find("single_unit");
+    if (value == arguments.end()) {
+        return true;
+    }
+    if (!value->is_boolean()) {
+        throw std::invalid_argument("single_unit must be a boolean");
+    }
+    return value->get<bool>();
 }
 
 Json nullable(const std::map<std::string, std::string>& values, const std::string& key) {
@@ -123,24 +106,6 @@ ProjectConfig project_from_arguments(const Json& arguments) {
     if (trim(result.logical_module).empty()) {
         throw std::invalid_argument("top_module must not be empty");
     }
-    result.source_files = read_lists(arguments.at("source_file_lists"), false);
-    if (result.source_files.empty()) {
-        throw std::invalid_argument("source_file_lists must contain at least one source file");
-    }
-    result.include_directories =
-        read_lists(option(arguments, "include_directory_lists", Json::array()), true);
-    result.defines = parse_defines(option(arguments, "defines", Json::object()));
-    result.top_modules = {result.logical_module};
-    result.metadata = {{"load_format", "absolute_path_file_lists"}};
-    return result;
-}
-
-ProjectConfig partial_project_from_arguments(const Json& arguments) {
-    ProjectConfig result;
-    result.logical_module = arguments.at("top_module").get<std::string>();
-    if (trim(result.logical_module).empty()) {
-        throw std::invalid_argument("top_module must not be empty");
-    }
     result.source_files = arguments.at("source_files").get<std::vector<std::string>>();
     if (result.source_files.empty()) {
         throw std::invalid_argument("source_files must contain at least one source file");
@@ -148,6 +113,7 @@ ProjectConfig partial_project_from_arguments(const Json& arguments) {
     result.include_directories =
         option(arguments, "include_directories", std::vector<std::string>{});
     result.defines = parse_defines(option(arguments, "defines", Json::object()));
+    result.single_unit = parse_single_unit(arguments);
     result.top_modules = {result.logical_module};
     result.metadata = {{"load_format", "absolute_paths"},
                        {"analysis_scope", "fragment"},
@@ -198,6 +164,7 @@ Json ProjectManager::summary() {
         diagnostics, [](const auto& item) { return item.severity == "warning"; });
     Json result = {{"logical_module", config_.logical_module},
                    {"source_file_count", config_.source_files.size()},
+                   {"single_unit", config_.single_unit},
                    {"include_directory_count", config_.include_directories.size()},
                    {"define_count", config_.defines.size()},
                    {"top_modules", design().tops()},
@@ -220,6 +187,7 @@ Json ProjectManager::info() {
     }
     return {{"summary", summary()},
             {"source_files", config_.source_files},
+            {"single_unit", config_.single_unit},
             {"include_directories", config_.include_directories},
             {"defines", defines},
             {"configured_top_modules", config_.top_modules},
@@ -233,6 +201,7 @@ Json ProjectManager::analysis_context() const {
         {"analysis_scope", scope == config_.metadata.end() ? "configured_sources" : scope->second},
         {"completeness", "not_verified"},
         {"source_file_count", config_.source_files.size()},
+        {"single_unit", config_.single_unit},
         {"top_modules", config_.top_modules}};
 }
 

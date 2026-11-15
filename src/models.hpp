@@ -24,6 +24,7 @@ using Text = std::optional<std::string>;
 using Width = std::optional<std::uint64_t>;
 
 struct ProjectConfig {
+    bool single_unit = true;
     std::string logical_module;
     std::vector<std::string> source_files;
     std::vector<std::string> include_directories;

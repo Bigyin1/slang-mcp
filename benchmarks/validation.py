@@ -51,22 +51,13 @@ async def _compile_workspace(name: str, workspace: Path) -> dict[str, object]:
     # Pylint cannot follow the async context manager's tuple assignment.
     # pylint: disable=used-before-assignment
     async with (
-        stdio_client(
-            StdioServerParameters(command=str(server_binary()), args=["--tool-profile", "full"])
-        ) as streams,
+        stdio_client(StdioServerParameters(command=str(server_binary()))) as streams,
         ClientSession(*streams) as session,
     ):
         await session.initialize()
         result = await session.call_tool(
             "project_load",
-            {
-                "source_file_lists": [str(workspace / "source_files.f")],
-                "include_directory_lists": [str(workspace / "include_directories.f")],
-                "top_module": (workspace / "top_module.txt").read_text(encoding="utf-8").strip(),
-                "defines": cast(
-                    "dict[str, object]", read_object(workspace / "projects.json")[name]
-                )["defines"],
-            },
+            _project_arguments(name, workspace),
         )
     # pylint: enable=used-before-assignment
     if result.is_error or result.structured_content is None:
@@ -75,3 +66,19 @@ async def _compile_workspace(name: str, workspace: Path) -> dict[str, object]:
         "errors": result.structured_content["diagnostic_error_count"],
         "sources": result.structured_content["source_file_count"],
     }
+
+
+def _project_arguments(name: str, workspace: Path) -> dict[str, object]:
+    """Validate the complete exported build inventory, retaining source order and duplicates."""
+    return {
+        "source_files": _read_paths(workspace / "source_files.f"),
+        "include_directories": _read_paths(workspace / "include_directories.f"),
+        "top_module": (workspace / "top_module.txt").read_text(encoding="utf-8").strip(),
+        "defines": cast("dict[str, object]", read_object(workspace / "projects.json")[name])[
+            "defines"
+        ],
+    }
+
+
+def _read_paths(path: Path) -> list[str]:
+    return [line.strip() for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]

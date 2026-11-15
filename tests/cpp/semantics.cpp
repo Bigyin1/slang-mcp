@@ -197,11 +197,10 @@ module top(input logic a, output logic y);
 endmodule
 )sv");
     SemanticService service(SnapshotPolicy::Disabled);
-    REQUIRE(
-        service
-            .call("project_load_partial",
-                  {{"source_files", {project.path("design.sv").string()}}, {"top_module", "top"}})
-            .at("diagnostic_error_count") >= 2);
+    REQUIRE(service
+                .call("project_load", {{"source_files", {project.path("design.sv").string()}},
+                                       {"top_module", "top"}})
+                .at("diagnostic_error_count") >= 2);
     const auto result = service.call("get_diagnostics", {{"severity", "error"}});
     REQUIRE(result.at("analysis").at("analysis_scope") == "fragment");
     REQUIRE(result.at("analysis").at("completeness") == "not_verified");
@@ -229,9 +228,8 @@ module top(input logic a, output logic y);
 endmodule
 )sv");
     SemanticService service(SnapshotPolicy::Disabled);
-    (void)service.call(
-        "project_load_partial",
-        {{"source_files", {project.path("design.sv").string()}}, {"top_module", "top"}});
+    (void)service.call("project_load", {{"source_files", {project.path("design.sv").string()}},
+                                        {"top_module", "top"}});
     const auto result = service.call("get_diagnostics", {{"severity", "error"}});
     REQUIRE_FALSE(result.at("diagnostics").empty());
     for (const auto& diagnostic : result.at("diagnostics")) {
@@ -242,4 +240,72 @@ endmodule
                 .at("ports")
                 .at("total_count") == 2);
 }
+TEST_CASE("Compilation units control macro and unit declaration sharing") {
+    Project project;
+    const auto single_unit = GENERATE(true, false);
+    SECTION("Macro lifetime") {
+        project.write("first.sv", "`define SHARED_WIDTH 7\n");
+        project.write("second.sv", "module top; logic [`SHARED_WIDTH-1:0] data; endmodule\n");
+    }
+    SECTION("Unit declaration lifetime") {
+        project.write("first.sv", "typedef logic [6:0] shared_t;\n");
+        project.write("second.sv", "module top; shared_t data; endmodule\n");
+    }
+    SemanticService service;
+    auto arguments = project.arguments({"first.sv", "second.sv"});
+    arguments["single_unit"] = single_unit;
+    const auto summary = service.call("project_load", arguments);
+    REQUIRE((summary.at("diagnostic_error_count") == 0) == single_unit);
+    REQUIRE(summary.at("single_unit") == single_unit);
+    REQUIRE(service.call("project_info", {}).at("single_unit") == single_unit);
+    REQUIRE(service.call("get_diagnostics", {}).at("analysis").at("single_unit") == single_unit);
+    REQUIRE(service.call("project_reload", {}).at("single_unit") == single_unit);
+}
+
+TEST_CASE("Packages includes and predefined macros work in separate units") {
+    Project project;
+    std::filesystem::create_directory(project.path("includes"));
+    project.write("includes/common.svh", "typedef logic [`WIDTH-1:0] word_t;\n");
+    project.write("first.sv", "`include \"common.svh\"\npackage shared; parameter int N=7; "
+                              "endpackage\nmodule child(input word_t a); endmodule\n");
+    project.write("second.sv",
+                  "`include \"common.svh\"\nmodule top; word_t a; child u(a); initial a "
+                  "= shared::N; endmodule\n");
+    SemanticService service;
+    auto arguments = project.arguments({"first.sv", "second.sv"});
+    arguments["single_unit"] = false;
+    arguments["include_directories"] = {project.path("includes").string()};
+    arguments["defines"] = {{"WIDTH", "7"}};
+    REQUIRE(service.call("project_load", arguments).at("diagnostic_error_count") == 0);
+    REQUIRE(service.call("get_ports", {{"sv_module", "child"}}).at("items").front().at("width") ==
+            7);
+}
+
+TEST_CASE("Single unit defaults preserve ordered source preprocessing") {
+    Project project;
+    project.write("first.sv", "`define WIDTH 7\n");
+    project.write("second.sv", "module top(input logic [`WIDTH-1:0] a); endmodule\n");
+    SemanticService service;
+    REQUIRE(service.call("project_load", project.arguments({"first.sv", "second.sv"}))
+                .at("single_unit") == true);
+    REQUIRE(service.call("get_ports", {{"sv_module", "top"}}).at("items").front().at("width") == 7);
+    REQUIRE(service.call("project_load", project.arguments({"second.sv", "first.sv"}))
+                .at("diagnostic_error_count") > 0);
+}
+
+TEST_CASE("Invalid compilation unit modes preserve the active project") {
+    Project project;
+    project.write("design.sv", "module top; endmodule\n");
+    SemanticService service;
+    auto arguments = project.arguments();
+    arguments["single_unit"] = false;
+    const auto summary = service.call("project_load", arguments);
+    const auto invalid =
+        GENERATE(Json(nullptr), Json(0), Json(1), Json("false"), Json::array(), Json::object());
+    arguments["single_unit"] = invalid;
+    REQUIRE_THROWS_AS(service.call("project_load", arguments), std::invalid_argument);
+    REQUIRE(service.call("project_info", {}).at("summary") == summary);
+    REQUIRE(service.call("project_reload", {}).at("single_unit") == false);
+}
+
 } // namespace slang_mcp::test

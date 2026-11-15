@@ -1,5 +1,12 @@
 # Partial-design loading experiment
 
+Historical API notice: reproduce the commands below with the server and harness
+revision recorded in this report. The current server has one 13-tool catalog,
+uses direct-path `project_load`, and no longer accepts core/full profile flags.
+The last revision containing both profiles and these historical entry points is
+`5b448e8`; use that checkout for the old CLI/API. Saved measurements remain unchanged.
+
+
 The additive `project_load_partial` API was implemented after the 72-run study.
 `native_api.py` validates it directly against real iDMA and CVA6 sources:
 `uv run --project benchmarks python -m benchmarks.research_partial.native_api`.

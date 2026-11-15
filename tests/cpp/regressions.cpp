@@ -13,9 +13,8 @@ TEST_CASE("Preprocessing preserves ordered packages includes and defines") {
     project.write(
         "design.sv",
         "module top; types::word_t data; `ifdef EXTRA\nlogic added;\n`endif\nendmodule\n");
-    project.write("includes.f", project.path("").string());
     auto args = project.arguments({"types.sv", "design.sv"});
-    args["include_directory_lists"] = {project.path("includes.f").string()};
+    args["include_directories"] = {project.path("").string()};
     args["defines"] = {{"EXTRA", nullptr}};
     SemanticService service;
     REQUIRE(service.call("project_load", args).at("diagnostic_error_count") == 0);
@@ -231,7 +230,7 @@ endmodule
     SemanticService service;
     const Json args = {{"source_files", {project.path("fragment.sv").string()}},
                        {"top_module", "fragment"}};
-    const auto loaded = service.call("project_load_partial", args);
+    const auto loaded = service.call("project_load", args);
     REQUIRE(loaded.at("analysis_scope") == "fragment");
     REQUIRE(loaded.at("completeness") == "not_verified");
     REQUIRE(loaded.at("parameter_context") == "standalone_top");
@@ -248,7 +247,7 @@ endmodule
     project.write("child.sv", "module missing_child(input logic [6:0] data); endmodule\n");
     auto expanded = args;
     expanded["source_files"].push_back(project.path("child.sv").string());
-    REQUIRE(service.call("project_load_partial", expanded).at("diagnostic_error_count") == 0);
+    REQUIRE(service.call("project_load", expanded).at("diagnostic_error_count") == 0);
     REQUIRE(service.call("find_instance", {{"query", "fragment.u"}}).at("sv_module") ==
             "missing_child");
 }
@@ -263,7 +262,7 @@ TEST_CASE("Partial loading supports ordered packages includes and build defines"
                                  "present;\n`endif\nendmodule\n");
     SemanticService service;
     REQUIRE(service
-                .call("project_load_partial",
+                .call("project_load",
                       {{"source_files",
                         {project.path("types.sv").string(), project.path("fragment.sv").string()}},
                        {"top_module", "fragment"},
@@ -286,7 +285,7 @@ TEST_CASE("Invalid partial inputs leave the previous design active") {
     const auto sources = GENERATE(Json::array(), Json::array({"relative.sv"}),
                                   Json::array({"/missing/fragment.sv"}));
     REQUIRE_THROWS_AS(
-        service.call("project_load_partial", {{"source_files", sources}, {"top_module", "leaf"}}),
+        service.call("project_load", {{"source_files", sources}, {"top_module", "leaf"}}),
         std::invalid_argument);
     REQUIRE(service.call("project_info", {}) == previous);
 }
@@ -301,11 +300,10 @@ TEST_CASE("A fragment top does not inherit unavailable parent parameter override
                 .at("items")
                 .front()
                 .at("integer_value") == 32);
-    (void)service.call("project_load_partial",
-                       {{"source_files", {project.path("design.sv").string()}},
-                        {"top_module", "leaf"},
-                        {"include_directories", nullptr},
-                        {"defines", nullptr}});
+    (void)service.call("project_load", {{"source_files", {project.path("design.sv").string()}},
+                                        {"top_module", "leaf"},
+                                        {"include_directories", nullptr},
+                                        {"defines", nullptr}});
     REQUIRE(service.call("get_instance_parameters", {{"instance_path", "leaf"}})
                 .at("parameters")
                 .at("items")
@@ -317,9 +315,9 @@ TEST_CASE("A fragment top does not inherit unavailable parent parameter override
     REQUIRE_THROWS_AS(service.call("project_reload", {}), std::invalid_argument);
     REQUIRE(service.call("project_info", {}) == active);
     project.write("design.sv", hierarchy_rtl);
-    REQUIRE_FALSE(service.call("project_load", project.arguments()).contains("analysis_scope"));
+    REQUIRE(service.call("project_load", project.arguments()).at("analysis_scope") == "fragment");
 }
-TEST_CASE("Focused inspections preserve selected legacy sections and identity") {
+TEST_CASE("Focused inspections preserve selected sections and identity") {
     Project project;
     project.write("design.sv", hierarchy_rtl);
     SemanticService service;
@@ -344,6 +342,37 @@ TEST_CASE("Focused inspections preserve selected legacy sections and identity") 
     REQUIRE_THROWS(service.call(tool, args));
     args["fields"] = nullptr;
     REQUIRE_THROWS_AS(service.call(tool, args), std::invalid_argument);
+}
+
+TEST_CASE("Inspection defaults return signatures without extra sections") {
+    Project project;
+    project.write("design.sv", hierarchy_rtl);
+    SemanticService service(SnapshotPolicy::Disabled);
+    (void)service.call("project_load", project.arguments());
+    const auto module = service.call("inspect_module", {{"sv_module", "leaf"}});
+    REQUIRE(module.size() == 3);
+    REQUIRE(module.contains("definition"));
+    REQUIRE(module.contains("parameters"));
+    REQUIRE(module.contains("ports"));
+    const auto instance = service.call("inspect_instance", {{"instance_path", "top.u_a"}});
+    REQUIRE(instance.size() == 3);
+    REQUIRE(instance.contains("instance"));
+    REQUIRE(instance.contains("parameters"));
+    REQUIRE(instance.contains("connections"));
+    REQUIRE(service.call("inspect_instance", {{"instance_path", "top"}, {"fields", {"children"}}})
+                .at("children")
+                .at("total_count") == 4);
+}
+
+TEST_CASE("Reference direction filters include compound accesses") {
+    Project project;
+    project.write("design.sv", "module top; int count; initial count += 1; endmodule\n");
+    SemanticService service(SnapshotPolicy::Disabled);
+    (void)service.call("project_load", project.arguments());
+    const auto kind = GENERATE("read", "write", "read_write");
+    const auto result = service.call("get_references", {{"symbol", "top.count"}, {"kind", kind}});
+    REQUIRE(result.at("total_count") == 1);
+    REQUIRE(result.at("items").front().at("kind") == "read_write");
 }
 
 TEST_CASE("Focused module inspections validate target kind before selecting sections") {

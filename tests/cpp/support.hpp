@@ -35,12 +35,11 @@ class Project {
     }
 
     [[nodiscard]] Json arguments(const std::vector<std::string>& files = {"design.sv"}) const {
-        std::string list;
+        std::vector<std::string> sources;
         for (const auto& file : files) {
-            list += path(file).string() + "\n";
+            sources.push_back(path(file).string());
         }
-        write("sources.f", list);
-        return {{"source_file_lists", {path("sources.f").string()}}, {"top_module", "top"}};
+        return {{"source_files", sources}, {"top_module", "top"}};
     }
 
   private:

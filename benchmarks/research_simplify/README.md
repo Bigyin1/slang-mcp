@@ -1,5 +1,12 @@
 # Catalog simplification study
 
+Historical API notice: reproduce the commands below with the server and harness
+revision recorded in this report. The current server has one 13-tool catalog,
+uses direct-path `project_load`, and no longer accepts core/full profile flags.
+The last revision containing both profiles and these historical entry points is
+`5b448e8`; use that checkout for the old CLI/API. Saved measurements remain unchanged.
+
+
 The default catalog should prioritize bounded fragment analysis. The agent chooses
 an explicit ordered file set, top, includes and defines, and expands that set when
 the question needs more evidence. No automatic dependency closure is proposed.

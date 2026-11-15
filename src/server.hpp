@@ -1,6 +1,4 @@
 #pragma once
-#include <cstdint>
 namespace slang_mcp {
-enum class ToolProfile : std::uint8_t { Core, Full };
-int run_server(ToolProfile profile = ToolProfile::Core);
+int run_server();
 } // namespace slang_mcp

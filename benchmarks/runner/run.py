@@ -37,9 +37,15 @@ def prompt(case: Case, mode: str) -> str:
     )
     if mode != "text-only":
         base += (
-            "Slang MCP is available. Call project_load with absolute paths (obtain the "
-            "workspace path with pwd) to source_files.f and include_directories.f, "
-            "the defines from projects.json, and the top from top_module.txt.\n\n"
+            "Slang MCP is available. Read source_files.f as an ordered inventory. "
+            "Choose the smallest relevant set of source files and its dependencies, "
+            "preserving their inventory order. Call project_load with those actual absolute "
+            "paths in source_files, actual directories from include_directories.f in "
+            "include_directories, and defines from projects.json. Choose the relevant "
+            "top_module; use top_module.txt when the question needs the supplied project top. "
+            "Add dependencies and call project_load again if diagnostics or the question "
+            "require them. single_unit defaults to true; set it to false only when separate "
+            "compilation units are needed.\n\n"
         )
     base += case.question
     if mode == "mcp+skill":

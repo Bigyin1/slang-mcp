@@ -16,10 +16,11 @@ Json facts_for(const Json& args, adapters::Design& design, const Json& instance)
 }
 
 bool reference_matches(const Reference& item, const Text& access, const Text& kind) {
-    if (access) {
-        return item.kind == *access || item.kind == "read_write";
+    const auto filter = access.value_or(kind.value_or(""));
+    if (filter == "read" || filter == "write") {
+        return item.kind == filter || item.kind == "read_write";
     }
-    return !kind || item.kind == *kind || item.context == *kind;
+    return filter.empty() || item.kind == filter || item.context == filter;
 }
 
 std::vector<Procedure> module_procedures(adapters::Design& design, const std::string& module) {

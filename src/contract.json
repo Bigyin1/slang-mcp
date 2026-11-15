@@ -1,160 +1,52 @@
 [
   {
     "name": "project_load",
-    "description": "Compile one SystemVerilog top from ordered file lists. Pass package lists first, then RTL and model lists. Each non-empty list entry must be an absolute path; source order and duplicates are preserved.",
+    "description": "Compile one SystemVerilog top from explicit ordered source_files. Paths must be absolute and exist; source order and duplicates are preserved. Supply child modules, packages, include_directories and defines explicitly. Missing dependencies remain diagnostics. The top uses standalone parameter defaults; completeness is not verified.",
     "inputSchema": {
       "properties": {
-        "source_file_lists": {
-          "items": {
-            "type": "string"
-          },
-          "title": "Source File Lists",
-          "type": "array"
-        },
         "top_module": {
-          "title": "Top Module",
           "type": "string"
         },
-        "include_directory_lists": {
-          "anyOf": [
-            {
-              "items": {
+        "defines": {
+          "additionalProperties": {
+            "anyOf": [
+              {
                 "type": "string"
               },
-              "type": "array"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Include Directory Lists"
-        },
-        "defines": {
-          "anyOf": [
-            {
-              "additionalProperties": {
-                "anyOf": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "type": "object"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Defines"
-        }
-      },
-      "required": [
-        "source_file_lists",
-        "top_module"
-      ],
-      "title": "project_loadArguments",
-      "type": "object"
-    },
-    "outputSchema": {
-      "additionalProperties": true,
-      "title": "project_loadDictOutput",
-      "type": "object"
-    },
-    "annotations": {
-      "readOnlyHint": true,
-      "destructiveHint": false,
-      "openWorldHint": false
-    }
-  },
-  {
-    "name": "project_load_partial",
-    "description": "Analyze a SystemVerilog fragment from an explicit ordered source_files array and one top_module. Paths must be absolute and exist. Only supplied files and includes are compiled; dependencies are not discovered. Add required child modules and packages explicitly. Missing definitions remain diagnostics and do not prevent analysis. The selected top uses its standalone defaults, independent of unavailable parent instance overrides; completeness is not verified.",
-    "inputSchema": {
-      "properties": {
-        "top_module": {
-          "title": "Top Module",
-          "type": "string"
-        },
-        "defines": {
-          "anyOf": [
-            {
-              "additionalProperties": {
-                "anyOf": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "type": "object"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Defines"
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "type": "object"
         },
         "source_files": {
           "items": {
             "type": "string"
           },
-          "title": "Source Files",
           "type": "array",
           "minItems": 1
         },
         "include_directories": {
-          "anyOf": [
-            {
-              "items": {
-                "type": "string"
-              },
-              "type": "array"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Include Directories"
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "single_unit": {
+          "type": "boolean",
+          "default": true,
+          "description": "Compile ordered sources as one compilation unit, sharing macros and compilation-unit declarations. Set false for a separate compilation unit per file."
         }
       },
       "required": [
         "source_files",
         "top_module"
       ],
-      "title": "project_load_partialArguments",
       "type": "object"
     },
     "outputSchema": {
       "additionalProperties": true,
-      "title": "project_load_partialDictOutput",
-      "type": "object"
-    },
-    "annotations": {
-      "readOnlyHint": true,
-      "destructiveHint": false,
-      "openWorldHint": false
-    }
-  },
-  {
-    "name": "project_reload",
-    "description": "Rebuild and reindex the active project from the same direct build inputs. Call it only after RTL or build inputs change; batch semantic queries against one load.",
-    "inputSchema": {
-      "properties": {},
-      "title": "project_reloadArguments",
-      "type": "object"
-    },
-    "outputSchema": {
-      "additionalProperties": true,
-      "title": "project_reloadDictOutput",
       "type": "object"
     },
     "annotations": {
@@ -168,12 +60,10 @@
     "description": "Return build and elaboration information without rebuilding.",
     "inputSchema": {
       "properties": {},
-      "title": "project_infoArguments",
       "type": "object"
     },
     "outputSchema": {
       "additionalProperties": true,
-      "title": "project_infoDictOutput",
       "type": "object"
     },
     "annotations": {
@@ -189,65 +79,16 @@
       "properties": {
         "limit": {
           "default": 100,
-          "title": "Limit",
           "type": "integer"
         },
         "severity": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Severity"
+          "type": "string"
         }
       },
-      "title": "get_diagnosticsArguments",
       "type": "object"
     },
     "outputSchema": {
       "additionalProperties": true,
-      "title": "get_diagnosticsDictOutput",
-      "type": "object"
-    },
-    "annotations": {
-      "readOnlyHint": true,
-      "destructiveHint": false,
-      "openWorldHint": false
-    }
-  },
-  {
-    "name": "summarize_diagnostics_by_code",
-    "description": "Bounded diagnostic groups by Slang code, with severity counts and one example. Use get_diagnostics for individual locations and messages.",
-    "inputSchema": {
-      "properties": {
-        "severity": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Severity"
-        },
-        "limit": {
-          "default": 100,
-          "title": "Limit",
-          "type": "integer"
-        }
-      },
-      "title": "summarize_diagnostics_by_codeArguments",
-      "type": "object"
-    },
-    "outputSchema": {
-      "additionalProperties": true,
-      "title": "summarize_diagnostics_by_codeDictOutput",
       "type": "object"
     },
     "annotations": {
@@ -262,19 +103,16 @@
     "inputSchema": {
       "properties": {
         "name": {
-          "title": "Name",
           "type": "string"
         }
       },
       "required": [
         "name"
       ],
-      "title": "find_symbolArguments",
       "type": "object"
     },
     "outputSchema": {
       "additionalProperties": true,
-      "title": "find_symbolDictOutput",
       "type": "object"
     },
     "annotations": {
@@ -289,19 +127,16 @@
     "inputSchema": {
       "properties": {
         "identifier": {
-          "title": "Identifier",
           "type": "string"
         }
       },
       "required": [
         "identifier"
       ],
-      "title": "describe_symbolArguments",
       "type": "object"
     },
     "outputSchema": {
       "additionalProperties": true,
-      "title": "describe_symbolDictOutput",
       "type": "object"
     },
     "annotations": {
@@ -316,63 +151,16 @@
     "inputSchema": {
       "properties": {
         "root": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Root"
+          "type": "string"
         },
         "max_depth": {
-          "anyOf": [
-            {
-              "type": "integer"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Max Depth"
+          "type": "integer"
         }
       },
-      "title": "get_hierarchyArguments",
       "type": "object"
     },
     "outputSchema": {
       "additionalProperties": true,
-      "title": "get_hierarchyDictOutput",
-      "type": "object"
-    },
-    "annotations": {
-      "readOnlyHint": true,
-      "destructiveHint": false,
-      "openWorldHint": false
-    }
-  },
-  {
-    "name": "describe_instance",
-    "description": "Describe an elaborated instance and its direct children.",
-    "inputSchema": {
-      "properties": {
-        "path": {
-          "title": "Path",
-          "type": "string"
-        }
-      },
-      "required": [
-        "path"
-      ],
-      "title": "describe_instanceArguments",
-      "type": "object"
-    },
-    "outputSchema": {
-      "additionalProperties": true,
-      "title": "describe_instanceDictOutput",
       "type": "object"
     },
     "annotations": {
@@ -383,40 +171,38 @@
   },
   {
     "name": "get_references",
-    "description": "Bounded semantic references with conservative access classification.",
+    "description": "Bounded source-level semantic references. kind read or write includes read_write accesses; kind port_connection filters port-binding context. No netlist inference.",
     "inputSchema": {
       "properties": {
         "symbol": {
-          "title": "Symbol",
           "type": "string"
         },
         "kind": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Kind"
+          "type": "string",
+          "enum": [
+            "read",
+            "write",
+            "read_write",
+            "declaration",
+            "unknown",
+            "parameter_reference",
+            "port_connection",
+            "type_reference",
+            "instantiation"
+          ]
         },
         "limit": {
           "default": 100,
-          "title": "Limit",
           "type": "integer"
         }
       },
       "required": [
         "symbol"
       ],
-      "title": "get_referencesArguments",
       "type": "object"
     },
     "outputSchema": {
       "additionalProperties": true,
-      "title": "get_referencesDictOutput",
       "type": "object"
     },
     "annotations": {
@@ -431,194 +217,23 @@
     "inputSchema": {
       "properties": {
         "scope": {
-          "title": "Scope",
           "type": "string"
         },
         "kind": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Kind"
+          "type": "string"
         },
         "limit": {
           "default": 100,
-          "title": "Limit",
           "type": "integer"
         }
       },
       "required": [
         "scope"
       ],
-      "title": "list_symbolsArguments",
       "type": "object"
     },
     "outputSchema": {
       "additionalProperties": true,
-      "title": "list_symbolsDictOutput",
-      "type": "object"
-    },
-    "annotations": {
-      "readOnlyHint": true,
-      "destructiveHint": false,
-      "openWorldHint": false
-    }
-  },
-  {
-    "name": "get_ports",
-    "description": "Inspect default module or interface ports.",
-    "inputSchema": {
-      "properties": {
-        "sv_module": {
-          "title": "Sv Module",
-          "type": "string"
-        },
-        "limit": {
-          "default": 100,
-          "title": "Limit",
-          "type": "integer"
-        }
-      },
-      "required": [
-        "sv_module"
-      ],
-      "title": "get_portsArguments",
-      "type": "object"
-    },
-    "outputSchema": {
-      "additionalProperties": true,
-      "title": "get_portsDictOutput",
-      "type": "object"
-    },
-    "annotations": {
-      "readOnlyHint": true,
-      "destructiveHint": false,
-      "openWorldHint": false
-    }
-  },
-  {
-    "name": "get_parameters",
-    "description": "Declared defaults for a module, effective values for a nested instance.",
-    "inputSchema": {
-      "properties": {
-        "target": {
-          "title": "Target",
-          "type": "string"
-        },
-        "limit": {
-          "default": 100,
-          "title": "Limit",
-          "type": "integer"
-        }
-      },
-      "required": [
-        "target"
-      ],
-      "title": "get_parametersArguments",
-      "type": "object"
-    },
-    "outputSchema": {
-      "additionalProperties": true,
-      "title": "get_parametersDictOutput",
-      "type": "object"
-    },
-    "annotations": {
-      "readOnlyHint": true,
-      "destructiveHint": false,
-      "openWorldHint": false
-    }
-  },
-  {
-    "name": "get_instance_parameters",
-    "description": "Effective parameters of an elaborated instance, including a top. Optional names selects exact parameter names.",
-    "inputSchema": {
-      "properties": {
-        "instance_path": {
-          "title": "Instance Path",
-          "type": "string"
-        },
-        "limit": {
-          "default": 100,
-          "title": "Limit",
-          "type": "integer"
-        },
-        "names": {
-          "anyOf": [
-            {
-              "items": {
-                "type": "string"
-              },
-              "type": "array"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Names"
-        }
-      },
-      "required": [
-        "instance_path"
-      ],
-      "title": "get_instance_parametersArguments",
-      "type": "object"
-    },
-    "outputSchema": {
-      "additionalProperties": true,
-      "title": "get_instance_parametersDictOutput",
-      "type": "object"
-    },
-    "annotations": {
-      "readOnlyHint": true,
-      "destructiveHint": false,
-      "openWorldHint": false
-    }
-  },
-  {
-    "name": "get_instance_connections",
-    "description": "Resolved formal ports, actual expressions, and referenced symbols; source-level connectivity. Optional ports selects exact formal names.",
-    "inputSchema": {
-      "properties": {
-        "instance_path": {
-          "title": "Instance Path",
-          "type": "string"
-        },
-        "limit": {
-          "default": 100,
-          "title": "Limit",
-          "type": "integer"
-        },
-        "ports": {
-          "anyOf": [
-            {
-              "items": {
-                "type": "string"
-              },
-              "type": "array"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Ports"
-        }
-      },
-      "required": [
-        "instance_path"
-      ],
-      "title": "get_instance_connectionsArguments",
-      "type": "object"
-    },
-    "outputSchema": {
-      "additionalProperties": true,
-      "title": "get_instance_connectionsDictOutput",
       "type": "object"
     },
     "annotations": {
@@ -633,80 +248,23 @@
     "inputSchema": {
       "properties": {
         "sv_module": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Sv Module"
+          "type": "string"
         },
         "name": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Name"
+          "type": "string"
         },
         "path_prefix": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Path Prefix"
+          "type": "string"
         },
         "limit": {
           "default": 100,
-          "title": "Limit",
           "type": "integer"
         }
       },
-      "title": "list_instancesArguments",
       "type": "object"
     },
     "outputSchema": {
       "additionalProperties": true,
-      "title": "list_instancesDictOutput",
-      "type": "object"
-    },
-    "annotations": {
-      "readOnlyHint": true,
-      "destructiveHint": false,
-      "openWorldHint": false
-    }
-  },
-  {
-    "name": "find_instance",
-    "description": "Resolve an exact path or unique instance name; report ambiguity.",
-    "inputSchema": {
-      "properties": {
-        "query": {
-          "title": "Query",
-          "type": "string"
-        }
-      },
-      "required": [
-        "query"
-      ],
-      "title": "find_instanceArguments",
-      "type": "object"
-    },
-    "outputSchema": {
-      "additionalProperties": true,
-      "title": "find_instanceDictOutput",
       "type": "object"
     },
     "annotations": {
@@ -721,155 +279,36 @@
     "inputSchema": {
       "properties": {
         "sv_module": {
-          "title": "Sv Module",
           "type": "string"
         },
         "parameter_names": {
-          "anyOf": [
-            {
-              "items": {
-                "type": "string"
-              },
-              "type": "array"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Parameter Names"
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
         },
         "port_names": {
-          "anyOf": [
-            {
-              "items": {
-                "type": "string"
-              },
-              "type": "array"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Port Names"
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
         },
         "limit": {
           "default": 100,
-          "title": "Limit",
           "type": "integer"
         },
         "fact_limit": {
           "default": 100,
-          "title": "Fact Limit",
           "type": "integer"
         }
       },
       "required": [
         "sv_module"
       ],
-      "title": "list_instance_factsArguments",
       "type": "object"
     },
     "outputSchema": {
       "additionalProperties": true,
-      "title": "list_instance_factsDictOutput",
-      "type": "object"
-    },
-    "annotations": {
-      "readOnlyHint": true,
-      "destructiveHint": false,
-      "openWorldHint": false
-    }
-  },
-  {
-    "name": "get_signal_reads",
-    "description": "Source-level semantic reads including read_write accesses.",
-    "inputSchema": {
-      "properties": {
-        "signal": {
-          "title": "Signal",
-          "type": "string"
-        },
-        "limit": {
-          "default": 100,
-          "title": "Limit",
-          "type": "integer"
-        }
-      },
-      "required": [
-        "signal"
-      ],
-      "title": "get_signal_readsArguments",
-      "type": "object"
-    },
-    "outputSchema": {
-      "additionalProperties": true,
-      "title": "get_signal_readsDictOutput",
-      "type": "object"
-    },
-    "annotations": {
-      "readOnlyHint": true,
-      "destructiveHint": false,
-      "openWorldHint": false
-    }
-  },
-  {
-    "name": "get_signal_writes",
-    "description": "Source-level writes, with assignment or port context.",
-    "inputSchema": {
-      "properties": {
-        "signal": {
-          "title": "Signal",
-          "type": "string"
-        },
-        "limit": {
-          "default": 100,
-          "title": "Limit",
-          "type": "integer"
-        }
-      },
-      "required": [
-        "signal"
-      ],
-      "title": "get_signal_writesArguments",
-      "type": "object"
-    },
-    "outputSchema": {
-      "additionalProperties": true,
-      "title": "get_signal_writesDictOutput",
-      "type": "object"
-    },
-    "annotations": {
-      "readOnlyHint": true,
-      "destructiveHint": false,
-      "openWorldHint": false
-    }
-  },
-  {
-    "name": "get_procedural_blocks",
-    "description": "Elaborated procedural blocks with bounded read/write sets.",
-    "inputSchema": {
-      "properties": {
-        "sv_module": {
-          "title": "Sv Module",
-          "type": "string"
-        },
-        "limit": {
-          "default": 100,
-          "title": "Limit",
-          "type": "integer"
-        }
-      },
-      "required": [
-        "sv_module"
-      ],
-      "title": "get_procedural_blocksArguments",
-      "type": "object"
-    },
-    "outputSchema": {
-      "additionalProperties": true,
-      "title": "get_procedural_blocksDictOutput",
       "type": "object"
     },
     "annotations": {
@@ -884,71 +323,20 @@
     "inputSchema": {
       "properties": {
         "sv_module": {
-          "title": "Sv Module",
           "type": "string"
         },
         "limit": {
           "default": 100,
-          "title": "Limit",
           "type": "integer"
         }
       },
       "required": [
         "sv_module"
       ],
-      "title": "get_state_elementsArguments",
       "type": "object"
     },
     "outputSchema": {
       "additionalProperties": true,
-      "title": "get_state_elementsDictOutput",
-      "type": "object"
-    },
-    "annotations": {
-      "readOnlyHint": true,
-      "destructiveHint": false,
-      "openWorldHint": false
-    }
-  },
-  {
-    "name": "inspect_signal",
-    "description": "Compact signal description and bounded access summaries.",
-    "inputSchema": {
-      "properties": {
-        "signal": {
-          "title": "Signal",
-          "type": "string"
-        },
-        "limit": {
-          "default": 10,
-          "title": "Limit",
-          "type": "integer"
-        },
-        "fields": {
-          "description": "Sections to return; omitted returns all sections. Identity is always included.",
-          "type": "array",
-          "items": {
-            "type": "string",
-            "enum": [
-              "reference_count",
-              "reads",
-              "writes",
-              "drivers",
-              "loads"
-            ]
-          },
-          "maxItems": 5
-        }
-      },
-      "required": [
-        "signal"
-      ],
-      "title": "inspect_signalArguments",
-      "type": "object"
-    },
-    "outputSchema": {
-      "additionalProperties": true,
-      "title": "inspect_signalDictOutput",
       "type": "object"
     },
     "annotations": {
@@ -959,20 +347,18 @@
   },
   {
     "name": "inspect_module",
-    "description": "Default signature and elaborated module usage summary.",
+    "description": "Module declaration signature and optional elaborated usage sections. Defaults to parameters and ports.",
     "inputSchema": {
       "properties": {
         "sv_module": {
-          "title": "Sv Module",
           "type": "string"
         },
         "limit": {
           "default": 100,
-          "title": "Limit",
           "type": "integer"
         },
         "fields": {
-          "description": "Sections to return; omitted returns all sections. Identity is always included.",
+          "description": "Sections to return; omitted returns parameters and ports. Identity is always included.",
           "type": "array",
           "items": {
             "type": "string",
@@ -1007,118 +393,10 @@
       "required": [
         "sv_module"
       ],
-      "title": "inspect_moduleArguments",
       "type": "object"
     },
     "outputSchema": {
       "additionalProperties": true,
-      "title": "inspect_moduleDictOutput",
-      "type": "object"
-    },
-    "annotations": {
-      "readOnlyHint": true,
-      "destructiveHint": false,
-      "openWorldHint": false
-    }
-  },
-  {
-    "name": "get_drivers",
-    "description": "Conservative source-level assignment and port drivers, not netlist drivers.",
-    "inputSchema": {
-      "properties": {
-        "signal": {
-          "title": "Signal",
-          "type": "string"
-        },
-        "limit": {
-          "default": 100,
-          "title": "Limit",
-          "type": "integer"
-        }
-      },
-      "required": [
-        "signal"
-      ],
-      "title": "get_driversArguments",
-      "type": "object"
-    },
-    "outputSchema": {
-      "additionalProperties": true,
-      "title": "get_driversDictOutput",
-      "type": "object"
-    },
-    "annotations": {
-      "readOnlyHint": true,
-      "destructiveHint": false,
-      "openWorldHint": false
-    }
-  },
-  {
-    "name": "get_loads",
-    "description": "Source-level semantic consumers, not synthesized loads.",
-    "inputSchema": {
-      "properties": {
-        "signal": {
-          "title": "Signal",
-          "type": "string"
-        },
-        "limit": {
-          "default": 100,
-          "title": "Limit",
-          "type": "integer"
-        }
-      },
-      "required": [
-        "signal"
-      ],
-      "title": "get_loadsArguments",
-      "type": "object"
-    },
-    "outputSchema": {
-      "additionalProperties": true,
-      "title": "get_loadsDictOutput",
-      "type": "object"
-    },
-    "annotations": {
-      "readOnlyHint": true,
-      "destructiveHint": false,
-      "openWorldHint": false
-    }
-  },
-  {
-    "name": "trace_connectivity",
-    "description": "Bounded source-level connectivity through direct port bindings and assignments; not netlist, timing, formal, or simulation evidence.",
-    "inputSchema": {
-      "properties": {
-        "signal": {
-          "title": "Signal",
-          "type": "string"
-        },
-        "direction": {
-          "default": "both",
-          "title": "Direction",
-          "type": "string"
-        },
-        "max_depth": {
-          "default": 5,
-          "title": "Max Depth",
-          "type": "integer"
-        },
-        "limit": {
-          "default": 100,
-          "title": "Limit",
-          "type": "integer"
-        }
-      },
-      "required": [
-        "signal"
-      ],
-      "title": "trace_connectivityArguments",
-      "type": "object"
-    },
-    "outputSchema": {
-      "additionalProperties": true,
-      "title": "trace_connectivityDictOutput",
       "type": "object"
     },
     "annotations": {
@@ -1129,20 +407,18 @@
   },
   {
     "name": "inspect_instance",
-    "description": "Rich effective instance signature, connections and children.",
+    "description": "Effective instance parameters and resolved source-level port connections, with optional children. Defaults to parameters and connections.",
     "inputSchema": {
       "properties": {
         "instance_path": {
-          "title": "Instance Path",
           "type": "string"
         },
         "limit": {
           "default": 100,
-          "title": "Limit",
           "type": "integer"
         },
         "fields": {
-          "description": "Sections to return; omitted returns all sections. Identity is always included.",
+          "description": "Sections to return; omitted returns parameters and connections. Identity is always included.",
           "type": "array",
           "items": {
             "type": "string",
@@ -1174,37 +450,10 @@
       "required": [
         "instance_path"
       ],
-      "title": "inspect_instanceArguments",
       "type": "object"
     },
     "outputSchema": {
       "additionalProperties": true,
-      "title": "inspect_instanceDictOutput",
-      "type": "object"
-    },
-    "annotations": {
-      "readOnlyHint": true,
-      "destructiveHint": false,
-      "openWorldHint": false
-    }
-  },
-  {
-    "name": "semantic_diff",
-    "description": "Compare structural semantic snapshots: signatures, parameters, hierarchy and diagnostics. Expression and procedure body changes are excluded; this is not a behavioral equivalence check.",
-    "inputSchema": {
-      "properties": {
-        "limit": {
-          "default": 100,
-          "title": "Limit",
-          "type": "integer"
-        }
-      },
-      "title": "semantic_diffArguments",
-      "type": "object"
-    },
-    "outputSchema": {
-      "additionalProperties": true,
-      "title": "semantic_diffDictOutput",
       "type": "object"
     },
     "annotations": {

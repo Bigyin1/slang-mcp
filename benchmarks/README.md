@@ -115,7 +115,7 @@ semantic_diff usage and upstream reports, then compares 30 versus 12 tools with
 two fresh Terra Max workers choosing their own fragment source files.
 The [focused analysis study](research_focused/README.md) extends this to eight
 fresh task/profile runs, selected-field payload comparisons, and malformed-RTL
-process checks. Its core/full profiles are enforced by the C++ server itself.
+process checks. Its historical core/full profiles were enforced by that server revision.
 The 29-tool measurements predate the additive partial-load tool. Historical Python
 results and the new native measurements must not be pooled.
 
@@ -123,6 +123,9 @@ The current baseline prompt no longer asks text-only agents to call unavailable
 MCP tools, and workspace paths now match the launch directory. This correction
 does not retroactively repair old experimental results.
 
-The historical runner and older research scripts explicitly launch
-`--tool-profile full` to preserve their tool surface. New native profile experiments
-use the bridge's `--server-profile core|full`; the executable itself defaults to core.
+The active runner and bridge use the current 13-tool API without profile flags.
+Agents pass chosen source paths directly to `project_load`; `single_unit` defaults
+to true. Build validation intentionally loads each complete pinned inventory.
+Historical research scripts and task prompts must run against their recorded
+revision (the last core/full implementation is `5b448e8`), including that revision's
+bridge and skill. Raw historical results are unchanged.
