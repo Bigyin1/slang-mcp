@@ -1,0 +1,21 @@
+{
+  "decision": "approved_for_freeze",
+  "scope": "Final public tasks/configuration, source-derived oracles, mutation provenance and materialized worker inputs for axi_review and idma_review.",
+  "source_review": "Each case has three independently source-grounded local findings: two semantic/interface errors and one explicit integration-contract violation. The recorded patches and hashes reproduce exactly the intended changes; no unrecorded RTL changes were found.",
+  "task_review": "Both prose tasks omit finding counts, defect locations and an enumerated defect-category checklist. Requirements and interface-preserving corrections are clear. The IDMA flush wording now permits ordinary enabled writes while requiring that flush itself not clear storage, including the explicit no-transfer preservation invariant.",
+  "boundary_review": "Both intentionally unavailable monitor definitions remain separate external boundaries. Local findings do not depend on inventing monitor behavior or a replacement implementation; complete integration sign-off remains conditional.",
+  "grading_review": "Each oracle has eight source-based criteria covering findings, explanations, repairs and calibrated disposition. Equivalent prose and symbol/hierarchy references are accepted; no MCP-only facts, tool-name bonus or compiler-diagnostic-string match is required.",
+  "configuration_review": "config.json and its top_module/include_directories keys now match the unchanged skill contract. Selected tops, include-directory values, COMMON_CELLS_ASSERTS_OFF and single_unit=true are unchanged. The revision changes public task precision and configuration naming only; RTL, oracle content and effective compiler configuration remain unchanged.",
+  "input_review": {
+    "axi_review": {
+      "workspace_manifest_sha256": "555e25e9f8cd90138456d1b867cc4d04bc57a443f0bbdae6769d4f614d733881",
+      "exact_runtime_parity": true
+    },
+    "idma_review": {
+      "workspace_manifest_sha256": "27076d6b8b7495f04bcf0f4a5b79a2085da87549d92c4cf7cd6a85a6b80102d9",
+      "exact_runtime_parity": true
+    },
+    "checks": "Final workspace manifests match every file in durable and materialized inputs, including hidden dependencies, with no extra files or symlinks. Runtime files are read-only. No corpus oracles, patches, provenance reports, compiler validation, proofs or controller review artifacts are present in worker inputs. Source selection remains the worker's choice."
+  },
+  "blocking_findings": []
+}

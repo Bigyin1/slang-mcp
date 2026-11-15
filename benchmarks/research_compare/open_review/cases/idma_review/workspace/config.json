@@ -1,0 +1,15 @@
+{
+  "single_unit": true,
+  "defines": {
+    "COMMON_CELLS_ASSERTS_OFF": null
+  },
+  "path_base": "workspace root",
+  "source_selection": "Select source dependencies from the supplied RTL; no source order is supplied.",
+  "unavailable_components": [
+    "idma_boundary_monitor"
+  ],
+  "top_module": "compare_idma_state",
+  "include_directories": [
+    "rtl/.bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/include"
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "load": {
+    "analysis_scope": "fragment",
+    "completeness": "not_verified",
+    "define_count": 1,
+    "diagnostic_error_count": 1,
+    "diagnostic_warning_count": 2,
+    "include_directory_count": 1,
+    "logical_module": "compare_idma_state",
+    "parameter_context": "standalone_top",
+    "single_unit": true,
+    "source_file_count": 6,
+    "top_modules": [
+      "compare_idma_state"
+    ]
+  },
+  "diagnostics": {
+    "analysis": {
+      "analysis_scope": "fragment",
+      "completeness": "not_verified",
+      "single_unit": true,
+      "source_file_count": 6,
+      "top_modules": [
+        "compare_idma_state"
+      ]
+    },
+    "diagnostics": [
+      {
+        "code": "PackedArrayConv",
+        "location": {
+          "column": 0,
+          "filename": "../../../../private/tmp/slang-open-review-corpus/checked/idma_review/baseline/rtl/.bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_fifo.sv",
+          "line": 126
+        },
+        "message": "implicit conversion from 'logic[194:0]' to 'lane_t[4:0][2:0]'",
+        "scope_hint": "unclassified",
+        "severity": "warning"
+      },
+      {
+        "code": "PackedArrayConv",
+        "location": {
+          "column": 0,
+          "filename": "../../../../private/tmp/slang-open-review-corpus/checked/idma_review/baseline/rtl/.bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_fifo.sv",
+          "line": 126
+        },
+        "message": "implicit conversion from 'logic[194:0]' to 'lane_t[4:0][2:0]'",
+        "scope_hint": "unclassified",
+        "severity": "warning"
+      },
+      {
+        "code": "UnknownModule",
+        "location": {
+          "column": 3,
+          "filename": "../../../../private/tmp/slang-open-review-corpus/checked/idma_review/baseline/integration.sv",
+          "line": 46
+        },
+        "message": "unknown module 'idma_boundary_monitor'",
+        "scope_hint": "possible_missing_dependency",
+        "severity": "error"
+      }
+    ],
+    "returned_count": 3,
+    "total_count": 3,
+    "truncated": false
+  }
+}

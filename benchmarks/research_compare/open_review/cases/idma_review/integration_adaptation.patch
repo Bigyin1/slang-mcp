@@ -1,0 +1,14 @@
+--- a/integration.sv
++++ b/integration.sv
+@@ -1,4 +1,4 @@
+-// Benchmark integration only; upstream modules and headers are copied unchanged.
++// Review-fixture integration. External boundary monitor is supplied by the system owner.
+ package compare_idma_state_pkg;
+   typedef struct packed {
+     logic [7:0] payload;
+@@ -43,4 +43,5 @@
+     .usage_o(packet_usage_o), .data_i(lane_data), .valid_i(&lane_valid),
+     .ready_o(packet_ready), .data_o, .valid_o, .ready_i
+   );
++  idma_boundary_monitor i_boundary_monitor (.clk_i, .rst_ni);
+ endmodule

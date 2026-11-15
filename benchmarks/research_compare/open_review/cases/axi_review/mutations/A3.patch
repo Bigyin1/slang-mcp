@@ -1,0 +1,11 @@
+--- a/rtl/src/axi_fifo.sv
++++ b/rtl/src/axi_fifo.sv
+@@ -82,7 +82,7 @@
+     );
+     fifo_v3 #(
+         .dtype(ar_chan_t),
+-        .DEPTH(Depth),
++        .DEPTH(Depth + 1),
+         .FALL_THROUGH(FallThrough)
+     ) i_ar_fifo (
+         .clk_i,

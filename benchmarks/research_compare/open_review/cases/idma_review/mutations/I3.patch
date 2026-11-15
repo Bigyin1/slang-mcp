@@ -1,0 +1,11 @@
+--- a/rtl/.bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_fifo.sv
++++ b/rtl/.bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_fifo.sv
+@@ -123,7 +123,7 @@
+     `FFARNC(write_pointer_q, write_pointer_n, clr_or_flush, '0, clk_i, rst_ni)
+     `FFARNC(status_cnt_q, status_cnt_n, clr_or_flush, '0, clk_i, rst_ni)
+ 
+-    `FFLARNC(mem_q, mem_n, !gate_clock, clr_i, {FifoDepth{data_t'('0)}}, clk_i, rst_ni)
++    `FFLARNC(mem_q, mem_n, !gate_clock, clr_or_flush, {FifoDepth{data_t'('0)}}, clk_i, rst_ni)
+ 
+ `ifndef COMMON_CELLS_ASSERTS_OFF
+     `ASSERT_INIT(depth_0, Depth > 0, "Depth must be greater than 0.")

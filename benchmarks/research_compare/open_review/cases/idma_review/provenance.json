@@ -1,0 +1,76 @@
+{
+  "classification": "exploratory_seeded_mutations_not_upstream_bugs",
+  "source_case": "idma_state",
+  "upstream": {
+    "repository": "https://github.com/pulp-platform/iDMA.git",
+    "commit": "2e0b0fe53b6f8823319e2428e2e9abc2db149b7d"
+  },
+  "common_cells": {
+    "repository": "https://github.com/pulp-platform/common_cells.git",
+    "commit": "63b7c50d43e462b59506f69d341ff1e40202866d",
+    "pin_source": "Bender.lock"
+  },
+  "copied_files": "All workspace rtl files derive from the existing real-RTL case with paths and license notices preserved. Only explicitly recorded mutations differ. Integration is benchmark-owned.",
+  "integration_adaptation": {
+    "description": "Original concrete integration retained; neutral header and intentionally unavailable, monitor-only external instance added. No stub, functional signal driver, or replacement external definition.",
+    "source_sha256": "a3055d38d55eb8b6aebef27d60f0c2f7e8d9d9b4b4dad3a345d01d9f89036f15",
+    "worker_sha256": "7561fd71d1a6cd2e85071d749dfd79319baf2dc382bbc4adedafe9393875d956",
+    "patch": "integration_adaptation.patch"
+  },
+  "mutations": [
+    {
+      "id": "I1",
+      "description": "Unknown lane FIFO named port",
+      "path": "rtl/src/backend/idma_dataflow_element.sv",
+      "source_case": "idma_state",
+      "source_path": "benchmarks/research_compare/cases/idma_state/rtl/src/backend/idma_dataflow_element.sv",
+      "source_sha256": "312efebf98b3ac716b4c85b8ec83adafe81654474f289307ce07110e273021be",
+      "single_mutation_sha256": "a8827bee603fb06aef86bece708cfbe1e9387fdc879554746a95b78445145c8f",
+      "worker_file_sha256": "a8827bee603fb06aef86bece708cfbe1e9387fdc879554746a95b78445145c8f",
+      "patch": "mutations/I1.patch",
+      "patch_sha256": "202b327b16744a7d8b32b653cfea28a847167ab66c311b2d89e471dc8cdd1dc8"
+    },
+    {
+      "id": "I2",
+      "description": "Value passed as packet storage type argument",
+      "path": "rtl/.bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_stream_fifo.sv",
+      "source_case": "idma_state",
+      "source_path": "benchmarks/research_compare/cases/idma_state/rtl/.bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_stream_fifo.sv",
+      "source_sha256": "d9bc22df925eaaf3266d866af6f09423c8ddafef0ffbbaed0f60f13c81398f1c",
+      "single_mutation_sha256": "c0c752efd023c326d80aa8d85de9193ca98620682a2653440e330873187f8b3e",
+      "worker_file_sha256": "c0c752efd023c326d80aa8d85de9193ca98620682a2653440e330873187f8b3e",
+      "patch": "mutations/I2.patch",
+      "patch_sha256": "47577c10fd8328538b4c01aed22869ce77b827ab3ee1510cef597dc63e65eb75"
+    },
+    {
+      "id": "I3",
+      "description": "Flush incorrectly clears packet payload storage",
+      "path": "rtl/.bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_fifo.sv",
+      "source_case": "idma_state",
+      "source_path": "benchmarks/research_compare/cases/idma_state/rtl/.bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_fifo.sv",
+      "source_sha256": "69e0a4505c37bc36781b307dbbd683bbb3c78774dfd2140d4a784e3e751e5f0a",
+      "single_mutation_sha256": "33ebd42a2c4b93c81f9bdbd547fdd2c6e02c023bedc5dab9dba6aa0f0427df09",
+      "worker_file_sha256": "33ebd42a2c4b93c81f9bdbd547fdd2c6e02c023bedc5dab9dba6aa0f0427df09",
+      "patch": "mutations/I3.patch",
+      "patch_sha256": "26157621113d1ebb7602c5b0e105ba57d69e4b5311353b50c3f09a84a593596c"
+    }
+  ],
+  "oracle_sha256_before_compiler_corroboration": "0ae010f5c331ca1ef57d9fa5add0f3164329b84a2d05705faa109f1da6c494c4",
+  "worker_hash_list": "workspace.sha256",
+  "worker_hash_list_sha256": "27076d6b8b7495f04bcf0f4a5b79a2085da87549d92c4cf7cd6a85a6b80102d9",
+  "timing": "Initial case, task, oracle, mutation records and workspace hashes were fixed before compiler corroboration. A recorded pre-freeze review revision changes only public task precision and configuration naming; source, oracle and effective compilation settings are unchanged. No follow-up workloads have started. Compiler output is not used to derive the oracle.",
+  "pre_freeze_review_revision": {
+    "reason": "Independent review clarification and compatibility with the unchanged original MCP skill; no follow-up workload has started.",
+    "previous_worker_hash_list_sha256": "3c7ba8ed156f61dd50c5be6f931d24e63caada563e7502098aa97f93e3b88292",
+    "current_worker_hash_list_sha256": "27076d6b8b7495f04bcf0f4a5b79a2085da87549d92c4cf7cd6a85a6b80102d9",
+    "changes": [
+      "Public compile_config.json renamed config.json; top/include_dirs keys renamed top_module/include_directories, with configuration values unchanged.",
+      "Task explicitly references config.json.",
+      "Flush requirement clarifies that flush itself must not clear storage; normal enabled writes may update storage. Explicit no-transfer preservation invariant retained."
+    ],
+    "task_sha256_before_revision": "35643032d020b3d3b4e37e9916e457628f6715e0be6558a18caa7744a47d7bf6",
+    "task_sha256_after_revision": "70d07b64f49458a738ec8a19b6aaa9201e2cc5d420d77ffc3ea3d8f065572e27",
+    "rtl_and_oracle_changed": false,
+    "timing": "After source-derived oracle and compiler corroboration, before final corpus freeze and before any follow-up model workload."
+  }
+}

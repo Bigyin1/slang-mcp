@@ -1,0 +1,253 @@
+{
+  "load": {
+    "analysis_scope": "fragment",
+    "completeness": "not_verified",
+    "define_count": 1,
+    "diagnostic_error_count": 1,
+    "diagnostic_warning_count": 19,
+    "include_directory_count": 2,
+    "logical_module": "compare_axi_types",
+    "parameter_context": "standalone_top",
+    "single_unit": true,
+    "source_file_count": 5,
+    "top_modules": [
+      "compare_axi_types"
+    ]
+  },
+  "diagnostics": {
+    "analysis": {
+      "analysis_scope": "fragment",
+      "completeness": "not_verified",
+      "single_unit": true,
+      "source_file_count": 5,
+      "top_modules": [
+        "compare_axi_types"
+      ]
+    },
+    "diagnostics": [
+      {
+        "code": "SignConversion",
+        "location": {
+          "column": 12,
+          "filename": "../../../../private/tmp/slang-open-review-corpus/checked/axi_review/A3/rtl/src/axi_pkg.sv",
+          "line": 117
+        },
+        "message": "implicit conversion changes signedness from 'shortint' to 'shortint unsigned'",
+        "scope_hint": "unclassified",
+        "severity": "warning"
+      },
+      {
+        "code": "CaseRedundantDefault",
+        "location": {
+          "column": 12,
+          "filename": "../../../../private/tmp/slang-open-review-corpus/checked/axi_review/A3/rtl/src/axi_pkg.sv",
+          "line": 155
+        },
+        "message": "'case' marked 'unique' has 'default' label",
+        "scope_hint": "unclassified",
+        "severity": "warning"
+      },
+      {
+        "code": "ArithOpMismatch",
+        "location": {
+          "column": 43,
+          "filename": "../../../../private/tmp/slang-open-review-corpus/checked/axi_review/A3/rtl/src/axi_pkg.sv",
+          "line": 179
+        },
+        "message": "arithmetic between operands of different types ('largest_addr_t' (aka 'logic[127:0]') and 'shortint unsigned')",
+        "scope_hint": "unclassified",
+        "severity": "warning"
+      },
+      {
+        "code": "ArithOpMismatch",
+        "location": {
+          "column": 74,
+          "filename": "../../../../private/tmp/slang-open-review-corpus/checked/axi_review/A3/rtl/src/axi_pkg.sv",
+          "line": 191
+        },
+        "message": "arithmetic between operands of different types ('shortint unsigned' and 'largest_addr_t' (aka 'logic[127:0]'))",
+        "scope_hint": "unclassified",
+        "severity": "warning"
+      },
+      {
+        "code": "ArithOpMismatch",
+        "location": {
+          "column": 48,
+          "filename": "../../../../private/tmp/slang-open-review-corpus/checked/axi_review/A3/rtl/src/axi_pkg.sv",
+          "line": 192
+        },
+        "message": "arithmetic between operands of different types ('shortint unsigned' and 'largest_addr_t' (aka 'logic[127:0]'))",
+        "scope_hint": "unclassified",
+        "severity": "warning"
+      },
+      {
+        "code": "SignConversion",
+        "location": {
+          "column": 12,
+          "filename": "../../../../private/tmp/slang-open-review-corpus/checked/axi_review/A3/rtl/src/axi_pkg.sv",
+          "line": 203
+        },
+        "message": "implicit conversion changes signedness from 'shortint' to 'shortint unsigned'",
+        "scope_hint": "unclassified",
+        "severity": "warning"
+      },
+      {
+        "code": "ArithOpMismatch",
+        "location": {
+          "column": 68,
+          "filename": "../../../../private/tmp/slang-open-review-corpus/checked/axi_review/A3/rtl/src/axi_pkg.sv",
+          "line": 203
+        },
+        "message": "arithmetic between operands of different types ('logic[143:0]' and 'largest_addr_t' (aka 'logic[127:0]'))",
+        "scope_hint": "unclassified",
+        "severity": "warning"
+      },
+      {
+        "code": "ArithOpMismatch",
+        "location": {
+          "column": 110,
+          "filename": "../../../../private/tmp/slang-open-review-corpus/checked/axi_review/A3/rtl/src/axi_pkg.sv",
+          "line": 203
+        },
+        "message": "arithmetic between operands of different types ('largest_addr_t' (aka 'logic[127:0]') and 'shortint unsigned')",
+        "scope_hint": "unclassified",
+        "severity": "warning"
+      },
+      {
+        "code": "ArithOpMismatch",
+        "location": {
+          "column": 125,
+          "filename": "../../../../private/tmp/slang-open-review-corpus/checked/axi_review/A3/rtl/src/axi_pkg.sv",
+          "line": 212
+        },
+        "message": "arithmetic between operands of different types ('largest_addr_t' (aka 'logic[127:0]') and 'shortint unsigned')",
+        "scope_hint": "unclassified",
+        "severity": "warning"
+      },
+      {
+        "code": "CaseRedundantDefault",
+        "location": {
+          "column": 12,
+          "filename": "../../../../private/tmp/slang-open-review-corpus/checked/axi_review/A3/rtl/src/axi_pkg.sv",
+          "line": 246
+        },
+        "message": "'case' marked 'unique' has 'default' label",
+        "scope_hint": "unclassified",
+        "severity": "warning"
+      },
+      {
+        "code": "CaseRedundantDefault",
+        "location": {
+          "column": 12,
+          "filename": "../../../../private/tmp/slang-open-review-corpus/checked/axi_review/A3/rtl/src/axi_pkg.sv",
+          "line": 265
+        },
+        "message": "'case' marked 'unique' has 'default' label",
+        "scope_hint": "unclassified",
+        "severity": "warning"
+      },
+      {
+        "code": "PackedArrayConv",
+        "location": {
+          "column": 22,
+          "filename": "../../../../private/tmp/slang-open-review-corpus/checked/axi_review/A3/rtl/.bender/git/checkouts/common_cells-3e2fcccecd7aee7b/src/fifo_v3.sv",
+          "line": 136
+        },
+        "message": "implicit conversion from 'logic[414:0]' to 'dtype[4:0]'",
+        "scope_hint": "unclassified",
+        "severity": "warning"
+      },
+      {
+        "code": "EmptyOutputPortConn",
+        "location": {
+          "column": 10,
+          "filename": "../../../../private/tmp/slang-open-review-corpus/checked/axi_review/A3/rtl/src/axi_fifo.sv",
+          "line": 77
+        },
+        "message": "output port 'usage_o' is explicitly connected to nothing",
+        "scope_hint": "unclassified",
+        "severity": "warning"
+      },
+      {
+        "code": "EmptyOutputPortConn",
+        "location": {
+          "column": 10,
+          "filename": "../../../../private/tmp/slang-open-review-corpus/checked/axi_review/A3/rtl/src/axi_fifo.sv",
+          "line": 94
+        },
+        "message": "output port 'usage_o' is explicitly connected to nothing",
+        "scope_hint": "unclassified",
+        "severity": "warning"
+      },
+      {
+        "code": "EmptyOutputPortConn",
+        "location": {
+          "column": 10,
+          "filename": "../../../../private/tmp/slang-open-review-corpus/checked/axi_review/A3/rtl/src/axi_fifo.sv",
+          "line": 111
+        },
+        "message": "output port 'usage_o' is explicitly connected to nothing",
+        "scope_hint": "unclassified",
+        "severity": "warning"
+      },
+      {
+        "code": "EmptyOutputPortConn",
+        "location": {
+          "column": 10,
+          "filename": "../../../../private/tmp/slang-open-review-corpus/checked/axi_review/A3/rtl/src/axi_fifo.sv",
+          "line": 128
+        },
+        "message": "output port 'usage_o' is explicitly connected to nothing",
+        "scope_hint": "unclassified",
+        "severity": "warning"
+      },
+      {
+        "code": "EmptyOutputPortConn",
+        "location": {
+          "column": 10,
+          "filename": "../../../../private/tmp/slang-open-review-corpus/checked/axi_review/A3/rtl/src/axi_fifo.sv",
+          "line": 145
+        },
+        "message": "output port 'usage_o' is explicitly connected to nothing",
+        "scope_hint": "unclassified",
+        "severity": "warning"
+      },
+      {
+        "code": "WidthExpand",
+        "location": {
+          "column": 60,
+          "filename": "../../../../private/tmp/slang-open-review-corpus/checked/axi_review/A3/rtl/src/axi_intf.sv",
+          "line": 256
+        },
+        "message": "implicit conversion expands from 8 to 16 bits",
+        "scope_hint": "unclassified",
+        "severity": "warning"
+      },
+      {
+        "code": "WidthExpand",
+        "location": {
+          "column": 60,
+          "filename": "../../../../private/tmp/slang-open-review-corpus/checked/axi_review/A3/rtl/src/axi_intf.sv",
+          "line": 260
+        },
+        "message": "implicit conversion expands from 8 to 16 bits",
+        "scope_hint": "unclassified",
+        "severity": "warning"
+      },
+      {
+        "code": "UnknownModule",
+        "location": {
+          "column": 3,
+          "filename": "../../../../private/tmp/slang-open-review-corpus/checked/axi_review/A3/integration.sv",
+          "line": 51
+        },
+        "message": "unknown module 'axi_boundary_monitor'",
+        "scope_hint": "possible_missing_dependency",
+        "severity": "error"
+      }
+    ],
+    "returned_count": 20,
+    "total_count": 20,
+    "truncated": false
+  }
+}

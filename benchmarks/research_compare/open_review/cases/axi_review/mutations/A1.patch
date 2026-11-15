@@ -1,0 +1,11 @@
+--- a/rtl/src/axi_fifo.sv
++++ b/rtl/src/axi_fifo.sv
+@@ -76,7 +76,7 @@
+         .empty_o   (aw_fifo_empty),
+         .usage_o   (),
+         .data_i    (slv_req_i.aw),
+-        .push_i    (slv_req_i.aw_valid && slv_resp_o.aw_ready),
++        .push_i    (slv_req_i.aw_valid_en && slv_resp_o.aw_ready),
+         .data_o    (mst_req_o.aw),
+         .pop_i     (mst_req_o.aw_valid && mst_resp_i.aw_ready)
+     );
