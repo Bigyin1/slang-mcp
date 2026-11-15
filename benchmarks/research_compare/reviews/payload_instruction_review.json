@@ -1,0 +1,40 @@
+{
+  "decision": "approved",
+  "previous_decision": "pending_replay_follow_up",
+  "original_follow_up_requirement": "Replace temporary-trace dependencies with durable arguments, support a fresh --output directory, preserve original evidence, and verify one fresh compiler-only replay reproduces the same metrics and retained projections.",
+  "scope": "Compiler-only payload probe code, README, recorded calls/results/provenance, and canonical benchmarks/skills/semantic.md changes.",
+  "measurement_review": "Independently recomputed canonical JSON byte counts, response hashes and retained-projection hashes from the six recorded compiler calls. Exactly two project_load and four list_instance_facts calls succeeded. Each comparison changes only the explicit empty-name filter. Requested sections, instance identities and outer pagination metadata are equal; removed sections contain empty items with zero total_count and truncated=false.",
+  "verified_bytes": {
+    "idma_state": {"before": 23565, "after": 2595, "reduction": 20970, "reduction_percent": 88.99},
+    "floo_config": {"before": 18094, "after": 16582, "reduction": 1512, "reduction_percent": 8.36}
+  },
+  "claim_limits": "The evidence supports these two query-level structured-payload reductions only. README/results appropriately make no model token, elapsed-time, monetary-cost or answer-quality savings claim. Structured counts exclude duplicated MCP text representation. Call durations remain diagnostic evidence rather than performance comparisons. No additional compiler or model calls were made during review.",
+  "instruction_review": "query.hpp::named returns all names when a filter is omitted or null, and none for an empty array. rtl_queries.cpp::facts_for collects both sections before filtering and still returns their envelopes. The bulk schema exposes parameter_names and port_names, with no fields selector. Updated guidance matches these semantics and avoids implying computation is skipped. Source-first query restraint is guidance, not an experimentally established efficiency improvement.",
+  "frozen_identity_review": "Current frozen binary and the two original input workspaces match the original committed authority. research_compare/skill.md remains unchanged with SHA256 d23b79058f114531ff76f575963e61dfaeca419347f700e92f5a7468aac454c0; only the canonical skill is revised.",
+  "readability_review": "The bounded probe separates path rebasing, retained projections, canonical encoding and call recording clearly. Existing MCP SDK transport and recorder are reused; no model inference path exists.",
+  "original_reproduction_notes_resolved": [
+    "Compiler replay currently requires the original public traces at hardcoded /private/tmp paths and line positions, alongside the frozen binary/input workspaces. Durable calls.json independently preserves the actual arguments and permits offline recomputation of all published measurements.",
+    "The entry point intentionally refuses existing evidence files. Replaying requires a fresh evidence destination or preserving/moving the recorded evidence first; the implementation does not provide a configurable output destination. These are reproducibility environment constraints, not defects in the recorded paired measurements."
+  ],
+  "replay_resolution": {
+    "status": "resolved",
+    "code_review": "The entry point requires --output and refuses existing destinations before compiler calls. It reads durable queries.json, binds relative paths to the committed manifest workspaces, rejects absolute or escaping saved paths, and fixes server cwd to the repository root. No original worker trace dependency remains. The original implementation is archived separately.",
+    "independent_evidence_checks": "Verified original evidence and archived-script hashes; current replay code/query hashes; actual fresh replay calls/results/provenance against replay_verification.json; and durable arguments rebased exactly to the original recorded arguments. Recomputed all fresh replay metrics and retained projections from its compiler responses and confirmed exact equality with original structured hashes and byte counts.",
+    "fresh_replay": "The author's fresh output contains exactly six successful semantic calls and zero model calls. Its selected input inventories remain unchanged. Review made no additional compiler or model calls.",
+    "documentation": "README clearly distinguishes original execution from the subsequent compiler-only replay, gives the fresh --output invocation, preserves original evidence, and retains the payload-only interpretation."
+  },
+  "verification": {
+    "recorded_measurement_assertions": "passed",
+    "fresh_replay_metrics_projections_arguments_and_hashes": "passed",
+    "original_evidence_preserved": "passed",
+    "saved_path_escape_rejection": "passed",
+    "current_frozen_binary_inputs_skill": "passed",
+    "ruff": "passed",
+    "ruff_format": "passed",
+    "strict_mypy": "passed, four source files",
+    "pylint": "passed, 10.00/10",
+    "xenon": "passed configured B/B/A thresholds"
+  },
+  "blocking_findings": [],
+  "reviewer_changes": "This review JSON only; no source edits, evidence overwrites or worker reruns."
+}

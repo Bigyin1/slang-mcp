@@ -1,0 +1,65 @@
+{
+  "binary": {
+    "actual_sha256": "eeecb677599bdd6d4563776456d5ab52bad2b5f52a5154e39f2e7cc0c87bbd19",
+    "expected_sha256": "eeecb677599bdd6d4563776456d5ab52bad2b5f52a5154e39f2e7cc0c87bbd19",
+    "path": "/private/tmp/slang-compare/bin/slang-mcp",
+    "valid": true
+  },
+  "frozen_input_hashes": {
+    "floo_config": {
+      "config.json": "3dceffde29d048c66a06ab79a8b549af5879bb15ac71a0a5360f236985dd60c3",
+      "rtl/LICENSE.axi": "6527a46225891b976fa94f634f6ee0cd22e1c7129d6f11c5c98c997627625fc7",
+      "rtl/LICENSE.common_cells": "6527a46225891b976fa94f634f6ee0cd22e1c7129d6f11c5c98c997627625fc7",
+      "rtl/axi_pkg.sv": "244bd5cb3c5bc58d786f2ed2f5eeefd910c4fe03a175f4a2888c6a2ea1c430dc",
+      "rtl/cc_fifo.sv": "69e0a4505c37bc36781b307dbbd683bbb3c78774dfd2140d4a784e3e751e5f0a",
+      "rtl/cc_lzc.sv": "62119065b214b01d98f47d8c2f342e16cae537e3eacfc41bfd5f4b709482f51e",
+      "rtl/cc_pkg.sv": "8fe1d23d619f4e11643d9a2c44a1a6f18b088f45888fca0ba7ef75e3f6872f92",
+      "rtl/cc_rr_arb_tree.sv": "eba4ba9912292c10599d0fd3c4a62ac672dd323ec5fa2ac06997dd2e8734a8fd",
+      "rtl/cc_stream_fifo.sv": "d9bc22df925eaaf3266d866af6f09423c8ddafef0ffbbaed0f60f13c81398f1c",
+      "rtl/floo_fifo.sv": "4368bfd3992a31cb34b368ee70b63b6117a7246dbd1079c4800e0e613c512c44",
+      "rtl/floo_pkg.sv": "a513b50d1372b8b956c49acb16cdcbf1fac4d1b0f22a98fdb396404f90d04a19",
+      "rtl/floo_vc_arbiter.sv": "9dbe63f51c66b9b0c0f26f18dea14167dbaf8650fc78bfdca772c96fe0edd48a",
+      "rtl/include/common_cells/assertions.svh": "e9606c554d2562f2d282455a676503dd14655da51774c7069ee59773061b4a31",
+      "rtl/include/common_cells/deprecated/registers.svh": "5b95018dd45ed472e78ea192039c332574bbc10cc53ccbb4221f14f77bb0c0d7",
+      "rtl/include/common_cells/registers.svh": "cd2133df2638447e7d55e4b3b16e4e856cb21d53bea03b35985f31abfecaa868",
+      "rtl/top.sv": "c9408bb8008bdb6fe3ddc5b67cd8e689ebf35bfacd069a2e4c0b0837a96ae04b",
+      "task.txt": "e01559384d2efaf43c080e8e54d9fa03ec85305f968f22e2425b556ce1d38232"
+    },
+    "idma_state": {
+      "config.json": "f521fd418a615c64fa989b64b6e37cbad6778fc174212af7eb3003ee3580a2f3",
+      "integration.sv": "a3055d38d55eb8b6aebef27d60f0c2f7e8d9d9b4b4dad3a345d01d9f89036f15",
+      "rtl/.bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/LICENSE": "6527a46225891b976fa94f634f6ee0cd22e1c7129d6f11c5c98c997627625fc7",
+      "rtl/.bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/include/common_cells/assertions.svh": "e9606c554d2562f2d282455a676503dd14655da51774c7069ee59773061b4a31",
+      "rtl/.bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/include/common_cells/deprecated/registers.svh": "5b95018dd45ed472e78ea192039c332574bbc10cc53ccbb4221f14f77bb0c0d7",
+      "rtl/.bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/include/common_cells/registers.svh": "cd2133df2638447e7d55e4b3b16e4e856cb21d53bea03b35985f31abfecaa868",
+      "rtl/.bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_fifo.sv": "69e0a4505c37bc36781b307dbbd683bbb3c78774dfd2140d4a784e3e751e5f0a",
+      "rtl/.bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_passthrough_stream_fifo.sv": "68de1c713e40d97950591111dccd37a7546025f7fe6750fa3092826422557352",
+      "rtl/.bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_pkg.sv": "8fe1d23d619f4e11643d9a2c44a1a6f18b088f45888fca0ba7ef75e3f6872f92",
+      "rtl/.bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_stream_fifo.sv": "d9bc22df925eaaf3266d866af6f09423c8ddafef0ffbbaed0f60f13c81398f1c",
+      "rtl/Bender.lock": "9e6c33f898dad20fd1b29cf8b07647b7d55fe8b42c36bd5cd72586fc2606557e",
+      "rtl/Bender.yml": "75d8973e3dee61eebd17d604c37818a8d1c9a1b86fc3587a5663615e811e50c2",
+      "rtl/LICENSE": "6527a46225891b976fa94f634f6ee0cd22e1c7129d6f11c5c98c997627625fc7",
+      "rtl/src/backend/idma_dataflow_element.sv": "312efebf98b3ac716b4c85b8ec83adafe81654474f289307ce07110e273021be",
+      "task.txt": "46ef87f2ca5ee3dd951e91005d7015ce9255240f681721c421bec5d818f8ec6c"
+    }
+  },
+  "inputs_before": {
+    "floo_config": {
+      "changed": [],
+      "expected_files": 17,
+      "missing": [],
+      "observed_files": 17,
+      "unexpected": [],
+      "valid": true
+    },
+    "idma_state": {
+      "changed": [],
+      "expected_files": 15,
+      "missing": [],
+      "observed_files": 15,
+      "unexpected": [],
+      "valid": true
+    }
+  },
+  "revision": "9de333a664c42ed1ecd6e304cd2e774de4cebcf4"
+}

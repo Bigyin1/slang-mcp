@@ -1,0 +1,71 @@
+[
+  {
+    "case": "idma_state",
+    "load_arguments": {
+      "top_module": "compare_idma_state",
+      "single_unit": true,
+      "defines": {
+        "COMMON_CELLS_ASSERTS_OFF": null
+      },
+      "include_directories": [
+        "rtl/.bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/include"
+      ],
+      "source_files": [
+        "rtl/.bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_pkg.sv",
+        "rtl/.bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_fifo.sv",
+        "rtl/.bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_stream_fifo.sv",
+        "rtl/.bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_passthrough_stream_fifo.sv",
+        "rtl/src/backend/idma_dataflow_element.sv",
+        "integration.sv"
+      ]
+    },
+    "baseline_arguments": {
+      "sv_module": "cc_passthrough_stream_fifo",
+      "parameter_names": [
+        "Depth",
+        "data_t",
+        "PrintInfo",
+        "SameCycleRW"
+      ],
+      "limit": 10,
+      "fact_limit": 10
+    },
+    "empty_filter": "port_names",
+    "retained_section": "parameters"
+  },
+  {
+    "case": "floo_config",
+    "load_arguments": {
+      "source_files": [
+        "rtl/axi_pkg.sv",
+        "rtl/cc_pkg.sv",
+        "rtl/floo_pkg.sv",
+        "rtl/cc_lzc.sv",
+        "rtl/cc_rr_arb_tree.sv",
+        "rtl/cc_fifo.sv",
+        "rtl/cc_stream_fifo.sv",
+        "rtl/floo_vc_arbiter.sv",
+        "rtl/floo_fifo.sv",
+        "rtl/top.sv"
+      ],
+      "top_module": "floo_config_top",
+      "include_directories": [
+        "rtl/include"
+      ],
+      "defines": {
+        "COMMON_CELLS_ASSERTS_OFF": null
+      },
+      "single_unit": true
+    },
+    "baseline_arguments": {
+      "sv_module": "cc_stream_fifo",
+      "port_names": [
+        "clr_i"
+      ],
+      "limit": 20,
+      "fact_limit": 1
+    },
+    "empty_filter": "parameter_names",
+    "retained_section": "connections"
+  }
+]

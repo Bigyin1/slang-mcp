@@ -1,0 +1,17 @@
+Evaluate the supplied anonymized SystemVerilog answers against the fixed task and source-derived oracle. Judge semantic correctness, not exact phrasing, format, tool choice, or verbosity. Do not infer or reward the method used to obtain an answer. Oracle notes may mention tools; that is not a requirement for a correct source-based answer.
+
+Each case has eight factual criteria corresponding to its eight task items. Score each 0 (wrong/missing), 0.5 (partially correct or materially incomplete), or 1 (correct). If several facts belong to one criterion, partial credit is allowed. A contradicted correct value is not fully correct. Accept relative paths when their root is clear. No exact compiler message, diagnostic count, or experimental compiler verification is required. In broken_fragment, criterion4 does not require reset wording, and criterion6 accepts legal-but-lossy truncation rather than a hard compile error.
+
+Separately score four explanation dimensions from0 to2 (0 poor/missing,1 adequate but incomplete,2 clear and well supported):
+- derivation: arithmetic, parameter propagation or guards justify the conclusions;
+- coverage: requested implications are addressed, not just unexplained values;
+- source_evidence: accurate source references or equally concrete verifiable evidence;
+- calibration: scope, assumptions and unresolved parts are handled without unsupported claims.
+Do not add these dimensions to the factual total; they measure a different aspect.
+
+Check fixed RTL when an answer and oracle appear to disagree. Flag a suspected oracle defect with source evidence; do not silently change the benchmark. Record substantial unsupported extra claims even if the requested values happen to be correct. Treat source-level accesses separately from executable-path or synthesis claims.
+
+For each answer return JSON with:
+{"answer_id":"opaque ID","case_id":"case","criteria":[{"id":"oracle criterion ID","score":0|0.5|1,"note":"brief reason, especially for any lost credit"}],"fact_total":0..8,"explanation":{"derivation":0..2,"coverage":0..2,"source_evidence":0..2,"calibration":0..2},"unsupported_claims":[],"oracle_concerns":[],"summary":"one concise sentence"}
+
+Read only the supplied anonymous answer pack, this guide, cases/<case>/task.txt, the corresponding fixed oracle and RTL needed to judge it. Do not read run manifests, protocol, metrics, raw experiment traces, other reviewer reports, or other historical answers. Do not change answers, sources, tasks, or oracles. Save your reviews to the assigned output file. Your review must stand alone; no access to another reviewer's ratings.
