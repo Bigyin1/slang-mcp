@@ -1,0 +1,42 @@
+name: Linux release
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'release' && github.event.release.tag_name || github.sha }}
+      - uses: ./.github/actions/linux-toolchain
+      - name: Build and test release artifact
+        env:
+          RELEASE_TAG: ${{ github.event_name == 'release' && github.event.release.tag_name || '' }}
+        run: scripts/linux-release.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux-x86_64
+          path: dist/linux/*
+          if-no-files-found: error
+  publish:
+    if: github.event_name == 'release'
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: linux-x86_64
+          path: dist/linux
+      - name: Attach assets to the explicitly published release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: gh release upload "$RELEASE_TAG" dist/linux/*
