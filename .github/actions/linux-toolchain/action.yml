@@ -1,0 +1,15 @@
+name: Linux C++ toolchain
+description: Install Clang 23 and the Ubuntu 24.04 C++ runtime toolchain
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: |
+        set -euo pipefail
+        curl --fail --silent --show-error --location https://apt.llvm.org/llvm-snapshot.gpg.key -o /tmp/llvm-key.asc
+        fingerprint=$(gpg --show-keys --with-colons /tmp/llvm-key.asc | awk -F: '$1 == "fpr" {print $10; exit}')
+        test "$fingerprint" = 6084F3CF814B57C1CF12EFD515CF4D18AF4F7421
+        gpg --dearmor < /tmp/llvm-key.asc | sudo tee /usr/share/keyrings/llvm-archive.gpg >/dev/null
+        echo 'deb [signed-by=/usr/share/keyrings/llvm-archive.gpg] https://apt.llvm.org/noble/ llvm-toolchain-noble-23 main' | sudo tee /etc/apt/sources.list.d/llvm23.list
+        sudo apt-get update
+        sudo apt-get install -y clang-23 clang-tidy-23 clang-format-23 lld-23 llvm-23 g++-14 ninja-build

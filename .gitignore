@@ -1,0 +1,18 @@
+.venv/
+.vscode/
+.tools/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+__pycache__/
+*.py[cod]
+.realworld-cache/
+dist/
+build/
+
+benchmark_results/
+benchmark_smoke/
+.matplotlib/
+
+# Local benchmark harness and experiment data.
+/benchmarks/

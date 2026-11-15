@@ -1,0 +1,5 @@
+#pragma once
+#include <string_view>
+namespace slang_mcp {
+inline constexpr std::string_view tool_contract = R"mcp(@SLANG_MCP_CONTRACT@)mcp";
+}
