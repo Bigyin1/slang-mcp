@@ -13,10 +13,10 @@ bool option_selected(int argc, char** argv, std::string_view option) {
 
 int main(int argc, char** argv) {
     if (option_selected(argc, argv, "--version")) {
-        std::cout << "slang-mcp " SLANG_MCP_VERSION "\n";
+        std::cout << "slang_mcp " SLANG_MCP_VERSION "\n";
         return 0;
     }
-    constexpr std::string_view usage = "Usage: slang-mcp [--version | --help]\n";
+    constexpr std::string_view usage = "Usage: slang_mcp [--version | --help]\n";
     if (option_selected(argc, argv, "--help")) {
         std::cout << usage;
         return 0;
@@ -28,7 +28,7 @@ int main(int argc, char** argv) {
     try {
         return slang_mcp::run_server();
     } catch (const std::exception& error) {
-        std::cerr << "slang-mcp: " << error.what() << '\n';
+        std::cerr << "slang_mcp: " << error.what() << '\n';
         return 1;
     }
 }

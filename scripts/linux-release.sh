@@ -31,9 +31,9 @@ for dependency in slang mcp_sdk fmt json tomlplusplus boost_regex mimalloc; do
   done
 done
 # Fail if the resulting executable has unresolved shared-library dependencies.
-ldd "$stage/bin/slang-mcp" | tee build/package/ldd.txt
+ldd "$stage/bin/slang_mcp" | tee build/package/ldd.txt
 if grep -q 'not found' build/package/ldd.txt; then exit 1; fi
 tar -C build/package -czf "dist/linux/$package.tar.gz" "$package"
 (cd dist/linux && sha256sum "$package.tar.gz" > "$package.tar.gz.sha256")
 (cd dist/linux && sha256sum -c "$package.tar.gz.sha256")
-tar -tzf "dist/linux/$package.tar.gz" | grep -Fx "$package/bin/slang-mcp"
+tar -tzf "dist/linux/$package.tar.gz" | grep -Fx "$package/bin/slang_mcp"

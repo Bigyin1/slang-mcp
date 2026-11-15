@@ -77,6 +77,7 @@ target_include_directories(slang_mcp_core PUBLIC src)
 target_link_libraries(slang_mcp_core PUBLIC nlohmann_json::nlohmann_json PRIVATE slang::slang)
 
 add_executable(slang-mcp src/main.cpp src/server.cpp)
+set_target_properties(slang-mcp PROPERTIES OUTPUT_NAME slang_mcp)
 target_include_directories(slang-mcp PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/generated")
 target_link_libraries(slang-mcp PRIVATE slang_mcp_core mcp-server)
 

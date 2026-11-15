@@ -8,7 +8,7 @@ remain available as separate experiments.
 Python 3.10 controller around the **system `copilot` executable**. Authentication belongs to
 Copilot: log in normally with `copilot login`. No JavaScript wrappers, credential extraction,
 private CLI APIs, copied runtime, sockets or proxy servers are used. MCP modes launch
-`build/cpp/slang-mcp` directly over stdio and give the agent absolute-path file lists.
+`build/cpp/slang_mcp` directly over stdio and give the agent absolute-path file lists.
 Set `SLANG_MCP_BINARY` to select another binary. Build the C++ server before running
 compiler validation or MCP treatments. Historical reports refer to the Python server.
 

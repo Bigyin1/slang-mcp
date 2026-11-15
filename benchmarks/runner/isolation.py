@@ -22,7 +22,7 @@ def configure_workspace(root: Path) -> None:
 
 def server_binary() -> Path:
     return Path(
-        os.environ.get("SLANG_MCP_BINARY", str(ROOT.parent / "build/cpp/slang-mcp"))
+        os.environ.get("SLANG_MCP_BINARY", str(ROOT.parent / "build/cpp/slang_mcp"))
     ).resolve()
 
 

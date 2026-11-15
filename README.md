@@ -19,7 +19,7 @@ sources; Python is not required to run the resulting executable.
 ```sh
 CXX=/path/to/llvm/bin/clang++ cmake --preset dev
 cmake --build --preset dev --parallel 6
-build/cpp/slang-mcp
+build/cpp/slang_mcp
 ```
 
 CMake fetches pinned versions of Slang, the MCP C++ SDK, nlohmann/json, and Catch2.
@@ -40,7 +40,7 @@ Configure the MCP client to launch the executable over stdio:
 {
   "mcpServers": {
     "slang": {
-      "command": "/absolute/path/to/slang-mcp/build/cpp/slang-mcp",
+      "command": "/absolute/path/to/slang-mcp/build/cpp/slang_mcp",
       "args": []
     }
   }
@@ -168,7 +168,7 @@ Some generic top modules intentionally produce diagnostic errors; validation rep
 their counts. These commands make no model calls.
 
 The experiment harness compares `text-only`, `mcp`, and `mcp+skill`. It launches
-`build/cpp/slang-mcp` with the current explicit-file API;
+`build/cpp/slang_mcp` with the current explicit-file API;
 `SLANG_MCP_BINARY` selects another executable.
 Previous reports measure the former Python implementation and are not results for
 the C++ server. See [benchmarks/README.md](benchmarks/README.md) before running new

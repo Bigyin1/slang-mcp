@@ -27,7 +27,7 @@ def test_direct_system_cli_and_direct_mcp(tmp_path: Path, monkeypatch: pytest.Mo
     assert command.environment.get("HOME") == os.environ.get("HOME")
     config = json.loads((tmp_path / "mcp.json").read_text())
     server = config["mcpServers"]["slang_benchmark"]
-    assert server["command"].endswith("/build/cpp/slang-mcp")
+    assert server["command"].endswith("/build/cpp/slang_mcp")
     assert server["args"] == []
     mcp_configuration(tmp_path, False)
     assert json.loads((tmp_path / "mcp.json").read_text())["mcpServers"] == {}
