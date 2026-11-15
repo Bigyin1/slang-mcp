@@ -20,12 +20,18 @@ def configure_workspace(root: Path) -> None:
         (root / name).mkdir()
 
 
+def server_binary() -> Path:
+    return Path(
+        os.environ.get("SLANG_MCP_BINARY", str(ROOT.parent / "build/cpp/slang-mcp"))
+    ).resolve()
+
+
 def mcp_configuration(root: Path, enabled: bool) -> Path:
     servers = {}
     if enabled:
         servers["slang_benchmark"] = {
             "type": "local",
-            "command": str(ROOT.parent / ".venv/bin/slang-mcp"),
+            "command": str(server_binary()),
             "args": [],
             "tools": ["*"],
         }

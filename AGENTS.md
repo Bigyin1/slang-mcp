@@ -3,23 +3,22 @@
 ## Назначение и ограничения проекта
 
 - Это read-only MCP-сервер для семантического анализа SystemVerilog-проектов через
-  `pyslang`. Сервер не изменяет RTL, не является LSP и не строит regex-парсер или
+  C++ библиотеку Slang. Сервер не изменяет RTL, не является LSP и не строит regex-парсер или
   псевдонетлист.
-- Проект должен оставаться совместимым с CPython 3.10. Используйте окружение из
-  `uv.lock`, создаваемое командой `uv sync --python 3.10`.
-- Зафиксированная версия bindings — `pyslang==11.0.0`. В этой версии API разделён
-  между пространствами имён `pyslang.ast`, `pyslang.parsing` и `pyslang.syntax`;
-  не предполагайте, что AST и parser-классы экспортируются из корня `pyslang`.
-- Используйте Python API Slang, а не запуск исполняемого файла Slang как subprocess.
+- Основной код и тесты пишутся на C++26; рекомендуемый компилятор — LLVM/Clang 23.1.5.
+  Slang 12.1 закреплён по commit SHA в `CMakeLists.txt`.
+- Python допустим только в `benchmarks/`; его окружение создаётся командой
+  `uv sync --project benchmarks --python 3.10`, lockfile находится там же.
+- Используйте C++ API Slang, а не запуск исполняемого файла Slang как subprocess.
 
 ## Архитектурные границы
 
 - MCP handlers должны оставаться тонкими и вызывать `SemanticService`.
 - Жизненным циклом активной компиляции управляет `ProjectManager`.
-- Источник build-конфигурации скрыт за `ProjectProvider`; MVP использует
-  `StaticProjectProvider`. Не добавляйте фиктивный `SVBuildProjectProvider`.
-- Динамические объекты `pyslang` не должны выходить за границы
-  `src/slang_mcp/adapters/`. В сервисах и MCP-ответах используйте только
+- Build-конфигурация поступает из упорядоченных файловых списков через `project_load`.
+  Не добавляйте фиктивный `SVBuildProjectProvider`.
+- Объекты Slang и указатели на его AST не должны выходить за границы
+  `src/adapters/`. В сервисах и MCP-ответах используйте только
   типизированные project-owned модели.
 - Различайте `logical_module` (сущность build-системы), `sv_module` (декларация
   SystemVerilog module) и `instance` (элаборированный экземпляр).
@@ -33,15 +32,16 @@
 
 ## Проверки
 
-- `make check` запускает проверку форматирования, Ruff, Pylint с настроенными extensions,
-  strict mypy, Xenon, unit и integration тесты.
-- `make check-all` дополнительно запускает opt-in real-world тесты на закреплённых ревизиях
-  PULP `common_cells` и `axi`. Тесты используют Bender `0.32.1` для генерации sources, include
-  dirs и defines и могут потребовать сеть при отсутствии локального кэша. Транзитивные
-  зависимости `axi` закреплены отдельным Bender lockfile в `tests/realworld`.
+- `make check` запускает сборку C++, clang-format, строгий clang-tidy, Lizard и CTest.
+  Лимиты: цикломатическая сложность 6, когнитивная 10, 5 локальных переменных,
+  4 параметра, 6 ветвлений, вложенность 3, 35 statements.
+- `make check-benchmarks` проверяет отдельный Python-стенд: Ruff, Pylint, strict mypy,
+  Xenon и pytest. `make check-all` дополнительно проверяет подготовку и компиляцию
+  закреплённых проектов из `benchmarks/cases/projects.json` через C++ сервер.
+  Bender `0.32.1` генерирует sources, include dirs и defines; может потребоваться сеть.
 - Перед завершением изменения запускайте проверки, относящиеся к его области. Для изменений
   production-кода или зависимостей запускайте `make check-all`, если внешнее окружение доступно.
-- При изменении зависимостей в `pyproject.toml` обязательно обновляйте `uv.lock`.
+- При изменении зависимостей бенчмарков обновляйте `benchmarks/uv.lock`.
 
 ## Неоднозначные ситуации и вопросы разработчику
 

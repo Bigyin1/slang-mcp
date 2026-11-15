@@ -11,11 +11,13 @@ from benchmarks.dataset import ROOT
 def snapshot_sources(output: Path) -> None:
     destination = output / "reproduction"
     destination.mkdir()
-    for relative in ("benchmarks", "src/slang_mcp"):
+    for relative in ("benchmarks", "src", "cmake", "tests"):
         shutil.copytree(
             ROOT.parent / relative,
             destination / relative,
-            ignore=shutil.ignore_patterns("__pycache__"),
+            ignore=shutil.ignore_patterns(
+                "__pycache__", ".venv", ".pytest_cache", ".mypy_cache", ".ruff_cache"
+            ),
         )
-    for name in ("pyproject.toml", "uv.lock", "Makefile"):
+    for name in ("CMakeLists.txt", "CMakePresets.json", "Makefile", ".clang-format", ".clang-tidy"):
         shutil.copyfile(ROOT.parent / name, destination / name)

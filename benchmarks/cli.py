@@ -62,13 +62,12 @@ def _experiment(args: argparse.Namespace) -> None:
     settings = _settings(args)
     selection = Selection(args.mode, args.category, tuple(args.case or ()))
     cases = select_cases(load_cases(), settings, selection)
-    plan = _plan(cases, settings, selection)
     if args.command == "list" or args.dry_run:
-        print(json.dumps(plan, indent=2))
+        print(json.dumps(_plan(cases, settings, selection), indent=2))
         return
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=True)
-    _manifest(output, settings, plan)
+    _manifest(output, settings, _plan(cases, settings, selection))
     run_plan(
         Experiment(settings, selection, output, args.force),
         cases,

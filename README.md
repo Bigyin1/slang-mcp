@@ -1,262 +1,134 @@
 # slang-mcp
 
-`slang-mcp` is a read-only MCP server for project-oriented semantic analysis of
-SystemVerilog. It uses the Python bindings for Slang as a compiler frontend, so
-queries operate on resolved and elaborated semantics rather than regular-expression
-parsing or raw syntax nodes.
+A read-only C++26 MCP server for compiler-backed SystemVerilog analysis. It links
+directly to Slang 12.1 and retains the 29-tool `old-style` API: project loading,
+diagnostics, symbols, hierarchy, RTL accesses, bounded connectivity, inspection
+summaries, and semantic reload differences.
 
-The server loads one project at a time over stdio from agent-supplied absolute-path
-file lists and one `top_module`. It requires CPython 3.10 and is intentionally
-constrained to `>=3.10,<3.11`.
+The design was inspired by [pyslang-mcp](https://github.com/ariklapid/pyslang-mcp).
+[slang-server](https://github.com/hudson-trading/slang-server) is the reference for
+integrating the Slang C++ library. The server runs without Python or Python bindings.
+Only the separate experiment harness under `benchmarks/` uses Python.
 
-## Install and run
+## Build and run
 
-Create the pinned development environment:
-
-```sh
-uv sync --python 3.10
-```
-
-Start the server without a build manifest:
+Use CMake 3.28 or newer and a C++26 compiler. The implementation is tested with
+LLVM/Clang 23.1.5. Slang's build uses Python to generate its parser and diagnostic
+sources; Python is not required to run the resulting executable.
 
 ```sh
-.venv/bin/slang-mcp
+CXX=/path/to/llvm/bin/clang++ cmake --preset dev
+cmake --build --preset dev --parallel 6
+build/cpp/slang-mcp
 ```
 
-`project_load` accepts ordered paths to plain UTF-8 file lists. Every non-empty
-line must be an absolute path: source lists contain source files and include lists
-contain directories. Pass package lists first, then RTL and model lists. Source
-order and duplicate paths are preserved. A
-`null` define has no replacement text; a string becomes `NAME=value`.
+CMake fetches pinned versions of Slang, the MCP C++ SDK, nlohmann/json, and Catch2.
+Upstream tools, Python bindings, and upstream tests are excluded. On macOS, all
+targets use the system SDK's libc++ headers and runtime consistently.
+Release builds with upstream LLVM on macOS also use matching `llvm-ar`,
+`llvm-ranlib`, and `ld64.lld` tools for the MCP SDK's ThinLTO archives.
 
-A minimal stdio client configuration is:
+For a release build, use the `release` configure and build presets. To install:
+
+```sh
+cmake --install build/release --prefix /your/install/prefix
+```
+
+Configure the MCP client to launch the executable over stdio:
 
 ```json
 {
   "mcpServers": {
     "slang": {
-      "command": "/absolute/path/to/slang-mcp/.venv/bin/slang-mcp",
+      "command": "/absolute/path/to/slang-mcp/build/cpp/slang-mcp",
       "args": []
     }
   }
 }
 ```
 
-## Tools
+## Loading projects
 
-- `project_load(source_file_lists, top_module, include_directory_lists, defines)` reads,
-  validates, compiles, and activates one project.
-- `project_reload()` rebuilds and reindexes the active project from the same file lists and
-  inputs. Call it only after RTL or build inputs change, then batch semantic queries.
-- `project_info()` reports build inputs, configured and elaborated tops, metadata, and version.
-- `get_diagnostics(limit=100, severity=null)` returns structured Slang diagnostics. The hard
-  limit is 500; severity can be `ignored`, `note`, `warning`, `error`, or `fatal`.
-- `summarize_diagnostics_by_code(severity=null, limit=100)` groups diagnostics by Slang code with
-  severity counts and one representative message and location.
-- `find_symbol(name)` performs exact-name lookup for definitions, packages, typedefs,
-  subroutines, parameters, ports, variables, and nets.
-- `describe_symbol(identifier)` accepts a stable returned `symbol_id`, qualified name, or an
-  unambiguous exact name and reports type, width, direction, ports, parameters, and members.
-- `get_hierarchy(root=null, max_depth=null)` returns elaborated instances and generate blocks.
-  `root` accepts an exact elaborated instance or generate-block path, or a top name.
-- `describe_instance(path)` reports an elaborated instance's module type, parameters, ports,
-  simple connection syntax when available, and direct hierarchy children.
-
-All tools declare the MCP read-only annotation. They only read RTL and retain compiler state in
-memory; they never modify source files.
-
-## Architecture and providers
-
-### RTL inspection tools
-
-The following tools extend the original eight tools. Collections use
-`{"items": [...], "total_count": N, "truncated": false}`. Their `limit` defaults to 100
-(10 for `inspect_signal`) and must be between 1 and 500.
-
-| Tool | Arguments besides `limit` | Result |
-| --- | --- | --- |
-| `get_references` | `symbol`, optional `kind` | Declaration and elaborated semantic uses |
-| `list_symbols` | `scope`, optional `kind` | Direct scope members; kinds match `find_symbol` |
-| `get_ports` | `sv_module` | Default port types, packed widths, fixed unpacked dimensions, interface/modport |
-| `get_parameters` | `target` | Module defaults or effective values for a nested instance path |
-| `get_instance_parameters` | `instance_path` | Effective parameters, including top instances |
-| `get_instance_connections` | `instance_path` | Formal ports, actual expression text and referenced symbols |
-| `list_instance_facts` | `sv_module`, optional parameter / port name filters | Effective facts for a bounded page of elaborated instances |
-| `list_instances` | optional `sv_module`, `name`, `path_prefix` | Elaborated instance occurrences |
-| `find_instance` | `query` (no `limit`) | Exact path or unique exact name; ambiguity lists candidates |
-| `get_signal_reads`, `get_signal_writes` | `signal` | Access locations and assignment/port contexts |
-| `get_drivers`, `get_loads` | `signal` | Source-level writes and reads, respectively |
-| `trace_connectivity` | `signal`, optional `direction`, `max_depth` | Bounded source-level routes through direct port bindings and assignments |
-| `get_procedural_blocks` | `sv_module` | Elaborated blocks, sensitivity syntax and bounded read/write sets |
-| `get_state_elements` | `sv_module` | Variables written in `always_ff` blocks |
-| `inspect_signal` | `signal` | Description, reference count and capped access summaries |
-| `inspect_module` | `sv_module` | Default signature, declaration count and elaborated usage summaries |
-| `inspect_instance` | `instance_path` | Effective parameters, resolved connections and child instances |
-| `semantic_diff` | none | Bounded changes since the preceding successful same-project load |
-
-For example, `get_parameters("leaf")` returns `value_kind: "declared_default"`, while
-`get_instance_parameters("top.u_leaf")` returns `value_kind: "effective"`. A default `WIDTH=32`
-and an overridden `WIDTH=64` are evaluated in separate Slang elaborations. Bare top names in
-`get_parameters` denote declarations; use the explicit instance tool for effective top values.
-Every non-type parameter also carries `integer_value` when Slang evaluated it to an integral
-constant without X or Z bits; `value` retains the SystemVerilog rendering. For inventory
-questions, `list_instance_facts("leaf", parameter_names=["WIDTH"])` avoids a separate parameter
-query for each elaborated `leaf` instance.
-Default-scope member IDs start with `default:` and can be passed to `describe_symbol`.
-Nested module definitions that cannot be independently instantiated report an explicit unavailable
-default-signature error; their effective instance queries still work. Snapshots retain their
-definition and mark `signature_unavailable`, without preventing project loading.
-
-Connections distinguish `signal`, `expression`, `unconnected`, and `interface`. Actual expression
-text is capped at 1,000 characters; referenced symbols are capped at 500 with `symbol_count` and
-`symbols_truncated` metadata. For `.d(a & b)`,
-the actual remains an expression with both resolved symbols; it is not collapsed to one signal.
-Named, positional, wildcard and unconnected ports are supported. Interface connections expose
-the resolved interface and formal modport; individual modport driver paths are not expanded.
-`describe_instance` retains its original compact schema; `inspect_instance` adds richer connections.
-
-`trace_connectivity` follows `loads` forward and `drivers` backward; `both` explores both
-directions. It returns bounded breadth-first routes, with a terminal reason of `no_edges`,
-`max_depth`, or `cycle`. A child input produces an actual-to-formal hop and a child output a
-formal-to-actual hop; `inout` ports provide both. For example, a trace from `top.a` can pass
-through `top.u_leaf.d`, a continuous assignment, and `top.u_leaf.q` to an output actual:
-
-```text
-trace_connectivity("top.a", direction="loads", max_depth=5)
-```
-
-Only direct resolved-signal actuals create port hops. Open ports, interfaces, constants, selects,
-concatenations, casts, and other expressions are excluded from those hops. Continuous and
-procedural assignments participate as explicit source-level dependencies; they do not establish
-netlist connectivity, timing, formal proof, or simulation behavior.
-
-The access index uses Slang's semantic visitor, not token matching. Reads and writes are derived
-from assignments, selectors, increments, declaration initializers, user subroutine arguments and
-port directions. `read_write` participates in both sets. References retain source locations,
-scope, instance and procedural block identity. Fully qualified port names resolve to their internal
-signal for these new queries; identical short names in different instances remain ambiguous.
-Module references include declaration and instantiation entries. Parameter value references are
-classified separately. System-call arguments are conservatively `unknown`; exhaustive type-use
-indexing, macro expansion provenance and transitive subroutine side-effect analysis are unsupported.
-Empty results do not prove that an unsupported construct has no effects.
-
-Drivers and loads describe source uses, not synthesized hardware. Counts are access sites, not
-unique hardware drivers or execution counts; accesses in subroutine bodies are not expanded at
-each call. Procedure summaries cover active elaborated instances of the requested module and may
-therefore contain multiple specializations. State discovery covers `always_ff` only; generic edge
-triggered `always`, inferred latches and reset behavior are not inferred. Module diagnostic counts
-are file-level counts. Optional fan-in/fan-out is deferred until these unsupported cases can be
-represented reliably. Existing unbounded MVP tools retain their schemas for compatibility.
-
-### Semantic diff lifecycle
-
-Initial load reports `status: "no_previous_state"`. A successful reload compares the previous and
-current normalized snapshots for the same direct build inputs. A newly loaded project starts a new
-baseline. Failed path validation, construction, elaboration or snapshot creation leaves
-both the active project and the previous diff intact. As in the original API, a completed compilation
-with error diagnostics is accepted, so an agent can inspect errors and their changes.
-
-Changes contain `category`, `identity`, `before` and `after`; null denotes an addition/removal.
-Compound values are deterministic JSON strings. Categories cover definitions, default ports and
-parameters, effective instance parameters, instance presence/type and diagnostics. Port snapshots
-omit declaration positions so shifting source lines alone does not change a port. Diagnostics
-include positions, so moving a diagnostic is an addition/removal. Internal signal changes and
-connection changes are not currently diffed. Snapshots contain no compiler pointers and are captured
-before activating a new design; no old compilation is retained for diffing.
-
-For example, a parameter override change includes:
+`project_load` accepts ordered paths to UTF-8 file lists. Every non-empty source
+entry must be an absolute file path; include-list entries must be absolute directory
+paths. Supply packages before RTL and models. Source order and duplicate entries are
+preserved. A null define has no replacement text; a string becomes `NAME=value`.
 
 ```json
-{"category": "effective_parameter", "identity": "top.u_leaf.WIDTH",
- "before": "{\"is_local\": false, \"name\": \"WIDTH\", \"type\": \"int\", \"value\": \"32\"}",
- "after": "{\"is_local\": false, \"name\": \"WIDTH\", \"type\": \"int\", \"value\": \"64\"}"}
+{
+  "source_file_lists": ["/work/packages.f", "/work/rtl.f"],
+  "include_directory_lists": ["/work/includes.f"],
+  "top_module": "top",
+  "defines": {"SYNTHESIS": null, "WIDTH": "32"}
+}
 ```
 
-### Implementation layers
+The server holds one project. `project_reload()` rebuilds the same inputs after RTL
+changes. Path validation, compilation, and snapshot creation finish before activating
+the new design. A failed load preserves the previous design and diff. Completed
+compilations with error diagnostics remain available for inspection.
 
-Thin MCP handlers call `SemanticService`, which uses `ProjectManager` for the active compilation.
-`project_load` converts the direct file-list inputs into `ProjectConfig`. The retained
-`StaticProjectProvider` is a **test-only** compatibility adapter for local fixtures and offline
-benchmark validation; production server startup does not import or configure it. It does not define
-the public MCP contract. All dynamic `pyslang` interaction and object traversal stays inside `adapters/`;
-only project-owned dataclasses cross that boundary.
+## Tools
 
-The public terminology is deliberate: `top_module` is the selected SystemVerilog elaboration top,
-`sv_module` is a SystemVerilog module declaration, and `instance` is an elaborated occurrence.
+| Area | Tools |
+| --- | --- |
+| Project | `project_load`, `project_reload`, `project_info`, `semantic_diff` |
+| Diagnostics | `get_diagnostics`, `summarize_diagnostics_by_code` |
+| Symbols | `find_symbol`, `describe_symbol`, `list_symbols`, `get_references` |
+| Hierarchy | `get_hierarchy`, `describe_instance`, `list_instances`, `find_instance` |
+| Signatures | `get_ports`, `get_parameters`, `get_instance_parameters`, `get_instance_connections`, `list_instance_facts` |
+| Accesses | `get_signal_reads`, `get_signal_writes`, `get_drivers`, `get_loads` |
+| RTL | `trace_connectivity`, `get_procedural_blocks`, `get_state_elements` |
+| Summaries | `inspect_signal`, `inspect_module`, `inspect_instance` |
 
-## Development and tests
+See [docs.md](docs.md) for arguments and result semantics. Input schemas and descriptions
+are retained in [src/contract.json](src/contract.json). Collections report `items`,
+`total_count`, and `truncated`; limits are between 1 and 500. Every tool advertises the
+read-only annotation. The server does not write RTL or execute build commands.
 
-The Makefile exposes deterministic commands:
+Module defaults and effective instance parameters are queried separately. The exact
+SystemVerilog rendering is retained in parameter `value`; the numeric convenience
+field `integer_value` is null when the constant is unknown or does not fit a signed
+64-bit JSON integer in the native implementation.
+
+## Architecture
+
+Thin MCP handlers call `SemanticService`. `ProjectManager` owns the active compilation
+and compiler-independent snapshots. Slang objects stay inside `src/adapters/` behind
+`Design`; normalized project-owned C++ models cross that boundary. Compiler visitors
+build a shared access index lazily. Default elaborations share immutable syntax trees
+while keeping their parameters and semantic state separate.
+
+Connectivity describes source dependencies through assignments and direct signal port
+bindings. It does not establish synthesized netlist connectivity, timing, simulation,
+or formal proof. Expression actuals retain their text and resolved symbols but do not
+create direct port hops. State discovery covers `always_ff` only. Reload is a complete
+rebuild; symbol search is exact-name only.
+
+## Checks and experiments
 
 ```sh
-make format
-make format-check
-make lint
-make typecheck
-make complexity
-make test-unit
-make test-integration
+uv sync --project benchmarks --python 3.10
 make check
-```
-
-`make check` runs formatting, strict Ruff, Pylint with the configured extension checks, strict
-mypy, Xenon complexity gates, unit tests, and integration tests. Integration includes a real MCP
-stdio subprocess round trip.
-
-Linting includes security, logging, pytest, pathlib, and blanket-suppression checks;
-mypy also checks unreachable code. Ruff and Pylint limit functions to 6 branches,
-5 local variables, 4 returns, and 35 statements. Pylint additionally limits nesting to 3 blocks and
-modules to 500 lines. Security exceptions are scoped to pytest assertions and the
-Bender fixture helper's subprocess calls. Git checkouts use GitPython.
-
-The network-backed suite requires Bender `0.32.1` and uses exact revisions of:
-
-- `pulp-platform/common_cells` commit `9afda9abb565971649c2aa0985639c096f351171`
-  (tag `v1.38.0`);
-- `pulp-platform/axi` commit `a256a3b86394fedf19e361047fccfdd7f6ef83e4`
-  (tag `v0.39.9`), with its transitive dependency revisions captured in a checked-in Bender
-  lockfile.
-
-The repositories are cloned into the ignored `.realworld-cache` directory. Each test invokes
-`bender script flist-plus` with the `synthesis` target to obtain ordered sources, include
-directories, and defines; no source list is duplicated in Python. The suite exercises packages,
-parameterized `fifo_v3`, AXI typedef and assignment macros, includes, defines, ports, and
-conditional generate elaboration:
-
-```sh
-make test-realworld
+make check-benchmarks
 make check-all
 ```
 
-Install Bender through its official installer or set `BENDER_EXECUTABLE` to the `0.32.1`
-binary. For local development, a binary at `.tools/bender` is also detected automatically.
+`make check` builds the C++ executable and Catch2 tests, checks formatting with
+clang-format, runs clang-tidy with warnings as errors, and runs Lizard and CTest.
+Limits include cyclomatic complexity 6, cognitive complexity 10, 5 local variables,
+4 parameters, 6 branches, nesting depth 3, and 35 statements. Checks apply to project
+code; dependency sources are excluded. `CLANG_FORMAT` and `CLANG_TIDY` can be supplied
+as CMake cache variables if the tools are not beside the compiler or on PATH.
 
-Normal unit and integration tests never require network access.
+`make check-benchmarks` runs the retained harness's Ruff, Pylint, strict mypy, Xenon,
+and pytest checks. `make check-all` also compiles the pinned benchmark projects through
+the C++ server. This uses Bender 0.32.1 at `.tools/bender` and may need network access.
+Some generic top modules intentionally produce diagnostic errors; validation reports
+their counts. These commands make no model calls.
 
-## MVP limitations
-
-- Only one active project is retained.
-- Reload is a complete rebuild; there is no incremental compilation.
-- Symbol search is exact-name only. Stable IDs should be used to resolve ambiguity.
-- Module descriptions use the first elaborated representative for parameterized port details;
-  uninstantiated definitions therefore have declaration identity but may lack a signature.
-- Port connection text is best-effort because some elaborated expressions have no source syntax.
-- Driver/load queries cover conservative source-level accesses. Fan-in/fan-out and synthesized
-  netlist connectivity are not implemented.
-- This is an MCP server, not an LSP, source rewriter, SVBuild implementation, or Bender parser.
-
-The recommended next milestone is `SVBuildProjectProvider`.
-
-## Agent benchmark
-
-The standalone Python 3.10 harness compares `text-only`, `mcp` and `mcp+skill` through the
-system Copilot CLI. Start with one case and one repetition (three agent runs):
-
-```sh
-.venv/bin/python -m benchmarks run --case hier_generate --repetitions 1 \
-  --model auto --output benchmark_smoke/simple
-```
-
-See [benchmarks/README.md](benchmarks/README.md) for the curated 19-case corpus, offline checks,
-resume behavior, result artifacts and the limitations of the user-selected `auto` model and
-workspace isolation. The 90-run pilot and 171-run full experiment are separate opt-in commands.
+The harness still compares `text-only`, `mcp`, and `mcp+skill`. It launches
+`build/cpp/slang-mcp` by default; `SLANG_MCP_BINARY` selects another executable.
+Previous reports measure the former Python implementation and are not results for
+the C++ server. See [benchmarks/README.md](benchmarks/README.md) before running new
+agent experiments.

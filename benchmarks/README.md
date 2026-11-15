@@ -3,24 +3,26 @@
 Python 3.10 controller around the **system `copilot` executable**. Authentication belongs to
 Copilot: log in normally with `copilot login`. No JavaScript wrappers, credential extraction,
 private CLI APIs, copied runtime, sockets or proxy servers are used. MCP modes launch
-`.venv/bin/slang-mcp` directly over stdio and give the agent absolute-path file lists.
+`build/cpp/slang-mcp` directly over stdio and give the agent absolute-path file lists.
+Set `SLANG_MCP_BINARY` to select another binary. Build the C++ server before running
+compiler validation or MCP treatments. Historical reports refer to the Python server.
 
 Start small (three agent calls, one simple case, one repetition):
 
 ```sh
-uv sync --python 3.10
-.venv/bin/python -m benchmarks validate
-.venv/bin/python -m benchmarks list --case hier_generate --repetitions 1
-.venv/bin/python -m benchmarks run --case hier_generate --repetitions 1 \
+uv sync --project benchmarks --python 3.10
+uv run --project benchmarks python -m benchmarks validate
+uv run --project benchmarks python -m benchmarks list --case hier_generate --repetitions 1
+uv run --project benchmarks python -m benchmarks run --case hier_generate --repetitions 1 \
   --model auto --output benchmark_smoke/simple
-.venv/bin/python -m benchmarks report --output benchmark_smoke/simple
+uv run --project benchmarks python -m benchmarks report --output benchmark_smoke/simple
 ```
 
 `list`, `validate`, `report` and `run --dry-run` make **no agent/model calls**. Build validation
-uses Slang's Python API and Bender, not an agent:
+uses the native server over MCP and Bender, without agent calls:
 
 ```sh
-.venv/bin/python -m benchmarks validate --builds
+uv run --project benchmarks python -m benchmarks validate --builds
 ```
 
 `run` without filters defaults to the one-case `smoke` profile and one repetition (three runs).
@@ -28,10 +30,10 @@ Larger studies are opt-in; they have **not** been run as part of the initial smo
 
 ```sh
 # 10 predefined cases x 3 modes x 3 repetitions = 90 agent runs
-.venv/bin/python -m benchmarks run --profile pilot --repetitions 3 --output benchmark_results/pilot
+uv run --project benchmarks python -m benchmarks run --profile pilot --repetitions 3 --output benchmark_results/pilot
 
-# 15 cases x 3 modes x 3 repetitions = 135 agent runs
-.venv/bin/python -m benchmarks run --profile full --repetitions 3 --output benchmark_results/full
+# 19 cases x 3 modes x 3 repetitions = 171 agent runs
+uv run --project benchmarks python -m benchmarks run --profile full --repetitions 3 --output benchmark_results/full
 ```
 
 Filters: repeatable `--case`, `--category`, `--mode`; limits: `--timeout` (default 300 seconds),
@@ -98,6 +100,6 @@ supports no conclusion about MCP's general effectiveness. Monetary pricing is no
 
 ## Development
 
-`make check` covers benchmark formatting, Ruff, Pylint, strict mypy, Xenon and offline pytest
-alongside existing server tests. `make check-all` additionally checks pinned real-world RTL;
+`make check-benchmarks` covers harness formatting, Ruff, Pylint, strict mypy, Xenon and
+offline pytest. `make check` covers the C++ server. `make check-all` additionally compiles pinned RTL;
 it makes no agent calls. Harness unit tests use fake traces and local Python subprocesses.

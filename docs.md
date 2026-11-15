@@ -9,9 +9,9 @@
 его только после изменения RTL или build inputs; затем выполняйте все нужные
 semantic-запросы к одной загруженной compilation.
 
-`StaticProjectProvider` и static JSON manifests сохранены только для unit,
-integration и offline benchmark validation. Stdio server не принимает static
-config и загружает production-проекты только через `project_load` file lists.
+Сервер реализован на C++26 и напрямую использует библиотеку Slang 12.1.
+Проекты загружаются через `project_load` file lists. Python остаётся только
+в отдельном стенде `benchmarks/`, который вызывает C++ сервер через MCP.
 
 ## Общие правила
 
@@ -63,16 +63,16 @@ defines, configured top и количество error/warning diagnostics. Ус�
 конфигурацию: source files, include directories, defines, configured tops,
 metadata, Slang version и summary.
 
-## `ElaboratedRtlIndex`
+## Семантический индекс
 
 После построения Slang compilation `project_load` формирует один
-`ElaboratedRtlIndex` для активного проекта. При `project_reload` создаются новая
+семантический индекс внутри C++ адаптера `Design` для активного проекта. При `project_reload` создаются новая
 compilation и новый index; прежний index не используется для последующих
 semantic-запросов. Построение index — часть времени загрузки проекта, поэтому не
 вызывайте reload, если RTL и build inputs не менялись.
 
 Index обходит элаборированное дерево tops и generate blocks и сохраняет
-нормализованные project-owned данные, без выдачи объектов `pyslang` наружу:
+нормализованные project-owned данные, без выдачи объектов Slang наружу:
 
 - все elaborated instances с path, module type, location и parent;
 - effective parameters и resolved formal-to-actual port connections, получаемые
@@ -185,7 +185,8 @@ packed width, unpacked dimensions, default value и сведения об interf
 
 У non-type parameters поле `value` сохраняет SystemVerilog-представление, а
 `integer_value` содержит JSON integer, только если Slang вычислил известную
-целую константу. Для type parameters и значений с X/Z `integer_value` равен
+целую константу, представимую как signed 64-bit integer. Для type parameters,
+более широких констант и значений с X/Z `integer_value` равен
 `null`.
 
 ### `get_instance_connections`

@@ -13,6 +13,7 @@ from git import Repo
 
 from benchmarks.dataset import ROOT, corpus_hash, read_object
 from benchmarks.models import Settings
+from benchmarks.runner.isolation import server_binary
 
 
 def write_json(path: Path, value: object) -> None:
@@ -22,12 +23,28 @@ def write_json(path: Path, value: object) -> None:
     temporary.replace(path)
 
 
+def _source_files(folder: Path) -> list[Path]:
+    suffixes = {".py", ".cpp", ".hpp", ".json", ".in", ".toml", ".lock", ".cmake"}
+    return sorted(
+        path
+        for path in folder.rglob("*")
+        if path.suffix in suffixes
+        and not any(
+            part.startswith(".") or part == "__pycache__" for part in path.relative_to(folder).parts
+        )
+    )
+
+
 def code_hash() -> str:
     digest = hashlib.sha256()
-    for folder in (ROOT, ROOT.parent / "src/slang_mcp"):
-        for path in sorted(folder.rglob("*.py")):
+    for folder in (ROOT, ROOT.parent / "src", ROOT.parent / "cmake", ROOT.parent / "tests"):
+        for path in _source_files(folder):
             digest.update(str(path.relative_to(ROOT.parent)).encode())
             digest.update(path.read_bytes())
+    for name in ("CMakeLists.txt", "CMakePresets.json"):
+        digest.update((ROOT.parent / name).read_bytes())
+    if server_binary().is_file():
+        digest.update(server_binary().read_bytes())
     return digest.hexdigest()
 
 
@@ -46,6 +63,7 @@ def metadata(settings: Settings) -> dict[str, object]:
         "platform": platform.platform(),
         "benchmark_commit": commit,
         "server_commit": commit,
+        "server_binary": str(server_binary()),
         "dirty": dirty,
         "code_hash": code_hash(),
         "corpus_hash": corpus_hash(),

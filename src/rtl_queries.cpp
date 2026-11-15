@@ -1,0 +1,140 @@
+#include "query.hpp"
+#include "semantic_service.hpp"
+
+namespace slang_mcp {
+namespace {
+Json facts_for(const Json& args, adapters::Design& design, const Json& instance) {
+    const auto path = instance.at("path").get<std::string>();
+    const auto parameters = named(design.parameters(path, true), args, "parameter_names",
+                                  [](const auto& item) { return item.name; });
+    const auto connections = named(design.connections(path), args, "port_names",
+                                   [](const auto& item) { return item.port.name; });
+    const auto limit = option(args, "fact_limit", 100);
+    return {{"instance", instance},
+            {"parameters", page(parameters, limit)},
+            {"connections", page(connections, limit)}};
+}
+
+bool reference_matches(const Reference& item, const Text& access, const Text& kind) {
+    if (access) {
+        return item.kind == *access || item.kind == "read_write";
+    }
+    return !kind || item.kind == *kind || item.context == *kind;
+}
+
+std::vector<Procedure> module_procedures(adapters::Design& design, const std::string& module) {
+    const auto name = design.describe(module).symbol.name;
+    std::set<std::string> paths;
+    for (const auto& instance : design.instances()) {
+        if (instance.sv_module == name) {
+            paths.insert(instance.path);
+        }
+    }
+    return select(design.accesses().procedures,
+                  [&](const auto& item) { return paths.contains(item.instance); });
+}
+} // namespace
+Json SemanticService::parameters(const Json& args, bool effective) {
+    const auto target = args.at(effective ? "instance_path" : "target").get<std::string>();
+    if (!effective && target.contains('.')) {
+        effective = std::ranges::any_of(manager_.design().instances(),
+                                        [&](const auto& item) { return item.path == target; });
+    }
+    auto items = named(manager_.design().parameters(target, effective), args, "names",
+                       [](const auto& item) { return item.name; });
+    return {{"target", target},
+            {"value_kind", effective ? "effective" : "declared_default"},
+            {"parameters", page(std::move(items), limit_for(args))}};
+}
+
+Json SemanticService::connections(const Json& args) {
+    auto items = named(manager_.design().connections(args.at("instance_path")), args, "ports",
+                       [](const auto& item) { return item.port.name; });
+    return page(std::move(items), limit_for(args));
+}
+
+Json SemanticService::describe_instance(const Json& args) {
+    const auto instance = manager_.design().instance(args.at("path"));
+    std::vector<PortDescription> ports;
+    std::vector<Json> connections;
+    for (const auto& item : manager_.design().connections(instance.path)) {
+        ports.push_back({item.port.name, item.port.direction, item.port.type, item.port.width});
+        connections.push_back({{"port", item.port.name}, {"expression", item.expression}});
+    }
+    return {{"path", instance.path},
+            {"name", instance.name},
+            {"sv_module", instance.sv_module},
+            {"location", instance.location},
+            {"parameters", manager_.design().parameters(instance.path, true)},
+            {"ports", ports},
+            {"connections", connections},
+            {"children", manager_.design().hierarchy(instance.path, 1).front().children}};
+}
+
+Json SemanticService::list_instances(const Json& args) {
+    const auto module = text_option(args, "sv_module");
+    const auto name = text_option(args, "name");
+    const auto prefix = text_option(args, "path_prefix");
+    return page(select(manager_.design().instances(),
+                       [&](const auto& item) {
+                           return (!module || item.sv_module == *module) &&
+                                  (!name || item.name == *name) &&
+                                  (!prefix || item.path.starts_with(*prefix));
+                       }),
+                limit_for(args));
+}
+
+Json SemanticService::instance_facts(const Json& args) {
+    auto instances = list_instances(args);
+    std::vector<Json> result;
+    const auto fact_limit = option(args, "fact_limit", 100);
+    validate_limit(fact_limit);
+    for (const auto& instance : instances.at("items")) {
+        result.push_back(facts_for(args, manager_.design(), instance));
+    }
+    instances["items"] = std::move(result);
+    return instances;
+}
+
+Json SemanticService::references(const Json& args, const Text& access) {
+    const auto identifier = args.at(access ? "signal" : "symbol").get<std::string>();
+    const auto kind = text_option(args, "kind");
+    static const std::set<std::string> kinds = {"read",
+                                                "write",
+                                                "read_write",
+                                                "declaration",
+                                                "unknown",
+                                                "parameter_reference",
+                                                "port_connection",
+                                                "type_reference",
+                                                "instantiation"};
+    if (kind && !kinds.contains(*kind)) {
+        throw std::invalid_argument("unknown reference kind: " + *kind);
+    }
+    return page(select(manager_.design().references(identifier),
+                       [&](const auto& item) { return reference_matches(item, access, kind); }),
+                limit_for(args));
+}
+
+Json SemanticService::procedures(const Json& args) {
+    return page(module_procedures(manager_.design(), args.at("sv_module")), limit_for(args));
+}
+
+Json SemanticService::state_elements(const Json& args) {
+    std::vector<Json> result;
+    for (const auto& block : module_procedures(manager_.design(), args.at("sv_module"))) {
+        if (block.kind != "AlwaysFF") {
+            continue;
+        }
+        for (const auto& name : manager_.design().accesses().block_writes.at(block.block_id)) {
+            const auto symbol = manager_.design().signal(name);
+            result.push_back({{"signal", symbol.symbol},
+                              {"type", symbol.type},
+                              {"width", symbol.width},
+                              {"block", block.block_id},
+                              {"location", block.location}});
+        }
+    }
+    return page(std::move(result), limit_for(args));
+}
+} // namespace slang_mcp
