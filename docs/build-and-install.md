@@ -36,3 +36,25 @@ Configure the MCP client to launch the executable over stdio:
   }
 }
 ```
+
+## Sanitizer build
+
+```sh
+cmake --preset sanitized
+cmake --build --preset sanitized --parallel 2
+ctest --preset sanitized
+```
+
+This Debug configuration instruments project code and fetched C++ dependencies
+with AddressSanitizer and UndefinedBehaviorSanitizer. On Linux, ASan also checks
+for leaks. It disables Slang's alternative allocator, keeps frame pointers and
+stops on sanitizer errors. Use a compiler installation with sanitizer runtimes.
+If LeakSanitizer is unavailable on macOS, run:
+
+```sh
+ASAN_OPTIONS=detect_leaks=0:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1:print_stacktrace=1 \
+  ctest --test-dir build/sanitized --output-on-failure
+```
+
+CI uses Linux x86-64. The MCP SDK remains pinned to
+`jesspig/modelcontextprotocol-cpp-sdk`, with support for MCP `2026-07-28`.

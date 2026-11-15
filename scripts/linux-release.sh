@@ -20,6 +20,7 @@ stage="build/package/$package"
 mkdir -p "$stage/bin" dist/linux
 cmake --install build/linux-release --prefix "$stage"
 cp LICENSE README.md "$stage/"
+cp docs/agent-instructions.md "$stage/AGENTS.md"
 cp -R docs "$stage/"
 mkdir -p "$stage/src"
 cp src/contract.json "$stage/src/"
@@ -40,3 +41,4 @@ tar -C build/package -czf "dist/linux/$package.tar.gz" "$package"
 (cd dist/linux && sha256sum "$package.tar.gz" > "$package.tar.gz.sha256")
 (cd dist/linux && sha256sum -c "$package.tar.gz.sha256")
 tar -tzf "dist/linux/$package.tar.gz" | grep -Fx "$package/bin/slang_mcp"
+tar -tzf "dist/linux/$package.tar.gz" | grep -Fx "$package/AGENTS.md"
