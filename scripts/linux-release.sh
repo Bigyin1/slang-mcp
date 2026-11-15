@@ -20,6 +20,14 @@ stage="build/package/$package"
 mkdir -p "$stage/bin" dist/linux
 cmake --install build/linux-release --prefix "$stage"
 cp LICENSE README.md "$stage/"
+cp -R docs "$stage/"
+mkdir -p "$stage/src" "$stage/benchmarks"
+cp src/contract.json "$stage/src/"
+cp benchmarks/README.md "$stage/benchmarks/"
+for study in research_compare research_unified research_partial research_tools research_agents research_simplify research_focused; do
+  mkdir -p "$stage/benchmarks/$study"
+  cp "benchmarks/$study/README.md" "$stage/benchmarks/$study/"
+done
 mkdir -p "$stage/licenses"
 for dependency in slang mcp_sdk fmt json tomlplusplus boost_regex mimalloc; do
   directory="build/linux-release/_deps/${dependency}-src"
