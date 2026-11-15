@@ -35,7 +35,7 @@ check-benchmarks:
 	uv run --project benchmarks --locked pylint --rcfile=benchmarks/pyproject.toml benchmarks
 	uv run --project benchmarks --locked mypy --config-file=benchmarks/pyproject.toml benchmarks
 	uv run --project benchmarks --locked xenon --max-absolute B --max-modules B --max-average A benchmarks
-	uv run --project benchmarks --locked pytest -c benchmarks/pyproject.toml benchmarks/tests
+	uv run --project benchmarks --locked pytest -c benchmarks/pyproject.toml benchmarks/tests benchmarks/research_compare/tests
 
 test-realworld: build
 	uv run --project benchmarks --locked python -m benchmarks validate --builds
