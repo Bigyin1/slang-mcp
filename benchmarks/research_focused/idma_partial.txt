@@ -1,6 +1,0 @@
-You are performing one focused SystemVerilog semantic analysis task.
-Workspace RTL root: /private/tmp/slang-focused-pilot/idma_partial/rtl
-Desired top: cc_stream_fifo; use its source defaults.
-Analyze only the default cc_stream_fifo subtree. Determine which facts are trustworthy if either its package or child definition is unavailable, distinguish the two boundaries, and report effective UsageWidth, child parameters, push/pop equations, and stored state inside the child. Gather evidence as needed without loading the complete project; disclose which boundary claims you verified experimentally.
-
-Choose the concrete source files, include directories, defines, and dependency order yourself by inspecting the available pinned RTL tree. Start from the narrow subtree and add dependencies as needed; do not load the complete project. Do not modify RTL or generate replacement wrappers. Use semantic server evidence for semantic conclusions; source inspection can guide discovery and verify expressions. Return a concise evidence-backed answer and disclose unresolved diagnostics. Do not read sibling benchmark manifests, oracle files, prior experiment reports, or other worker outputs.

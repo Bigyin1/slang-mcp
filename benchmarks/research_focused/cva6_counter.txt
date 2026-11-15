@@ -1,6 +1,0 @@
-You are performing one focused SystemVerilog semantic analysis task.
-Workspace RTL root: /private/tmp/slang-focused-pilot/cva6_counter/rtl
-Desired top: cva6_fifo_v3; use its source defaults.
-At default parameters, analyze status_cnt_q and status_cnt_n only. Identify their type and width, all source-level read and write sites grouped by process or continuous assignment, reset/flush behavior, and count behavior for push-only, pop-only, simultaneous push/pop, and neither. Explain whether increment/decrement is an in-place read-modify-write of status_cnt_q, and how n/q staging affects that answer. Include exact source locations and exclude unrelated hierarchy.
-
-Choose the concrete source files, include directories, defines, and dependency order yourself by inspecting the available pinned RTL tree. Start from the narrow subtree and add dependencies as needed; do not load the complete project. Do not modify RTL or generate replacement wrappers. Use semantic server evidence for semantic conclusions; source inspection can guide discovery and verify expressions. Return a concise evidence-backed answer and disclose unresolved diagnostics. Do not read sibling benchmark manifests, oracle files, prior experiment reports, or other worker outputs.

@@ -1,6 +1,0 @@
-You are performing one focused SystemVerilog semantic analysis task.
-Workspace RTL root: /private/tmp/slang-focused-pilot/axi_batch/rtl
-Desired top: axi_fifo; use its source defaults.
-Using default parameters, report the five channel FIFO instances: effective DEPTH and FALL_THROUGH, data_i/data_o actual expressions, push_i/pop_i actual expressions, and whether usage_o is connected. Report diagnostics and distinguish source bindings from reliable typed elaboration when default AXI types are unsuitable.
-
-Choose the concrete source files, include directories, defines, and dependency order yourself by inspecting the available pinned RTL tree. Start from the narrow subtree and add dependencies as needed; do not load the complete project. Do not modify RTL or generate replacement wrappers. Use semantic server evidence for semantic conclusions; source inspection can guide discovery and verify expressions. Return a concise evidence-backed answer and disclose unresolved diagnostics. Do not read sibling benchmark manifests, oracle files, prior experiment reports, or other worker outputs.

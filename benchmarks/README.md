@@ -109,28 +109,17 @@ supports no conclusion about MCP's general effectiveness. Monetary pricing is no
 offline pytest. `make check` covers the C++ server. `make check-all` additionally compiles pinned RTL;
 it makes no agent calls. Harness unit tests use fake traces and local Python subprocesses.
 
-## Native research, 2026-11-15
+## Research records
 
-Research workers used GPT-6.1 Sol; four blinded exploratory workload workers used
-GPT-6.1 Terra with max reasoning effort. Results and reproducible deterministic
-measurements are in [research_partial](research_partial/README.md),
-[research_tools](research_tools/README.md), and [research_agents](research_agents/README.md).
-The follow-up [catalog simplification study](research_simplify/README.md) audits
-semantic_diff usage and upstream reports, then compares 30 versus 12 tools with
-two fresh Terra Max workers choosing their own fragment source files.
-The [focused analysis study](research_focused/README.md) extends this to eight
-fresh task/profile runs, selected-field payload comparisons, and malformed-RTL
-process checks. Its historical core/full profiles were enforced by that server revision.
-The 29-tool measurements predate the additive partial-load tool. Historical Python
-results and the new native measurements must not be pooled.
+The current studies are [paired RTL versus MCP + instruction](research_compare/README.md)
+and [the unified catalog](research_unified/README.md). The former retains its
+frozen inputs, public traces, independent reviews and measured token usage.
 
-The current baseline prompt no longer asks text-only agents to call unavailable
-MCP tools, and workspace paths now match the launch directory. This correction
-does not retroactively repair old experimental results.
-
-The active runner and bridge use the current 13-tool API without profile flags.
-Agents pass chosen source paths directly to `project_load`; `single_unit` defaults
-to true. Build validation intentionally loads each complete pinned inventory.
-Historical research scripts and task prompts must run against their recorded
-revision (the last core/full implementation is `5b448e8`), including that revision's
-bridge and skill. Raw historical results are unchanged.
+Earlier partial-loading, tool-utility, catalog-simplification and core/full-profile
+pilots used older server APIs. Their full reports, scripts and data remain in Git
+history at commit `eb550e7`; for example, use
+`git show eb550e7:benchmarks/research_focused/README.md`. Run historical scripts
+only with the server revision specified in their reports. `research_agents/bridge.py`
+and `research_tools/transport.py` remain because current tests or the retained
+payload probe still use them. Focused-study source provenance and oracle remain
+at their original paths for the retained studies.

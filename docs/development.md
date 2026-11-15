@@ -27,25 +27,7 @@ Previous reports measure the former Python implementation and are not results fo
 the C++ server. See [benchmarks/README.md](../benchmarks/README.md) before running new
 agent experiments.
 
-Research on the C++ server (2026-11-15) is recorded separately:
-
-- [RTL versus RTL + MCP + instruction](../benchmarks/research_compare/README.md):
-  paired source-analysis experiments, semantic grading and actual token accounting.
-- [Unified catalog](../benchmarks/research_unified/README.md): current 13-tool API,
-  compilation-unit tests, catalog size and a fresh Terra Max CVA6 smoke trial.
-
-- [Partial loading](../benchmarks/research_partial/README.md): 72 fresh-server runs,
-  four pinned projects, source reduction and missing-dependency checks.
-- [Tool utility](../benchmarks/research_tools/README.md): 217 calls exercising the
-  previous 29 tools, aggregate/primitive equivalence, payloads and limitations.
-- [Terra Max pilot](../benchmarks/research_agents/README.md): four exploratory arms,
-  six source-checked questions each; raw answers and MCP traces are retained.
-- [Catalog audit](../benchmarks/research_simplify/README.md): usage and mutation checks
-  for semantic_diff, upstream methodology review and a 30-versus-12 pilot.
-- [Focused analysis](../benchmarks/research_focused/README.md): four real-design tasks,
-  native core/full profiles and exact selected-field payload comparisons.
-
-The partial-loading and older studies predate the current unified 13-tool API;
-the paired comparison and unified-catalog study use that API.
-These exploratory studies support explicit small source scopes and a reversible
-compact default; they do not establish universal tool necessity or model superiority.
+Current research includes [the paired source-analysis comparison](../benchmarks/research_compare/README.md)
+and [the unified catalog study](../benchmarks/research_unified/README.md).
+Older studies used earlier APIs; their reports and data remain in Git history at
+commit `eb550e7`. See the [benchmark guide](../benchmarks/README.md).
