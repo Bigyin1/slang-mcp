@@ -393,12 +393,17 @@ std::vector<SymbolReference> Design::definitions() const {
 }
 
 std::vector<SymbolReference> Design::members(const std::string& scope) {
-    const auto& symbol = impl_->resolve(scope);
-    if (symbol.kind == ast::SymbolKind::Definition) {
-        return impl_->default_members(scope);
+    auto path = scope;
+    if (std::ranges::none_of(impl_->hierarchy, [&](const auto& item) {
+            return !item.parent.empty() && item.node.path == scope;
+        })) {
+        const auto& symbol = impl_->resolve(scope);
+        if (symbol.kind == ast::SymbolKind::Definition) {
+            return impl_->default_members(scope);
+        }
+        path = qualified(symbol);
     }
     std::vector<SymbolReference> result;
-    const auto path = qualified(symbol);
     std::ranges::copy_if(impl_->symbols, std::back_inserter(result),
                          [&](const auto& item) { return item.containing_scope == path; });
     return result;

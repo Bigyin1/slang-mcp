@@ -1,0 +1,18 @@
+{
+  "decision": "approved",
+  "scope": ["src/adapters/design.cpp", "src/contract.json", "tests/cpp/regressions.cpp", "README.md diff", "benchmarks/README.md diff", "benchmarks/research_compare/scope_fix/proof.json", "benchmarks/research_compare/scope_fix/replay.calls.jsonl"],
+  "correctness_review": "Design::members first accepts exact active non-top hierarchy paths already indexed from Slang instances and generate scopes. Other inputs retain the existing symbol/default resolution path. Module names and symbol identifiers still select declaration-default members; a top path identical to its module name retains that documented default behavior. Unknown paths continue to fail through resolve rather than returning a successful empty result.",
+  "isolation_and_identity_review": "Returned members are selected by exact containing_scope equality, preventing sibling or descendant leakage. Existing indexed SymbolReference objects and identifier construction remain unchanged; IDs round-trip through describe_symbol. Kind filtering and pagination remain in the unchanged SemanticService handler. Empty valid generate scopes are distinguishable from invalid paths.",
+  "architecture_and_contract_review": "The change stays inside the C++ Slang adapter and reuses its hierarchy index. No AST objects cross the adapter boundary, no subprocess compiler/parser is introduced, and no tools, request fields or response fields are added. The contract change documents scope acceptance and top/module ambiguity explicitly.",
+  "readability_review": "The bounded hierarchy membership check and existing resolution fallback are straightforward. Complexity remains small and responsibilities are unchanged. No unnecessary abstraction or additional mutable state was introduced.",
+  "test_review": "New regressions cover differently overridden sibling instances, effective widths, ID round-trips, kind filters and limits, module-default widths, top default IDs, both generated indices and their child instances, empty valid scopes and unknown scope failures.",
+  "independent_verification": {
+    "focused_tests": "53 assertions passed across three test cases: Instance scopes, Generated hierarchy scopes, and Default-scope identifiers.",
+    "native_replay": "Validated all three stored list_symbols responses against their proof records: 39, 32 and 39 complete members. Every item has exactly the requested containing_scope; IDs are unique; no response is truncated or an MCP error.",
+    "partial_project_boundary": "The Floo replay retains the original partial source selection and its diagnostics. Successful member enumeration does not claim complete project compilation or resolved missing dependencies.",
+    "frozen_binary": "Original experiment binary remains SHA256 eeecb677599bdd6d4563776456d5ab52bad2b5f52a5154e39f2e7cc0c87bbd19.",
+    "full_check_all": "Running under author/parent control at review time; not independently claimed complete here."
+  },
+  "findings": [],
+  "reviewer_changes": "This review JSON only. No source, test, compiler binary or frozen experiment artifacts changed; no worker or model calls and no subagents."
+}

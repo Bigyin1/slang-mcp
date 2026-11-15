@@ -171,6 +171,90 @@ TEST_CASE("Default-scope symbol identifiers round trip through descriptions") {
                     .at("symbol_id") == member.at("symbol_id"));
     }
 }
+TEST_CASE("Instance scopes expose direct members with effective types") {
+    Project project;
+    project.write("design.sv", R"sv(
+module leaf #(parameter int WIDTH = 8)(input logic [WIDTH-1:0] data);
+  logic [WIDTH-1:0] payload, scratch;
+endmodule
+module top;
+  logic top_signal;
+  leaf #(.WIDTH(5)) first();
+  leaf #(.WIDTH(9)) second();
+endmodule
+)sv");
+    SemanticService service;
+    REQUIRE(service.call("project_load", project.arguments()).at("diagnostic_error_count") == 0);
+    const auto members = service.call("list_symbols", {{"scope", "top.first"}}).at("items");
+    REQUIRE_FALSE(members.empty());
+    for (const auto& member : members) {
+        REQUIRE(member.at("containing_scope") == "top.first");
+        const auto described =
+            service.call("describe_symbol", {{"identifier", member.at("symbol_id")}});
+        REQUIRE(described.at("symbol").at("symbol_id") == member.at("symbol_id"));
+    }
+    REQUIRE(service.call("describe_symbol", {{"identifier", "variable:top.first.payload"}})
+                .at("width") == 5);
+    REQUIRE(service.call("describe_symbol", {{"identifier", "variable:top.second.payload"}})
+                .at("width") == 9);
+    const auto variables =
+        service.call("list_symbols", {{"scope", "top.first"}, {"kind", "variable"}});
+    REQUIRE(variables.at("total_count").get<int>() >= 2);
+    const auto limited =
+        service.call("list_symbols", {{"scope", "top.first"}, {"kind", "variable"}, {"limit", 1}});
+    REQUIRE(limited.at("total_count") == variables.at("total_count"));
+    REQUIRE(limited.at("items").size() == 1);
+    REQUIRE(limited.at("truncated") == true);
+    REQUIRE(limited.at("items").front().at("kind") == "variable");
+    const auto defaults = service.call("list_symbols", {{"scope", "leaf"}}).at("items");
+    REQUIRE(std::ranges::any_of(defaults, [&](const auto& member) {
+        return member.at("name") == "payload" &&
+               service.call("describe_symbol", {{"identifier", member.at("symbol_id")}})
+                       .at("width") == 8;
+    }));
+    REQUIRE(service.call("list_symbols", {{"scope", "top"}})
+                .at("items")
+                .front()
+                .at("symbol_id")
+                .get<std::string>()
+                .starts_with("default:"));
+    REQUIRE_THROWS_AS(service.call("list_symbols", {{"scope", "top.first.missing"}}),
+                      std::invalid_argument);
+}
+
+TEST_CASE("Generated hierarchy scopes expose only their own direct members") {
+    Project project;
+    project.write("design.sv", R"sv(
+module leaf #(parameter int WIDTH = 8); logic [WIDTH-1:0] payload; endmodule
+module top;
+  for (genvar i=0; i<2; i++) begin: generated
+    logic [i+1:0] lane;
+    leaf #(.WIDTH(i+3)) u();
+  end
+  if (1) begin: empty_scope end
+endmodule
+)sv");
+    SemanticService service;
+    REQUIRE(service.call("project_load", project.arguments()).at("diagnostic_error_count") == 0);
+    const auto scope = GENERATE("top.generated[0]", "top.generated[1]");
+    const auto members =
+        service.call("list_symbols", {{"scope", scope}, {"kind", "variable"}}).at("items");
+    REQUIRE(members.size() == 1);
+    REQUIRE(members.front().at("name") == "lane");
+    REQUIRE(members.front().at("containing_scope") == scope);
+    REQUIRE(service.call("describe_symbol", {{"identifier", members.front().at("symbol_id")}})
+                .at("width") == (std::string_view(scope) == "top.generated[0]" ? 2 : 3));
+    const auto child_scope = std::string(scope) + ".u";
+    const auto child =
+        service.call("list_symbols", {{"scope", child_scope}, {"kind", "variable"}}).at("items");
+    REQUIRE(child.size() == 1);
+    REQUIRE(child.front().at("containing_scope") == child_scope);
+    REQUIRE(service.call("describe_symbol", {{"identifier", child.front().at("symbol_id")}})
+                .at("width") == (std::string_view(scope) == "top.generated[0]" ? 3 : 4));
+    REQUIRE(service.call("list_symbols", {{"scope", "top.empty_scope"}}).at("items").empty());
+    REQUIRE_THROWS_AS(service.call("list_symbols", {{"scope", "top.generated[2]"}}),
+                      std::invalid_argument);
+}
 TEST_CASE("State inventories count all procedures before bounding the response") {
     Project project;
     std::string rtl = "module top(input logic clk,d);\n";

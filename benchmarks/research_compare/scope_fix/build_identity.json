@@ -1,0 +1,16 @@
+{
+  "observed_after_replay_and_checks_utc": "2026-11-15T17:06:27.462050+00:00",
+  "new_binary_path": "build/cpp/slang-mcp",
+  "new_binary_sha256": "a171b37af8966fc21ca8e5f82937fc9e1d434032c6919bfbe930304393cdbdee",
+  "original_experiment_binary_sha256": "eeecb677599bdd6d4563776456d5ab52bad2b5f52a5154e39f2e7cc0c87bbd19",
+  "source_sha256": {
+    "src/adapters/design.cpp": "844b93bb982ad0f6786ad77d5d423e83252948ab8ed5745d0b7d25bd5c47b026",
+    "src/contract.json": "99597cef1e849dcd8d4ec45c99b34a5508d6d594b59abfd30c9b798f9017b48b",
+    "tests/cpp/regressions.cpp": "d8e192194eb31cba9ced4682f983807d5720ef7acf24ab4a62c425fdf10351b7"
+  },
+  "validation": {
+    "author": "make check-all passed, including 136 benchmark tests and real-world preflight",
+    "independent_reviewer": "53 assertions across three focused native cases passed; replay responses checked"
+  },
+  "limitation": "Functional regression evidence; no model rerun and no measured agent token/time improvement. Real-world preflight retains RTL diagnostics."
+}

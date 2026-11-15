@@ -217,6 +217,7 @@
     "inputSchema": {
       "properties": {
         "scope": {
+          "description": "Symbol identifier or module name for default members, or an exact elaborated instance or generate hierarchy path. A top path identical to a module name selects defaults.",
           "type": "string"
         },
         "kind": {
