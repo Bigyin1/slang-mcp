@@ -2,7 +2,8 @@
 
 CI builds and tests the release executable on Ubuntu 24.04 x86-64 using Clang 23,
 LLD and the Ubuntu GCC 14 C++ runtime. The downloadable archive contains the
-server, license files and README, with a separate SHA-256 checksum. It targets
+server, agent instructions in `AGENTS.md`, documentation, license files and README,
+with a separate SHA-256 checksum. It targets
 Ubuntu 24.04 x86-64 and compatible systems with the required glibc and libstdc++;
 it is not a statically linked universal Linux binary.
 

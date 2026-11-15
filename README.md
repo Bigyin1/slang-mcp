@@ -9,6 +9,7 @@ The C++ integration also draws on [slang-server](https://github.com/hudson-tradi
 ## Documentation
 
 - [Build, install and connect a client](docs/build-and-install.md)
+- [Agent instructions](docs/agent-instructions.md)
 - [Load a fragment and use the tools](docs/usage.md)
 - [MCP tool reference](docs/mcp-reference.md)
 - [Architecture and analysis limits](docs/architecture.md)
