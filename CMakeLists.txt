@@ -102,14 +102,13 @@ foreach(mode format format-check lint)
             -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Quality.cmake"
         VERBATIM)
 endforeach()
-find_program(UV_EXECUTABLE uv)
-if(UV_EXECUTABLE)
-    add_custom_target(complexity
-        COMMAND "${CMAKE_COMMAND}" -E env "UV_CACHE_DIR=${CMAKE_CURRENT_BINARY_DIR}/uv-cache"
-            "${UV_EXECUTABLE}" run --project "${CMAKE_CURRENT_SOURCE_DIR}/benchmarks" --locked
-            lizard -C 6 -L 50 -a 4 -w "${CMAKE_CURRENT_SOURCE_DIR}/src"
-        VERBATIM)
+find_program(LIZARD_EXECUTABLE NAMES lizard)
+if(NOT LIZARD_EXECUTABLE)
+    set(LIZARD_EXECUTABLE lizard)
 endif()
+add_custom_target(complexity
+    COMMAND "${LIZARD_EXECUTABLE}" -C 6 -L 50 -a 4 -w "${CMAKE_CURRENT_SOURCE_DIR}/src"
+    VERBATIM)
 
 if(BUILD_TESTING)
     FetchContent_Declare(Catch2

@@ -1,125 +1,83 @@
-# Slang MCP benchmark
+# Benchmark results and methodology
 
-Current C++ comparison: [RTL versus RTL + MCP + instruction](research_compare/README.md).
-It uses a fixed Codex CLI model, actual token telemetry and semantic answer review;
-it has no bare-MCP arm. The Copilot harness and historical three-arm studies below
-remain available as separate experiments.
+These results describe experiments performed on November 15, 2026, using the C++
+Slang MCP server. They compare source-only work with source inspection plus MCP
+and a detailed instruction. They do not establish general model superiority.
+The benchmark harness, Python code, input corpus, and detailed artifacts are
+local-only and ignored by Git. The full historical materials remain in Git at
+commit `7cb50be`; the main experiment was frozen at `9de333a`, and the exploratory
+follow-up at `ebd9989`, before their respective runs.
 
-Python 3.10 controller around the **system `copilot` executable**. Authentication belongs to
-Copilot: log in normally with `copilot login`. No JavaScript wrappers, credential extraction,
-private CLI APIs, copied runtime, sockets or proxy servers are used. MCP modes launch
-`build/cpp/slang_mcp` directly over stdio and give the agent absolute-path file lists.
-Set `SLANG_MCP_BINARY` to select another binary. Build the C++ server before running
-compiler validation or MCP treatments. Historical reports refer to the Python server.
+## Main comparison
 
-Start small (three agent calls, one simple case, one repetition):
+Six tasks were run twice in each arm: 24 fresh CLI sessions. Four tasks used
+pinned fragments from CVA6, FlooNoC, AXI, and iDMA; two synthetic controls tested
+single-unit macros and an invalid fragment with a missing dependency. Agents had
+the same source and configuration, chose their own files, and could inspect RTL.
+Both arms used the requested `gpt-5.6-terra` model with `max` reasoning effort;
+`gpt-6.1-terra` was unavailable through the CLI. Provider routing was not
+independently attested.
 
-```sh
-uv sync --project benchmarks --python 3.10
-uv run --project benchmarks python -m benchmarks validate
-uv run --project benchmarks python -m benchmarks list --case hier_generate --repetitions 1
-uv run --project benchmarks python -m benchmarks run --case hier_generate --repetitions 1 \
-  --model auto --output benchmark_smoke/simple
-uv run --project benchmarks python -m benchmarks report --output benchmark_smoke/simple
-```
+| Metric, 12 attempts per arm | Source only | Source + MCP + instruction |
+| --- | ---: | ---: |
+| Correct factual criteria | 96/96 | 96/96 |
+| Mean elapsed time | 261.3 s | 335.7 s |
+| Input tokens | 1,095,748 | 4,598,823 |
+| Cached input tokens | 785,920 | 3,943,680 |
+| Input excluding cached tokens | 309,828 | 655,143 |
+| Output tokens | 123,363 | 155,671 |
+| Reasoning output tokens | 98,623 | 116,611 |
 
-`list`, `validate`, `report` and `run --dry-run` make **no agent/model calls**. Build validation
-uses the native server over MCP and Bender, without agent calls:
+MCP was slower in 10 of 12 matched pairs. On the four real RTL fragments alone,
+both arms scored 64/64, with mean times of 356.3 s and 401.4 s respectively.
+These small fragments produced a ceiling effect: both arms answered every factual
+criterion correctly. Times depend on service load; the sample is too small to
+establish statistical significance.
 
-```sh
-uv run --project benchmarks python -m benchmarks validate --builds
-```
+## Exploratory broken-RTL review
 
-`run` without filters defaults to the one-case `smoke` profile and one repetition (three runs).
-Larger studies are opt-in; they have **not** been run as part of the initial smoke:
+A separate follow-up used two real-source fragments with benchmark-inserted
+errors and an intentionally unavailable external monitor. Each case had one
+run per arm, with no indication of the number or locations of defects. The
+source-only arm found 5 of 6 seeded local defects; MCP plus instruction found
+all 6. Scores were 13.5/16 and 16/16 respectively. These seeded defects are not
+claims about upstream projects.
 
-```sh
-# 10 predefined cases x 3 modes x 3 repetitions = 90 agent runs
-uv run --project benchmarks python -m benchmarks run --profile pilot --repetitions 3 --output benchmark_results/pilot
+| Case / arm | Score | Time | Input (cached) | Output (reasoning) |
+| --- | ---: | ---: | ---: | ---: |
+| AXI / source | 7.5/8 | 269.6 s | 165,773 (114,176) | 10,611 (8,023) |
+| AXI / MCP + instruction | 8/8 | 360.8 s | 897,004 (833,792) | 13,417 (9,689) |
+| iDMA / source | 6/8 | 542.2 s | 98,753 (71,168) | 21,836 (19,380) |
+| iDMA / MCP + instruction | 8/8 | 559.1 s | 703,970 (619,520) | 21,828 (17,080) |
 
-# 19 cases x 3 modes x 3 repetitions = 171 agent runs
-uv run --project benchmarks python -m benchmarks run --profile full --repetitions 3 --output benchmark_results/full
-```
+The source-only iDMA answer missed an incorrect named port. Both AXI answers
+found all three seeded defects, but the source-only answer also claimed a
+supplied FIFO was missing and misstated the complete W-channel width. This
+follow-up was chosen after initial main-study results and had only one repetition;
+it is exploratory rather than independent confirmation.
 
-Filters: repeatable `--case`, `--category`, `--mode`; limits: `--timeout` (default 300 seconds),
-`--repetitions`; randomization: `--seed` (default 20260905). One agent runs at a time.
-The installed version must be 1.0.83. Version is checked before each run. In this installation,
-`--no-auto-update` caused the system launcher to select its older bundled runtime; the harness
-therefore uses the ordinary launcher and fails on version drift. It never updates Copilot itself.
+## Evaluation and measurement
 
-The user selected `auto` because gpt-5.4 was unavailable. Auto does not accept a reasoning-effort
-flag. Requested and observed model identifiers are retained separately; model routing is a
-confounder, so this setup cannot isolate tool effects as tightly as a fixed-model experiment.
-`--model <fixed-id>` uses effort `medium` and verifies observed model identity.
+Two independent GPT-6.1 Sol reviewers scored answers against eight predeclared,
+source-derived criteria per case, allowing semantically equivalent prose. Each
+criterion received 0, 0.5, or 1. Explanation quality was scored separately for
+reasoning, coverage, evidence, and calibration. Reviewers did not receive arm,
+time, token, or each other's scores, although answers could reveal tool use.
+One AXI scoring disagreement was resolved by an unblinded controller: both original
+ratings were retained in the historical record, and the final score reflects the
+criterion's stated optional width detail.
 
-## Experimental modes and isolation
+CLI-reported `turn.completed` counters supply token totals, summed across model
+requests in the session. Cached input is a subset of input; reasoning output is
+a subset of output. They are not added twice. The elapsed wall time includes
+model and tool work but excludes preparation of the workspace and process spawn.
+Neither token totals nor elapsed time are dollar cost. All attempts completed;
+there were no selective reruns. The initial protocol and inputs were committed
+before the relevant runs, and the exported artifacts were checked against them.
 
-Every run receives the same source tree, build manifest and task question. `text-only` has no
-Slang MCP; `mcp` adds the server; `mcp+skill` also prepends `skills/semantic.md`. This instruction
-contains strategy only. No case oracle or report is copied into a workspace. Every run uses a
-fresh temporary source copy without Git history, a new CLI session and a separate temporary
-directory. Repositories are prepared using GitPython at the commits in `cases/projects.json`.
-Bender 0.32.1 supplies sources, includes and defines; the AXI dependency lockfile is retained.
-
-At the user's request, there is **no OS sandbox** and Copilot uses its normal system profile
-and authentication. Files outside the workspace are technically reachable through shell.
-Copilot runtime caches and authentication state are shared. Memory is disabled by default in
-noninteractive prompt mode; the harness does not enable it or resume sessions. Built-in MCP,
-custom instructions, skill and delegation tools, web access tools and session database tools
-are disabled through CLI options. Preflight rejects inherited MCP server configurations instead
-of silently contaminating the baseline. This is practical workspace isolation, not a security
-boundary or proof that the agent cannot access external answers.
-
-The curated corpus has six synthetic semantic edge cases and thirteen multi-file real-world cases,
-including eight CVA6 cases using the pinned `pulp-v3` revision and the
-`cv64a6_imafdc_sv39` Bender target. The frozen ten-case pilot combines the six synthetic cases
-with four of the CVA6 cases. The four additional CVA6 cases are reserved for the full experiment
-and targeted comparisons. Real-world provenance is a separate dimension from semantic category.
-Expected answers and human-readable rationales are controller-only. They come from explicit
-source declarations, manually evaluated expressions and build configuration, not solely from
-the server under test. Compiler checks are supplemental.
-
-## Results and resuming
-
-An output directory contains `experiment.json`, `raw/<case>/<mode>/rep_XX/attempt_XXX/`,
-`normalized/{runs.jsonl,runs.csv,summary.json,summary.csv}` and
-`reports/benchmark_report.md` with static PNG figures. Raw JSONL includes provider-emitted events;
-reports inspect only final answers and observable tool use, never hidden reasoning.
-
-Repeat the **identical command** to resume. Completed matching attempts, including failures, are
-retained and skipped; `--force` creates new attempt directories and never overwrites old traces.
-A changed corpus, model, code or limits requires a new output directory. Partial attempts do not
-enter aggregates. The report uses the last completed matching attempt per run key. Failed runs
-are not silently removed. Regeneration does not invoke Copilot.
-
-Accuracy is exact deterministic contract matching. Integers allow surrounding whitespace and
-an optional sign; strings/paths allow surrounding whitespace; JSON arrays retain order; JSON
-object key order is ignored. Prose, fenced answers, booleans in place of numbers, and semantic
-mistakes are not repaired. Missing telemetry is null, not zero. Cache tokens are reported
-separately and are not added to input tokens a second time.
-
-Task accuracy uses evaluable answers; reliability and overall success use scheduled runs.
-Infrastructure failures and unfinished runs have explicit counts. Bootstrap confidence intervals
-resample whole cases, keeping repetitions clustered. A one-case smoke has no meaningful CI and
-supports no conclusion about MCP's general effectiveness. Monetary pricing is not assumed.
-
-## Development
-
-`make check-benchmarks` covers harness formatting, Ruff, Pylint, strict mypy, Xenon and
-offline pytest. `make check` covers the C++ server. `make check-all` additionally compiles pinned RTL;
-it makes no agent calls. Harness unit tests use fake traces and local Python subprocesses.
-
-## Research records
-
-The current studies are [paired RTL versus MCP + instruction](research_compare/README.md)
-and [the unified catalog](research_unified/README.md). The former retains its
-frozen inputs, public traces, independent reviews and measured token usage.
-
-Earlier partial-loading, tool-utility, catalog-simplification and core/full-profile
-pilots used older server APIs. Their full reports, scripts and data remain in Git
-history at commit `eb550e7`; for example, use
-`git show eb550e7:benchmarks/research_focused/README.md`. Run historical scripts
-only with the server revision specified in their reports. `research_agents/bridge.py`
-and `research_tools/transport.py` remain because current tests or the retained
-payload probe still use them. Focused-study source provenance and oracle remain
-at their original paths for the retained studies.
+Read restrictions were enforced by prompts and reviewed public commands, not
+full OS isolation. Provider cache was not cleared between attempts. The comparison
+bundles MCP and its instruction; it does not isolate their individual effects or
+compare other compilers. Two repetitions and two follow-up cases do not represent
+large industrial projects. The original public traces, scores, source snapshots,
+and audit code remain available in Git history for independent inspection.

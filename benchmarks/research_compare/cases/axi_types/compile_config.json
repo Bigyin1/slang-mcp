@@ -1,7 +1,0 @@
-{
-  "top": "compare_axi_types",
-  "single_unit": true,
-  "defines": {"COMMON_CELLS_ASSERTS_OFF": null},
-  "include_dirs": ["include", ".bender/git/checkouts/common_cells-3e2fcccecd7aee7b/include"],
-  "source_selection": "Select relevant source dependencies from RTL; no source order is supplied."
-}

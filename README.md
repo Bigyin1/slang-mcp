@@ -16,5 +16,5 @@ integration also draws on [slang-server](https://github.com/hudson-trading/slang
 - [Checks, benchmarks and research](docs/development.md)
 - [Linux x86-64 release artifacts](docs/releases.md)
 
-The server runs without Python; the separate benchmark harness uses Python.
+The server runs without Python.
 Released under the [MIT License](LICENSE).

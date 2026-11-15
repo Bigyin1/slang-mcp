@@ -7,8 +7,7 @@
   a regex parser or pseudo-netlist.
 - Production code and tests use C++26; LLVM/Clang 23.1.5 is the recommended
   compiler. Slang 12.1 is pinned by commit SHA in `CMakeLists.txt`.
-- Python is allowed only under `benchmarks/`. Create its environment with
-  `uv sync --project benchmarks --python 3.10`; the lockfile is in that directory.
+- The benchmark harness and its Python code are local-only and ignored by Git.
 - Use the Slang C++ API rather than running the Slang executable as a subprocess.
 
 ## Architectural boundaries
@@ -35,22 +34,16 @@
 - Do not suppress RTL errors or missing dependencies. Scope hints indicate only a
   possible cause; if the top cannot be built, retain the attempted diagnostics and
   distinguish them from the previous active project.
-- Prefer suitable existing libraries for complex operations: Slang's built-in
-  visitor for AST traversal and GitPython for Git operations in real-world tests.
+- Prefer suitable existing libraries for complex operations, including Slang's
+  built-in visitor for AST traversal.
 
 ## Checks
 
 - `make check` builds the C++ code and runs clang-format, strict clang-tidy,
   Lizard, and CTest. Limits: cyclomatic complexity 6, cognitive complexity 10,
   5 local variables, 4 parameters, 6 branches, nesting depth 3, and 35 statements.
-- `make check-benchmarks` checks the separate Python harness with Ruff, Pylint,
-  strict mypy, Xenon, and pytest. `make check-all` additionally checks preparation
-  and compilation of the pinned projects in `benchmarks/cases/projects.json`
-  through the C++ server. Bender `0.32.1` generates sources, include directories,
-  and defines; network access may be required.
-- Before finishing a change, run the checks relevant to its scope. For production
-  code or dependency changes, run `make check-all` if the environment is available.
-- Update `benchmarks/uv.lock` when changing benchmark dependencies.
+- Before finishing a change, run the checks relevant to its scope. `make check`
+  requires Lizard to be available on PATH.
 
 ## Ambiguity and developer questions
 

@@ -1,7 +1,0 @@
-{
-  "top": "compare_idma_state",
-  "single_unit": true,
-  "defines": {"COMMON_CELLS_ASSERTS_OFF": null},
-  "include_dirs": [".bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/include"],
-  "source_selection": "Select relevant source dependencies from RTL; no source order is supplied."
-}

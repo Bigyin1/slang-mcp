@@ -1,5 +1,0 @@
-`ifndef UNIT_MACROS_SETTINGS_SVH
-`define UNIT_MACROS_SETTINGS_SVH
-`define WORD_W 9
-`define LANES 2
-`endif

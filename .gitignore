@@ -13,3 +13,7 @@ build/
 benchmark_results/
 benchmark_smoke/
 .matplotlib/
+
+# Local benchmark harness and experiment data; retain only the summary.
+/benchmarks/*
+!/benchmarks/README.md

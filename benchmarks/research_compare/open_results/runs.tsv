@@ -1,5 +1,0 @@
-id	case_id	arm	repetition	status	judge_a_fact_total	judge_b_fact_total	final_fact_total	duration_seconds	input_tokens	cached_input_tokens	input_minus_cached_tokens	output_tokens	reasoning_output_tokens	cache_write_input_tokens	completed_command_count	completed_mcp_count	failed_mcp_count
-axi_review_text-only_r1	axi_review	text-only	1	completed	7.5	7	7.5	269.5793654579902	165773	114176	51597	10611	8023	0	16	0	0
-axi_review_mcp+skill_r1	axi_review	mcp+skill	1	completed	8	8	8	360.7708628749242	897004	833792	63212	13417	9689	0	7	34	4
-idma_review_mcp+skill_r1	idma_review	mcp+skill	1	completed	8	8	8	559.0986571660032	703970	619520	84450	21828	17080	0	15	22	0
-idma_review_text-only_r1	idma_review	text-only	1	completed	6	6	6	542.1706020830898	98753	71168	27585	21836	19380	0	14	0	0
