@@ -1,0 +1,59 @@
+{
+  "case_id": "broken_fragment",
+  "kind": "synthetic_diagnostic_control",
+  "oracle_basis": "Independently derived from the fixed RTL and explicit compilation configuration before worker runs or optional compiler corroboration; MCP output is not oracle truth.",
+  "answer_format": "Structured prose or table; equivalent explanations accepted semantically.",
+  "criterion_count": 8,
+  "criteria": [
+    {
+      "id": "top_w",
+      "expected": 12,
+      "derivation": "The selected standalone top uses its declared default W=12; no parent override or command-line parameter is supplied.",
+      "locations": ["config.json", "rtl/top.sv:1-2"]
+    },
+    {
+      "id": "data_i_bits",
+      "expected": 12,
+      "derivation": "The local port range [W-1:0] has 12 bits independently of the missing external module definition.",
+      "locations": ["rtl/top.sv:2-6"]
+    },
+    {
+      "id": "narrow_o_bits",
+      "expected": 4,
+      "derivation": "The local output declaration has the fixed packed range [3:0].",
+      "locations": ["rtl/top.sv:7"]
+    },
+    {
+      "id": "local_state",
+      "expected": "narrow_q, 4 bits, written in always_ff; synchronous active-low reset from the visible source",
+      "derivation": "narrow_q is declared [3:0] and is assigned in the posedge-clk_i always_ff block. rst_ni is tested inside that block, rather than appearing as an event control. Do not require reset classification for credit: the requested fact is state name, width, and always_ff provenance.",
+      "locations": ["rtl/top.sv:17", "rtl/top.sv:24-29"]
+    },
+    {
+      "id": "local_member_fault",
+      "expected": "sample.missing is invalid: sample_t declares payload and valid, but no member named missing",
+      "derivation": "The complete local packed struct definition supplies the member set, so this semantic error does not depend on the unavailable external definition.",
+      "locations": ["rtl/top.sv:11-16", "rtl/top.sv:21"]
+    },
+    {
+      "id": "local_width_fault",
+      "expected": "The assignment narrow_q <= data_i narrows 12 bits to 4, preserving data_i[3:0] and discarding data_i[11:4]",
+      "derivation": "The RHS is a 12-bit unsigned logic vector and the LHS is 4 bits. SystemVerilog truncates the most significant bits on assignment. This local loss of data remains provable with or without the external child. Calling it a truncation warning rather than a compile error is correct.",
+      "locations": ["rtl/top.sv:6", "rtl/top.sv:17", "rtl/top.sv:28"]
+    },
+    {
+      "id": "missing_external_definition",
+      "expected": "external_stage is unavailable at instance broken_fragment_top.u_external",
+      "derivation": "Only rtl/top.sv is supplied, and it contains no declaration of external_stage. The unresolved child is an incompleteness issue separate from the two source-local faults. Its syntactic W override expression evaluates to 12, but the missing child's parameter declaration is not established.",
+      "locations": ["config.json", "rtl/top.sv:31-35"]
+    },
+    {
+      "id": "external_o_knowledge_boundary",
+      "expected": "The local external_o declaration is 12 bits, but the missing child's port declaration, internal behavior, and produced value are unresolved. Local top parameters, port declarations, and narrow_q's always_ff provenance remain usable; the fragment is not a complete error-free design.",
+      "derivation": "The top port's range is determined locally. A named connection to the unavailable child's data_o port does not establish that child's port type, direction, behavior, or implementation.",
+      "locations": ["rtl/top.sv:2-9", "rtl/top.sv:17-29", "rtl/top.sv:31-35"]
+    }
+  ],
+  "scoring": "One point per criterion; maximum 8. Evaluate the two local faults and external incompleteness independently. No exact compiler diagnostic code, severity label, diagnostic count, or recovery-specific semantic object is required. Additional unsupported claims about the missing implementation must not receive credit.",
+  "limitations": "Synthetic diagnostic/control fixture, not a real-project sample. The member access is a semantic error and the width loss is a source-level truncation fault; the missing module is a separate unavailable dependency. Both arms receive the same fixed available RTL and compilation configuration."
+}

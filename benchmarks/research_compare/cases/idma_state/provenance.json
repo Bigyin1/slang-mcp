@@ -1,0 +1,8 @@
+{
+  "upstream": {"repository": "https://github.com/pulp-platform/iDMA.git", "commit": "2e0b0fe53b6f8823319e2428e2e9abc2db149b7d"},
+  "common_cells": {"repository": "https://github.com/pulp-platform/common_cells.git", "commit": "63b7c50d43e462b59506f69d341ff1e40202866d", "pin_source": "Bender.lock"},
+  "materialized_from": "/private/tmp/slang-focused-pilot/idma_partial/rtl",
+  "slice": "Minimal source dependencies and original headers, package manifests and licenses; all copied upstream files are byte-for-byte unchanged.",
+  "integration": "integration.sv is benchmark-owned integration RTL. It instantiates unmodified upstream modules with explicit configuration.",
+  "public_configuration": "compile_config.json"
+}

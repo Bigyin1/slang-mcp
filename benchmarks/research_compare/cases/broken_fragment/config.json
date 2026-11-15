@@ -1,0 +1,13 @@
+{
+  "case_id": "broken_fragment",
+  "kind": "synthetic_diagnostic_control",
+  "top_module": "broken_fragment_top",
+  "source_files": ["rtl/top.sv"],
+  "source_order_is_required": false,
+  "include_directories": [],
+  "defines": {},
+  "single_unit": true,
+  "parameter_context": "standalone_top_defaults",
+  "workers_may_modify_files": false,
+  "completeness": "external_stage_definition_is_not_supplied"
+}

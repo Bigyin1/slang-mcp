@@ -1,0 +1,11 @@
+{
+  "upstream_provenance": "benchmarks/research_focused/source_provenance.json",
+  "source_case": "cva6_counter",
+  "policy": "Unmodified pinned upstream sources; floo_config rtl/top.sv is a benchmark integration fixture.",
+  "files": {
+    "task.txt": "ef9dc8e79fa3524bdce4b435e70f53aa93ea4199cdd12087b48b7ff3e51d73c9",
+    "config.json": "4a67e7bee64e0d16a536155125a411ab0cbc8eb572dea89ece58aae5aae9fd2d",
+    "rtl/LICENSE": "b41106a9d0de1cf6ab4ea56bedf677503085c0570248f37fe2cdf657a5e72601",
+    "rtl/cva6_fifo_v3.sv": "f61e13a52583cc8e1a5a6d46910bed6247cf0dd8b52aa39b4fd683729e3faa68"
+  }
+}

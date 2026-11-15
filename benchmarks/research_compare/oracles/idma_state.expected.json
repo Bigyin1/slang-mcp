@@ -1,0 +1,279 @@
+{
+  "case_id": "idma_state",
+  "top": "compare_idma_state",
+  "runtime_root": "/private/tmp/slang-compare/idma_state/rtl",
+  "grading": {
+    "format": "Accept prose, tables or JSON. Grade semantic facts, not wording or tool use.",
+    "points_per_item": 1,
+    "total": 8,
+    "support": "Derivations, references, formal/actual connections and defaults assess explanation quality separately; do not silently create additional scored items.",
+    "visibility": "Researcher-only: never provide this file, proofs, manifests or prepare scripts to workers."
+  },
+  "source_sha256": {
+    "Bender.yml": "75d8973e3dee61eebd17d604c37818a8d1c9a1b86fc3587a5663615e811e50c2",
+    "Bender.lock": "9e6c33f898dad20fd1b29cf8b07647b7d55fe8b42c36bd5cd72586fc2606557e",
+    "LICENSE": "6527a46225891b976fa94f634f6ee0cd22e1c7129d6f11c5c98c997627625fc7",
+    "src/backend/idma_dataflow_element.sv": "312efebf98b3ac716b4c85b8ec83adafe81654474f289307ce07110e273021be",
+    ".bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_pkg.sv": "8fe1d23d619f4e11643d9a2c44a1a6f18b088f45888fca0ba7ef75e3f6872f92",
+    ".bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_fifo.sv": "69e0a4505c37bc36781b307dbbd683bbb3c78774dfd2140d4a784e3e751e5f0a",
+    ".bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_stream_fifo.sv": "d9bc22df925eaaf3266d866af6f09423c8ddafef0ffbbaed0f60f13c81398f1c",
+    ".bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_passthrough_stream_fifo.sv": "68de1c713e40d97950591111dccd37a7546025f7fe6750fa3092826422557352",
+    ".bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/include/common_cells/assertions.svh": "e9606c554d2562f2d282455a676503dd14655da51774c7069ee59773061b4a31",
+    ".bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/include/common_cells/registers.svh": "cd2133df2638447e7d55e4b3b16e4e856cb21d53bea03b35985f31abfecaa868",
+    ".bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/include/common_cells/deprecated/registers.svh": "5b95018dd45ed472e78ea192039c332574bbc10cc53ccbb4221f14f77bb0c0d7",
+    "integration.sv": "a3055d38d55eb8b6aebef27d60f0c2f7e8d9d9b4b4dad3a345d01d9f89036f15"
+  },
+  "oracle_basis": "Manual packed dimension arithmetic, source generate loop and register macro clear arguments, prepared before any worker outcomes. Compiler assertions are a separate consistency check.",
+  "configuration": {
+    "BufferDepth": 5,
+    "StrbWidth": 3,
+    "packet_Depth": 5,
+    "packet_FallThrough": 1,
+    "defines": [
+      "COMMON_CELLS_ASSERTS_OFF"
+    ]
+  },
+  "items": [
+    {
+      "id": "lane_bits",
+      "expected": 13,
+      "formula": "8 payload + 4 tag + 1 poison",
+      "source": [
+        {
+          "path": "integration.sv",
+          "lines": [
+            3,
+            7
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dataflow_input_bits",
+      "expected": 39,
+      "formula": "$bits(byte_t)*StrbWidth = 13*3",
+      "source": [
+        {
+          "path": "integration.sv",
+          "lines": [
+            8,
+            8
+          ]
+        },
+        {
+          "path": "integration.sv",
+          "lines": [
+            31,
+            36
+          ]
+        },
+        {
+          "path": "src/backend/idma_dataflow_element.sv",
+          "lines": [
+            25,
+            25
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lane_data_q_bits",
+      "expected": 65,
+      "formula": "$bits(data_t)*Depth = 13*5; data_q is packed [Depth-1:0] of packed lane_t",
+      "source": [
+        {
+          "path": "integration.sv",
+          "lines": [
+            31,
+            36
+          ]
+        },
+        {
+          "path": "src/backend/idma_dataflow_element.sv",
+          "lines": [
+            35,
+            40
+          ]
+        },
+        {
+          "path": ".bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_passthrough_stream_fifo.sv",
+          "lines": [
+            55,
+            56
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lane_pointer_bits",
+      "expected": 4,
+      "formula": "PointerWidth=$clog2(5)+1 = 3+1 = 4; both read_ptr_q and write_ptr_q have this width",
+      "source": [
+        {
+          "path": ".bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_passthrough_stream_fifo.sv",
+          "lines": [
+            47,
+            53
+          ]
+        }
+      ]
+    },
+    {
+      "id": "total_lane_stored_q_bits",
+      "expected": 219,
+      "formula": "3 generated lanes * (65 data_q + 4 read_ptr_q + 4 write_ptr_q) = 3*73",
+      "source": [
+        {
+          "path": "src/backend/idma_dataflow_element.sv",
+          "lines": [
+            35,
+            52
+          ]
+        },
+        {
+          "path": ".bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_passthrough_stream_fifo.sv",
+          "lines": [
+            47,
+            56
+          ]
+        },
+        {
+          "path": ".bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_passthrough_stream_fifo.sv",
+          "lines": [
+            113,
+            117
+          ]
+        }
+      ]
+    },
+    {
+      "id": "packet_mem_q_bits",
+      "expected": 195,
+      "formula": "$bits(beat_t)=3*13=39; FifoDepth=Depth=5; $bits(mem_q)=39*5=195",
+      "source": [
+        {
+          "path": "integration.sv",
+          "lines": [
+            3,
+            8
+          ]
+        },
+        {
+          "path": "integration.sv",
+          "lines": [
+            39,
+            44
+          ]
+        },
+        {
+          "path": ".bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_stream_fifo.sv",
+          "lines": [
+            50,
+            55
+          ]
+        },
+        {
+          "path": ".bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_fifo.sv",
+          "lines": [
+            43,
+            53
+          ]
+        }
+      ]
+    },
+    {
+      "id": "packet_status_usage_bits",
+      "expected": 3,
+      "formula": "UsageWidth=cnt_width(5)=idx_width(6)=$clog2(6)=3. status_cnt_q and usage_o both use [UsageWidth-1:0].",
+      "source": [
+        {
+          "path": ".bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_pkg.sv",
+          "lines": [
+            40,
+            54
+          ]
+        },
+        {
+          "path": ".bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_fifo.sv",
+          "lines": [
+            22,
+            22
+          ]
+        },
+        {
+          "path": ".bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_fifo.sv",
+          "lines": [
+            33,
+            33
+          ]
+        },
+        {
+          "path": ".bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_fifo.sv",
+          "lines": [
+            51,
+            55
+          ]
+        }
+      ]
+    },
+    {
+      "id": "flush_clears_packet_mem",
+      "expected": false,
+      "formula": "FFLARNC(mem_q,...,clr_i,...), not clr_or_flush. flush_i enters clr_or_flush only for pointers/status. With reset deasserted, flush alone is not a memory clear; memory may still change for a simultaneous enabled write.",
+      "source": [
+        {
+          "path": ".bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_fifo.sv",
+          "lines": [
+            119,
+            126
+          ]
+        },
+        {
+          "path": ".bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/include/common_cells/registers.svh",
+          "lines": [
+            190,
+            230
+          ]
+        }
+      ]
+    }
+  ],
+  "explanation_facts": {
+    "generated_instances": [
+      "i_dataflow.gen_fifo_buffer[0].i_passthrough_stream_fifo",
+      "i_dataflow.gen_fifo_buffer[1].i_passthrough_stream_fifo",
+      "i_dataflow.gen_fifo_buffer[2].i_passthrough_stream_fifo"
+    ],
+    "defaults": {
+      "idma_BufferDepth": 3,
+      "idma_StrbWidth": 1,
+      "idma_byte_t_bits": 8,
+      "lane_fifo_Depth": 8,
+      "lane_fifo_SameCycleRW": 1,
+      "cc_stream_fifo_DataWidth": 32,
+      "cc_fifo_DataWidth": 32,
+      "cc_stream_fifo_Depth": 8,
+      "cc_fifo_Depth": 8
+    },
+    "packet_parameters": {
+      "Depth": 5,
+      "DataWidth": 32,
+      "data_t_bits": 39,
+      "FallThrough": 1,
+      "FifoDepth": 5,
+      "PtrWidth": 3,
+      "UsageWidth": 3
+    },
+    "parameter_reason": "Explicit byte_t/data_t overrides determine packed widths despite byte_t's 8-bit default and DataWidth's remaining 32-bit value. cc_stream_fifo forwards DataWidth,Depth,FallThrough,data_t to cc_fifo.",
+    "clock": "posedge clk_i",
+    "asynchronous_reset": "negedge rst_ni, active low; pointers/count/mem all reset to zero",
+    "synchronous_clear": "clr_i resets pointers/count and memory to zero on posedge, with priority over load",
+    "flush": "flush_i synchronously resets read_pointer_q/write_pointer_q/status_cnt_q; it is not the memory macro clear argument",
+    "pointer_formula": "PtrWidth=idx_width(5)=3 while lane PointerWidth=$clog2(5)+1=4; distinct implementations"
+  },
+  "compiler_consistency": {
+    "tool": "Verilator 5.052",
+    "proof": "idma_state.proof.sv",
+    "check": "Run with --binary --assert and COMMON_CELLS_ASSERTS_OFF. Source-derived oracle remains authoritative."
+  }
+}

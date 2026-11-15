@@ -1,0 +1,7 @@
+{
+  "top_module": "cva6_fifo_v3",
+  "include_directories": [],
+  "defines": {},
+  "single_unit": true,
+  "source_selection": "Choose needed .sv files from rtl; packages before their users. Do not compile headers as source."
+}

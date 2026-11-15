@@ -1,0 +1,64 @@
+{
+  "case_id": "floo_config",
+  "kind": "real_rtl_with_benchmark_integration",
+  "oracle_basis": "Derived from fixed source declarations, formulas and guards before workload runs; compiler results may corroborate but are not sole truth.",
+  "criteria": [
+    {
+      "id": "widths",
+      "expected": "The packed flit has 13 + 8 + 2 = 23 bits. For u_virtual, data_i has 3 * 1 * 23 = 69 bits and valid_i has 3 * 4 = 12 bits. For u_physical, data_i has 2 * 3 * 23 = 138 bits and valid_i has 2 * 3 = 6 bits. For u_bypass, data_i has 2 * 1 * 23 = 46 bits and valid_i has 2 * 4 = 8 bits.",
+      "locations": [
+        "top.sv:3-22; floo_fifo.sv:9-25"
+      ]
+    },
+    {
+      "id": "branches",
+      "expected": "u_virtual selects gen_floo_fifo.gen_virt_channels; u_physical selects gen_floo_fifo.gen_phys_channels; u_bypass selects gen_no_fifo. The FifoDepth == 0 test takes precedence over both channel tests. For a nonzero depth, NumPhysChannels == 1 takes precedence over NumVirtChannels == NumPhysChannels.",
+      "locations": [
+        "floo_fifo.sv:28-36,77"
+      ]
+    },
+    {
+      "id": "inventory",
+      "expected": "The virtual subtree contains 3 * 4 = 12 cc_stream_fifo instances and 3 floo_vc_arbiter instances. The physical subtree contains 2 * 3 = 6 cc_stream_fifo instances and no floo_vc_arbiter instances. The bypass subtree contains neither. The cc_fifo child inside each stream FIFO is a different module type and does not increase the cc_stream_fifo count.",
+      "locations": [
+        "floo_fifo.sv:41-76,77-97"
+      ]
+    },
+    {
+      "id": "virtual_target",
+      "expected": "floo_config_top.u_virtual.gen_floo_fifo.gen_virt_channels.gen_channel[2].gen_virt_channel[3].i_stream_fifo has effective Depth = 5 and FallThrough = 0. Its input actual is spelled data_i[n] in the source, with n = 2; its output actual is data_out[n][v], with n = 2 and v = 3. These expressions are in the enclosing floo_fifo scope.",
+      "locations": [
+        "floo_fifo.sv:41-58; top.sv:9-10"
+      ]
+    },
+    {
+      "id": "physical_target",
+      "expected": "floo_config_top.u_physical.gen_floo_fifo.gen_phys_channels.gen_channel[1].gen_virt_channel[2].i_stream_fifo has effective Depth = 2. Its input actual is data_i[n][v] and its output actual is data_o[n][v], with n = 1 and v = 2. These expressions are in the enclosing floo_fifo scope.",
+      "locations": [
+        "floo_fifo.sv:77-95; top.sv:14-15"
+      ]
+    },
+    {
+      "id": "storage",
+      "expected": "In one virtual stream FIFO's fifo_i child, PtrWidth = idx_width(5) = 3 and UsageWidth = cnt_width(5) = idx_width(6) = 3; the package functions enforce a minimum width of 1. FifoDepth = 5 and the overridden data_t is the 23-bit flit, so packed mem_q has 5 * 23 = 115 bits. DataWidth retains its declaration default of 32, but the explicit type override determines the actual data width.",
+      "locations": [
+        "cc_fifo.sv:18-53; cc_pkg.sv:40-54; cc_stream_fifo.sv:50-55"
+      ]
+    },
+    {
+      "id": "defaults",
+      "expected": "The floo_fifo declaration defaults are NumChannels = 2, NumVirtChannels = 1, NumPhysChannels = 1, FifoDepth = 1, and flit_t = logic (1 bit). The integration overrides the four numeric parameters to (3, 4, 1, 5) for u_virtual, (2, 3, 3, 2) for u_physical, and (2, 4, 1, 0) for u_bypass, in that parameter order. All three override flit_t with the 23-bit struct. Declaration defaults do not replace these effective instance values.",
+      "locations": [
+        "floo_fifo.sv:9-13; top.sv:9-20"
+      ]
+    },
+    {
+      "id": "clear_boundary",
+      "expected": "Both generated cc_stream_fifo instantiation sites omit clr_i. cc_stream_fifo declares this input and forwards it to its cc_fifo child. The fragment does not provide an explicit clear driver, so do not assume clr_i is tied low or claim that the intended clear behavior is established. This is an unconnected input on a supplied module definition, rather than an unavailable FIFO definition.",
+      "locations": [
+        "floo_fifo.sv:43-58,80-95; cc_stream_fifo.sv:24-30,50-59"
+      ]
+    }
+  ],
+  "scoring": "Each of eight criteria 0=wrong/missing,0.5=partly correct or materially incomplete,1=correct and sufficiently explained. Equivalent wording accepted; no exact diagnostic identifiers required."
+}

@@ -1,0 +1,13 @@
+Inspect the supplied SystemVerilog integration rooted at compare_axi_types in integration.sv and its upstream RTL dependencies. Report source-level elaborated semantics for this concrete integration, before synthesis or optimization. The integration file is integration.sv in your workspace root; upstream dependencies are below rtl/. Read config.json for the compilation configuration. Do not edit RTL. Use the compile-time define COMMON_CELLS_ASSERTS_OFF; no other feature defines or parameter overrides are required.
+
+Produce an explanation with source references and a compact table answering these eight items:
+1. The complete packed bit width of link_aw_chan_t.
+2. The complete packed bit width of link_w_chan_t.
+3. The complete packed bit width of link_b_chan_t.
+4. The complete packed bit width of link_ar_chan_t.
+5. The complete packed bit width of link_r_chan_t.
+6. The complete packed bit width of link_req_t, including handshake fields.
+7. The complete packed bit width of link_resp_t, including handshake fields.
+8. Which generate branch exists in each of i_buffer and i_wire, and how many fifo_v3 children exist under each?
+
+For items 1-5, show the field-width sum, the corresponding fifo_v3 instance under i_buffer, and its data_i/data_o formal width and connected actual expression. For items 6-7, show the aggregate sum. Explain how instance overrides and remaining declaration defaults determine the selected branches and the channel FIFO DEPTH/FALL_THROUGH values; distinguish a declared default DATA_WIDTH from the actual type parameter width. Text and tables are sufficient; JSON is optional. Keep the answer focused on the requested integration.

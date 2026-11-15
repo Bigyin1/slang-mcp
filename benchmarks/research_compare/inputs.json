@@ -1,0 +1,157 @@
+{
+  "floo_config": {
+    "config": {
+      "top_module": "floo_config_top",
+      "include_directories": [
+        "rtl/include"
+      ],
+      "defines": {
+        "COMMON_CELLS_ASSERTS_OFF": null
+      },
+      "single_unit": true,
+      "source_selection": "Choose needed .sv files from rtl; packages before their users. Do not compile headers as source."
+    },
+    "files": {
+      "task.txt": "e01559384d2efaf43c080e8e54d9fa03ec85305f968f22e2425b556ce1d38232",
+      "config.json": "3dceffde29d048c66a06ab79a8b549af5879bb15ac71a0a5360f236985dd60c3",
+      "rtl/cc_pkg.sv": "8fe1d23d619f4e11643d9a2c44a1a6f18b088f45888fca0ba7ef75e3f6872f92",
+      "rtl/cc_stream_fifo.sv": "d9bc22df925eaaf3266d866af6f09423c8ddafef0ffbbaed0f60f13c81398f1c",
+      "rtl/floo_fifo.sv": "4368bfd3992a31cb34b368ee70b63b6117a7246dbd1079c4800e0e613c512c44",
+      "rtl/axi_pkg.sv": "244bd5cb3c5bc58d786f2ed2f5eeefd910c4fe03a175f4a2888c6a2ea1c430dc",
+      "rtl/cc_fifo.sv": "69e0a4505c37bc36781b307dbbd683bbb3c78774dfd2140d4a784e3e751e5f0a",
+      "rtl/cc_rr_arb_tree.sv": "eba4ba9912292c10599d0fd3c4a62ac672dd323ec5fa2ac06997dd2e8734a8fd",
+      "rtl/LICENSE.common_cells": "6527a46225891b976fa94f634f6ee0cd22e1c7129d6f11c5c98c997627625fc7",
+      "rtl/top.sv": "c9408bb8008bdb6fe3ddc5b67cd8e689ebf35bfacd069a2e4c0b0837a96ae04b",
+      "rtl/cc_lzc.sv": "62119065b214b01d98f47d8c2f342e16cae537e3eacfc41bfd5f4b709482f51e",
+      "rtl/floo_pkg.sv": "a513b50d1372b8b956c49acb16cdcbf1fac4d1b0f22a98fdb396404f90d04a19",
+      "rtl/LICENSE.axi": "6527a46225891b976fa94f634f6ee0cd22e1c7129d6f11c5c98c997627625fc7",
+      "rtl/floo_vc_arbiter.sv": "9dbe63f51c66b9b0c0f26f18dea14167dbaf8650fc78bfdca772c96fe0edd48a",
+      "rtl/include/common_cells/registers.svh": "cd2133df2638447e7d55e4b3b16e4e856cb21d53bea03b35985f31abfecaa868",
+      "rtl/include/common_cells/assertions.svh": "e9606c554d2562f2d282455a676503dd14655da51774c7069ee59773061b4a31",
+      "rtl/include/common_cells/deprecated/registers.svh": "5b95018dd45ed472e78ea192039c332574bbc10cc53ccbb4221f14f77bb0c0d7"
+    }
+  },
+  "unit_macros": {
+    "config": {
+      "case_id": "unit_macros",
+      "kind": "synthetic_diagnostic_control",
+      "top_module": "unit_macros_top",
+      "source_files": [
+        "rtl/environment.sv",
+        "rtl/channel.sv",
+        "rtl/top.sv"
+      ],
+      "source_order_is_required": true,
+      "include_directories": [
+        "rtl"
+      ],
+      "defines": {},
+      "single_unit": true,
+      "parameter_context": "standalone_top_defaults",
+      "workers_may_modify_files": false
+    },
+    "files": {
+      "task.txt": "d040f6707e2a502a3afe29ed8cd44f9e03511ac372e965eb4f9aa4adfbed7422",
+      "config.json": "8f8844d54113e70fbfdd7f52924492d774da749bbdd58770c1d97f9a0a2d9e92",
+      "rtl/settings.svh": "a439745bcb732a332b886f6a0203ebe18c85e7e67c2e8bbfb6c574eeae206a9b",
+      "rtl/channel.sv": "1764b7968e341c9e4a5017e1ac52f0da11e70baa5fb1fb085b4760555f651f38",
+      "rtl/top.sv": "11cd4a23ff2cbdd87fc0b169033e520c530ba1587b37b29f85fdbbe6ac776a09",
+      "rtl/environment.sv": "0045ae3ca91a2aab13f80cdf0fa44bd63984b41c2e8fd06da504f79c9be36a71"
+    }
+  },
+  "idma_state": {
+    "config": {
+      "top_module": "compare_idma_state",
+      "single_unit": true,
+      "defines": {
+        "COMMON_CELLS_ASSERTS_OFF": null
+      },
+      "include_directories": [
+        "rtl/.bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/include"
+      ]
+    },
+    "files": {
+      "task.txt": "46ef87f2ca5ee3dd951e91005d7015ce9255240f681721c421bec5d818f8ec6c",
+      "config.json": "f521fd418a615c64fa989b64b6e37cbad6778fc174212af7eb3003ee3580a2f3",
+      "integration.sv": "a3055d38d55eb8b6aebef27d60f0c2f7e8d9d9b4b4dad3a345d01d9f89036f15",
+      "rtl/Bender.lock": "9e6c33f898dad20fd1b29cf8b07647b7d55fe8b42c36bd5cd72586fc2606557e",
+      "rtl/LICENSE": "6527a46225891b976fa94f634f6ee0cd22e1c7129d6f11c5c98c997627625fc7",
+      "rtl/Bender.yml": "75d8973e3dee61eebd17d604c37818a8d1c9a1b86fc3587a5663615e811e50c2",
+      "rtl/.bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/LICENSE": "6527a46225891b976fa94f634f6ee0cd22e1c7129d6f11c5c98c997627625fc7",
+      "rtl/.bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_pkg.sv": "8fe1d23d619f4e11643d9a2c44a1a6f18b088f45888fca0ba7ef75e3f6872f92",
+      "rtl/.bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_stream_fifo.sv": "d9bc22df925eaaf3266d866af6f09423c8ddafef0ffbbaed0f60f13c81398f1c",
+      "rtl/.bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_fifo.sv": "69e0a4505c37bc36781b307dbbd683bbb3c78774dfd2140d4a784e3e751e5f0a",
+      "rtl/.bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/src/cc_passthrough_stream_fifo.sv": "68de1c713e40d97950591111dccd37a7546025f7fe6750fa3092826422557352",
+      "rtl/.bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/include/common_cells/registers.svh": "cd2133df2638447e7d55e4b3b16e4e856cb21d53bea03b35985f31abfecaa868",
+      "rtl/.bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/include/common_cells/assertions.svh": "e9606c554d2562f2d282455a676503dd14655da51774c7069ee59773061b4a31",
+      "rtl/.bender/git/checkouts/common_cells-b5ef1d9e9e7e3ce8/include/common_cells/deprecated/registers.svh": "5b95018dd45ed472e78ea192039c332574bbc10cc53ccbb4221f14f77bb0c0d7",
+      "rtl/src/backend/idma_dataflow_element.sv": "312efebf98b3ac716b4c85b8ec83adafe81654474f289307ce07110e273021be"
+    }
+  },
+  "axi_types": {
+    "config": {
+      "top_module": "compare_axi_types",
+      "single_unit": true,
+      "defines": {
+        "COMMON_CELLS_ASSERTS_OFF": null
+      },
+      "include_directories": [
+        "rtl/include",
+        "rtl/.bender/git/checkouts/common_cells-3e2fcccecd7aee7b/include"
+      ]
+    },
+    "files": {
+      "task.txt": "34d42c9f6813a40951e5daae2df98a33e21d143eb74a5613dfb988d44f3a58e1",
+      "config.json": "9194ccc37c5717f50fd680386d9a95a866f8bb9e224701253f37ed67c5ee7171",
+      "integration.sv": "fe3e556dbb5c44c25154d3d5857e9984ba9cf07c3e2da20c6768c9c893ed0dda",
+      "rtl/Bender.lock": "4d7cc73f409068db71cc3e21edc55a12d3b7784b0b84434d1cde1cb9b8d48d9f",
+      "rtl/LICENSE": "6527a46225891b976fa94f634f6ee0cd22e1c7129d6f11c5c98c997627625fc7",
+      "rtl/Bender.yml": "9af196696d32611f7ed3d10dac3b05e761d2cc158e0cc5435794a2e2385ee1c1",
+      "rtl/src/axi_fifo.sv": "5172d0e93fbf4a59196a69ec2ddc760dfed7dd79d7a049be291c6a7cba3ba735",
+      "rtl/src/axi_intf.sv": "85dea3129f2f63e6a06d1ee210fa1b76a689694e9f9fb5c489948d7eefd1c0ac",
+      "rtl/src/axi_pkg.sv": "244bd5cb3c5bc58d786f2ed2f5eeefd910c4fe03a175f4a2888c6a2ea1c430dc",
+      "rtl/.bender/git/checkouts/common_cells-3e2fcccecd7aee7b/LICENSE": "6527a46225891b976fa94f634f6ee0cd22e1c7129d6f11c5c98c997627625fc7",
+      "rtl/.bender/git/checkouts/common_cells-3e2fcccecd7aee7b/src/fifo_v3.sv": "861ea44cbd3129731b77977da36fb0dac1a1350d7df664a1b4310423e7d272bc",
+      "rtl/.bender/git/checkouts/common_cells-3e2fcccecd7aee7b/include/common_cells/assertions.svh": "d39c7afa893656e235b0019233c1bcf12491cd421639791c827cc53236bd4841",
+      "rtl/include/axi/typedef.svh": "c2ef2098fea077e07100b9b9c40f2ac5453e7e01af407e236a810b43aeb8b2ef",
+      "rtl/include/axi/assign.svh": "8d6aa6ecc736515db75bb691e377b64753310c442e107757b99caabdf043b6cd"
+    }
+  },
+  "cva6_counter": {
+    "config": {
+      "top_module": "cva6_fifo_v3",
+      "include_directories": [],
+      "defines": {},
+      "single_unit": true,
+      "source_selection": "Choose needed .sv files from rtl; packages before their users. Do not compile headers as source."
+    },
+    "files": {
+      "task.txt": "ef9dc8e79fa3524bdce4b435e70f53aa93ea4199cdd12087b48b7ff3e51d73c9",
+      "config.json": "4a67e7bee64e0d16a536155125a411ab0cbc8eb572dea89ece58aae5aae9fd2d",
+      "rtl/LICENSE": "b41106a9d0de1cf6ab4ea56bedf677503085c0570248f37fe2cdf657a5e72601",
+      "rtl/cva6_fifo_v3.sv": "f61e13a52583cc8e1a5a6d46910bed6247cf0dd8b52aa39b4fd683729e3faa68"
+    }
+  },
+  "broken_fragment": {
+    "config": {
+      "case_id": "broken_fragment",
+      "kind": "synthetic_diagnostic_control",
+      "top_module": "broken_fragment_top",
+      "source_files": [
+        "rtl/top.sv"
+      ],
+      "source_order_is_required": false,
+      "include_directories": [],
+      "defines": {},
+      "single_unit": true,
+      "parameter_context": "standalone_top_defaults",
+      "workers_may_modify_files": false,
+      "completeness": "external_stage_definition_is_not_supplied"
+    },
+    "files": {
+      "task.txt": "20a7f857d701e13a1bb5b2e84f2c3b6ebfbda55747816f3a663d4d24b0b8f93f",
+      "config.json": "8bf0b8b976d8ff3bb2413b155eda922382550a21f2b69cd31941a288dd5c1676",
+      "rtl/top.sv": "99a068d20b122e5fd89f829d0f0ce2e6a86320ae2e8dcde93d5cc09d11c61f6b"
+    }
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "review_scope": [
+    "unit_macros",
+    "broken_fragment"
+  ],
+  "reviewer_independence": "Reviewed fixture RTL, public config and tasks, and predeclared oracle. No worker outcomes exist or were consulted; no MCP output was used.",
+  "decision": "approve",
+  "blocking_findings": [],
+  "unit_macros": {
+    "source_correct": true,
+    "verified_values": {
+      "unit_word_bits": 9,
+      "top_w": 13,
+      "top_n": 3,
+      "data_i_bits": 39,
+      "channel_effective_w": 15,
+      "channel_payload_i_bits": 15,
+      "active_generate_and_child": "unit_macros_top.g_wide.u_channel"
+    },
+    "separate_units_review": "The CU-scope typedef does not cross source-unit boundaries. Fresh macro/include-guard state makes top's local W macro 9 and N macro 3, but unavailable unit_word_t prevents claiming equivalent valid elaboration. Oracle explicitly preserves this distinction.",
+    "fairness": "Both arms receive the semantically necessary source order and unit mode. Eight requested criteria match the eight oracle criteria. The control is explicitly synthetic and does not support real-project performance claims.",
+    "compiler_corroboration": {
+      "tool": "Verilator 5.052",
+      "command": "verilator --lint-only -Wno-fatal --top-module unit_macros_top +incdir+rtl rtl/environment.sv rtl/channel.sv rtl/top.sv",
+      "exit_code": 0
+    },
+    "recommendations": [
+      "When grading criterion 8, accept a clear explanation that unit-scope typedef visibility and macro state are not preserved. Do not require speculative compiler recovery values or diagnostic text beyond the predeclared requested reasoning."
+    ]
+  },
+  "broken_fragment": {
+    "source_correct": true,
+    "verified_values": {
+      "top_w": 12,
+      "data_i_bits": 12,
+      "narrow_o_bits": 4,
+      "local_state": "narrow_q, 4 bits, written by always_ff",
+      "invalid_member": "sample.missing",
+      "width_loss": "data_i[11:4] discarded; data_i[3:0] retained",
+      "missing_instance": "broken_fragment_top.u_external",
+      "external_o_local_width": 12
+    },
+    "reset_review": "rst_ni is tested inside always_ff @(posedge clk_i), so the visible reset is synchronous and active low. Oracle appropriately says reset classification is not necessary for criterion 4 credit.",
+    "knowledge_boundary": "The named child connection does not establish missing external_stage's port declaration, formal parameter declaration, internal implementation or output behavior. Source-local declarations and narrowing semantics remain provable.",
+    "fairness": "Tasks and oracle separate invalid member access, legal-but-lossy assignment truncation, and missing external definition. Grading requires no compiler-specific diagnostic IDs, severity, count or error-recovery objects. Eight requested items match eight criteria.",
+    "compiler_corroboration": {
+      "tool": "Verilator 5.052",
+      "command": "verilator --lint-only -Wno-fatal --top-module broken_fragment_top rtl/top.sv",
+      "exit_code": 1,
+      "expected_failure": true,
+      "observed": [
+        "member missing not found",
+        "12-to-4-bit assignment truncation warning",
+        "external_stage module unavailable"
+      ]
+    },
+    "recommendations": [
+      "Preserve the oracle's explicit acceptance of 'truncation warning' for criterion 6; assignment narrowing is legal SystemVerilog and is not itself a compile error.",
+      "Do not require synchronous-reset wording for criterion 4, since the task asks the state's identity, width and always_ff provenance."
+    ]
+  },
+  "general_notes": [
+    "Hardcoded source-root paths are not needed by these two tasks; references are relative to the case workspace.",
+    "Compiler checks corroborated source reasoning but were not used as the sole oracle.",
+    "No fixture or oracle edits were necessary."
+  ]
+}

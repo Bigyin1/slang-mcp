@@ -1,0 +1,24 @@
+{
+  "upstream_provenance": "benchmarks/research_focused/source_provenance.json",
+  "source_case": "floo_generate",
+  "policy": "Unmodified pinned upstream sources; floo_config rtl/top.sv is a benchmark integration fixture.",
+  "files": {
+    "task.txt": "e01559384d2efaf43c080e8e54d9fa03ec85305f968f22e2425b556ce1d38232",
+    "config.json": "3dceffde29d048c66a06ab79a8b549af5879bb15ac71a0a5360f236985dd60c3",
+    "rtl/cc_pkg.sv": "8fe1d23d619f4e11643d9a2c44a1a6f18b088f45888fca0ba7ef75e3f6872f92",
+    "rtl/cc_stream_fifo.sv": "d9bc22df925eaaf3266d866af6f09423c8ddafef0ffbbaed0f60f13c81398f1c",
+    "rtl/floo_fifo.sv": "4368bfd3992a31cb34b368ee70b63b6117a7246dbd1079c4800e0e613c512c44",
+    "rtl/cc_fifo.sv": "69e0a4505c37bc36781b307dbbd683bbb3c78774dfd2140d4a784e3e751e5f0a",
+    "rtl/cc_rr_arb_tree.sv": "eba4ba9912292c10599d0fd3c4a62ac672dd323ec5fa2ac06997dd2e8734a8fd",
+    "rtl/LICENSE.common_cells": "6527a46225891b976fa94f634f6ee0cd22e1c7129d6f11c5c98c997627625fc7",
+    "rtl/top.sv": "c9408bb8008bdb6fe3ddc5b67cd8e689ebf35bfacd069a2e4c0b0837a96ae04b",
+    "rtl/cc_lzc.sv": "62119065b214b01d98f47d8c2f342e16cae537e3eacfc41bfd5f4b709482f51e",
+    "rtl/floo_pkg.sv": "a513b50d1372b8b956c49acb16cdcbf1fac4d1b0f22a98fdb396404f90d04a19",
+    "rtl/floo_vc_arbiter.sv": "9dbe63f51c66b9b0c0f26f18dea14167dbaf8650fc78bfdca772c96fe0edd48a",
+    "rtl/include/common_cells/registers.svh": "cd2133df2638447e7d55e4b3b16e4e856cb21d53bea03b35985f31abfecaa868",
+    "rtl/include/common_cells/assertions.svh": "e9606c554d2562f2d282455a676503dd14655da51774c7069ee59773061b4a31",
+    "rtl/include/common_cells/deprecated/registers.svh": "5b95018dd45ed472e78ea192039c332574bbc10cc53ccbb4221f14f77bb0c0d7",
+    "rtl/axi_pkg.sv": "244bd5cb3c5bc58d786f2ed2f5eeefd910c4fe03a175f4a2888c6a2ea1c430dc",
+    "rtl/LICENSE.axi": "6527a46225891b976fa94f634f6ee0cd22e1c7129d6f11c5c98c997627625fc7"
+  }
+}

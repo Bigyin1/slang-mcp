@@ -1,0 +1,64 @@
+{
+  "case_id": "cva6_counter",
+  "kind": "real_rtl_control",
+  "oracle_basis": "Derived from fixed source declarations, formulas and guards before workload runs; compiler results may corroborate but are not sole truth.",
+  "criteria": [
+    {
+      "id": "types",
+      "expected": "DEPTH = 8 and ADDR_DEPTH = 3. status_cnt_q and status_cnt_n are unsigned four-state logic [ADDR_DEPTH:0], each 4 packed bits wide.",
+      "locations": [
+        "cva6_fifo_v3.sv:20-24,50"
+      ]
+    },
+    {
+      "id": "q_reads",
+      "expected": "Nine syntactically present source reads of status_cnt_q: line 63 drives usage_o, line 69 computes full_o, and line 70 computes empty_o; line 79 supplies the default hold, line 116 increments, line 127 decrements, line 131 holds after an accepted simultaneous push/pop, line 134 tests the fall-through condition, and line 142 holds in that branch. The first three are continuous assignments; the remaining six are in read_write_comb. Lines 134 and 142 remain source read sites even though their procedural branch cannot update under the default parameters.",
+      "locations": [
+        "cva6_fifo_v3.sv:63-142"
+      ]
+    },
+    {
+      "id": "q_writes",
+      "expected": "Three writes to status_cnt_q occur in the always_ff process: reset at line 158, flush at line 165, and the status_cnt_n update at line 171. The asynchronous active-low reset has highest priority, followed by synchronous flush, then the normal next-state load.",
+      "locations": [
+        "cva6_fifo_v3.sv:154-171"
+      ]
+    },
+    {
+      "id": "n_accesses",
+      "expected": "status_cnt_n is written at lines 79, 116, 127, 131, and 142, and read at line 171. Combinational assignments derive n from q, then the sequential process loads n into q. The assignments at lines 116 and 127 read q rather than reading and modifying n in place; neither counter has a compound read-modify-write access.",
+      "locations": [
+        "cva6_fifo_v3.sv:75-171"
+      ]
+    },
+    {
+      "id": "single_requests",
+      "expected": "With reset and flush inactive, a push-only request increments occupancy when push_i && !full_o; a pop-only request decrements it when pop_i && !empty_o. A rejected request or neither request leaves occupancy unchanged. These are the source acceptance guards, not unconditional request acceptance.",
+      "locations": [
+        "cva6_fifo_v3.sv:99-131"
+      ]
+    },
+    {
+      "id": "simultaneous",
+      "expected": "With reset and flush inactive and both requests asserted: at occupancy 0, only the push is accepted and the next count is 1; at occupancies 1 through 7, both are accepted and the count holds; at occupancy 8, only the pop is accepted and the next count is 7. The empty-pop request at 0 and full-push request at 8 violate the source assertions when those assertions are active, so simultaneous requests do not imply an unconditional hold or a protocol-valid boundary operation.",
+      "locations": [
+        "cva6_fifo_v3.sv:99-131,222-228"
+      ]
+    },
+    {
+      "id": "inactive_procedural",
+      "expected": "FALL_THROUGH = 0, FPGA_EN = 0, and FPGA_ALTERA = 0 make the procedural branch at line 134 inactive under the defaults. The reads at lines 134 and 142 and the write to status_cnt_n at line 142 are still syntactically present source accesses and may appear in a semantic access index. This branch cannot produce a next-state update under the stated defaults.",
+      "locations": [
+        "cva6_fifo_v3.sv:17-22,134-143"
+      ]
+    },
+    {
+      "id": "usage_full",
+      "expected": "The 4-bit occupancy counter can represent 8, but the 3-bit usage_o exposes only status_cnt_q[2:0]. At full occupancy 8, usage_o is therefore 0 while full_o is true because the full comparison uses the 4-bit count and FifoDepth = 8. A zero usage_o alone does not establish that the FIFO is empty.",
+      "locations": [
+        "cva6_fifo_v3.sv:33,43,50,63,69-70"
+      ]
+    }
+  ],
+  "scoring": "Each of eight criteria 0=wrong/missing,0.5=partly correct or materially incomplete,1=correct and sufficiently explained. Equivalent wording accepted; no exact diagnostic identifiers required."
+}

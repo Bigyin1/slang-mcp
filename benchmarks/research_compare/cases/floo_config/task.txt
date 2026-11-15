@@ -1,0 +1,11 @@
+Analyze the supplied FlooNoC modules under the integration top in config.json.
+Give a concise explanation/table with source locations for these eight items:
+1. Packed flit width, and effective data_i and valid_i widths on each of the three floo_fifo instances.
+2. The selected named generate branch for each of those instances; explain branch precedence.
+3. Count cc_stream_fifo and floo_vc_arbiter instances under each subtree (do not count modules only declared in files).
+4. For virtual channel n=2,v=3, give the full stream-FIFO instance path, effective Depth and FallThrough, and data_i/data_o actual source expressions (distinguish genvar spelling from index values).
+5. For physical channel n=1,v=2, give the corresponding full stream-FIFO path, Depth, and input/output actual expressions.
+6. Inside one virtual stream FIFO's cc_fifo child, give pointer width, counter width, and packed mem_q width. Explain the formulas for depth5 and the structured flit.
+7. Contrast these effective instance values with the source defaults of floo_fifo (channel counts, depth, flit width); do not substitute declaration defaults for integration values.
+8. Explain whether clr_i is explicitly connected on the generated stream FIFOs, and what can be concluded about clear behavior from this fragment alone. Distinguish this issue from absence of the FIFO definition.
+Read the supplied config and select dependencies from rtl as needed. Do not edit RTL, create wrappers/stubs, fetch sources, or analyze unrelated design areas. Treat this as static source/elaboration analysis, not a simulation of the tied-off test top. Report uncertainties honestly; exact compiler diagnostic codes are not required.

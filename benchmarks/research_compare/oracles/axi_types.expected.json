@@ -1,0 +1,309 @@
+{
+  "case_id": "axi_types",
+  "top": "compare_axi_types",
+  "runtime_root": "/private/tmp/slang-compare/axi_types/rtl",
+  "grading": {
+    "format": "Accept prose, tables or JSON. Grade semantic facts, not wording or tool use.",
+    "points_per_item": 1,
+    "total": 8,
+    "support": "Derivations, references, formal/actual connections and defaults assess explanation quality separately; do not silently create additional scored items.",
+    "visibility": "Researcher-only: never provide this file, proofs, manifests or prepare scripts to workers."
+  },
+  "source_sha256": {
+    "Bender.yml": "9af196696d32611f7ed3d10dac3b05e761d2cc158e0cc5435794a2e2385ee1c1",
+    "Bender.lock": "4d7cc73f409068db71cc3e21edc55a12d3b7784b0b84434d1cde1cb9b8d48d9f",
+    "LICENSE": "6527a46225891b976fa94f634f6ee0cd22e1c7129d6f11c5c98c997627625fc7",
+    "src/axi_pkg.sv": "244bd5cb3c5bc58d786f2ed2f5eeefd910c4fe03a175f4a2888c6a2ea1c430dc",
+    "src/axi_intf.sv": "85dea3129f2f63e6a06d1ee210fa1b76a689694e9f9fb5c489948d7eefd1c0ac",
+    "src/axi_fifo.sv": "5172d0e93fbf4a59196a69ec2ddc760dfed7dd79d7a049be291c6a7cba3ba735",
+    "include/axi/typedef.svh": "c2ef2098fea077e07100b9b9c40f2ac5453e7e01af407e236a810b43aeb8b2ef",
+    "include/axi/assign.svh": "8d6aa6ecc736515db75bb691e377b64753310c442e107757b99caabdf043b6cd",
+    ".bender/git/checkouts/common_cells-3e2fcccecd7aee7b/src/fifo_v3.sv": "861ea44cbd3129731b77977da36fb0dac1a1350d7df664a1b4310423e7d272bc",
+    ".bender/git/checkouts/common_cells-3e2fcccecd7aee7b/include/common_cells/assertions.svh": "d39c7afa893656e235b0019233c1bcf12491cd421639791c827cc53236bd4841",
+    "integration.sv": "fe3e556dbb5c44c25154d3d5857e9984ba9cf07c3e2da20c6768c9c893ed0dda"
+  },
+  "oracle_basis": "Manual field sums and source generate conditions, prepared before any worker outcomes. Compiler assertions are a separate consistency check, never the sole oracle.",
+  "configuration": {
+    "address_bits": 37,
+    "data_bits": 128,
+    "id_bits": 6,
+    "user_bits": 5,
+    "strobe_bits": 16,
+    "defines": [
+      "COMMON_CELLS_ASSERTS_OFF"
+    ]
+  },
+  "items": [
+    {
+      "id": "aw_bits",
+      "expected": 83,
+      "formula": "6+37+8+3+2+1+4+3+4+4+6+5",
+      "source": [
+        {
+          "path": "integration.sv",
+          "lines": [
+            5,
+            14
+          ]
+        },
+        {
+          "path": "include/axi/typedef.svh",
+          "lines": [
+            34,
+            48
+          ]
+        },
+        {
+          "path": "src/axi_pkg.sv",
+          "lines": [
+            47,
+            66
+          ]
+        }
+      ],
+      "instance": "i_buffer.gen_axi_fifo.i_aw_fifo",
+      "formal_data_i_bits": 83,
+      "formal_data_o_bits": 83,
+      "actual_data_i": "slv_req_i.aw",
+      "actual_data_o": "mst_req_o.aw",
+      "connection_source": {
+        "path": "src/axi_fifo.sv",
+        "lines": [
+          68,
+          85
+        ]
+      }
+    },
+    {
+      "id": "w_bits",
+      "expected": 150,
+      "formula": "128+(128/8)+1+5",
+      "source": [
+        {
+          "path": "integration.sv",
+          "lines": [
+            5,
+            14
+          ]
+        },
+        {
+          "path": "include/axi/typedef.svh",
+          "lines": [
+            49,
+            55
+          ]
+        }
+      ],
+      "instance": "i_buffer.gen_axi_fifo.i_w_fifo",
+      "formal_data_i_bits": 150,
+      "formal_data_o_bits": 150,
+      "actual_data_i": "slv_req_i.w",
+      "actual_data_o": "mst_req_o.w",
+      "connection_source": {
+        "path": "src/axi_fifo.sv",
+        "lines": [
+          108,
+          127
+        ]
+      }
+    },
+    {
+      "id": "b_bits",
+      "expected": 13,
+      "formula": "6+2+5",
+      "source": [
+        {
+          "path": "integration.sv",
+          "lines": [
+            5,
+            14
+          ]
+        },
+        {
+          "path": "include/axi/typedef.svh",
+          "lines": [
+            56,
+            61
+          ]
+        }
+      ],
+      "instance": "i_buffer.gen_axi_fifo.i_b_fifo",
+      "formal_data_i_bits": 13,
+      "formal_data_o_bits": 13,
+      "actual_data_i": "mst_resp_i.b",
+      "actual_data_o": "slv_resp_o.b",
+      "connection_source": {
+        "path": "src/axi_fifo.sv",
+        "lines": [
+          134,
+          150
+        ]
+      }
+    },
+    {
+      "id": "ar_bits",
+      "expected": 77,
+      "formula": "6+37+8+3+2+1+4+3+4+4+5",
+      "source": [
+        {
+          "path": "integration.sv",
+          "lines": [
+            5,
+            14
+          ]
+        },
+        {
+          "path": "include/axi/typedef.svh",
+          "lines": [
+            62,
+            75
+          ]
+        }
+      ],
+      "instance": "i_buffer.gen_axi_fifo.i_ar_fifo",
+      "formal_data_i_bits": 77,
+      "formal_data_o_bits": 77,
+      "actual_data_i": "slv_req_i.ar",
+      "actual_data_o": "mst_req_o.ar",
+      "connection_source": {
+        "path": "src/axi_fifo.sv",
+        "lines": [
+          88,
+          107
+        ]
+      }
+    },
+    {
+      "id": "r_bits",
+      "expected": 142,
+      "formula": "6+128+2+1+5",
+      "source": [
+        {
+          "path": "integration.sv",
+          "lines": [
+            5,
+            14
+          ]
+        },
+        {
+          "path": "include/axi/typedef.svh",
+          "lines": [
+            76,
+            83
+          ]
+        }
+      ],
+      "instance": "i_buffer.gen_axi_fifo.i_r_fifo",
+      "formal_data_i_bits": 142,
+      "formal_data_o_bits": 142,
+      "actual_data_i": "mst_resp_i.r",
+      "actual_data_o": "slv_resp_o.r",
+      "connection_source": {
+        "path": "src/axi_fifo.sv",
+        "lines": [
+          128,
+          147
+        ]
+      }
+    },
+    {
+      "id": "req_bits",
+      "expected": 315,
+      "formula": "83+150+77+5 one-bit handshake fields",
+      "source": [
+        {
+          "path": "include/axi/typedef.svh",
+          "lines": [
+            84,
+            94
+          ]
+        }
+      ]
+    },
+    {
+      "id": "resp_bits",
+      "expected": 160,
+      "formula": "13+142+5 one-bit handshake fields",
+      "source": [
+        {
+          "path": "include/axi/typedef.svh",
+          "lines": [
+            95,
+            104
+          ]
+        }
+      ]
+    },
+    {
+      "id": "generate_selection",
+      "expected": {
+        "i_buffer": {
+          "branch": "gen_axi_fifo",
+          "fifo_v3_children": 5
+        },
+        "i_wire": {
+          "branch": "gen_no_fifo",
+          "fifo_v3_children": 0
+        }
+      },
+      "formula": "axi_fifo selects gen_no_fifo iff Depth==0; i_buffer overrides Depth=5, i_wire overrides Depth=0",
+      "source": [
+        {
+          "path": "integration.sv",
+          "lines": [
+            30,
+            46
+          ]
+        },
+        {
+          "path": "src/axi_fifo.sv",
+          "lines": [
+            46,
+            51
+          ]
+        },
+        {
+          "path": "src/axi_fifo.sv",
+          "lines": [
+            68,
+            167
+          ]
+        }
+      ]
+    }
+  ],
+  "explanation_facts": {
+    "fifo_formals": {
+      "path": ".bender/git/checkouts/common_cells-3e2fcccecd7aee7b/src/fifo_v3.sv",
+      "lines": [
+        16,
+        35
+      ]
+    },
+    "defaults": {
+      "axi_fifo_Depth": 1,
+      "axi_fifo_FallThrough": 0,
+      "fifo_v3_DATA_WIDTH": 32
+    },
+    "instance_parameters": {
+      "i_buffer_Depth": 5,
+      "i_buffer_FallThrough": 1,
+      "i_wire_Depth": 0,
+      "i_wire_FallThrough": 0,
+      "all_five_fifo_v3_DEPTH": 5,
+      "all_five_fifo_v3_FALL_THROUGH": 1,
+      "all_five_fifo_v3_DATA_WIDTH": 32
+    },
+    "type_override": "Each fifo_v3.dtype is overridden to a packed channel struct. DATA_WIDTH remains 32 and does not determine its data_i/data_o width.",
+    "upstream_actuals": "Connection expressions above are in the parent axi_fifo scope. In i_buffer, slv_req_i=req_i, mst_req_o=buffered_req, mst_resp_i=buffered_resp, slv_resp_o=resp_o.",
+    "bypass_assignments": [
+      "mst_req_o = slv_req_i",
+      "slv_resp_o = mst_resp_i"
+    ]
+  },
+  "compiler_consistency": {
+    "tool": "Verilator 5.052",
+    "proof": "axi_types.proof.sv",
+    "check": "Run with --binary --assert and COMMON_CELLS_ASSERTS_OFF. Source-derived oracle remains authoritative."
+  }
+}

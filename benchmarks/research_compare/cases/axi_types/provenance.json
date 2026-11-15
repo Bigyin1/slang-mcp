@@ -1,0 +1,8 @@
+{
+  "upstream": {"repository": "https://github.com/pulp-platform/axi.git", "commit": "a256a3b86394fedf19e361047fccfdd7f6ef83e4"},
+  "common_cells": {"repository": "https://github.com/pulp-platform/common_cells.git", "commit": "1281545696eb3fcba50ec5b4275993476a3c710e", "pin_source": "Bender.lock"},
+  "materialized_from": "/private/tmp/slang-focused-pilot/axi_batch/rtl",
+  "slice": "Minimal source dependencies and original headers, package manifests and licenses; all copied upstream files are byte-for-byte unchanged.",
+  "integration": "integration.sv is benchmark-owned integration RTL. It instantiates unmodified upstream modules with explicit configuration.",
+  "public_configuration": "compile_config.json"
+}

@@ -1,0 +1,59 @@
+{
+  "case_id": "unit_macros",
+  "kind": "synthetic_diagnostic_control",
+  "oracle_basis": "Independently derived from the fixed RTL and explicit compilation configuration before worker runs or optional compiler corroboration; MCP output is not oracle truth.",
+  "answer_format": "Structured prose or table; equivalent explanations accepted semantically.",
+  "criterion_count": 8,
+  "criteria": [
+    {
+      "id": "unit_word_bits",
+      "expected": 9,
+      "derivation": "The first header include defines WORD_W=9; the repeated include is guarded. The compilation-unit typedef is resolved at this point and later macro changes do not alter it.",
+      "locations": ["rtl/settings.svh:1-5", "rtl/environment.sv:1-4"]
+    },
+    {
+      "id": "top_w",
+      "expected": 13,
+      "derivation": "channel.sv undefines WORD_W then defines it as 13. top.sv's guarded include does not reset it. Its standalone W default is therefore 13.",
+      "locations": ["rtl/channel.sv:1-3", "rtl/top.sv:1-6"]
+    },
+    {
+      "id": "top_n",
+      "expected": 3,
+      "derivation": "top.sv undefines LANES and defines it as 3 before N is declared.",
+      "locations": ["rtl/top.sv:2-7"]
+    },
+    {
+      "id": "data_i_bits",
+      "expected": 39,
+      "derivation": "The packed range [W*N-1:0] has W*N=13*3=39 bits.",
+      "locations": ["rtl/top.sv:6-9"]
+    },
+    {
+      "id": "channel_effective_w",
+      "expected": 15,
+      "derivation": "The channel declaration's default is 13, but this instance overrides it with top W+2=15.",
+      "locations": ["rtl/channel.sv:6", "rtl/top.sv:14"]
+    },
+    {
+      "id": "channel_payload_i_bits",
+      "expected": 15,
+      "derivation": "The child's payload_i range [W-1:0] uses the effective instance W=15.",
+      "locations": ["rtl/channel.sv:9", "rtl/top.sv:14-16"]
+    },
+    {
+      "id": "active_generate_and_child",
+      "expected": "unit_macros_top.g_wide.u_channel; g_small is inactive",
+      "derivation": "The generate condition compares 13 > $bits(unit_word_t)=9, which is true.",
+      "locations": ["rtl/environment.sv:4", "rtl/top.sv:13-20"]
+    },
+    {
+      "id": "separate_compilation_units",
+      "expected": "Does not preserve a valid design: unit_word_t is confined to environment.sv's compilation unit and is unavailable in channel.sv and top.sv. Macro and include-guard state also restart per unit, so top.sv's include would establish WORD_W=9; its later LANES override still gives N=3. Top W would be 9 and its declared data_i range would be 27 bits, but the missing type prevents treating the result as the same valid elaboration.",
+      "derivation": "The type is declared at compilation-unit scope rather than in an imported package. Each fresh preprocessor sees the header guard undefined. channel.sv's WORD_W=13 does not propagate into top.sv when they are separate units.",
+      "locations": ["config.json", "rtl/settings.svh:1-5", "rtl/environment.sv:4", "rtl/channel.sv:1-8", "rtl/top.sv:1-13"]
+    }
+  ],
+  "scoring": "One point per criterion; maximum 8. Criterion 7 is one elaboration fact and criterion 8 is one compilation-mode comparison. Accept equivalent hierarchical formatting. Require the reasoning needed to establish the requested comparison, not exact diagnostic identifiers or wording.",
+  "limitations": "Synthetic control of macro lifetime and compilation-unit scope; it is not evidence of real-project performance. Both arms receive the same fixed RTL, required order, include path, defines, unit mode, and task."
+}

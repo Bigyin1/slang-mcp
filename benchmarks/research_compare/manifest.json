@@ -1,0 +1,186 @@
+{
+  "codex": "/Users/svaparin/.local/bin/codex",
+  "binary": "/private/tmp/slang-compare/bin/slang-mcp",
+  "skill": "/Users/svaparin/projects/slang-mcp/benchmarks/research_compare/skill.md",
+  "model": "gpt-5.6-terra",
+  "effort": "max",
+  "timeout": 600,
+  "cases": [
+    {
+      "id": "cva6_counter",
+      "workspace": "/private/tmp/slang-compare/inputs/cva6_counter",
+      "task": "/Users/svaparin/projects/slang-mcp/benchmarks/research_compare/cases/cva6_counter/task.txt"
+    },
+    {
+      "id": "floo_config",
+      "workspace": "/private/tmp/slang-compare/inputs/floo_config",
+      "task": "/Users/svaparin/projects/slang-mcp/benchmarks/research_compare/cases/floo_config/task.txt"
+    },
+    {
+      "id": "axi_types",
+      "workspace": "/private/tmp/slang-compare/inputs/axi_types",
+      "task": "/Users/svaparin/projects/slang-mcp/benchmarks/research_compare/cases/axi_types/task.txt"
+    },
+    {
+      "id": "idma_state",
+      "workspace": "/private/tmp/slang-compare/inputs/idma_state",
+      "task": "/Users/svaparin/projects/slang-mcp/benchmarks/research_compare/cases/idma_state/task.txt"
+    },
+    {
+      "id": "unit_macros",
+      "workspace": "/private/tmp/slang-compare/inputs/unit_macros",
+      "task": "/Users/svaparin/projects/slang-mcp/benchmarks/research_compare/cases/unit_macros/task.txt"
+    },
+    {
+      "id": "broken_fragment",
+      "workspace": "/private/tmp/slang-compare/inputs/broken_fragment",
+      "task": "/Users/svaparin/projects/slang-mcp/benchmarks/research_compare/cases/broken_fragment/task.txt"
+    }
+  ],
+  "runs": [
+    {
+      "id": "unit_macros_mcp+skill_r1",
+      "case_id": "unit_macros",
+      "arm": "mcp+skill",
+      "repetition": 1
+    },
+    {
+      "id": "unit_macros_text-only_r1",
+      "case_id": "unit_macros",
+      "arm": "text-only",
+      "repetition": 1
+    },
+    {
+      "id": "cva6_counter_mcp+skill_r1",
+      "case_id": "cva6_counter",
+      "arm": "mcp+skill",
+      "repetition": 1
+    },
+    {
+      "id": "cva6_counter_text-only_r1",
+      "case_id": "cva6_counter",
+      "arm": "text-only",
+      "repetition": 1
+    },
+    {
+      "id": "axi_types_mcp+skill_r1",
+      "case_id": "axi_types",
+      "arm": "mcp+skill",
+      "repetition": 1
+    },
+    {
+      "id": "axi_types_text-only_r1",
+      "case_id": "axi_types",
+      "arm": "text-only",
+      "repetition": 1
+    },
+    {
+      "id": "floo_config_text-only_r1",
+      "case_id": "floo_config",
+      "arm": "text-only",
+      "repetition": 1
+    },
+    {
+      "id": "floo_config_mcp+skill_r1",
+      "case_id": "floo_config",
+      "arm": "mcp+skill",
+      "repetition": 1
+    },
+    {
+      "id": "idma_state_text-only_r1",
+      "case_id": "idma_state",
+      "arm": "text-only",
+      "repetition": 1
+    },
+    {
+      "id": "idma_state_mcp+skill_r1",
+      "case_id": "idma_state",
+      "arm": "mcp+skill",
+      "repetition": 1
+    },
+    {
+      "id": "broken_fragment_text-only_r1",
+      "case_id": "broken_fragment",
+      "arm": "text-only",
+      "repetition": 1
+    },
+    {
+      "id": "broken_fragment_mcp+skill_r1",
+      "case_id": "broken_fragment",
+      "arm": "mcp+skill",
+      "repetition": 1
+    },
+    {
+      "id": "idma_state_mcp+skill_r2",
+      "case_id": "idma_state",
+      "arm": "mcp+skill",
+      "repetition": 2
+    },
+    {
+      "id": "idma_state_text-only_r2",
+      "case_id": "idma_state",
+      "arm": "text-only",
+      "repetition": 2
+    },
+    {
+      "id": "axi_types_text-only_r2",
+      "case_id": "axi_types",
+      "arm": "text-only",
+      "repetition": 2
+    },
+    {
+      "id": "axi_types_mcp+skill_r2",
+      "case_id": "axi_types",
+      "arm": "mcp+skill",
+      "repetition": 2
+    },
+    {
+      "id": "broken_fragment_mcp+skill_r2",
+      "case_id": "broken_fragment",
+      "arm": "mcp+skill",
+      "repetition": 2
+    },
+    {
+      "id": "broken_fragment_text-only_r2",
+      "case_id": "broken_fragment",
+      "arm": "text-only",
+      "repetition": 2
+    },
+    {
+      "id": "unit_macros_text-only_r2",
+      "case_id": "unit_macros",
+      "arm": "text-only",
+      "repetition": 2
+    },
+    {
+      "id": "unit_macros_mcp+skill_r2",
+      "case_id": "unit_macros",
+      "arm": "mcp+skill",
+      "repetition": 2
+    },
+    {
+      "id": "floo_config_mcp+skill_r2",
+      "case_id": "floo_config",
+      "arm": "mcp+skill",
+      "repetition": 2
+    },
+    {
+      "id": "floo_config_text-only_r2",
+      "case_id": "floo_config",
+      "arm": "text-only",
+      "repetition": 2
+    },
+    {
+      "id": "cva6_counter_text-only_r2",
+      "case_id": "cva6_counter",
+      "arm": "text-only",
+      "repetition": 2
+    },
+    {
+      "id": "cva6_counter_mcp+skill_r2",
+      "case_id": "cva6_counter",
+      "arm": "mcp+skill",
+      "repetition": 2
+    }
+  ]
+}
