@@ -7,13 +7,16 @@ compiler evidence about resolved types, effective parameters, hierarchy, accesse
 Do not alternate source and MCP calls by habit or repeat a fact that is already adequately supported.
 An answer supported by the supplied source does not require a confirmation call solely because MCP
 is available.
+For a review of compilation validity or local RTL breakages, load the relevant fragment and inspect
+diagnostics: plausible-looking source alone does not establish valid type and port relationships.
+Keep known missing external components separate from local faults and dependencies not yet loaded.
 For macro-heavy code, verify defines, include directories, source order and single_unit before
 interpreting results. A macro definition visible in the repository is not necessarily active in
 the loaded fragment. Source-level references alone do not prove that a procedural branch executes.
 
-1. Read the requested response contract first. Identify every required field and whether it asks
-   for an elaborated path, an effective parameter, a direct actual expression, a resolved symbol,
-   a declaration property, or a source-level access.
+1. Read the task and requested response format first. Identify the conclusions the user needs and
+   whether they concern an elaborated path, an effective parameter, a direct actual expression,
+   a resolved symbol, a declaration property, a source-level access, or local behavior.
 2. Read source_files.f as an ordered inventory and choose the smallest relevant source set plus
    dependencies. Call project_load with actual absolute source_files paths in inventory order,
    actual include_directories from include_directories.f, and defines from projects.json. Choose
@@ -24,8 +27,8 @@ the loaded fragment. Source-level references alone do not prove that a procedura
    defaults; load its parent context when the answer requires parent instance overrides. When
    comparing compilation configurations, collect the needed facts for one configuration before
    loading the next; retain those observations instead of repeatedly switching back and forth.
-3. Use the narrowest query that proves each field. For hierarchy, pass the exact elaborated
-   instance or generate-block path as get_hierarchy.root and the smallest relevant max_depth; a
+3. Use the narrowest query needed to resolve each semantic uncertainty. For hierarchy, pass the
+   exact elaborated instance or generate-block path as get_hierarchy.root and the smallest relevant max_depth; a
    root is not limited to a top instance. Do not use unfiltered list_instances when an exact path,
    name, module, or path prefix is known.
 4. For an effective parameter on one instance, call inspect_instance with fields=["parameters"]

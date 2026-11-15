@@ -1,0 +1,590 @@
+{
+  "phase": "main",
+  "answer_count": 24,
+  "fact_max_per_answer": 8,
+  "explanation_dimensions_separate": true,
+  "all_scores_agree": true,
+  "adjudications": [],
+  "runs": [
+    {
+      "id": "unit_macros_mcp+skill_r1",
+      "case_id": "unit_macros",
+      "arm": "mcp+skill",
+      "repetition": 1,
+      "answer_id": "ed3b1ca0a88d",
+      "judge_a_fact_total": 8,
+      "judge_b_fact_total": 8,
+      "judge_a_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "judge_b_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "scores_agree": true,
+      "judge_a_unsupported_claims": [],
+      "judge_b_unsupported_claims": []
+    },
+    {
+      "id": "unit_macros_text-only_r1",
+      "case_id": "unit_macros",
+      "arm": "text-only",
+      "repetition": 1,
+      "answer_id": "e0bf03889117",
+      "judge_a_fact_total": 8,
+      "judge_b_fact_total": 8,
+      "judge_a_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "judge_b_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "scores_agree": true,
+      "judge_a_unsupported_claims": [],
+      "judge_b_unsupported_claims": []
+    },
+    {
+      "id": "cva6_counter_mcp+skill_r1",
+      "case_id": "cva6_counter",
+      "arm": "mcp+skill",
+      "repetition": 1,
+      "answer_id": "a4bbc637e080",
+      "judge_a_fact_total": 8,
+      "judge_b_fact_total": 8,
+      "judge_a_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "judge_b_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "scores_agree": true,
+      "judge_a_unsupported_claims": [],
+      "judge_b_unsupported_claims": []
+    },
+    {
+      "id": "cva6_counter_text-only_r1",
+      "case_id": "cva6_counter",
+      "arm": "text-only",
+      "repetition": 1,
+      "answer_id": "5930be9059a7",
+      "judge_a_fact_total": 8,
+      "judge_b_fact_total": 8,
+      "judge_a_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "judge_b_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "scores_agree": true,
+      "judge_a_unsupported_claims": [],
+      "judge_b_unsupported_claims": []
+    },
+    {
+      "id": "axi_types_mcp+skill_r1",
+      "case_id": "axi_types",
+      "arm": "mcp+skill",
+      "repetition": 1,
+      "answer_id": "67057801d7c5",
+      "judge_a_fact_total": 8,
+      "judge_b_fact_total": 8,
+      "judge_a_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 1
+      },
+      "judge_b_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 1
+      },
+      "scores_agree": true,
+      "judge_a_unsupported_claims": [
+        "The statement 'i_wire overrides only Depth' is false if read literally: integration.sv:41-45 supplies Depth=0 and all seven channel/request/response type overrides. Only FallThrough retains its declaration default among the two scalar parameters."
+      ],
+      "judge_b_unsupported_claims": [
+        "The sentence 'i_wire overrides only Depth' is overbroad: integration.sv:42 overrides Depth, and lines 43-45 also explicitly override all seven type parameters. It is correct only if 'only' is restricted to numeric parameters; the requested generate and width results remain correct."
+      ]
+    },
+    {
+      "id": "axi_types_text-only_r1",
+      "case_id": "axi_types",
+      "arm": "text-only",
+      "repetition": 1,
+      "answer_id": "08888d153c9e",
+      "judge_a_fact_total": 8,
+      "judge_b_fact_total": 8,
+      "judge_a_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "judge_b_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "scores_agree": true,
+      "judge_a_unsupported_claims": [],
+      "judge_b_unsupported_claims": []
+    },
+    {
+      "id": "floo_config_text-only_r1",
+      "case_id": "floo_config",
+      "arm": "text-only",
+      "repetition": 1,
+      "answer_id": "83e0aaa56173",
+      "judge_a_fact_total": 8,
+      "judge_b_fact_total": 8,
+      "judge_a_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "judge_b_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "scores_agree": true,
+      "judge_a_unsupported_claims": [],
+      "judge_b_unsupported_claims": []
+    },
+    {
+      "id": "floo_config_mcp+skill_r1",
+      "case_id": "floo_config",
+      "arm": "mcp+skill",
+      "repetition": 1,
+      "answer_id": "15621ad7514f",
+      "judge_a_fact_total": 8,
+      "judge_b_fact_total": 8,
+      "judge_a_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "judge_b_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "scores_agree": true,
+      "judge_a_unsupported_claims": [],
+      "judge_b_unsupported_claims": []
+    },
+    {
+      "id": "idma_state_text-only_r1",
+      "case_id": "idma_state",
+      "arm": "text-only",
+      "repetition": 1,
+      "answer_id": "0f69286620e5",
+      "judge_a_fact_total": 8,
+      "judge_b_fact_total": 8,
+      "judge_a_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "judge_b_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "scores_agree": true,
+      "judge_a_unsupported_claims": [],
+      "judge_b_unsupported_claims": []
+    },
+    {
+      "id": "idma_state_mcp+skill_r1",
+      "case_id": "idma_state",
+      "arm": "mcp+skill",
+      "repetition": 1,
+      "answer_id": "b89599af2e16",
+      "judge_a_fact_total": 8,
+      "judge_b_fact_total": 8,
+      "judge_a_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "judge_b_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "scores_agree": true,
+      "judge_a_unsupported_claims": [],
+      "judge_b_unsupported_claims": []
+    },
+    {
+      "id": "broken_fragment_text-only_r1",
+      "case_id": "broken_fragment",
+      "arm": "text-only",
+      "repetition": 1,
+      "answer_id": "5d8ff7029622",
+      "judge_a_fact_total": 8,
+      "judge_b_fact_total": 8,
+      "judge_a_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "judge_b_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "scores_agree": true,
+      "judge_a_unsupported_claims": [],
+      "judge_b_unsupported_claims": []
+    },
+    {
+      "id": "broken_fragment_mcp+skill_r1",
+      "case_id": "broken_fragment",
+      "arm": "mcp+skill",
+      "repetition": 1,
+      "answer_id": "3b6a12d2c364",
+      "judge_a_fact_total": 8,
+      "judge_b_fact_total": 8,
+      "judge_a_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "judge_b_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "scores_agree": true,
+      "judge_a_unsupported_claims": [],
+      "judge_b_unsupported_claims": []
+    },
+    {
+      "id": "idma_state_mcp+skill_r2",
+      "case_id": "idma_state",
+      "arm": "mcp+skill",
+      "repetition": 2,
+      "answer_id": "f669c06d5446",
+      "judge_a_fact_total": 8,
+      "judge_b_fact_total": 8,
+      "judge_a_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "judge_b_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "scores_agree": true,
+      "judge_a_unsupported_claims": [],
+      "judge_b_unsupported_claims": []
+    },
+    {
+      "id": "idma_state_text-only_r2",
+      "case_id": "idma_state",
+      "arm": "text-only",
+      "repetition": 2,
+      "answer_id": "b45c1d734299",
+      "judge_a_fact_total": 8,
+      "judge_b_fact_total": 8,
+      "judge_a_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "judge_b_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "scores_agree": true,
+      "judge_a_unsupported_claims": [],
+      "judge_b_unsupported_claims": []
+    },
+    {
+      "id": "axi_types_text-only_r2",
+      "case_id": "axi_types",
+      "arm": "text-only",
+      "repetition": 2,
+      "answer_id": "2162a9c82bae",
+      "judge_a_fact_total": 8,
+      "judge_b_fact_total": 8,
+      "judge_a_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "judge_b_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "scores_agree": true,
+      "judge_a_unsupported_claims": [],
+      "judge_b_unsupported_claims": []
+    },
+    {
+      "id": "axi_types_mcp+skill_r2",
+      "case_id": "axi_types",
+      "arm": "mcp+skill",
+      "repetition": 2,
+      "answer_id": "6198d2b0eef2",
+      "judge_a_fact_total": 8,
+      "judge_b_fact_total": 8,
+      "judge_a_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "judge_b_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "scores_agree": true,
+      "judge_a_unsupported_claims": [],
+      "judge_b_unsupported_claims": []
+    },
+    {
+      "id": "broken_fragment_mcp+skill_r2",
+      "case_id": "broken_fragment",
+      "arm": "mcp+skill",
+      "repetition": 2,
+      "answer_id": "5c102e204a10",
+      "judge_a_fact_total": 8,
+      "judge_b_fact_total": 8,
+      "judge_a_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "judge_b_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "scores_agree": true,
+      "judge_a_unsupported_claims": [],
+      "judge_b_unsupported_claims": []
+    },
+    {
+      "id": "broken_fragment_text-only_r2",
+      "case_id": "broken_fragment",
+      "arm": "text-only",
+      "repetition": 2,
+      "answer_id": "a4895f8f18b6",
+      "judge_a_fact_total": 8,
+      "judge_b_fact_total": 8,
+      "judge_a_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "judge_b_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "scores_agree": true,
+      "judge_a_unsupported_claims": [],
+      "judge_b_unsupported_claims": []
+    },
+    {
+      "id": "unit_macros_text-only_r2",
+      "case_id": "unit_macros",
+      "arm": "text-only",
+      "repetition": 2,
+      "answer_id": "3bdc3580a2e2",
+      "judge_a_fact_total": 8,
+      "judge_b_fact_total": 8,
+      "judge_a_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "judge_b_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "scores_agree": true,
+      "judge_a_unsupported_claims": [],
+      "judge_b_unsupported_claims": []
+    },
+    {
+      "id": "unit_macros_mcp+skill_r2",
+      "case_id": "unit_macros",
+      "arm": "mcp+skill",
+      "repetition": 2,
+      "answer_id": "ce74cf89fa3e",
+      "judge_a_fact_total": 8,
+      "judge_b_fact_total": 8,
+      "judge_a_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "judge_b_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "scores_agree": true,
+      "judge_a_unsupported_claims": [],
+      "judge_b_unsupported_claims": []
+    },
+    {
+      "id": "floo_config_mcp+skill_r2",
+      "case_id": "floo_config",
+      "arm": "mcp+skill",
+      "repetition": 2,
+      "answer_id": "824e2b1623c3",
+      "judge_a_fact_total": 8,
+      "judge_b_fact_total": 8,
+      "judge_a_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "judge_b_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "scores_agree": true,
+      "judge_a_unsupported_claims": [],
+      "judge_b_unsupported_claims": []
+    },
+    {
+      "id": "floo_config_text-only_r2",
+      "case_id": "floo_config",
+      "arm": "text-only",
+      "repetition": 2,
+      "answer_id": "ce8a0be71fc5",
+      "judge_a_fact_total": 8,
+      "judge_b_fact_total": 8,
+      "judge_a_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "judge_b_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "scores_agree": true,
+      "judge_a_unsupported_claims": [],
+      "judge_b_unsupported_claims": []
+    },
+    {
+      "id": "cva6_counter_text-only_r2",
+      "case_id": "cva6_counter",
+      "arm": "text-only",
+      "repetition": 2,
+      "answer_id": "eaccd7ba4143",
+      "judge_a_fact_total": 8,
+      "judge_b_fact_total": 8,
+      "judge_a_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "judge_b_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "scores_agree": true,
+      "judge_a_unsupported_claims": [],
+      "judge_b_unsupported_claims": []
+    },
+    {
+      "id": "cva6_counter_mcp+skill_r2",
+      "case_id": "cva6_counter",
+      "arm": "mcp+skill",
+      "repetition": 2,
+      "answer_id": "32f7fa94aede",
+      "judge_a_fact_total": 8,
+      "judge_b_fact_total": 8,
+      "judge_a_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "judge_b_explanation": {
+        "derivation": 2,
+        "coverage": 2,
+        "source_evidence": 2,
+        "calibration": 2
+      },
+      "scores_agree": true,
+      "judge_a_unsupported_claims": [],
+      "judge_b_unsupported_claims": []
+    }
+  ]
+}

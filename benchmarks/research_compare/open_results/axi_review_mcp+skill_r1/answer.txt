@@ -1,0 +1,31 @@
+Not ready for integration sign-off. The declared AXI type chain and the Depth=0 bypass are locally sound, but `axi_fifo` has two legal-SystemVerilog errors and one depth mismatch.
+
+The package types resolve to 37-bit addresses, 128-bit data, 6-bit IDs, 5-bit user fields, and a 16-bit strobe ([integration.sv:5](/private/tmp/slang-compare-open/runs/axi_review/mcp+skill/rep_1/workspace/integration.sv:5)). Both stages are parameterized with the same request, response, and five channel types; semantic bindings confirm `req_i → buffered_req → req_o` and `resp_i → buffered_resp → resp_o` remain `link_req_t`/`link_resp_t`.
+
+The buffer instance has effective `Depth=5`, `FallThrough=1`. Its children elaborate as:
+
+| Channel | FIFO depth | Result |
+|---|---:|---|
+| AW | 5 | Handshake expression is illegal |
+| AR | 6 | Violates the required exact depth of 5 |
+| W | 5 | FIFO data type is illegal |
+| R | 5 | Structurally consistent |
+| B | 5 | Structurally consistent |
+
+The required normal flow cannot be signed off for every channel:
+
+- At [axi_fifo.sv:79](/private/tmp/slang-compare-open/runs/axi_review/mcp+skill/rep_1/workspace/rtl/src/axi_fifo.sv:79), `slv_req_i.aw_valid_en` does not exist in the generated request type; the valid member is `aw_valid`. This is a local compiler error and breaks AW enqueue qualification.
+- At [axi_fifo.sv:101](/private/tmp/slang-compare-open/runs/axi_review/mcp+skill/rep_1/workspace/rtl/src/axi_fifo.sv:101), `.dtype(Depth)` supplies an integer where `fifo_v3` requires a type. The W FIFO therefore elaborates with an error type.
+- At [axi_fifo.sv:85](/private/tmp/slang-compare-open/runs/axi_review/mcp+skill/rep_1/workspace/rtl/src/axi_fifo.sv:85), AR uses `.DEPTH(Depth + 1)`, yielding six slots rather than the required five.
+
+Minimal internal fixes, without changing the top interface or requested configuration, are:
+
+- Change `aw_valid_en` to `aw_valid`.
+- Change `.dtype(Depth)` to `.dtype(w_chan_t)`.
+- Change the AR FIFO to `.DEPTH(Depth)`.
+
+The `FallThrough` parameter is forwarded as `1` to all five child FIFOs. The local `fifo_v3` implementation has the expected empty-queue fall-through behavior ([fifo_v3.sv:53](/private/tmp/slang-compare-open/runs/axi_review/mcp+skill/rep_1/workspace/rtl/.bender/git/checkouts/common_cells-3e2fcccecd7aee7b/src/fifo_v3.sv:53)), but the AW and W errors prevent treating that as a complete functional sign-off.
+
+The following `i_wire` instance does meet the Depth=0 requirement: its effective depth is zero, elaboration selects `gen_no_fifo`, and [axi_fifo.sv:45](/private/tmp/slang-compare-open/runs/axi_review/mcp+skill/rep_1/workspace/rtl/src/axi_fifo.sv:45) directly assigns the complete request and response structs with no FIFO children or storage.
+
+External boundary: `axi_boundary_monitor` is explicitly unavailable in `config.json` and is unresolved at [integration.sv:51](/private/tmp/slang-compare-open/runs/axi_review/mcp+skill/rep_1/workspace/integration.sv:51). Its interface and checks cannot be verified here and should be supplied by the system owner. Separately, Slang reports the two local `axi_fifo` errors above, so this is not merely an incomplete external-component compile.

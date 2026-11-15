@@ -1,0 +1,31 @@
+{
+  "launched_utc": "2026-11-15T16:55:15.185515+00:00",
+  "main_finalized_count": 24,
+  "main_statuses": [
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed"
+  ],
+  "open_freeze": "ebd9989"
+}

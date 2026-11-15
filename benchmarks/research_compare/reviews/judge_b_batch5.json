@@ -1,0 +1,226 @@
+[
+  {
+    "answer_id": "824e2b1623c3",
+    "case_id": "floo_config",
+    "criteria": [
+      {
+        "id": "widths",
+        "score": 1,
+        "note": "23-bit flit and all three effective data/valid widths are correct: 69/12, 138/6 and 46/8."
+      },
+      {
+        "id": "branches",
+        "score": 1,
+        "note": "Correct virtual, physical and bypass named branches and outer-depth/inner-channel-test precedence."
+      },
+      {
+        "id": "inventory",
+        "score": 1,
+        "note": "Correct per-subtree stream FIFO/arbiter counts: 12/3, 6/0 and 0/0."
+      },
+      {
+        "id": "virtual_target",
+        "score": 1,
+        "note": "Correct full [2][3] instance path, Depth=5, FallThrough=0 and data_i[n]/data_out[n][v] actuals with explicit genvar substitution."
+      },
+      {
+        "id": "physical_target",
+        "score": 1,
+        "note": "Correct full [1][2] instance path, Depth=2 and data_i[n][v]/data_o[n][v] actuals."
+      },
+      {
+        "id": "storage",
+        "score": 1,
+        "note": "Pointer width 3, counter width 3 and packed memory width 115 are correctly derived from Depth=5 and the 23-bit overridden data_t."
+      },
+      {
+        "id": "defaults",
+        "score": 1,
+        "note": "Correct declaration defaults (2,1,1,1) and one-bit logic flit contrasted with the three integration override sets."
+      },
+      {
+        "id": "clear_boundary",
+        "score": 1,
+        "note": "Correctly identifies omitted clr_i connections on supplied stream FIFO definitions, forwarding into cc_fifo and absence of an established clear drive."
+      }
+    ],
+    "fact_total": 8,
+    "explanation": {
+      "derivation": 2,
+      "coverage": 2,
+      "source_evidence": 2,
+      "calibration": 2
+    },
+    "unsupported_claims": [],
+    "oracle_concerns": [],
+    "summary": "All requested widths, hierarchy, storage and unconnected clear-input implications are correct."
+  },
+  {
+    "answer_id": "ce8a0be71fc5",
+    "case_id": "floo_config",
+    "criteria": [
+      {
+        "id": "widths",
+        "score": 1,
+        "note": "23-bit flit and all three effective data/valid widths are correct: 69/12, 138/6 and 46/8."
+      },
+      {
+        "id": "branches",
+        "score": 1,
+        "note": "Correct virtual, physical and bypass named branches and outer-depth/inner-channel-test precedence."
+      },
+      {
+        "id": "inventory",
+        "score": 1,
+        "note": "Correct per-subtree stream FIFO/arbiter counts: 12/3, 6/0 and 0/0."
+      },
+      {
+        "id": "virtual_target",
+        "score": 1,
+        "note": "Correct full [2][3] instance path, Depth=5, FallThrough=0 and data_i[n]/data_out[n][v] actuals with explicit genvar substitution."
+      },
+      {
+        "id": "physical_target",
+        "score": 1,
+        "note": "Correct full [1][2] instance path, Depth=2 and data_i[n][v]/data_o[n][v] actuals."
+      },
+      {
+        "id": "storage",
+        "score": 1,
+        "note": "Pointer width 3, counter width 3 and packed memory width 115 are correctly derived from Depth=5 and the 23-bit overridden data_t."
+      },
+      {
+        "id": "defaults",
+        "score": 1,
+        "note": "Correct declaration defaults (2,1,1,1) and one-bit logic flit contrasted with the three integration override sets."
+      },
+      {
+        "id": "clear_boundary",
+        "score": 1,
+        "note": "Correctly identifies omitted clr_i connections on supplied stream FIFO definitions, forwarding into cc_fifo and absence of an established clear drive."
+      }
+    ],
+    "fact_total": 8,
+    "explanation": {
+      "derivation": 2,
+      "coverage": 2,
+      "source_evidence": 2,
+      "calibration": 2
+    },
+    "unsupported_claims": [],
+    "oracle_concerns": [],
+    "summary": "Complete and source-supported parameter, generate, instance-count and clear-boundary analysis."
+  },
+  {
+    "answer_id": "eaccd7ba4143",
+    "case_id": "cva6_counter",
+    "criteria": [
+      {
+        "id": "types",
+        "score": 1,
+        "note": "DEPTH=8, ADDR_DEPTH=3 and unsigned four-state packed logic [3:0] counters are correct."
+      },
+      {
+        "id": "q_reads",
+        "score": 1,
+        "note": "All nine source-level reads are correctly located and grouped, including disabled procedural condition/hold accesses."
+      },
+      {
+        "id": "q_writes",
+        "score": 1,
+        "note": "All three sequential writes and asynchronous reset > synchronous flush > normal staged update priority are correct."
+      },
+      {
+        "id": "n_accesses",
+        "score": 1,
+        "note": "All five combinational writes and the one sequential read are identified; assignments derive from q rather than modifying n in place."
+      },
+      {
+        "id": "single_requests",
+        "score": 1,
+        "note": "Correct push/pop guards, accepted increments/decrements, rejected boundary requests and neither-request hold."
+      },
+      {
+        "id": "simultaneous",
+        "score": 1,
+        "note": "Correct next counts 1, C and 7 for occupancies 0, 1..7 and 8, with source assertion violations at boundaries."
+      },
+      {
+        "id": "inactive_procedural",
+        "score": 1,
+        "note": "Correctly distinguishes syntactically present accesses from updates disabled by the default mode parameters."
+      },
+      {
+        "id": "usage_full",
+        "score": 1,
+        "note": "Correct low-three-bit usage value of zero at full occupancy 8 and full_o's comparison of all four count bits."
+      }
+    ],
+    "fact_total": 8,
+    "explanation": {
+      "derivation": 2,
+      "coverage": 2,
+      "source_evidence": 2,
+      "calibration": 2
+    },
+    "unsupported_claims": [],
+    "oracle_concerns": [],
+    "summary": "Complete source-access inventory and correctly guarded counter transitions with clear assertion and width explanations."
+  },
+  {
+    "answer_id": "32f7fa94aede",
+    "case_id": "cva6_counter",
+    "criteria": [
+      {
+        "id": "types",
+        "score": 1,
+        "note": "DEPTH=8, ADDR_DEPTH=3 and unsigned four-state packed logic [3:0] counters are correct."
+      },
+      {
+        "id": "q_reads",
+        "score": 1,
+        "note": "All nine source-level reads are correctly located and grouped, including disabled procedural condition/hold accesses."
+      },
+      {
+        "id": "q_writes",
+        "score": 1,
+        "note": "All three sequential writes and asynchronous reset > synchronous flush > normal staged update priority are correct."
+      },
+      {
+        "id": "n_accesses",
+        "score": 1,
+        "note": "All five combinational writes and the one sequential read are identified; assignments derive from q rather than modifying n in place."
+      },
+      {
+        "id": "single_requests",
+        "score": 1,
+        "note": "Correct push/pop guards, accepted increments/decrements, rejected boundary requests and neither-request hold."
+      },
+      {
+        "id": "simultaneous",
+        "score": 1,
+        "note": "Correct next counts 1, C and 7 for occupancies 0, 1..7 and 8, with source assertion violations at boundaries."
+      },
+      {
+        "id": "inactive_procedural",
+        "score": 1,
+        "note": "Correctly distinguishes syntactically present accesses from updates disabled by the default mode parameters."
+      },
+      {
+        "id": "usage_full",
+        "score": 1,
+        "note": "Correct low-three-bit usage value of zero at full occupancy 8 and full_o's comparison of all four count bits."
+      }
+    ],
+    "fact_total": 8,
+    "explanation": {
+      "derivation": 2,
+      "coverage": 2,
+      "source_evidence": 2,
+      "calibration": 2
+    },
+    "unsupported_claims": [],
+    "oracle_concerns": [],
+    "summary": "Correct source-default counter analysis separates syntactic accesses, possible updates, protocol assertions and usage truncation."
+  }
+]

@@ -1,0 +1,37 @@
+Static elaboration of `floo_config_top` ([config.json:2](/private/tmp/slang-compare/runs/floo_config/text-only/rep_2/workspace/config.json:2)) gives a 23-bit packed flit: `13 + 8 + 2` bits ([top.sv:3](/private/tmp/slang-compare/runs/floo_config/text-only/rep_2/workspace/rtl/top.sv:3)).
+
+| Instance | Effective `(Channels, VCs, Phys, Depth)` | `valid_i` width | `data_i` width | Selected branch | `cc_stream_fifo` / `floo_vc_arbiter` |
+|---|---:|---:|---:|---|---:|
+| `u_virtual` | `(3, 4, 1, 5)` | `3×4 = 12` | `3×1×23 = 69` | `gen_floo_fifo.gen_virt_channels` | `12 / 3` |
+| `u_physical` | `(2, 3, 3, 2)` | `2×3 = 6` | `2×3×23 = 138` | `gen_floo_fifo.gen_phys_channels` | `6 / 0` |
+| `u_bypass` | `(2, 4, 1, 0)` | `2×4 = 8` | `2×1×23 = 46` | `gen_no_fifo` | `0 / 0` |
+
+The port shapes come from [floo_fifo.sv:19](/private/tmp/slang-compare/runs/floo_config/text-only/rep_2/workspace/rtl/floo_fifo.sv:19). Counts are elaborated instances only, not module declarations.
+
+Generate precedence is: first, `FifoDepth == 0` selects `gen_no_fifo`; otherwise, `NumPhysChannels == 1` selects the virtual-channel branch before the equality test; only then can `NumVirtChannels == NumPhysChannels` select the physical-channel branch ([floo_fifo.sv:28](/private/tmp/slang-compare/runs/floo_config/text-only/rep_2/workspace/rtl/floo_fifo.sv:28)). Thus bypass wins for `u_bypass` even though its physical-channel count is one. If both inner predicates were true, the virtual branch would win.
+
+For requested leaf instances:
+
+- Virtual `n=2, v=3`:
+
+  `floo_config_top.u_virtual.gen_floo_fifo.gen_virt_channels.gen_channel[2].gen_virt_channel[3].i_stream_fifo`
+
+  Effective `Depth=5`, `FallThrough=1'b0` ([floo_fifo.sv:43](/private/tmp/slang-compare/runs/floo_config/text-only/rep_2/workspace/rtl/floo_fifo.sv:43)). The generic source spells its actuals as `data_i[n]` and `data_out[n][v]` ([floo_fifo.sv:52](/private/tmp/slang-compare/runs/floo_config/text-only/rep_2/workspace/rtl/floo_fifo.sv:52)); at this instance those are `data_i[2]` and `data_out[2][3]`. Notably, all four virtual FIFOs for channel 2 receive the same `data_i[2]`; `v` indexes only the output buffer and handshake signals.
+
+- Physical `n=1, v=2`:
+
+  `floo_config_top.u_physical.gen_floo_fifo.gen_phys_channels.gen_channel[1].gen_virt_channel[2].i_stream_fifo`
+
+  Effective `Depth=2` and `FallThrough=1'b0`. Its source actuals are `data_i[n][v]` and `data_o[n][v]` ([floo_fifo.sv:89](/private/tmp/slang-compare/runs/floo_config/text-only/rep_2/workspace/rtl/floo_fifo.sv:89)), elaborating to `data_i[1][2]` and `data_o[1][2]`.
+
+Inside the first virtual path’s `fifo_i` child, `Depth=5` propagates into `cc_fifo` ([cc_stream_fifo.sv:50](/private/tmp/slang-compare/runs/floo_config/text-only/rep_2/workspace/rtl/cc_stream_fifo.sv:50)):
+
+- Pointer width: `idx_width(5) = $clog2(5) = 3`.
+- Counter/usage width: `cnt_width(5) = idx_width(6) = $clog2(6) = 3`.
+- `FifoDepth = 5`, and packed `mem_q` is five 23-bit structured flits: `5 × 23 = 115` bits.
+
+These formulas and declarations are in [cc_pkg.sv:43](/private/tmp/slang-compare/runs/floo_config/text-only/rep_2/workspace/rtl/cc_pkg.sv:43) and [cc_fifo.sv:43](/private/tmp/slang-compare/runs/floo_config/text-only/rep_2/workspace/rtl/cc_fifo.sv:43). The explicit `data_t(flit_t)` override makes storage 23 bits per entry; the stream FIFO’s default `DataWidth=32` does not override that type.
+
+For contrast, `floo_fifo` declares defaults of `(NumChannels, NumVirtChannels, NumPhysChannels, FifoDepth) = (2,1,1,1)` and `flit_t = logic` (one bit) ([floo_fifo.sv:8](/private/tmp/slang-compare/runs/floo_config/text-only/rep_2/workspace/rtl/floo_fifo.sv:8)). Those defaults are not the integration values: all three top instances override the counts, depth, and flit type ([top.sv:9](/private/tmp/slang-compare/runs/floo_config/text-only/rep_2/workspace/rtl/top.sv:9)).
+
+Finally, neither generated `cc_stream_fifo` instantiation connects `.clr_i(...)`; they connect `flush_i` to `1'b0` instead ([floo_fifo.sv:47](/private/tmp/slang-compare/runs/floo_config/text-only/rep_2/workspace/rtl/floo_fifo.sv:47), [floo_fifo.sv:84](/private/tmp/slang-compare/runs/floo_config/text-only/rep_2/workspace/rtl/floo_fifo.sv:84)). This is not a missing FIFO definition: `cc_stream_fifo` is present and declares `clr_i` ([cc_stream_fifo.sv:13](/private/tmp/slang-compare/runs/floo_config/text-only/rep_2/workspace/rtl/cc_stream_fifo.sv:13)), then passes it to its defined `cc_fifo` child. A known asserted `clr_i` would clear pointers/counter and memory, while `flush_i` affects only pointers/counter ([cc_fifo.sv:121](/private/tmp/slang-compare/runs/floo_config/text-only/rep_2/workspace/rtl/cc_fifo.sv:121)). But this fragment supplies no explicit clear driver, so it cannot establish deterministic clear behavior; an elaboration/lint tool may diagnose the unconnected input.

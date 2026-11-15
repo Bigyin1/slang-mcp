@@ -1,0 +1,118 @@
+[
+  {
+    "answer_id": "08888d153c9e",
+    "case_id": "axi_types",
+    "criteria": [
+      {"id": "aw_bits", "score": 1, "note": "Correct 83-bit AW width, complete sum, FIFO instance and formal/actual bindings."},
+      {"id": "w_bits", "score": 1, "note": "Correct 150-bit W width and corresponding bindings."},
+      {"id": "b_bits", "score": 1, "note": "Correct 13-bit B width and reverse-direction response bindings."},
+      {"id": "ar_bits", "score": 1, "note": "Correct 77-bit AR width and bindings."},
+      {"id": "r_bits", "score": 1, "note": "Correct 142-bit R width and response bindings."},
+      {"id": "req_bits", "score": 1, "note": "Correct 315-bit request sum including all five handshake bits."},
+      {"id": "resp_bits", "score": 1, "note": "Correct 160-bit response sum including all five handshake bits."},
+      {"id": "generate_selection", "score": 1, "note": "Correct gen_axi_fifo/five children for i_buffer and gen_no_fifo/zero children for i_wire."}
+    ],
+    "fact_total": 8,
+    "explanation": {"derivation": 2, "coverage": 2, "source_evidence": 2, "calibration": 2},
+    "unsupported_claims": [],
+    "oracle_concerns": [],
+    "summary": "All requested widths, connections, generate selections and parameter distinctions agree with the fixed source."
+  },
+  {
+    "answer_id": "5930be9059a7",
+    "case_id": "cva6_counter",
+    "criteria": [
+      {"id": "types", "score": 1, "note": "Correct DEPTH=8, ADDR_DEPTH=3 and unsigned four-state packed 4-bit counters."},
+      {"id": "q_reads", "score": 1, "note": "Lists all nine syntactic q reads and groups the three continuous and six combinational reads correctly."},
+      {"id": "q_writes", "score": 1, "note": "All three writes and asynchronous reset > synchronous flush > normal update priority are correct."},
+      {"id": "n_accesses", "score": 1, "note": "Identifies all five writes and sole sequential read; correctly rejects in-place n read-modify-write."},
+      {"id": "single_requests", "score": 1, "note": "Correct acceptance guards, increments/decrements and rejected/neither hold behavior with reset/flush excluded."},
+      {"id": "simultaneous", "score": 1, "note": "Correct next counts 1, C and 7 at empty, interior and full; identifies the boundary assertion violations."},
+      {"id": "inactive_procedural", "score": 1, "note": "Correctly retains syntactic accesses while explaining the default-false procedural guard."},
+      {"id": "usage_full", "score": 1, "note": "Correct 4-bit counter, 3-bit usage slice, usage=0 at count 8 and full_o=1."}
+    ],
+    "fact_total": 8,
+    "explanation": {"derivation": 2, "coverage": 2, "source_evidence": 2, "calibration": 2},
+    "unsupported_claims": [],
+    "oracle_concerns": [],
+    "summary": "Complete source-grounded account of counter accesses, update guards, boundary requests and usage truncation."
+  },
+  {
+    "answer_id": "67057801d7c5",
+    "case_id": "axi_types",
+    "criteria": [
+      {"id": "aw_bits", "score": 1, "note": "Correct 83-bit AW width with complete sum and FIFO formal/actual details."},
+      {"id": "w_bits", "score": 1, "note": "Correct 150-bit W width and bindings."},
+      {"id": "b_bits", "score": 1, "note": "Correct 13-bit B width and response bindings."},
+      {"id": "ar_bits", "score": 1, "note": "Correct 77-bit AR width and bindings."},
+      {"id": "r_bits", "score": 1, "note": "Correct 142-bit R width and response bindings."},
+      {"id": "req_bits", "score": 1, "note": "Correct 315-bit aggregate with all five handshake bits."},
+      {"id": "resp_bits", "score": 1, "note": "Correct 160-bit aggregate with all five handshake bits."},
+      {"id": "generate_selection", "score": 1, "note": "Both required branches and child counts are correct; the separate override misstatement does not contradict these scored outcomes."}
+    ],
+    "fact_total": 8,
+    "explanation": {"derivation": 2, "coverage": 2, "source_evidence": 2, "calibration": 1},
+    "unsupported_claims": [
+      "The statement 'i_wire overrides only Depth' is false if read literally: integration.sv:41-45 supplies Depth=0 and all seven channel/request/response type overrides. Only FallThrough retains its declaration default among the two scalar parameters."
+    ],
+    "oracle_concerns": [],
+    "summary": "All eight scored facts are correct, but one sentence incorrectly describes i_wire's explicit parameter overrides."
+  },
+  {
+    "answer_id": "a4bbc637e080",
+    "case_id": "cva6_counter",
+    "criteria": [
+      {"id": "types", "score": 1, "note": "Correct DEPTH=8, ADDR_DEPTH=3 and packed logic [3:0] counter types."},
+      {"id": "q_reads", "score": 1, "note": "Correctly enumerates all nine source reads including the inactive procedural condition and assignment."},
+      {"id": "q_writes", "score": 1, "note": "Correct three writes and reset/flush/normal update priority."},
+      {"id": "n_accesses", "score": 1, "note": "Correct five blocking writes, sole read at line 171, and q-derived staged next-state interpretation."},
+      {"id": "single_requests", "score": 1, "note": "Correct acceptance guards and push-only, pop-only and neither behavior under stated assumptions."},
+      {"id": "simultaneous", "score": 1, "note": "Correct empty/interior/full next counts and associated empty_read/full_write assertion consequences."},
+      {"id": "inactive_procedural", "score": 1, "note": "Accurately separates syntactic accesses from default-disabled updates."},
+      {"id": "usage_full", "score": 1, "note": "Correct low-three-bit usage exposure and four-bit full comparison at occupancy 8."}
+    ],
+    "fact_total": 8,
+    "explanation": {"derivation": 2, "coverage": 2, "source_evidence": 2, "calibration": 2},
+    "unsupported_claims": [],
+    "oracle_concerns": [],
+    "summary": "All requested counter semantics are correct, with clear assumptions and source-level access distinctions."
+  },
+  {
+    "answer_id": "e0bf03889117",
+    "case_id": "unit_macros",
+    "criteria": [
+      {"id": "unit_word_bits", "score": 1, "note": "Correct 9-bit typedef resolved before the later macro redefinition."},
+      {"id": "top_w", "score": 1, "note": "Correct top W=13 from shared macro state and the guarded include."},
+      {"id": "top_n", "score": 1, "note": "Correct N=3 from the top's local macro redefinition."},
+      {"id": "data_i_bits", "score": 1, "note": "Correct 13*3=39-bit top data_i."},
+      {"id": "channel_effective_w", "score": 1, "note": "Correct instance W=15 and explicit distinction from its declaration default of 13."},
+      {"id": "channel_payload_i_bits", "score": 1, "note": "Correct 15-bit child formal and matching actual slice."},
+      {"id": "active_generate_and_child", "score": 1, "note": "Correct 13>9 guard, g_wide selection and full channel instance path."},
+      {"id": "separate_compilation_units", "score": 1, "note": "Correctly explains fresh header/macro state, top W=9 and loss of the compilation-unit typedef across separate units."}
+    ],
+    "fact_total": 8,
+    "explanation": {"derivation": 2, "coverage": 2, "source_evidence": 2, "calibration": 2},
+    "unsupported_claims": [],
+    "oracle_concerns": [],
+    "summary": "Correct parameter and width derivations with a sound explanation of macro lifetime and compilation-unit scope."
+  },
+  {
+    "answer_id": "ed3b1ca0a88d",
+    "case_id": "unit_macros",
+    "criteria": [
+      {"id": "unit_word_bits", "score": 1, "note": "Correct 9-bit typedef and initial header expansion."},
+      {"id": "top_w", "score": 1, "note": "Correct effective top W=13 and shared preprocessing-state derivation."},
+      {"id": "top_n", "score": 1, "note": "Correct N=3 from the explicit local macro override."},
+      {"id": "data_i_bits", "score": 1, "note": "Correct 39-bit data_i with arithmetic and packed range."},
+      {"id": "channel_effective_w", "score": 1, "note": "Correct W=15 from the instance override, distinguished from the default of 13."},
+      {"id": "channel_payload_i_bits", "score": 1, "note": "Correct 15-bit payload_i and matching data_i[14:0] actual."},
+      {"id": "active_generate_and_child", "score": 1, "note": "Correct g_wide selection and unit_macros_top.g_wide.u_channel path."},
+      {"id": "separate_compilation_units", "score": 1, "note": "Correct non-equivalence: macros/guards restart, top W becomes 9, and unit_word_t is unavailable in the other units."}
+    ],
+    "fact_total": 8,
+    "explanation": {"derivation": 2, "coverage": 2, "source_evidence": 2, "calibration": 2},
+    "unsupported_claims": [],
+    "oracle_concerns": [],
+    "summary": "All eight source-derived facts and their macro, scope and instance-override explanations are correct."
+  }
+]

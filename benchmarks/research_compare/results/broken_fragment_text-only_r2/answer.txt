@@ -1,0 +1,14 @@
+| Item | Finding | Evidence |
+|---|---|---|
+| 1. Effective `W` | `12` (standalone default parameter). | `rtl/top.sv:2` |
+| 2. `data_i` width | 12 bits: `logic [11:0]`. | Declared `[W-1:0]` at `rtl/top.sv:6`; with `W=12` |
+| 3. `narrow_o` width | 4 bits. | `rtl/top.sv:7` |
+| 4. State written by `always_ff` | `narrow_q`, declared `logic [3:0]` (4 bits). | Declaration: `rtl/top.sv:17`; procedural writes: `rtl/top.sv:24-29` |
+| 5. Struct/member fault | `sample.missing` is invalid: packed `sample_t` defines only `payload` and `valid`, not `missing`. | Struct members: `rtl/top.sv:11-14`; invalid access: `rtl/top.sv:21` |
+| 6. Assignment-width fault | `narrow_q <= data_i` assigns a 12-bit value into a 4-bit destination. At the default `W`, it retains `data_i[3:0]` and loses `data_i[11:4]` (eight upper bits). | `rtl/top.sv:17`, `rtl/top.sv:28` |
+| 7. Missing external definition | No definition of `external_stage` exists in the supplied fragment. The unresolved instance path is `broken_fragment_top.u_external`. | Instance: `rtl/top.sv:31-35` |
+| 8. `external_o` | Locally declared as `[W-1:0]`, thus 12 bits (`[11:0]`) under defaults. Its external implementation and behavior are not established: the missing child prevents knowing its parameter declaration, port compatibility, drive behavior, or logic. | Declaration: `rtl/top.sv:9`; connection: `rtl/top.sv:31-35` |
+
+The invalid struct member and narrowing assignment are locally provable from this source. The missing `external_stage` is instead an incomplete external dependency; nothing valid can be inferred about its internals from the instance use alone.
+
+Despite those issues, the local parameter, port declarations, struct declaration, and `narrow_q` state declaration remain readable and their stated widths are determinable. The fragment as a whole cannot be fully resolved/elaborated because of the invalid member reference and missing module definition.

@@ -1,0 +1,338 @@
+[
+  {
+    "answer_id": "2162a9c82bae",
+    "case_id": "axi_types",
+    "criteria": [
+      {
+        "id": "aw_bits",
+        "score": 1,
+        "note": "Complete AW sum is 83 bits, and AW FIFO formal widths and parent actuals are correct."
+      },
+      {
+        "id": "w_bits",
+        "score": 1,
+        "note": "W payload is 150 bits including 16-bit strobe; FIFO data connections and widths are correct."
+      },
+      {
+        "id": "b_bits",
+        "score": 1,
+        "note": "B payload is 13 bits; response-channel FIFO direction and data actuals are correct."
+      },
+      {
+        "id": "ar_bits",
+        "score": 1,
+        "note": "AR payload is 77 bits, with the correct FIFO formals and actual expressions."
+      },
+      {
+        "id": "r_bits",
+        "score": 1,
+        "note": "R payload is 142 bits; FIFO formals and response-channel connections are correct."
+      },
+      {
+        "id": "req_bits",
+        "score": 1,
+        "note": "315-bit aggregate correctly includes the three channel payloads and five handshake bits."
+      },
+      {
+        "id": "resp_bits",
+        "score": 1,
+        "note": "160-bit aggregate correctly includes B/R payloads and five handshake bits."
+      },
+      {
+        "id": "generate_selection",
+        "score": 1,
+        "note": "Correct branches and children: buffered gen_axi_fifo has five FIFOs, zero-depth gen_no_fifo has none; DEPTH=5/FALL_THROUGH=1 propagation and wire default FallThrough=0 are explained."
+      }
+    ],
+    "fact_total": 8,
+    "explanation": {
+      "derivation": 2,
+      "coverage": 2,
+      "source_evidence": 2,
+      "calibration": 2
+    },
+    "unsupported_claims": [],
+    "oracle_concerns": [],
+    "summary": "Complete packed-width, FIFO-binding and generate analysis with correctly distinguished type overrides and numeric defaults."
+  },
+  {
+    "answer_id": "6198d2b0eef2",
+    "case_id": "axi_types",
+    "criteria": [
+      {
+        "id": "aw_bits",
+        "score": 1,
+        "note": "Complete AW sum is 83 bits, and AW FIFO formal widths and parent actuals are correct."
+      },
+      {
+        "id": "w_bits",
+        "score": 1,
+        "note": "W payload is 150 bits including 16-bit strobe; FIFO data connections and widths are correct."
+      },
+      {
+        "id": "b_bits",
+        "score": 1,
+        "note": "B payload is 13 bits; response-channel FIFO direction and data actuals are correct."
+      },
+      {
+        "id": "ar_bits",
+        "score": 1,
+        "note": "AR payload is 77 bits, with the correct FIFO formals and actual expressions."
+      },
+      {
+        "id": "r_bits",
+        "score": 1,
+        "note": "R payload is 142 bits; FIFO formals and response-channel connections are correct."
+      },
+      {
+        "id": "req_bits",
+        "score": 1,
+        "note": "315-bit aggregate correctly includes the three channel payloads and five handshake bits."
+      },
+      {
+        "id": "resp_bits",
+        "score": 1,
+        "note": "160-bit aggregate correctly includes B/R payloads and five handshake bits."
+      },
+      {
+        "id": "generate_selection",
+        "score": 1,
+        "note": "Correct branches and children: buffered gen_axi_fifo has five FIFOs, zero-depth gen_no_fifo has none; DEPTH=5/FALL_THROUGH=1 propagation and wire default FallThrough=0 are explained."
+      }
+    ],
+    "fact_total": 8,
+    "explanation": {
+      "derivation": 2,
+      "coverage": 2,
+      "source_evidence": 2,
+      "calibration": 2
+    },
+    "unsupported_claims": [],
+    "oracle_concerns": [],
+    "summary": "All requested integration widths, FIFO data actuals and generate selections are correct and well explained."
+  },
+  {
+    "answer_id": "5c102e204a10",
+    "case_id": "broken_fragment",
+    "criteria": [
+      {
+        "id": "top_w",
+        "score": 1,
+        "note": "Correct standalone default W=12."
+      },
+      {
+        "id": "data_i_bits",
+        "score": 1,
+        "note": "Local [W-1:0] input resolves to 12 bits."
+      },
+      {
+        "id": "narrow_o_bits",
+        "score": 1,
+        "note": "Local [3:0] output is correctly identified as 4 bits."
+      },
+      {
+        "id": "local_state",
+        "score": 1,
+        "note": "Correctly identifies four-bit narrow_q as the state written by always_ff."
+      },
+      {
+        "id": "local_member_fault",
+        "score": 1,
+        "note": "Correct nonexistent sample.missing member and complete payload/valid member set."
+      },
+      {
+        "id": "local_width_fault",
+        "score": 1,
+        "note": "Correct 12-to-4-bit truncation, retaining data_i[3:0] and losing upper eight bits."
+      },
+      {
+        "id": "missing_external_definition",
+        "score": 1,
+        "note": "Correctly identifies unavailable external_stage at broken_fragment_top.u_external."
+      },
+      {
+        "id": "external_o_knowledge_boundary",
+        "score": 1,
+        "note": "Locally declared external_o is 12 bits; missing child port/implementation behavior remains unresolved, while local declarations remain usable."
+      }
+    ],
+    "fact_total": 8,
+    "explanation": {
+      "derivation": 2,
+      "coverage": 2,
+      "source_evidence": 2,
+      "calibration": 2
+    },
+    "unsupported_claims": [],
+    "oracle_concerns": [],
+    "summary": "Correctly distinguishes local readable widths and source faults from the missing external implementation."
+  },
+  {
+    "answer_id": "a4895f8f18b6",
+    "case_id": "broken_fragment",
+    "criteria": [
+      {
+        "id": "top_w",
+        "score": 1,
+        "note": "Correct standalone default W=12."
+      },
+      {
+        "id": "data_i_bits",
+        "score": 1,
+        "note": "Local [W-1:0] input resolves to 12 bits."
+      },
+      {
+        "id": "narrow_o_bits",
+        "score": 1,
+        "note": "Local [3:0] output is correctly identified as 4 bits."
+      },
+      {
+        "id": "local_state",
+        "score": 1,
+        "note": "Correctly identifies four-bit narrow_q as the state written by always_ff."
+      },
+      {
+        "id": "local_member_fault",
+        "score": 1,
+        "note": "Correct nonexistent sample.missing member and complete payload/valid member set."
+      },
+      {
+        "id": "local_width_fault",
+        "score": 1,
+        "note": "Correct 12-to-4-bit truncation, retaining data_i[3:0] and losing upper eight bits."
+      },
+      {
+        "id": "missing_external_definition",
+        "score": 1,
+        "note": "Correctly identifies unavailable external_stage at broken_fragment_top.u_external."
+      },
+      {
+        "id": "external_o_knowledge_boundary",
+        "score": 1,
+        "note": "Locally declared external_o is 12 bits; missing child port/implementation behavior remains unresolved, while local declarations remain usable."
+      }
+    ],
+    "fact_total": 8,
+    "explanation": {
+      "derivation": 2,
+      "coverage": 2,
+      "source_evidence": 2,
+      "calibration": 2
+    },
+    "unsupported_claims": [],
+    "oracle_concerns": [],
+    "summary": "Complete local semantic analysis correctly preserves uncertainty about the unavailable child."
+  },
+  {
+    "answer_id": "3bdc3580a2e2",
+    "case_id": "unit_macros",
+    "criteria": [
+      {
+        "id": "unit_word_bits",
+        "score": 1,
+        "note": "Early typedef is 9 packed bits and is unaffected by later macro redefinition."
+      },
+      {
+        "id": "top_w",
+        "score": 1,
+        "note": "Ordered single-unit preprocessing gives top standalone default W=13."
+      },
+      {
+        "id": "top_n",
+        "score": 1,
+        "note": "Top's local LANES override gives N=3."
+      },
+      {
+        "id": "data_i_bits",
+        "score": 1,
+        "note": "Correct 13*3=39-bit input width."
+      },
+      {
+        "id": "channel_effective_w",
+        "score": 1,
+        "note": "Correctly distinguishes declaration W=13 from instance W+2=15."
+      },
+      {
+        "id": "channel_payload_i_bits",
+        "score": 1,
+        "note": "Effective channel payload_i and connected slice are both 15 bits."
+      },
+      {
+        "id": "active_generate_and_child",
+        "score": 1,
+        "note": "13>9 selects g_wide and unit_macros_top.g_wide.u_channel."
+      },
+      {
+        "id": "separate_compilation_units",
+        "score": 1,
+        "note": "Correctly rejects equivalence: preprocessor/guard state restarts, top W becomes 9, and environment's compilation-unit typedef is unavailable to channel/top."
+      }
+    ],
+    "fact_total": 8,
+    "explanation": {
+      "derivation": 2,
+      "coverage": 2,
+      "source_evidence": 2,
+      "calibration": 2
+    },
+    "unsupported_claims": [],
+    "oracle_concerns": [],
+    "summary": "Correctly derives macro-dependent defaults, instance width overrides and failure of separate-unit equivalence."
+  },
+  {
+    "answer_id": "ce74cf89fa3e",
+    "case_id": "unit_macros",
+    "criteria": [
+      {
+        "id": "unit_word_bits",
+        "score": 1,
+        "note": "Early typedef is 9 packed bits and is unaffected by later macro redefinition."
+      },
+      {
+        "id": "top_w",
+        "score": 1,
+        "note": "Ordered single-unit preprocessing gives top standalone default W=13."
+      },
+      {
+        "id": "top_n",
+        "score": 1,
+        "note": "Top's local LANES override gives N=3."
+      },
+      {
+        "id": "data_i_bits",
+        "score": 1,
+        "note": "Correct 13*3=39-bit input width."
+      },
+      {
+        "id": "channel_effective_w",
+        "score": 1,
+        "note": "Correctly distinguishes declaration W=13 from instance W+2=15."
+      },
+      {
+        "id": "channel_payload_i_bits",
+        "score": 1,
+        "note": "Effective channel payload_i and connected slice are both 15 bits."
+      },
+      {
+        "id": "active_generate_and_child",
+        "score": 1,
+        "note": "13>9 selects g_wide and unit_macros_top.g_wide.u_channel."
+      },
+      {
+        "id": "separate_compilation_units",
+        "score": 1,
+        "note": "Correctly rejects equivalence: preprocessor/guard state restarts, top W becomes 9, and environment's compilation-unit typedef is unavailable to channel/top."
+      }
+    ],
+    "fact_total": 8,
+    "explanation": {
+      "derivation": 2,
+      "coverage": 2,
+      "source_evidence": 2,
+      "calibration": 2
+    },
+    "unsupported_claims": [],
+    "oracle_concerns": [],
+    "summary": "All requested widths, active hierarchy and macro/typedef compilation-unit consequences are correct."
+  }
+]

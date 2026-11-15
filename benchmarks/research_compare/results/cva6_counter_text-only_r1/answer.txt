@@ -1,0 +1,78 @@
+Scope: `config.json` selects `cva6_fifo_v3` with no defines or parameter overrides; only [`rtl/cva6_fifo_v3.sv`](/private/tmp/slang-compare/runs/cva6_counter/text-only/rep_1/workspace/rtl/cva6_fifo_v3.sv:16) is relevant.
+
+1. Parameters and counter type
+
+| Item | Default result |
+|---|---|
+| `DEPTH` | `8` ([L20](/private/tmp/slang-compare/runs/cva6_counter/text-only/rep_1/workspace/rtl/cva6_fifo_v3.sv:20)) |
+| `ADDR_DEPTH` | `$clog2(8) = 3` ([L24](/private/tmp/slang-compare/runs/cva6_counter/text-only/rep_1/workspace/rtl/cva6_fifo_v3.sv:24)) |
+| `status_cnt_q`, `status_cnt_n` | `logic [3:0]`: 4-bit, packed, four-state, unsigned vectors ([L50](/private/tmp/slang-compare/runs/cva6_counter/text-only/rep_1/workspace/rtl/cva6_fifo_v3.sv:50)) |
+| Relevant mode defaults | `FALL_THROUGH=0`, `FPGA_ALTERA=0`, `FPGA_EN=0` ([L17](/private/tmp/slang-compare/runs/cva6_counter/text-only/rep_1/workspace/rtl/cva6_fifo_v3.sv:17), [L22](/private/tmp/slang-compare/runs/cva6_counter/text-only/rep_1/workspace/rtl/cva6_fifo_v3.sv:22)) |
+
+`FifoDepth` is consequently 8 ([L43](/private/tmp/slang-compare/runs/cva6_counter/text-only/rep_1/workspace/rtl/cva6_fifo_v3.sv:43)).
+
+2. Direct `status_cnt_q` reads
+
+| Context | Read sites |
+|---|---|
+| Continuous assignments | `usage_o` slice ([L63](/private/tmp/slang-compare/runs/cva6_counter/text-only/rep_1/workspace/rtl/cva6_fifo_v3.sv:63)); `full_o` comparison ([L69](/private/tmp/slang-compare/runs/cva6_counter/text-only/rep_1/workspace/rtl/cva6_fifo_v3.sv:69)); `empty_o` comparison ([L70](/private/tmp/slang-compare/runs/cva6_counter/text-only/rep_1/workspace/rtl/cva6_fifo_v3.sv:70)). |
+| `always_comb read_write_comb` | Default next count ([L79](/private/tmp/slang-compare/runs/cva6_counter/text-only/rep_1/workspace/rtl/cva6_fifo_v3.sv:79)); push increment ([L116](/private/tmp/slang-compare/runs/cva6_counter/text-only/rep_1/workspace/rtl/cva6_fifo_v3.sv:116)); pop decrement ([L127](/private/tmp/slang-compare/runs/cva6_counter/text-only/rep_1/workspace/rtl/cva6_fifo_v3.sv:127)); simultaneous hold ([L131](/private/tmp/slang-compare/runs/cva6_counter/text-only/rep_1/workspace/rtl/cva6_fifo_v3.sv:131)); disabled fall-through/Altera condition and assignment ([L134](/private/tmp/slang-compare/runs/cva6_counter/text-only/rep_1/workspace/rtl/cva6_fifo_v3.sv:134), [L142](/private/tmp/slang-compare/runs/cva6_counter/text-only/rep_1/workspace/rtl/cva6_fifo_v3.sv:142)). |
+| Sequential process | No direct read: its `status_cnt_q` occurrences are write targets. |
+
+3. `status_cnt_q` writes and priority
+
+All writes are nonblocking assignments in the sequential block:
+
+1. Async active-low reset: `status_cnt_q <= '0` ([L154–158](/private/tmp/slang-compare/runs/cva6_counter/text-only/rep_1/workspace/rtl/cva6_fifo_v3.sv:154)).
+2. With reset inactive, synchronous `flush_i`: `status_cnt_q <= '0` ([L162–165](/private/tmp/slang-compare/runs/cva6_counter/text-only/rep_1/workspace/rtl/cva6_fifo_v3.sv:162)).
+3. Otherwise, capture staged next state: `status_cnt_q <= status_cnt_n` ([L168–171](/private/tmp/slang-compare/runs/cva6_counter/text-only/rep_1/workspace/rtl/cva6_fifo_v3.sv:168)).
+
+Thus priority is reset > flush > normal next-state capture.
+
+4. `status_cnt_n` reads/writes
+
+`status_cnt_n` is read only when normal sequential updating captures it into `_q` ([L171](/private/tmp/slang-compare/runs/cva6_counter/text-only/rep_1/workspace/rtl/cva6_fifo_v3.sv:171)).
+
+Its combinational writes are: default hold from `_q` ([L79](/private/tmp/slang-compare/runs/cva6_counter/text-only/rep_1/workspace/rtl/cva6_fifo_v3.sv:79)), accepted push `q + 1` ([L116](/private/tmp/slang-compare/runs/cva6_counter/text-only/rep_1/workspace/rtl/cva6_fifo_v3.sv:116)), accepted pop `q - 1` ([L127](/private/tmp/slang-compare/runs/cva6_counter/text-only/rep_1/workspace/rtl/cva6_fifo_v3.sv:127)), accepted simultaneous hold (`q`) ([L131](/private/tmp/slang-compare/runs/cva6_counter/text-only/rep_1/workspace/rtl/cva6_fifo_v3.sv:131)), and the syntactically present but default-disabled branch ([L142](/private/tmp/slang-compare/runs/cva6_counter/text-only/rep_1/workspace/rtl/cva6_fifo_v3.sv:142)).
+
+These are staged next-state assignments, not in-place read-modify-write: no assignment reads `status_cnt_n` on its RHS. Later executed blocking assignments override earlier ones.
+
+5. Single-operation behavior, absent reset/flush
+
+With defaults, `full_o` is `c == 8` and `empty_o` is `c == 0`, for current count `c`.
+
+| Inputs | Acceptance guard | Next count |
+|---|---|---|
+| Push only | `push_i && ~full_o` ([L99](/private/tmp/slang-compare/runs/cva6_counter/text-only/rep_1/workspace/rtl/cva6_fifo_v3.sv:99)) | `c + 1` for `c=0..7`; holds at 8 |
+| Pop only | `pop_i && ~empty_o` ([L119](/private/tmp/slang-compare/runs/cva6_counter/text-only/rep_1/workspace/rtl/cva6_fifo_v3.sv:119)) | `c - 1` for `c=1..8`; holds at 0 |
+| Neither | Neither guard fires | Default `status_cnt_n = status_cnt_q`; holds |
+
+Accepted push/pop also advance the respective circular pointer ([L112–114](/private/tmp/slang-compare/runs/cva6_counter/text-only/rep_1/workspace/rtl/cva6_fifo_v3.sv:112), [L124–125](/private/tmp/slang-compare/runs/cva6_counter/text-only/rep_1/workspace/rtl/cva6_fifo_v3.sv:124)).
+
+6. Simultaneous push/pop
+
+| Current `c` | Default-source result |
+|---|---|
+| 0 | Push is accepted; pop is blocked by `empty_o`; simultaneous-hold guard is false. Next count is 1. |
+| 1–7 | Both basic guards pass. The push assignment, then pop assignment, are ultimately overridden by the later simultaneous-hold assignment, so next count remains `c` ([L116](/private/tmp/slang-compare/runs/cva6_counter/text-only/rep_1/workspace/rtl/cva6_fifo_v3.sv:116)–[L131](/private/tmp/slang-compare/runs/cva6_counter/text-only/rep_1/workspace/rtl/cva6_fifo_v3.sv:131)). |
+| 8 | Push is blocked by `full_o`; pop is accepted; simultaneous-hold guard is false. Next count is 7. |
+
+The source assertions are under `translate_off` ([L216–229](/private/tmp/slang-compare/runs/cva6_counter/text-only/rep_1/workspace/rtl/cva6_fifo_v3.sv:216)). They require no `pop_i` when empty and no `push_i` when full ([L222–228](/private/tmp/slang-compare/runs/cva6_counter/text-only/rep_1/workspace/rtl/cva6_fifo_v3.sv:222)). Therefore the simultaneous input at count 0 violates the empty-read assertion, and the one at count 8 violates the full-write assertion, even though the guards define the combinational next state above.
+
+7. Disabled fall-through/Altera branch
+
+The branch at [L134–145](/private/tmp/slang-compare/runs/cva6_counter/text-only/rep_1/workspace/rtl/cva6_fifo_v3.sv:134) is syntactically present and contains a `status_cnt_q` read in its condition plus a `status_cnt_q` read/`status_cnt_n` write at L142. But its leading condition is constant false at defaults:
+
+`FALL_THROUGH || (FPGA_EN && FPGA_ALTERA) = 0 || (0 && 0) = 0`.
+
+So it cannot override the normal next state under the requested defaults. In particular, at count 0 with both inputs asserted, it does not cancel the accepted push; the staged count remains 1.
+
+8. Counter versus `usage_o` and `full_o`
+
+`usage_o` is only 3 bits and receives `status_cnt_q[2:0]` ([L33](/private/tmp/slang-compare/runs/cva6_counter/text-only/rep_1/workspace/rtl/cva6_fifo_v3.sv:33), [L63](/private/tmp/slang-compare/runs/cva6_counter/text-only/rep_1/workspace/rtl/cva6_fifo_v3.sv:63)). At full:
+
+| Counter | `usage_o` | `full_o` |
+|---|---|---|
+| `4'b1000` / 8 | `3'b000` | 1 |
+
+`full_o` compares the full 4-bit counter to `FifoDepth[3:0]`, i.e. `4'b1000` ([L69](/private/tmp/slang-compare/runs/cva6_counter/text-only/rep_1/workspace/rtl/cva6_fifo_v3.sv:69)). Thus `usage_o == 0` aliases empty and full; it is the low three count bits, not a standalone full-range occupancy value. The extra counter bit is what lets `full_o` distinguish 8 from 0.

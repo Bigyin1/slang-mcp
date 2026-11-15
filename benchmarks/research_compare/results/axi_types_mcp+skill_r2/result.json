@@ -1,0 +1,31 @@
+{
+  "answer": "Using `config.json`’s `compare_axi_types` top, `single_unit: true`, and only `COMMON_CELLS_ASSERTS_OFF`, the requested aliases and hierarchy resolve with no Slang errors. Width sources are the local typedefs in [integration.sv](/private/tmp/slang-compare/runs/axi_types/mcp+skill/rep_2/workspace/integration.sv:5), AXI macros in [typedef.svh](/private/tmp/slang-compare/runs/axi_types/mcp+skill/rep_2/workspace/rtl/include/axi/typedef.svh:34), and AXI primitive typedefs in [axi_pkg.sv](/private/tmp/slang-compare/runs/axi_types/mcp+skill/rep_2/workspace/rtl/src/axi_pkg.sv:48).\n\n| Item | Packed width and field sum | `i_buffer` FIFO / elaborated `data_i`, `data_o` |\n|---|---:|---|\n| 1. `link_aw_chan_t` | **83** = id 6 + addr 37 + len 8 + size 3 + burst 2 + lock 1 + cache 4 + prot 3 + qos 4 + region 4 + atop 6 + user 5 | `i_aw_fifo`, `DEPTH=5`, `FALL_THROUGH=1`; formal `data_i: dtype`, **83 bits**, actual `slv_req_i.aw`; formal `data_o: dtype`, **83 bits**, actual `mst_req_o.aw` |\n| 2. `link_w_chan_t` | **150** = data 128 + strb 16 + last 1 + user 5 | `i_w_fifo`, `DEPTH=5`, `FALL_THROUGH=1`; `data_i` **150** ← `slv_req_i.w`; `data_o` **150** → `mst_req_o.w` |\n| 3. `link_b_chan_t` | **13** = id 6 + resp 2 + user 5 | `i_b_fifo`, `DEPTH=5`, `FALL_THROUGH=1`; `data_i` **13** ← `mst_resp_i.b`; `data_o` **13** → `slv_resp_o.b` |\n| 4. `link_ar_chan_t` | **77** = id 6 + addr 37 + len 8 + size 3 + burst 2 + lock 1 + cache 4 + prot 3 + qos 4 + region 4 + user 5 | `i_ar_fifo`, `DEPTH=5`, `FALL_THROUGH=1`; `data_i` **77** ← `slv_req_i.ar`; `data_o` **77** → `mst_req_o.ar` |\n| 5. `link_r_chan_t` | **142** = id 6 + data 128 + resp 2 + last 1 + user 5 | `i_r_fifo`, `DEPTH=5`, `FALL_THROUGH=1`; `data_i` **142** ← `mst_resp_i.r`; `data_o` **142** → `slv_resp_o.r` |\n| 6. `link_req_t` | **315** = aw 83 + aw_valid 1 + w 150 + w_valid 1 + b_ready 1 + ar 77 + ar_valid 1 + r_ready 1 | — |\n| 7. `link_resp_t` | **160** = aw_ready 1 + ar_ready 1 + w_ready 1 + b_valid 1 + b 13 + r_valid 1 + r 142 | — |\n\nThe FIFO connections and channel instantiations originate at [axi_fifo.sv](/private/tmp/slang-compare/runs/axi_types/mcp+skill/rep_2/workspace/rtl/src/axi_fifo.sv:65). The expressions above are the direct port actuals, not merely their base symbols.\n\n| Item | Effective parameters | Elaborated generate branch | `fifo_v3` children |\n|---|---|---|---:|\n| 8. `i_buffer` | `Depth=5`, `FallThrough=1` (both explicitly overridden in [integration.sv](/private/tmp/slang-compare/runs/axi_types/mcp+skill/rep_2/workspace/integration.sv:30)) | `gen_axi_fifo` | **5**: AW, AR, W, R, B |\n| 8. `i_wire` | `Depth=0` overridden; `FallThrough=0` remains the `axi_fifo` declaration default | `gen_no_fifo` | **0** |\n\n`axi_fifo` selects `gen_no_fifo` only when `Depth == 0` ([axi_fifo.sv](/private/tmp/slang-compare/runs/axi_types/mcp+skill/rep_2/workspace/rtl/src/axi_fifo.sv:45)); thus `i_wire` is the direct request/response pass-through branch and does not instantiate five depth-zero FIFOs. `i_buffer` propagates its effective `Depth` and `FallThrough` to every channel FIFO.\n\nFinally, `fifo_v3` declares `DATA_WIDTH=32` and a default `dtype=logic [DATA_WIDTH-1:0]` ([fifo_v3.sv](/private/tmp/slang-compare/runs/axi_types/mcp+skill/rep_2/workspace/rtl/.bender/git/checkouts/common_cells-3e2fcccecd7aee7b/src/fifo_v3.sv:15)). In all five buffered children, `DATA_WIDTH` remains the unoverridden effective value 32, but `.dtype(...)` is explicitly overridden with each channel struct. Since `data_i` and `data_o` are declared as `dtype`, their actual formal widths are 83/150/13/77/142 bits—not 32.\n\nThis is source-level elaboration only; no synthesis or optimization behavior is inferred.",
+  "arm": "mcp+skill",
+  "case_id": "axi_types",
+  "completed_turns": 1,
+  "duration_seconds": 280.63862454192713,
+  "finished_utc": "2026-11-15T16:35:05.967492+00:00",
+  "id": "axi_types_mcp+skill_r2",
+  "parse_errors": [],
+  "repetition": 2,
+  "returncode": 0,
+  "started_utc": "2026-11-15T16:30:25.306578+00:00",
+  "status": "completed",
+  "timed_out": false,
+  "usage": {
+    "cache_write_input_tokens": 0,
+    "cached_input_tokens": 511744,
+    "input_tokens": 586616,
+    "output_tokens": 10618,
+    "reasoning_output_tokens": 7362
+  },
+  "usage_events": [
+    {
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 511744,
+      "input_tokens": 586616,
+      "output_tokens": 10618,
+      "reasoning_output_tokens": 7362
+    }
+  ]
+}

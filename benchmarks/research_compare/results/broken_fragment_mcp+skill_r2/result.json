@@ -1,0 +1,31 @@
+{
+  "answer": "Loaded the one supplied source with no defines and one compilation unit. Slang resolved the local top declarations despite the reported errors.\n\n| Item | Result |\n|---|---|\n| 1. Effective `W` | `12` at standalone top `broken_fragment_top` (default parameter) ([rtl/top.sv:2](/private/tmp/slang-compare/runs/broken_fragment/mcp+skill/rep_2/workspace/rtl/top.sv:2)). |\n| 2. `data_i` width | 12 bits: `logic [W-1:0]` resolves to `logic [11:0]` ([rtl/top.sv:6](/private/tmp/slang-compare/runs/broken_fragment/mcp+skill/rep_2/workspace/rtl/top.sv:6)). |\n| 3. `narrow_o` width | 4 bits: `logic [3:0]` ([rtl/top.sv:7](/private/tmp/slang-compare/runs/broken_fragment/mcp+skill/rep_2/workspace/rtl/top.sv:7)). |\n| 4. `always_ff` state | `narrow_q`, locally declared as 4-bit `logic [3:0]` ([rtl/top.sv:17](/private/tmp/slang-compare/runs/broken_fragment/mcp+skill/rep_2/workspace/rtl/top.sv:17)); Slang identifies it as the sole signal written in the `always_ff` block ([rtl/top.sv:24](/private/tmp/slang-compare/runs/broken_fragment/mcp+skill/rep_2/workspace/rtl/top.sv:24)). |\n| 5. Local member fault | `sample_t` has only `payload` and `valid` members ([rtl/top.sv:11](/private/tmp/slang-compare/runs/broken_fragment/mcp+skill/rep_2/workspace/rtl/top.sv:11)). Thus `sample.missing` is invalid ([rtl/top.sv:21](/private/tmp/slang-compare/runs/broken_fragment/mcp+skill/rep_2/workspace/rtl/top.sv:21)). |\n| 6. Local width fault | `narrow_q <= data_i` assigns 12 bits to a 4-bit target ([rtl/top.sv:28](/private/tmp/slang-compare/runs/broken_fragment/mcp+skill/rep_2/workspace/rtl/top.sv:28)). When that `else` arm executes, `data_i[11:4]` is discarded and only `data_i[3:0]` is stored; `narrow_o` consequently reflects only those four bits ([rtl/top.sv:22](/private/tmp/slang-compare/runs/broken_fragment/mcp+skill/rep_2/workspace/rtl/top.sv:22)). |\n| 7. Missing external definition | `external_stage` has no supplied definition; its source-level instance path is `broken_fragment_top.u_external` ([rtl/top.sv:31](/private/tmp/slang-compare/runs/broken_fragment/mcp+skill/rep_2/workspace/rtl/top.sv:31)). It cannot be elaborated in this fragment. |\n| 8. `external_o` | Locally it is a 12-bit output, `logic [W-1:0]` ([rtl/top.sv:9](/private/tmp/slang-compare/runs/broken_fragment/mcp+skill/rep_2/workspace/rtl/top.sv:9)), connected syntactically as `.data_o(external_o)` ([rtl/top.sv:34](/private/tmp/slang-compare/runs/broken_fragment/mcp+skill/rep_2/workspace/rtl/top.sv:34)). The child’s port declaration, implementation, and behavior are not established. |\n\nThe member access and truncating assignment are locally provable faults. The unresolved `external_stage` is an incomplete external dependency; its absence does not prevent reading the top’s local ports, default parameter, or `narrow_q` state declaration.",
+  "arm": "mcp+skill",
+  "case_id": "broken_fragment",
+  "completed_turns": 1,
+  "duration_seconds": 158.3835979589494,
+  "finished_utc": "2026-11-15T16:37:42.562353+00:00",
+  "id": "broken_fragment_mcp+skill_r2",
+  "parse_errors": [],
+  "repetition": 2,
+  "returncode": 0,
+  "started_utc": "2026-11-15T16:35:04.168654+00:00",
+  "status": "completed",
+  "timed_out": false,
+  "usage": {
+    "cache_write_input_tokens": 0,
+    "cached_input_tokens": 106496,
+    "input_tokens": 131292,
+    "output_tokens": 5784,
+    "reasoning_output_tokens": 3979
+  },
+  "usage_events": [
+    {
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 106496,
+      "input_tokens": 131292,
+      "output_tokens": 5784,
+      "reasoning_output_tokens": 3979
+    }
+  ]
+}

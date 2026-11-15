@@ -1,0 +1,31 @@
+{
+  "answer": "The packed `link` types resolve from 37-bit addresses, 128-bit data, 6-bit IDs, 5-bit user fields, and 16-bit strobes ([integration.sv:5](/private/tmp/slang-compare/runs/axi_types/text-only/rep_1/workspace/integration.sv:5)). The AXI macro layouts are in [typedef.svh:34](/private/tmp/slang-compare/runs/axi_types/text-only/rep_1/workspace/rtl/include/axi/typedef.svh:34), and the package-defined field widths are in [axi_pkg.sv:47](/private/tmp/slang-compare/runs/axi_types/text-only/rep_1/workspace/rtl/src/axi_pkg.sv:47). As packed structs, these fields have no padding.\n\n| Type | Packed field-width sum | Width | `i_buffer` FIFO and `data_i`/`data_o` formals | Connected actual expressions |\n|---|---:|---:|---|---|\n| `link_aw_chan_t` | `id 6 + addr 37 + len 8 + size 3 + burst 2 + lock 1 + cache 4 + prot 3 + qos 4 + region 4 + atop 6 + user 5` | **83** | `i_buffer.gen_axi_fifo.i_aw_fifo`; both formals are `dtype`, hence **83** bits | `slv_req_i.aw` (`req_i.aw`) → `mst_req_o.aw` (`buffered_req.aw`) |\n| `link_w_chan_t` | `data 128 + strb 16 + last 1 + user 5` | **150** | `i_buffer.gen_axi_fifo.i_w_fifo`; **150** / **150** bits | `slv_req_i.w` (`req_i.w`) → `mst_req_o.w` (`buffered_req.w`) |\n| `link_b_chan_t` | `id 6 + resp 2 + user 5` | **13** | `i_buffer.gen_axi_fifo.i_b_fifo`; **13** / **13** bits | `mst_resp_i.b` (`buffered_resp.b`) → `slv_resp_o.b` (`resp_o.b`) |\n| `link_ar_chan_t` | `id 6 + addr 37 + len 8 + size 3 + burst 2 + lock 1 + cache 4 + prot 3 + qos 4 + region 4 + user 5` | **77** | `i_buffer.gen_axi_fifo.i_ar_fifo`; **77** / **77** bits | `slv_req_i.ar` (`req_i.ar`) → `mst_req_o.ar` (`buffered_req.ar`) |\n| `link_r_chan_t` | `id 6 + data 128 + resp 2 + last 1 + user 5` | **142** | `i_buffer.gen_axi_fifo.i_r_fifo`; **142** / **142** bits | `mst_resp_i.r` (`buffered_resp.r`) → `slv_resp_o.r` (`resp_o.r`) |\n\nThe FIFO field connections above come directly from [axi_fifo.sv:66](/private/tmp/slang-compare/runs/axi_types/text-only/rep_1/workspace/rtl/src/axi_fifo.sv:66) through [axi_fifo.sv:149](/private/tmp/slang-compare/runs/axi_types/text-only/rep_1/workspace/rtl/src/axi_fifo.sv:149). `fifo_v3` declares `data_i` and `data_o` as the `dtype` type parameter ([fifo_v3.sv:32](/private/tmp/slang-compare/runs/axi_types/text-only/rep_1/workspace/rtl/.bender/git/checkouts/common_cells-3e2fcccecd7aee7b/src/fifo_v3.sv:32)).\n\n| Aggregate type | Complete sum | Width |\n|---|---:|---:|\n| `link_req_t` | `aw 83 + aw_valid 1 + w 150 + w_valid 1 + b_ready 1 + ar 77 + ar_valid 1 + r_ready 1` | **315** |\n| `link_resp_t` | `aw_ready 1 + ar_ready 1 + w_ready 1 + b_valid 1 + b 13 + r_valid 1 + r 142` | **160** |\n\nThe aggregate layouts are defined by [typedef.svh:84](/private/tmp/slang-compare/runs/axi_types/text-only/rep_1/workspace/rtl/include/axi/typedef.svh:84) and [typedef.svh:95](/private/tmp/slang-compare/runs/axi_types/text-only/rep_1/workspace/rtl/include/axi/typedef.svh:95).\n\n| `axi_fifo` instance | Resolved outer parameters | Elaborated branch | `fifo_v3` children |\n|---|---|---|---:|\n| `i_buffer` | `Depth=5`, `FallThrough=1`, all channel/request/response type parameters explicitly set to the `link_*` types | `gen_axi_fifo` | **5**: `i_aw_fifo`, `i_ar_fifo`, `i_w_fifo`, `i_r_fifo`, `i_b_fifo` |\n| `i_wire` | `Depth=0`; `FallThrough` omitted, so it retains the module default `0`; all types explicitly set | `gen_no_fifo` | **0** |\n\nThis follows the outer generate condition in [axi_fifo.sv:45](/private/tmp/slang-compare/runs/axi_types/text-only/rep_1/workspace/rtl/src/axi_fifo.sv:45) and the integration overrides at [integration.sv:30](/private/tmp/slang-compare/runs/axi_types/text-only/rep_1/workspace/integration.sv:30) and [integration.sv:41](/private/tmp/slang-compare/runs/axi_types/text-only/rep_1/workspace/integration.sv:41). Thus every child under `i_buffer` has `DEPTH=5` and `FALL_THROUGH=1`; its own `fifo_v3` generate selects `gen_fifo`. `i_wire.gen_no_fifo` instead directly assigns request and response through, with no channel FIFO instances.\n\nFinally, `fifo_v3`’s declared `DATA_WIDTH=32` remains an unoverridden parameter default ([fifo_v3.sv:15](/private/tmp/slang-compare/runs/axi_types/text-only/rep_1/workspace/rtl/.bender/git/checkouts/common_cells-3e2fcccecd7aee7b/src/fifo_v3.sv:15)), but it only supplies the default `dtype = logic [DATA_WIDTH-1:0]`. Each actual `i_buffer` FIFO overrides `dtype` with its packed channel type, so its data formals have the channel widths above—not 32 bits. The configured `COMMON_CELLS_ASSERTS_OFF` define ([config.json:4](/private/tmp/slang-compare/runs/axi_types/text-only/rep_1/workspace/config.json:4)) suppresses the optional FIFO assertions but does not alter these widths or generate choices.",
+  "arm": "text-only",
+  "case_id": "axi_types",
+  "completed_turns": 1,
+  "duration_seconds": 244.43095612502657,
+  "finished_utc": "2026-11-15T16:07:45.337631+00:00",
+  "id": "axi_types_text-only_r1",
+  "parse_errors": [],
+  "repetition": 1,
+  "returncode": 0,
+  "started_utc": "2026-11-15T16:03:40.886212+00:00",
+  "status": "completed",
+  "timed_out": false,
+  "usage": {
+    "cache_write_input_tokens": 0,
+    "cached_input_tokens": 101888,
+    "input_tokens": 140845,
+    "output_tokens": 9668,
+    "reasoning_output_tokens": 7329
+  },
+  "usage_events": [
+    {
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 101888,
+      "input_tokens": 140845,
+      "output_tokens": 9668,
+      "reasoning_output_tokens": 7329
+    }
+  ]
+}

@@ -1,0 +1,226 @@
+[
+  {
+    "answer_id": "824e2b1623c3",
+    "case_id": "floo_config",
+    "criteria": [
+      {
+        "id": "widths",
+        "score": 1,
+        "note": "Correct 23-bit flit and effective data_i/valid_i widths 69/12, 138/6 and 46/8."
+      },
+      {
+        "id": "branches",
+        "score": 1,
+        "note": "Correct generate selections and depth-zero/single-physical/equal-count branch precedence."
+      },
+      {
+        "id": "inventory",
+        "score": 1,
+        "note": "Correct per-subtree stream FIFO and arbiter counts: 12/3, 6/0 and 0/0."
+      },
+      {
+        "id": "virtual_target",
+        "score": 1,
+        "note": "Correct full [2][3] hierarchy path, Depth=5, FallThrough=0 and source/genvar-substituted actual expressions."
+      },
+      {
+        "id": "physical_target",
+        "score": 1,
+        "note": "Correct full [1][2] hierarchy path, Depth=2 and physical input/output actuals."
+      },
+      {
+        "id": "storage",
+        "score": 1,
+        "note": "Correct three-bit pointers/count, package formulas and packed memory width 5*23=115; explicit data_t distinguished from DataWidth=32."
+      },
+      {
+        "id": "defaults",
+        "score": 1,
+        "note": "Correct declaration defaults and contrasting effective integration parameters/type."
+      },
+      {
+        "id": "clear_boundary",
+        "score": 1,
+        "note": "Correct omitted clr_i connections and forwarding through present FIFO definitions; does not assume a known clear drive."
+      }
+    ],
+    "fact_total": 8,
+    "explanation": {
+      "derivation": 2,
+      "coverage": 2,
+      "source_evidence": 2,
+      "calibration": 2
+    },
+    "unsupported_claims": [],
+    "oracle_concerns": [],
+    "summary": "All requested elaboration and storage facts are correct, including the unconnected clear-input boundary."
+  },
+  {
+    "answer_id": "ce8a0be71fc5",
+    "case_id": "floo_config",
+    "criteria": [
+      {
+        "id": "widths",
+        "score": 1,
+        "note": "Correct 23-bit flit and effective data_i/valid_i widths 69/12, 138/6 and 46/8."
+      },
+      {
+        "id": "branches",
+        "score": 1,
+        "note": "Correct generate selections and depth-zero/single-physical/equal-count branch precedence."
+      },
+      {
+        "id": "inventory",
+        "score": 1,
+        "note": "Correct per-subtree stream FIFO and arbiter counts: 12/3, 6/0 and 0/0."
+      },
+      {
+        "id": "virtual_target",
+        "score": 1,
+        "note": "Correct full [2][3] hierarchy path, Depth=5, FallThrough=0 and source/genvar-substituted actual expressions."
+      },
+      {
+        "id": "physical_target",
+        "score": 1,
+        "note": "Correct full [1][2] hierarchy path, Depth=2 and physical input/output actuals."
+      },
+      {
+        "id": "storage",
+        "score": 1,
+        "note": "Correct three-bit pointers/count, package formulas and packed memory width 5*23=115; explicit data_t distinguished from DataWidth=32."
+      },
+      {
+        "id": "defaults",
+        "score": 1,
+        "note": "Correct declaration defaults and contrasting effective integration parameters/type."
+      },
+      {
+        "id": "clear_boundary",
+        "score": 1,
+        "note": "Correct omitted clr_i connections and forwarding through present FIFO definitions; does not assume a known clear drive."
+      }
+    ],
+    "fact_total": 8,
+    "explanation": {
+      "derivation": 2,
+      "coverage": 2,
+      "source_evidence": 2,
+      "calibration": 2
+    },
+    "unsupported_claims": [],
+    "oracle_concerns": [],
+    "summary": "Correct parameter-derived widths, hierarchy, instance inventory and limits on clear behavior."
+  },
+  {
+    "answer_id": "eaccd7ba4143",
+    "case_id": "cva6_counter",
+    "criteria": [
+      {
+        "id": "types",
+        "score": 1,
+        "note": "Correct DEPTH=8, ADDR_DEPTH=3 and unsigned four-state packed four-bit counters."
+      },
+      {
+        "id": "q_reads",
+        "score": 1,
+        "note": "Correctly lists all nine syntactic reads, grouped as three continuous and six combinational accesses."
+      },
+      {
+        "id": "q_writes",
+        "score": 1,
+        "note": "Correct three sequential writes and asynchronous reset > synchronous flush > normal update priority."
+      },
+      {
+        "id": "n_accesses",
+        "score": 1,
+        "note": "Correct five blocking writes and sole sequential read; explains q-derived staging rather than in-place n read-modify-write."
+      },
+      {
+        "id": "single_requests",
+        "score": 1,
+        "note": "Correct push/pop acceptance guards and neither/rejected-request hold behavior under stated assumptions."
+      },
+      {
+        "id": "simultaneous",
+        "score": 1,
+        "note": "Correct next counts 1, C and 7 at empty/interior/full, with corresponding boundary assertion violations."
+      },
+      {
+        "id": "inactive_procedural",
+        "score": 1,
+        "note": "Correct default-false fall-through/Altera guard and distinction between syntactic accesses and possible updates."
+      },
+      {
+        "id": "usage_full",
+        "score": 1,
+        "note": "Correct low-three-bit usage slice, usage=0 at occupancy eight and full-width full comparison."
+      }
+    ],
+    "fact_total": 8,
+    "explanation": {
+      "derivation": 2,
+      "coverage": 2,
+      "source_evidence": 2,
+      "calibration": 2
+    },
+    "unsupported_claims": [],
+    "oracle_concerns": [],
+    "summary": "All counter-access and transition facts agree with the source, with appropriate boundary and width reasoning."
+  },
+  {
+    "answer_id": "32f7fa94aede",
+    "case_id": "cva6_counter",
+    "criteria": [
+      {
+        "id": "types",
+        "score": 1,
+        "note": "Correct DEPTH=8, ADDR_DEPTH=3 and unsigned four-state packed four-bit counters."
+      },
+      {
+        "id": "q_reads",
+        "score": 1,
+        "note": "Correctly lists all nine syntactic reads, grouped as three continuous and six combinational accesses."
+      },
+      {
+        "id": "q_writes",
+        "score": 1,
+        "note": "Correct three sequential writes and asynchronous reset > synchronous flush > normal update priority."
+      },
+      {
+        "id": "n_accesses",
+        "score": 1,
+        "note": "Correct five blocking writes and sole sequential read; explains q-derived staging rather than in-place n read-modify-write."
+      },
+      {
+        "id": "single_requests",
+        "score": 1,
+        "note": "Correct push/pop acceptance guards and neither/rejected-request hold behavior under stated assumptions."
+      },
+      {
+        "id": "simultaneous",
+        "score": 1,
+        "note": "Correct next counts 1, C and 7 at empty/interior/full, with corresponding boundary assertion violations."
+      },
+      {
+        "id": "inactive_procedural",
+        "score": 1,
+        "note": "Correct default-false fall-through/Altera guard and distinction between syntactic accesses and possible updates."
+      },
+      {
+        "id": "usage_full",
+        "score": 1,
+        "note": "Correct low-three-bit usage slice, usage=0 at occupancy eight and full-width full comparison."
+      }
+    ],
+    "fact_total": 8,
+    "explanation": {
+      "derivation": 2,
+      "coverage": 2,
+      "source_evidence": 2,
+      "calibration": 2
+    },
+    "unsupported_claims": [],
+    "oracle_concerns": [],
+    "summary": "Complete source-level account of staged updates, inactive accesses, assertion consequences and usage truncation."
+  }
+]

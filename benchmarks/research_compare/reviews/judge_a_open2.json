@@ -1,0 +1,114 @@
+[
+  {
+    "answer_id": "863577e9ef91",
+    "case_id": "idma_review",
+    "criteria": [
+      {
+        "id": "I1",
+        "score": 1,
+        "note": "Locates .ready_out at the generated lane FIFO instantiation in idma_dataflow_element.sv:47."
+      },
+      {
+        "id": "I2",
+        "score": 1,
+        "note": "Matches the callee's ready_o declaration, restores .ready_o(ready_o[i]) and explains propagation through lane_ready to top readiness; treats all generated occurrences as one cause."
+      },
+      {
+        "id": "I3",
+        "score": 1,
+        "note": "Correctly identifies .data_t(DataWidth) in cc_stream_fifo.sv:54 as the packet child type override."
+      },
+      {
+        "id": "I4",
+        "score": 1,
+        "note": "Explains value-versus-type mismatch and restores .data_t(data_t), retaining the full structured beat."
+      },
+      {
+        "id": "I5",
+        "score": 1,
+        "note": "Locates mem_q's incorrect clr_or_flush argument in cc_fifo.sv:126 and identifies payload zeroing on flush."
+      },
+      {
+        "id": "I6",
+        "score": 1,
+        "note": "Uses clear priority over load to establish the storage-contract violation, and changes only memory clear to clr_i while preserving pointer/count flush and ordinary writes."
+      },
+      {
+        "id": "I7",
+        "score": 1,
+        "note": "Accurately separates the intentionally unavailable idma_boundary_monitor from local compile and storage defects."
+      },
+      {
+        "id": "I8",
+        "score": 1,
+        "note": "Coherent rejection of sign-off with complete minimal local repairs and a properly limited external verification boundary."
+      }
+    ],
+    "fact_total": 8,
+    "explanation": {
+      "derivation": 2,
+      "coverage": 2,
+      "source_evidence": 2,
+      "calibration": 2
+    },
+    "unsupported_claims": [],
+    "oracle_concerns": [],
+    "summary": "Identifies and repairs all three local failures while preserving types, handshake wiring, flush semantics and the external monitor boundary."
+  },
+  {
+    "answer_id": "9d7685458a3d",
+    "case_id": "idma_review",
+    "criteria": [
+      {
+        "id": "I1",
+        "score": 0,
+        "note": "Does not identify the nonexistent ready_out named port in idma_dataflow_element.sv:47."
+      },
+      {
+        "id": "I2",
+        "score": 0,
+        "note": "Omits the required .ready_o(ready_o[i]) repair and the callee-port mismatch; the separate atomicity discussion does not repair this interface error."
+      },
+      {
+        "id": "I3",
+        "score": 1,
+        "note": "Correctly locates .data_t(DataWidth) and identifies the integer value passed to the child's type parameter."
+      },
+      {
+        "id": "I4",
+        "score": 1,
+        "note": "Correctly explains the type mismatch and restores .data_t(data_t) to preserve beat_t."
+      },
+      {
+        "id": "I5",
+        "score": 1,
+        "note": "Correctly identifies payload memory's clr_or_flush clear argument and the consequent clear on flush."
+      },
+      {
+        "id": "I6",
+        "score": 1,
+        "note": "Gives the no-push/no-pop flush counterexample, macro clear priority, and minimal clr_i-only memory repair while retaining pointer/count flushing."
+      },
+      {
+        "id": "I7",
+        "score": 1,
+        "note": "Correctly limits conclusions about the explicitly unavailable idma_boundary_monitor without proposing a replacement."
+      },
+      {
+        "id": "I8",
+        "score": 1,
+        "note": "Correctly rejects sign-off, repairs the findings it identifies and preserves the external boundary. Its atomicity concern is conditional and explicitly acknowledges lockstep after normal reset, so it is treated as an investigation suggestion rather than a definite extra fault."
+      }
+    ],
+    "fact_total": 6,
+    "explanation": {
+      "derivation": 2,
+      "coverage": 1,
+      "source_evidence": 2,
+      "calibration": 2
+    },
+    "unsupported_claims": [],
+    "oracle_concerns": [],
+    "summary": "Correct type and flush review with a calibrated conditional atomicity caveat, but misses the generated lane named-port error and its repair."
+  }
+]

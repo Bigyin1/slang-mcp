@@ -1,0 +1,116 @@
+[
+  {
+    "answer_id": "0f69286620e5",
+    "case_id": "idma_state",
+    "criteria": [
+      {"id": "lane_bits", "score": 1, "note": "Correct packed 8+4+1=13-bit lane type."},
+      {"id": "dataflow_input_bits", "score": 1, "note": "Correct 3*13=39-bit packed input from StrbWidth and byte_t overrides."},
+      {"id": "lane_data_q_bits", "score": 1, "note": "Correct packed Depth(5)*13=65-bit data_q."},
+      {"id": "lane_pointer_bits", "score": 1, "note": "Correct $clog2(5)+1=4 bits for each lane pointer."},
+      {"id": "total_lane_stored_q_bits", "score": 1, "note": "Correct three generated lanes and 3*(65+4+4)=219 requested q bits."},
+      {"id": "packet_mem_q_bits", "score": 1, "note": "Correct 5*39=195 packed bits, with explicit data_t controlling width despite DataWidth=32."},
+      {"id": "packet_status_usage_bits", "score": 1, "note": "Correct 3-bit status and usage from cnt_width(5)=idx_width(6)."},
+      {"id": "flush_clears_packet_mem", "score": 1, "note": "Correctly denies flush-driven memory clearing and explains separate clr_i, reset, clock edge and possible normal writes."}
+    ],
+    "fact_total": 8,
+    "explanation": {"derivation": 2, "coverage": 2, "source_evidence": 2, "calibration": 2},
+    "unsupported_claims": [],
+    "oracle_concerns": [],
+    "summary": "All widths and state totals are correctly derived, and register clear arguments establish the reset/flush distinction."
+  },
+  {
+    "answer_id": "15621ad7514f",
+    "case_id": "floo_config",
+    "criteria": [
+      {"id": "widths", "score": 1, "note": "Correct 23-bit flit and all three effective data_i/valid_i width pairs: 69/12, 138/6 and 46/8."},
+      {"id": "branches", "score": 1, "note": "Correct selected branches and precedence of depth-zero, then single-physical-channel, then equal-channel tests."},
+      {"id": "inventory", "score": 1, "note": "Correct stream-FIFO/arbiter counts of 12/3, 6/0 and 0/0."},
+      {"id": "virtual_target", "score": 1, "note": "Correct full [2][3] path, Depth=5, FallThrough=0 and source expressions with genvar substitution."},
+      {"id": "physical_target", "score": 1, "note": "Correct full [1][2] path, Depth=2 and input/output selections."},
+      {"id": "storage", "score": 1, "note": "Correct 3-bit pointers/count and 5*23=115-bit packed memory with type override distinguished from DataWidth=32."},
+      {"id": "defaults", "score": 1, "note": "Correct declaration defaults and all three numeric/type integration overrides."},
+      {"id": "clear_boundary", "score": 1, "note": "Correctly identifies omitted clr_i connections, supplied definitions and inability to infer an explicit clear driver or events."}
+    ],
+    "fact_total": 8,
+    "explanation": {"derivation": 2, "coverage": 2, "source_evidence": 2, "calibration": 2},
+    "unsupported_claims": [],
+    "oracle_concerns": [],
+    "summary": "Complete and accurate elaboration facts, including the distinction between an omitted clear connection and a missing definition."
+  },
+  {
+    "answer_id": "3b6a12d2c364",
+    "case_id": "broken_fragment",
+    "criteria": [
+      {"id": "top_w", "score": 1, "note": "Correct standalone effective W=12."},
+      {"id": "data_i_bits", "score": 1, "note": "Correct local 12-bit data_i declaration."},
+      {"id": "narrow_o_bits", "score": 1, "note": "Correct fixed 4-bit narrow_o."},
+      {"id": "local_state", "score": 1, "note": "Correct narrow_q name, 4-bit width and always_ff provenance."},
+      {"id": "local_member_fault", "score": 1, "note": "Correct invalid sample.missing access and complete declared member set."},
+      {"id": "local_width_fault", "score": 1, "note": "Correct 12-to-4-bit narrowing, retaining [3:0] and discarding [11:4]."},
+      {"id": "missing_external_definition", "score": 1, "note": "Correct external_stage definition gap at broken_fragment_top.u_external."},
+      {"id": "external_o_knowledge_boundary", "score": 1, "note": "Correct 12-bit local port and unresolved child interface/behavior; explicitly preserves readable local facts."}
+    ],
+    "fact_total": 8,
+    "explanation": {"derivation": 2, "coverage": 2, "source_evidence": 2, "calibration": 2},
+    "unsupported_claims": [],
+    "oracle_concerns": [],
+    "summary": "All local facts and faults are correct, with a clear boundary around the unavailable external module."
+  },
+  {
+    "answer_id": "5d8ff7029622",
+    "case_id": "broken_fragment",
+    "criteria": [
+      {"id": "top_w", "score": 1, "note": "Correct default W=12."},
+      {"id": "data_i_bits", "score": 1, "note": "Correct 12-bit [11:0] data_i."},
+      {"id": "narrow_o_bits", "score": 1, "note": "Correct 4-bit fixed output range."},
+      {"id": "local_state", "score": 1, "note": "Correct narrow_q declaration, width and always_ff writes."},
+      {"id": "local_member_fault", "score": 1, "note": "Correct nonexistent member diagnosis from the locally complete sample_t declaration."},
+      {"id": "local_width_fault", "score": 1, "note": "Correct truncation and precise upper-eight-bit loss."},
+      {"id": "missing_external_definition", "score": 1, "note": "Correct missing external_stage and complete instance path."},
+      {"id": "external_o_knowledge_boundary", "score": 1, "note": "Correct local external_o width and limits on child port validity, parameter declarations and behavior."}
+    ],
+    "fact_total": 8,
+    "explanation": {"derivation": 2, "coverage": 2, "source_evidence": 2, "calibration": 2},
+    "unsupported_claims": [],
+    "oracle_concerns": [],
+    "summary": "Correct source-based facts, narrowing consequence and separation of local faults from external incompleteness."
+  },
+  {
+    "answer_id": "83e0aaa56173",
+    "case_id": "floo_config",
+    "criteria": [
+      {"id": "widths", "score": 1, "note": "Correct structured flit width and effective packed port widths in every integration instance."},
+      {"id": "branches", "score": 1, "note": "Correct branches and explicit explanation of both levels of generate precedence."},
+      {"id": "inventory", "score": 1, "note": "Correct per-subtree stream FIFO and virtual-channel arbiter counts."},
+      {"id": "virtual_target", "score": 1, "note": "Correct full virtual path, Depth/FallThrough values and genvar-spelled versus substituted actuals."},
+      {"id": "physical_target", "score": 1, "note": "Correct full physical path, Depth=2 and actual expressions at n=1,v=2."},
+      {"id": "storage", "score": 1, "note": "Correct width functions, 3-bit pointers/count and 115 packed memory bits with explicit flit type."},
+      {"id": "defaults", "score": 1, "note": "Correct declaration defaults contrasted with all three effective configurations."},
+      {"id": "clear_boundary", "score": 1, "note": "Correct omitted clr_i issue and forwarding to the present child definition; avoids assuming a known drive."}
+    ],
+    "fact_total": 8,
+    "explanation": {"derivation": 2, "coverage": 2, "source_evidence": 2, "calibration": 2},
+    "unsupported_claims": [],
+    "oracle_concerns": [],
+    "summary": "All requested instance, storage and interface-boundary facts agree with the supplied source."
+  },
+  {
+    "answer_id": "b89599af2e16",
+    "case_id": "idma_state",
+    "criteria": [
+      {"id": "lane_bits", "score": 1, "note": "Correct 13-bit packed lane sum."},
+      {"id": "dataflow_input_bits", "score": 1, "note": "Correct three packed 13-bit lanes yielding 39 input bits."},
+      {"id": "lane_data_q_bits", "score": 1, "note": "Correct five packed lane elements yielding 65 data_q bits."},
+      {"id": "lane_pointer_bits", "score": 1, "note": "Correct 4-bit read and write pointers from $clog2(5)+1."},
+      {"id": "total_lane_stored_q_bits", "score": 1, "note": "Correct generated instance count and 219-bit total excluding combinational state."},
+      {"id": "packet_mem_q_bits", "score": 1, "note": "Correct 195-bit memory from forwarded Depth=5 and 39-bit data_t despite remaining DataWidth=32."},
+      {"id": "packet_status_usage_bits", "score": 1, "note": "Correct count and usage width of 3 with appropriate cc_pkg formula."},
+      {"id": "flush_clears_packet_mem", "score": 1, "note": "Correct reset/clear/flush distinction using macro clear arguments; correctly permits an ordinary write during flush."}
+    ],
+    "fact_total": 8,
+    "explanation": {"derivation": 2, "coverage": 2, "source_evidence": 2, "calibration": 2},
+    "unsupported_claims": [],
+    "oracle_concerns": [],
+    "summary": "All requested widths and register semantics are correct, including separate pointer/count flush and memory clear behavior."
+  }
+]

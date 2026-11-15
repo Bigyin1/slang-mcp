@@ -1,0 +1,40 @@
+[
+  {
+    "answer_id": "f669c06d5446",
+    "case_id": "idma_state",
+    "criteria": [
+      {"id": "lane_bits", "score": 1, "note": "Correct packed lane sum 8+4+1=13."},
+      {"id": "dataflow_input_bits", "score": 1, "note": "Correct StrbWidth(3)*lane_t(13)=39 packed input bits."},
+      {"id": "lane_data_q_bits", "score": 1, "note": "Correct Depth(5)*lane_t(13)=65 packed data_q bits."},
+      {"id": "lane_pointer_bits", "score": 1, "note": "Correct $clog2(5)+1=4 bits for each lane q pointer."},
+      {"id": "total_lane_stored_q_bits", "score": 1, "note": "Correct three generated instances and q-only total 3*(65+4+4)=219 bits."},
+      {"id": "packet_mem_q_bits", "score": 1, "note": "Correct 5*39=195-bit packed memory, with explicit data_t distinguished from DataWidth=32."},
+      {"id": "packet_status_usage_bits", "score": 1, "note": "Correct three-bit count and usage widths from cnt_width(5)=idx_width(6)."},
+      {"id": "flush_clears_packet_mem", "score": 1, "note": "Correct no-clear conclusion from the memory macro's clr_i argument; explains reset polarity, clock edge, clear priority and ordinary writes."}
+    ],
+    "fact_total": 8,
+    "explanation": {"derivation": 2, "coverage": 2, "source_evidence": 2, "calibration": 2},
+    "unsupported_claims": [],
+    "oracle_concerns": [],
+    "summary": "All eight source facts are correct, with complete parameter propagation, width arithmetic and reset/flush reasoning."
+  },
+  {
+    "answer_id": "b45c1d734299",
+    "case_id": "idma_state",
+    "criteria": [
+      {"id": "lane_bits", "score": 1, "note": "Correct 13-bit packed struct width."},
+      {"id": "dataflow_input_bits", "score": 1, "note": "Correct 39-bit input from three packed 13-bit lanes."},
+      {"id": "lane_data_q_bits", "score": 1, "note": "Correct 65-bit packed data_q with Depth=5 and data_t=lane_t."},
+      {"id": "lane_pointer_bits", "score": 1, "note": "Correct four-bit read and write pointers, with the extra overflow bit included."},
+      {"id": "total_lane_stored_q_bits", "score": 1, "note": "Correct generated count and total 219 requested stored q bits."},
+      {"id": "packet_mem_q_bits", "score": 1, "note": "Correct 195-bit memory and explicit propagation of Depth, DataWidth and actual data_t through the wrapper."},
+      {"id": "packet_status_usage_bits", "score": 1, "note": "Correct three-bit status counter and usage port, supported by the package formulas."},
+      {"id": "flush_clears_packet_mem", "score": 1, "note": "Correctly distinguishes pointer/count flush from memory clr_i, including positive clock edge, asynchronous active-low reset and load-enabled writes."}
+    ],
+    "fact_total": 8,
+    "explanation": {"derivation": 2, "coverage": 2, "source_evidence": 2, "calibration": 2},
+    "unsupported_claims": [],
+    "oracle_concerns": [],
+    "summary": "Complete and accurate width, instance-count and register-macro analysis for the supplied integration."
+  }
+]

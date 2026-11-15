@@ -1,0 +1,338 @@
+[
+  {
+    "answer_id": "2162a9c82bae",
+    "case_id": "axi_types",
+    "criteria": [
+      {
+        "id": "aw_bits",
+        "score": 1,
+        "note": "Correct 83-bit AW sum and FIFO formal/actual bindings."
+      },
+      {
+        "id": "w_bits",
+        "score": 1,
+        "note": "Correct 150-bit W sum and bindings."
+      },
+      {
+        "id": "b_bits",
+        "score": 1,
+        "note": "Correct 13-bit B sum and reverse-direction response bindings."
+      },
+      {
+        "id": "ar_bits",
+        "score": 1,
+        "note": "Correct 77-bit AR sum and bindings."
+      },
+      {
+        "id": "r_bits",
+        "score": 1,
+        "note": "Correct 142-bit R sum and response bindings."
+      },
+      {
+        "id": "req_bits",
+        "score": 1,
+        "note": "Correct 315-bit request including all five handshake bits."
+      },
+      {
+        "id": "resp_bits",
+        "score": 1,
+        "note": "Correct 160-bit response including all five handshake bits."
+      },
+      {
+        "id": "generate_selection",
+        "score": 1,
+        "note": "Correct gen_axi_fifo with five children for i_buffer and gen_no_fifo with zero children for i_wire."
+      }
+    ],
+    "fact_total": 8,
+    "explanation": {
+      "derivation": 2,
+      "coverage": 2,
+      "source_evidence": 2,
+      "calibration": 2
+    },
+    "unsupported_claims": [],
+    "oracle_concerns": [],
+    "summary": "All requested widths, bindings, branches and parameter-default distinctions agree with the source."
+  },
+  {
+    "answer_id": "6198d2b0eef2",
+    "case_id": "axi_types",
+    "criteria": [
+      {
+        "id": "aw_bits",
+        "score": 1,
+        "note": "Correct 83-bit AW sum and FIFO formal/actual bindings."
+      },
+      {
+        "id": "w_bits",
+        "score": 1,
+        "note": "Correct 150-bit W sum and bindings."
+      },
+      {
+        "id": "b_bits",
+        "score": 1,
+        "note": "Correct 13-bit B sum and reverse-direction response bindings."
+      },
+      {
+        "id": "ar_bits",
+        "score": 1,
+        "note": "Correct 77-bit AR sum and bindings."
+      },
+      {
+        "id": "r_bits",
+        "score": 1,
+        "note": "Correct 142-bit R sum and response bindings."
+      },
+      {
+        "id": "req_bits",
+        "score": 1,
+        "note": "Correct 315-bit request including all five handshake bits."
+      },
+      {
+        "id": "resp_bits",
+        "score": 1,
+        "note": "Correct 160-bit response including all five handshake bits."
+      },
+      {
+        "id": "generate_selection",
+        "score": 1,
+        "note": "Correct gen_axi_fifo with five children for i_buffer and gen_no_fifo with zero children for i_wire."
+      }
+    ],
+    "fact_total": 8,
+    "explanation": {
+      "derivation": 2,
+      "coverage": 2,
+      "source_evidence": 2,
+      "calibration": 2
+    },
+    "unsupported_claims": [],
+    "oracle_concerns": [],
+    "summary": "All eight factual criteria and the supporting width/default explanations are correct."
+  },
+  {
+    "answer_id": "5c102e204a10",
+    "case_id": "broken_fragment",
+    "criteria": [
+      {
+        "id": "top_w",
+        "score": 1,
+        "note": "Correct standalone W=12."
+      },
+      {
+        "id": "data_i_bits",
+        "score": 1,
+        "note": "Correct local data_i width of 12 bits."
+      },
+      {
+        "id": "narrow_o_bits",
+        "score": 1,
+        "note": "Correct fixed narrow_o width of four bits."
+      },
+      {
+        "id": "local_state",
+        "score": 1,
+        "note": "Correct four-bit narrow_q state and always_ff provenance."
+      },
+      {
+        "id": "local_member_fault",
+        "score": 1,
+        "note": "Correct sample.missing fault from the declared payload/valid member set."
+      },
+      {
+        "id": "local_width_fault",
+        "score": 1,
+        "note": "Correct 12-to-4-bit truncation: retain [3:0], discard [11:4]."
+      },
+      {
+        "id": "missing_external_definition",
+        "score": 1,
+        "note": "Correct unavailable external_stage at broken_fragment_top.u_external."
+      },
+      {
+        "id": "external_o_knowledge_boundary",
+        "score": 1,
+        "note": "Correct 12-bit local port, unresolved child behavior/interface, and continued readability of local facts."
+      }
+    ],
+    "fact_total": 8,
+    "explanation": {
+      "derivation": 2,
+      "coverage": 2,
+      "source_evidence": 2,
+      "calibration": 2
+    },
+    "unsupported_claims": [],
+    "oracle_concerns": [],
+    "summary": "Accurate local facts and faults, with external incompleteness appropriately separated."
+  },
+  {
+    "answer_id": "a4895f8f18b6",
+    "case_id": "broken_fragment",
+    "criteria": [
+      {
+        "id": "top_w",
+        "score": 1,
+        "note": "Correct standalone W=12."
+      },
+      {
+        "id": "data_i_bits",
+        "score": 1,
+        "note": "Correct local data_i width of 12 bits."
+      },
+      {
+        "id": "narrow_o_bits",
+        "score": 1,
+        "note": "Correct fixed narrow_o width of four bits."
+      },
+      {
+        "id": "local_state",
+        "score": 1,
+        "note": "Correct four-bit narrow_q state and always_ff provenance."
+      },
+      {
+        "id": "local_member_fault",
+        "score": 1,
+        "note": "Correct sample.missing fault from the declared payload/valid member set."
+      },
+      {
+        "id": "local_width_fault",
+        "score": 1,
+        "note": "Correct 12-to-4-bit truncation: retain [3:0], discard [11:4]."
+      },
+      {
+        "id": "missing_external_definition",
+        "score": 1,
+        "note": "Correct unavailable external_stage at broken_fragment_top.u_external."
+      },
+      {
+        "id": "external_o_knowledge_boundary",
+        "score": 1,
+        "note": "Correct 12-bit local port, unresolved child behavior/interface, and continued readability of local facts."
+      }
+    ],
+    "fact_total": 8,
+    "explanation": {
+      "derivation": 2,
+      "coverage": 2,
+      "source_evidence": 2,
+      "calibration": 2
+    },
+    "unsupported_claims": [],
+    "oracle_concerns": [],
+    "summary": "Correct truncation consequences and knowledge boundary without inventing the unavailable child's interface."
+  },
+  {
+    "answer_id": "3bdc3580a2e2",
+    "case_id": "unit_macros",
+    "criteria": [
+      {
+        "id": "unit_word_bits",
+        "score": 1,
+        "note": "Correct nine-bit typedef resolved before the macro changes."
+      },
+      {
+        "id": "top_w",
+        "score": 1,
+        "note": "Correct effective W=13 from ordered shared macro state and the include guard."
+      },
+      {
+        "id": "top_n",
+        "score": 1,
+        "note": "Correct N=3 from the top's local macro override."
+      },
+      {
+        "id": "data_i_bits",
+        "score": 1,
+        "note": "Correct 13*3=39-bit top data_i."
+      },
+      {
+        "id": "channel_effective_w",
+        "score": 1,
+        "note": "Correct child W=15 and distinction from its declaration default of 13."
+      },
+      {
+        "id": "channel_payload_i_bits",
+        "score": 1,
+        "note": "Correct 15-bit formal and matching actual slice."
+      },
+      {
+        "id": "active_generate_and_child",
+        "score": 1,
+        "note": "Correct g_wide branch and unit_macros_top.g_wide.u_channel path."
+      },
+      {
+        "id": "separate_compilation_units",
+        "score": 1,
+        "note": "Correct loss of cross-unit typedef visibility and macro propagation; top W would become nine."
+      }
+    ],
+    "fact_total": 8,
+    "explanation": {
+      "derivation": 2,
+      "coverage": 2,
+      "source_evidence": 2,
+      "calibration": 2
+    },
+    "unsupported_claims": [],
+    "oracle_concerns": [],
+    "summary": "Correct parameter propagation, generated hierarchy and separate-compilation-unit implications."
+  },
+  {
+    "answer_id": "ce74cf89fa3e",
+    "case_id": "unit_macros",
+    "criteria": [
+      {
+        "id": "unit_word_bits",
+        "score": 1,
+        "note": "Correct nine-bit typedef resolved before the macro changes."
+      },
+      {
+        "id": "top_w",
+        "score": 1,
+        "note": "Correct effective W=13 from ordered shared macro state and the include guard."
+      },
+      {
+        "id": "top_n",
+        "score": 1,
+        "note": "Correct N=3 from the top's local macro override."
+      },
+      {
+        "id": "data_i_bits",
+        "score": 1,
+        "note": "Correct 13*3=39-bit top data_i."
+      },
+      {
+        "id": "channel_effective_w",
+        "score": 1,
+        "note": "Correct child W=15 and distinction from its declaration default of 13."
+      },
+      {
+        "id": "channel_payload_i_bits",
+        "score": 1,
+        "note": "Correct 15-bit formal and matching actual slice."
+      },
+      {
+        "id": "active_generate_and_child",
+        "score": 1,
+        "note": "Correct g_wide branch and unit_macros_top.g_wide.u_channel path."
+      },
+      {
+        "id": "separate_compilation_units",
+        "score": 1,
+        "note": "Correct loss of cross-unit typedef visibility and macro propagation; top W would become nine."
+      }
+    ],
+    "fact_total": 8,
+    "explanation": {
+      "derivation": 2,
+      "coverage": 2,
+      "source_evidence": 2,
+      "calibration": 2
+    },
+    "unsupported_claims": [],
+    "oracle_concerns": [],
+    "summary": "All eight facts and their macro, type-scope and instance-override derivations are correct."
+  }
+]

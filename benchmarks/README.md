@@ -1,5 +1,10 @@
 # Slang MCP benchmark
 
+Current C++ comparison: [RTL versus RTL + MCP + instruction](research_compare/README.md).
+It uses a fixed Codex CLI model, actual token telemetry and semantic answer review;
+it has no bare-MCP arm. The Copilot harness and historical three-arm studies below
+remain available as separate experiments.
+
 Python 3.10 controller around the **system `copilot` executable**. Authentication belongs to
 Copilot: log in normally with `copilot login`. No JavaScript wrappers, credential extraction,
 private CLI APIs, copied runtime, sockets or proxy servers are used. MCP modes launch

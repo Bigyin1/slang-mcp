@@ -1,0 +1,146 @@
+{
+  "ed3b1ca0a88d": {
+    "id": "unit_macros_mcp+skill_r1",
+    "case_id": "unit_macros",
+    "arm": "mcp+skill",
+    "repetition": 1
+  },
+  "e0bf03889117": {
+    "id": "unit_macros_text-only_r1",
+    "case_id": "unit_macros",
+    "arm": "text-only",
+    "repetition": 1
+  },
+  "a4bbc637e080": {
+    "id": "cva6_counter_mcp+skill_r1",
+    "case_id": "cva6_counter",
+    "arm": "mcp+skill",
+    "repetition": 1
+  },
+  "5930be9059a7": {
+    "id": "cva6_counter_text-only_r1",
+    "case_id": "cva6_counter",
+    "arm": "text-only",
+    "repetition": 1
+  },
+  "67057801d7c5": {
+    "id": "axi_types_mcp+skill_r1",
+    "case_id": "axi_types",
+    "arm": "mcp+skill",
+    "repetition": 1
+  },
+  "08888d153c9e": {
+    "id": "axi_types_text-only_r1",
+    "case_id": "axi_types",
+    "arm": "text-only",
+    "repetition": 1
+  },
+  "83e0aaa56173": {
+    "id": "floo_config_text-only_r1",
+    "case_id": "floo_config",
+    "arm": "text-only",
+    "repetition": 1
+  },
+  "15621ad7514f": {
+    "id": "floo_config_mcp+skill_r1",
+    "case_id": "floo_config",
+    "arm": "mcp+skill",
+    "repetition": 1
+  },
+  "0f69286620e5": {
+    "id": "idma_state_text-only_r1",
+    "case_id": "idma_state",
+    "arm": "text-only",
+    "repetition": 1
+  },
+  "b89599af2e16": {
+    "id": "idma_state_mcp+skill_r1",
+    "case_id": "idma_state",
+    "arm": "mcp+skill",
+    "repetition": 1
+  },
+  "5d8ff7029622": {
+    "id": "broken_fragment_text-only_r1",
+    "case_id": "broken_fragment",
+    "arm": "text-only",
+    "repetition": 1
+  },
+  "3b6a12d2c364": {
+    "id": "broken_fragment_mcp+skill_r1",
+    "case_id": "broken_fragment",
+    "arm": "mcp+skill",
+    "repetition": 1
+  },
+  "f669c06d5446": {
+    "id": "idma_state_mcp+skill_r2",
+    "case_id": "idma_state",
+    "arm": "mcp+skill",
+    "repetition": 2
+  },
+  "b45c1d734299": {
+    "id": "idma_state_text-only_r2",
+    "case_id": "idma_state",
+    "arm": "text-only",
+    "repetition": 2
+  },
+  "2162a9c82bae": {
+    "id": "axi_types_text-only_r2",
+    "case_id": "axi_types",
+    "arm": "text-only",
+    "repetition": 2
+  },
+  "6198d2b0eef2": {
+    "id": "axi_types_mcp+skill_r2",
+    "case_id": "axi_types",
+    "arm": "mcp+skill",
+    "repetition": 2
+  },
+  "5c102e204a10": {
+    "id": "broken_fragment_mcp+skill_r2",
+    "case_id": "broken_fragment",
+    "arm": "mcp+skill",
+    "repetition": 2
+  },
+  "a4895f8f18b6": {
+    "id": "broken_fragment_text-only_r2",
+    "case_id": "broken_fragment",
+    "arm": "text-only",
+    "repetition": 2
+  },
+  "3bdc3580a2e2": {
+    "id": "unit_macros_text-only_r2",
+    "case_id": "unit_macros",
+    "arm": "text-only",
+    "repetition": 2
+  },
+  "ce74cf89fa3e": {
+    "id": "unit_macros_mcp+skill_r2",
+    "case_id": "unit_macros",
+    "arm": "mcp+skill",
+    "repetition": 2
+  },
+  "824e2b1623c3": {
+    "id": "floo_config_mcp+skill_r2",
+    "case_id": "floo_config",
+    "arm": "mcp+skill",
+    "repetition": 2
+  },
+  "ce8a0be71fc5": {
+    "id": "floo_config_text-only_r2",
+    "case_id": "floo_config",
+    "arm": "text-only",
+    "repetition": 2
+  },
+  "eaccd7ba4143": {
+    "id": "cva6_counter_text-only_r2",
+    "case_id": "cva6_counter",
+    "arm": "text-only",
+    "repetition": 2
+  },
+  "32f7fa94aede": {
+    "id": "cva6_counter_mcp+skill_r2",
+    "case_id": "cva6_counter",
+    "arm": "mcp+skill",
+    "repetition": 2
+  }
+}

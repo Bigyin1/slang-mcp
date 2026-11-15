@@ -176,6 +176,8 @@ agent experiments.
 
 Research on the C++ server (2026-11-15) is recorded separately:
 
+- [RTL versus RTL + MCP + instruction](benchmarks/research_compare/README.md):
+  paired source-analysis experiments, semantic grading and actual token accounting.
 - [Unified catalog](benchmarks/research_unified/README.md): current 13-tool API,
   compilation-unit tests, catalog size and a fresh Terra Max CVA6 smoke trial.
 
@@ -190,6 +192,7 @@ Research on the C++ server (2026-11-15) is recorded separately:
 - [Focused analysis](benchmarks/research_focused/README.md): four real-design tasks,
   native core/full profiles and exact selected-field payload comparisons.
 
-These historical measurements predate the current unified 13-tool API.
+The partial-loading and older studies predate the current unified 13-tool API;
+the paired comparison and unified-catalog study use that API.
 These exploratory studies support explicit small source scopes and a reversible
 compact default; they do not establish universal tool necessity or model superiority.
