@@ -199,8 +199,10 @@ struct Design::Impl {
     std::map<std::string, const ast::Symbol*> raw_symbols;
     std::map<std::string, SymbolReference> default_symbols;
     std::vector<Instance> instance_items;
+    std::map<std::string, std::size_t> instance_positions;
     std::map<std::string, const ast::InstanceSymbol*> raw_instances;
     std::vector<HierarchyRecord> hierarchy;
+    std::map<std::string, std::vector<std::size_t>> hierarchy_children;
     std::map<std::string, std::unique_ptr<ast::Compilation>> defaults;
     std::optional<AccessIndex> access_index;
 
@@ -226,12 +228,19 @@ struct Design::Impl {
             top->visit(visitor);
         }
         visit_units(visitor);
-        hierarchy = std::move(visitor.hierarchy);
+        index_hierarchy(std::move(visitor.hierarchy));
         for (const auto* symbol : visitor.symbols) {
             add_symbol(*symbol);
         }
         for (const auto* instance : visitor.instances) {
             add_instance(*instance);
+        }
+    }
+
+    void index_hierarchy(std::vector<HierarchyRecord> records) {
+        hierarchy = std::move(records);
+        for (std::size_t index = 0; index < hierarchy.size(); ++index) {
+            hierarchy_children[hierarchy[index].parent].push_back(index);
         }
     }
 
@@ -250,6 +259,7 @@ struct Design::Impl {
 
     void add_instance(const ast::InstanceSymbol& symbol) {
         const auto path = qualified(symbol);
+        instance_positions.emplace(path, instance_items.size());
         instance_items.push_back({path, std::string(symbol.name),
                                   std::string(symbol.getDefinition().name),
                                   location(symbol.location, manager), std::nullopt});
@@ -282,13 +292,14 @@ struct Design::Impl {
 
     std::vector<SymbolReference> default_members(const std::string& query) {
         std::vector<SymbolReference> result;
+        const std::string name(resolve(query).name);
         for (const auto& member : default_instance(query).body.members()) {
             if (!searchable(member.kind)) {
                 continue;
             }
             auto item = reference(member, manager);
-            item.qualified_name = std::string(resolve(query).name) + "." + std::string(member.name);
-            item.containing_scope = std::string(resolve(query).name);
+            item.qualified_name = name + "." + std::string(member.name);
+            item.containing_scope = name;
             item.symbol_id = "default:" + item.kind + ":" + item.qualified_name;
             raw_symbols.emplace(item.symbol_id, &member);
             default_symbols.try_emplace(item.symbol_id, item);
@@ -343,9 +354,10 @@ struct Design::Impl {
         if (depth == 0) {
             return result;
         }
-        for (const auto& child : hierarchy) {
-            if (child.parent == result.path) {
-                result.children.push_back(node(child, depth - 1));
+        if (const auto children = hierarchy_children.find(result.path);
+            children != hierarchy_children.end()) {
+            for (const auto child : children->second) {
+                result.children.push_back(node(hierarchy[child], depth - 1));
             }
         }
         return result;
@@ -455,11 +467,12 @@ const std::vector<Instance>& Design::instances() const {
 }
 
 Instance Design::instance(const std::string& query) const {
+    if (const auto position = impl_->instance_positions.find(query);
+        position != impl_->instance_positions.end()) {
+        return instances()[position->second];
+    }
     std::optional<Instance> result;
     for (const auto& item : instances()) {
-        if (item.path == query) {
-            return item;
-        }
         if (item.name != query) {
             continue;
         }

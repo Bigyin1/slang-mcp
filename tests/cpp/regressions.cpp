@@ -301,6 +301,55 @@ TEST_CASE("Omitting hierarchy depth preserves the complete hierarchy beyond fift
     REQUIRE(node.at("sv_module") == "stage_0");
     REQUIRE_THROWS_AS(service.call("get_hierarchy", {{"max_depth", -1}}), std::invalid_argument);
 }
+TEST_CASE("Hierarchy child indexes preserve order and requested depth") {
+    Project project;
+    project.write("design.sv", hierarchy_rtl);
+    SemanticService service;
+    (void)service.call("project_load", project.arguments());
+    const auto root = service.call("get_hierarchy", {{"max_depth", 1}}).at("roots").front();
+    REQUIRE(root.at("children").size() == 3);
+    REQUIRE(root.at("children")[0].at("path") == "top.u_a");
+    REQUIRE(root.at("children")[1].at("path") == "top.u_b");
+    REQUIRE(root.at("children")[2].at("path") == "top.generated");
+    for (const auto& child : root.at("children")) {
+        REQUIRE(child.at("children").empty());
+    }
+    const auto depth = GENERATE(0, 1, 2);
+    const auto generated =
+        service.call("get_hierarchy", {{"root", "top.generated"}, {"max_depth", depth}})
+            .at("roots")
+            .front();
+    if (depth == 0) {
+        REQUIRE(generated.at("children").empty());
+        return;
+    }
+    REQUIRE(generated.at("children").size() == 2);
+    REQUIRE(generated.at("children")[0].at("path") == "top.generated[0]");
+    REQUIRE(generated.at("children")[1].at("path") == "top.generated[1]");
+    REQUIRE(generated.at("children")[0].at("children").size() == (depth == 1 ? 0 : 1));
+}
+
+TEST_CASE("Reload replaces hierarchy and exact instance indexes") {
+    Project project;
+    project.write("design.sv", hierarchy_rtl);
+    SemanticService service;
+    (void)service.call("project_load", project.arguments());
+    REQUIRE(service.call("inspect_instance", {{"instance_path", "top.u_a"}})
+                .at("instance")
+                .at("sv_module") == "leaf");
+    project.write("design.sv",
+                  "module replacement; endmodule\nmodule top; replacement u(); endmodule\n");
+    (void)service.call("project_load", project.arguments());
+    REQUIRE(service.call("get_hierarchy", {}).at("roots").front().at("children").size() == 1);
+    REQUIRE(service.call("inspect_instance", {{"instance_path", "top.u"}})
+                .at("instance")
+                .at("sv_module") == "replacement");
+    REQUIRE_THROWS_AS(service.call("inspect_instance", {{"instance_path", "top.u_a"}}),
+                      std::invalid_argument);
+    REQUIRE_THROWS_AS(service.call("get_hierarchy", {{"root", "top.generated"}}),
+                      std::invalid_argument);
+}
+
 TEST_CASE("Partial loading preserves local facts despite missing child implementations") {
     Project project;
     project.write("fragment.sv", R"sv(
