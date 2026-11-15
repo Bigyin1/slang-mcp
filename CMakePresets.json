@@ -15,13 +15,34 @@
       "inherits": "dev",
       "binaryDir": "${sourceDir}/build/release",
       "cacheVariables": {"CMAKE_BUILD_TYPE": "Release"}
+    },
+    {
+      "name": "sanitized",
+      "inherits": "dev",
+      "binaryDir": "${sourceDir}/build/sanitized",
+      "cacheVariables": {
+        "SLANG_MCP_SANITIZERS": "ON",
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
     }
   ],
   "buildPresets": [
     {"name": "dev", "configurePreset": "dev", "targets": ["slang-mcp"]},
-    {"name": "release", "configurePreset": "release", "targets": ["slang-mcp"]}
+    {"name": "release", "configurePreset": "release", "targets": ["slang-mcp"]},
+    {"name": "sanitized", "configurePreset": "sanitized", "targets": ["slang_mcp_tests"]}
   ],
   "testPresets": [
-    {"name": "dev", "configurePreset": "dev", "output": {"outputOnFailure": true}}
+    {"name": "dev", "configurePreset": "dev", "output": {"outputOnFailure": true}},
+    {
+      "name": "sanitized",
+      "configurePreset": "sanitized",
+      "output": {
+        "outputOnFailure": true
+      },
+      "environment": {
+        "ASAN_OPTIONS": "detect_leaks=1:halt_on_error=1",
+        "UBSAN_OPTIONS": "halt_on_error=1:print_stacktrace=1"
+      }
+    }
   ]
 }
