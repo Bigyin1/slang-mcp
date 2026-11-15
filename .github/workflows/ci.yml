@@ -1,7 +1,7 @@
 name: CI
 on:
   push:
-    branches: [main, master, old-style]
+    branches: [main, master, cpp-server]
   pull_request:
   workflow_dispatch:
 permissions:
