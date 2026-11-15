@@ -1,18 +1,17 @@
-# Справочник MCP
+# MCP reference
 
-Сервер предоставляет один каталог из 13 инструментов. Все запросы read-only:
-RTL не изменяется, build-команды не запускаются. Агент сам выбирает исходники,
-проверяет диагностику и добавляет зависимости по необходимости.
+The server exposes one catalog of 13 read-only tools. It does not modify RTL or
+run build commands. The agent selects source files, inspects diagnostics, and
+adds dependencies as needed.
 
-Рабочий сценарий — совместное чтение RTL и запросы MCP. Исходники и заголовки
-объясняют выражения, условия, макросы и намерение автора; MCP даёт разрешённую
-семантику выбранной конфигурации. Для кода с большим количеством макросов
-проверяйте `defines`, include paths, порядок файлов и `single_unit`: определение
-макроса в репозитории ещё не означает, что оно активно в загруженном фрагменте.
+Use source inspection and MCP together. RTL and headers explain expressions,
+conditions, macros, and intent; MCP supplies resolved semantics for the selected
+configuration. For macro-heavy code, check `defines`, include paths, source order,
+and `single_unit`: a macro present in the repository is not necessarily active.
 
-## Загрузка и диагностика
+## Loading and diagnostics
 
-`project_load` принимает два обязательных поля — `source_files` и `top_module`:
+`project_load` requires `source_files` and `top_module`:
 
 ```json
 {
@@ -24,127 +23,128 @@ RTL не изменяется, build-команды не запускаются.
 }
 ```
 
-`source_files` — непустой упорядоченный список абсолютных путей. Includes и
-`defines` необязательны; null define означает отсутствие replacement text.
-Сервер читает только выбранные исходники и их includes, не ищет недостающие
-modules/packages и не расширяет область анализа автоматически. Повторите
-`project_load` для другого набора файлов или после изменения RTL.
+`source_files` is a nonempty ordered list of absolute paths. Include directories
+and `defines` are optional; a null define has no replacement text. The server
+reads only the selected sources and their includes; it does not discover missing
+modules or packages or automatically expand the analysis scope. Call `project_load`
+again for a different file set or after modifying RTL.
 
-`single_unit` — необязательный boolean, по умолчанию `true`:
+`single_unit` is an optional boolean, defaulting to `true`:
 
-- `true`: все исходники образуют одну compilation unit в указанном порядке;
-  макросы и объявления уровня `$unit` доступны последующим файлам.
-- `false`: каждый исходник образует отдельную compilation unit; макросы и
-  `$unit`-объявления из соседнего файла не переносятся. Defines и include paths
-  применяются к каждой unit. Modules и packages остаются доступны всей compilation.
+- `true`: all source files form one compilation unit in the given order; macros
+  and `$unit` declarations are available to later files.
+- `false`: each source file forms a separate compilation unit; macros and `$unit`
+  declarations do not carry over from neighboring files. Defines and include
+  paths apply to each unit. Modules and packages remain visible to the compilation.
 
-Это независимые настройки: небольшой фрагмент тоже может требовать single unit.
-Режим не добавляет файлы и не выбирает зависимости. Неверный тип `single_unit`,
-включая null или строку `"false"`, возвращает ошибку без замены активного проекта.
+Compilation-unit mode is independent of fragment size: even a small fragment may
+require single-unit mode. It does not add files or choose dependencies. An invalid
+`single_unit` type, including null or the string `"false"`, returns an error without
+replacing the active project.
 
-Top элаборируется самостоятельно с параметрами по умолчанию. Он не наследует
-переопределения из отсутствующего родителя. Сводка сообщает `single_unit`, число
-файлов, errors/warnings, `analysis_scope: "fragment"`,
-`parameter_context: "standalone_top"` и `completeness: "not_verified"`.
-Нулевая диагностика не доказывает соответствия производственной конфигурации.
+The top is elaborated independently with its default parameters. It does not inherit
+parameter overrides from an absent parent. The summary reports `single_unit`, file
+and error/warning counts, `analysis_scope: "fragment"`,
+`parameter_context: "standalone_top"`, and `completeness: "not_verified"`. Zero
+diagnostics do not prove that the production configuration was reproduced.
 
-Синтаксические/семантические ошибки допустимы, пока Slang может построить top.
-Если это невозможно, ответ MCP имеет `isError: true` и JSON с
-`status: "compilation_failed"`, первыми 100 diagnostics, `total_count`, `truncated`
-и `active_project_unchanged: true`. `analysis.context: "attempted_candidate"`
-отделяет диагностику неудавшейся попытки от прежнего активного проекта; этот
-контекст включает выбранный `single_unit`. Последующие запросы относятся к
-предыдущей успешной загрузке, если она была.
+Syntax and semantic errors are accepted as long as Slang can build the top. If it
+cannot, the MCP response has `isError: true` and JSON containing
+`status: "compilation_failed"`, the first 100 diagnostics, `total_count`,
+`truncated`, and `active_project_unchanged: true`. The value
+`analysis.context: "attempted_candidate"` distinguishes diagnostics from the failed attempt from
+those of the previous active project; this context includes the selected
+`single_unit`. Subsequent queries refer to the previous successful load, if any.
 
-`project_info()` возвращает активные sources/includes/defines, tops, `single_unit`,
-metadata, версию Slang и сводку без повторной компиляции.
+`project_info()` returns active sources, includes, defines, tops, `single_unit`,
+metadata, Slang version, and a summary without recompiling.
 
-`get_diagnostics(severity?, limit=100)` возвращает diagnostics, `returned_count`,
-`total_count`, `truncated` и контекст анализа. Severity: `ignored`, `note`,
-`warning`, `error`, `fatal`. UnknownModule/UnknownClassOrPackage получают
-`scope_hint: "possible_missing_dependency"`; прочие — `"unclassified"`.
-Это возможная причина, а не признание ошибки безвредной: опечатка даёт ту же
-диагностику. Исходная severity никогда не понижается.
+`get_diagnostics(severity?, limit=100)` returns diagnostics, `returned_count`,
+`total_count`, `truncated`, and the analysis context. Severities are `ignored`,
+`note`, `warning`, `error`, and `fatal`. UnknownModule and UnknownClassOrPackage
+receive `scope_hint: "possible_missing_dependency"`; other diagnostics receive
+`"unclassified"`. This is a possible cause, not proof that the error is harmless:
+a typo can produce the same diagnostic. The original severity is never lowered.
 
-## Поиск и иерархия
+## Search and hierarchy
 
-| Инструмент | Аргументы и семантика |
+| Tool | Arguments and semantics |
 | --- | --- |
-| `find_symbol` | `name`: точное короткое имя; все совпадения и `match_count`. |
-| `describe_symbol` | `identifier`: полное или однозначное короткое имя; kind, type, width, location и доступные сведения о symbol. |
-| `list_symbols` | `scope`, необязательный `kind`, `limit`: непосредственные объявления scope; без рекурсивного обхода. Scope может быть именем модуля, идентификатором symbol или точным путём вложенного instance/generate. Имя top, совпадающее с именем модуля, выбирает параметры по умолчанию модуля. |
-| `get_hierarchy` | Необязательные `root`, `max_depth` (0–50): элаборированные instances и активные generate blocks; без depth возвращается всё выбранное поддерево. |
-| `list_instances` | Необязательные `sv_module`, `name`, `path_prefix`, `limit`: фильтры по module type, точному имени instance и префиксу пути. |
+| `find_symbol` | `name`: exact short name; returns all matches and `match_count`. |
+| `describe_symbol` | `identifier`: full or unambiguous short name; returns kind, type, width, location, and available symbol details. |
+| `list_symbols` | `scope`, optional `kind` and `limit`: direct declarations without recursive traversal. Scope can be a module name, symbol identifier, or exact nested instance/generate path. A top name identical to a module name selects the module's default parameters. |
+| `get_hierarchy` | Optional `root` and `max_depth` (0–50): elaborated instances and active generate blocks. Without depth, returns the entire selected subtree. |
+| `list_instances` | Optional `sv_module`, `name`, `path_prefix`, and `limit`: filter by module type, exact instance name, and path prefix. |
 
-`sv_module` обозначает объявление module/interface, `instance_path` — конкретный
-элаборированный экземпляр, например `top.u_fifo`. Неоднозначные имена дают
-контролируемую ошибку; полные пути предпочтительнее.
+`sv_module` identifies a module/interface declaration; `instance_path` identifies
+an elaborated instance, such as `top.u_fifo`. Ambiguous names produce a controlled
+error; prefer full paths.
 
-## Инспекция
+## Inspection
 
-`inspect_module(sv_module, ...)` по умолчанию возвращает `definition`, default
-`parameters` и `ports`. Дополнительные разделы доступны через `fields`:
-`declaration_count`, `children`, `procedures`, `diagnostic_count`.
-Children/procedures относятся к активным экземплярам данного module; diagnostic
-count относится к тому же source file, а не только к выбранному объявлению.
+`inspect_module(sv_module, ...)` returns `definition`, default `parameters`, and
+`ports` by default. Additional `fields` are `declaration_count`, `children`,
+`procedures`, and `diagnostic_count`. Children and procedures refer to active
+instances of that module; the diagnostic count covers the same source file, not
+just the selected declaration.
 
-`inspect_instance(instance_path, ...)` по умолчанию возвращает `instance`, effective
-`parameters` и `connections`. Через `fields` можно также запросить `children`.
+`inspect_instance(instance_path, ...)` returns `instance`, effective `parameters`,
+and `connections` by default. `fields` can also request `children`.
 
-Оба инструмента принимают необязательные `fields`, `parameter_names`, `port_names`
-и `limit=100`. Identity возвращается всегда; `fields: []` оставляет только identity.
-Незапрошенные разделы не вычисляются. Именованные фильтры выбирают точные имена
-до ограничения limit, сохраняют declaration order и допускают до 500 имён.
-Отсутствующее имя не вызывает ошибку; пустой список выбирает ноль элементов.
+Both tools accept optional `fields`, `parameter_names`, `port_names`, and
+`limit=100`. Identity is always returned; `fields: []` leaves only identity.
+Unrequested sections are not computed. Name filters select exact names before the
+limit, preserve declaration order, and accept up to 500 names. Missing names do
+not cause errors; an empty list selects zero items.
 
 ```json
 {"instance_path":"top.u_fifo","fields":["parameters"],"parameter_names":["DEPTH"]}
 ```
 
-Parameters содержат точное SystemVerilog-представление `value`. Удобное
-`integer_value` равно null для type parameters, X/Z и констант за пределами
-signed 64-bit integer. Module parameters имеют `value_kind: "declared_default"`,
-instance parameters — `"effective"`.
+Parameters retain their exact SystemVerilog representation in `value`. The
+`integer_value` convenience field is null for type parameters, X/Z, and constants
+outside signed 64-bit range. Module parameters have `value_kind: "declared_default"`;
+instance parameters have `"effective"`.
 
-Connections содержат formal port, actual expression, базовые resolved symbols,
-actual type/width и location. `kind`: `signal`, `expression`, `unconnected`,
-`interface`. Например, expression `request.address` и базовый symbol `request`
-описывают разные аспекты одного подключения. Текст выражений и списки symbols
-ограничены; признаки truncation передаются в ответе.
+Connections contain the formal port, actual expression, resolved base symbols,
+actual type/width, and location. Their `kind` is `signal`, `expression`,
+`unconnected`, or `interface`. For example, expression `request.address` and
+base symbol `request` describe different aspects of a connection. Expression text
+and symbol lists are bounded; truncation indicators are included in the response.
 
 `list_instance_facts(sv_module, parameter_names?, port_names?, limit=100,
-fact_limit=100)` возвращает параметры и connections нескольких однотипных
-instances за один вызов. `limit` ограничивает число instances, `fact_limit` —
-каждую вложенную коллекцию. Это сокращает повторные запросы по каждому пути.
+fact_limit=100)` returns parameters and connections for multiple instances of
+one module type in a single call. `limit` bounds instances and `fact_limit` bounds
+each nested collection. This reduces repeated requests for individual paths.
 
-## Обращения и состояние
+## References and state
 
-`get_references(symbol, kind?, limit=100)` возвращает declaration и semantic uses
-символа с location, scope, instance, context и при наличии procedural block id.
-Kinds: `read`, `write`, `read_write`, `declaration`, `unknown`,
+`get_references(symbol, kind?, limit=100)` returns the symbol's declaration and
+semantic uses with location, scope, instance, context, and procedural block ID
+when available. Kinds: `read`, `write`, `read_write`, `declaration`, `unknown`,
 `parameter_reference`, `port_connection`, `type_reference`, `instantiation`.
-Фильтры `read` и `write` оба включают `read_write` (например, `count += 1`).
-Это обращения в исходнике, не число аппаратных consumers/drivers.
-Обращения внутри процедурных ветвей могут присутствовать даже при параметрах,
-делающих ветвь неактивной; ответ не содержит доказательства выполнимости ветвей.
-Условия и RHS следует проверять по RTL с учётом effective parameters.
+Both `read` and `write` filters include `read_write` (for example, `count += 1`).
+These are source accesses, not counts of hardware consumers or drivers. Accesses
+inside procedural branches may appear even when parameters make a branch inactive;
+the response does not prove branch reachability. Check conditions and right-hand
+sides in RTL using the effective parameters.
 
-`get_state_elements(sv_module, limit=100)` возвращает signals, записываемые в
-`always_ff`, с type, width, block id и location. Не выводит reset behavior,
-latches или synthesis inference для обычных `always`.
+`get_state_elements(sv_module, limit=100)` returns signals written in `always_ff`,
+with type, width, block ID, and location. It does not infer reset behavior, latches,
+or synthesis behavior for ordinary `always` blocks.
 
-## Границы анализа
+## Analysis limits
 
-Коллекции имеют `items`, `total_count`, `truncated`; limit допустим от 1 до 500.
-Отсутствующие зависимости могут сделать типы/ширины и иерархию неполными.
-Локальный успешный запрос не подтверждает корректности остального RTL.
+Collections contain `items`, `total_count`, and `truncated`; limits range from
+1 to 500. Missing dependencies can leave types, widths, and hierarchy incomplete.
+A successful local query does not establish correctness of the rest of the RTL.
 
-Сервер использует Slang AST и общий ленивый индекс source-level accesses, не
-regex-парсер. Default elaboration использует исходные syntax trees с теми же
-границами compilation units. Ответы не доказывают netlist connectivity, timing,
-simulation или formal equivalence.
+The server uses Slang's AST and a shared lazy source-access index, not a regex
+parser. Default elaboration uses the original syntax trees with the same
+compilation-unit boundaries. Responses do not prove netlist connectivity, timing,
+simulation, or formal equivalence.
 
-Старые профили `core`/`full`, отдельные read/write getters, file-list loader,
-connectivity и `semantic_diff` не входят в публичный API. Повторная загрузка
-заменяет reload; структурные snapshots сервер не строит. Исторические эксперименты
-с прежним API следует воспроизводить на указанной в отчёте ревизии.
+The public API excludes the former `core`/`full` profiles, separate read/write
+getters, file-list loader, connectivity, and `semantic_diff`. Repeated loading
+replaces reload; the server does not build structural snapshots. Reproduce historical
+experiments using the server revision specified in their report.

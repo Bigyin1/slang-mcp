@@ -1,76 +1,59 @@
 # slang-mcp
 
-## Назначение и ограничения проекта
+## Purpose and constraints
 
-- Это read-only MCP-сервер для семантического анализа SystemVerilog-проектов через
-  C++ библиотеку Slang. Сервер не изменяет RTL, не является LSP и не строит regex-парсер или
-  псевдонетлист.
-- Основной код и тесты пишутся на C++26; рекомендуемый компилятор — LLVM/Clang 23.1.5.
-  Slang 12.1 закреплён по commit SHA в `CMakeLists.txt`.
-- Python допустим только в `benchmarks/`; его окружение создаётся командой
-  `uv sync --project benchmarks --python 3.10`, lockfile находится там же.
-- Используйте C++ API Slang, а не запуск исполняемого файла Slang как subprocess.
+- This is a read-only MCP server for semantic analysis of SystemVerilog projects
+  through the Slang C++ library. It does not modify RTL, act as an LSP, or build
+  a regex parser or pseudo-netlist.
+- Production code and tests use C++26; LLVM/Clang 23.1.5 is the recommended
+  compiler. Slang 12.1 is pinned by commit SHA in `CMakeLists.txt`.
+- Python is allowed only under `benchmarks/`. Create its environment with
+  `uv sync --project benchmarks --python 3.10`; the lockfile is in that directory.
+- Use the Slang C++ API rather than running the Slang executable as a subprocess.
 
-## Архитектурные границы
+## Architectural boundaries
 
-- MCP handlers должны оставаться тонкими и вызывать `SemanticService`.
-- Жизненным циклом активной компиляции управляет `ProjectManager`.
-- Единственный публичный каталог из 13 tools принимает явные ordered source paths
-  через `project_load`; агент выбирает зависимости. `single_unit` по умолчанию true;
-  false создаёт отдельную compilation unit для каждого source file.
-  Не добавляйте фиктивный `SVBuildProjectProvider`.
-- Объекты Slang и указатели на его AST не должны выходить за границы
-  `src/adapters/`. В сервисах и MCP-ответах используйте только
-  типизированные project-owned модели.
-- Различайте `logical_module` (сущность build-системы), `sv_module` (декларация
-  SystemVerilog module) и `instance` (элаборированный экземпляр).
-- Полная connectivity-трассировка остаётся вне MVP; не заменяйте её анализом текста RTL.
-- RTL read/write и driver/load запросы описывают source-level семантику, не netlist.
-  Используйте встроенный visitor Slang и общий индекс обращений.
-- При reload диагностические ошибки принимаются для анализа; исключение при построении
-  не должно менять активную компиляцию и последние semantic snapshots.
-- MCP-сервер не строит semantic snapshots. Выбор `fields` в aggregate inspections
-  исключает вычисление ненужных разделов, сохраняя identity. По умолчанию возвращаются
-  только parameters + ports/connections. Старые профили совместимости не нужны.
-- Ошибки RTL и отсутствие зависимостей не подавляются. Scope hints обозначают
-  только возможную причину; при невозможности построить top нужно сохранить
-  диагностику попытки и явно отличить её от предыдущего активного проекта.
-- Для сложных операций предпочитайте подходящие готовые библиотеки: обход Slang AST —
-  встроенный visitor; работа с Git в real-world тестах — GitPython.
+- Keep MCP handlers thin and delegate to `SemanticService`.
+- `ProjectManager` owns the active compilation lifecycle.
+- The single public catalog has 13 tools. `project_load` accepts explicit ordered
+  source paths; the agent chooses dependencies. `single_unit` defaults to true;
+  false creates a separate compilation unit for each source file. Do not add a
+  fictitious `SVBuildProjectProvider`.
+- Slang objects and pointers to its AST must not escape `src/adapters/`. Use only
+  typed project-owned models in services and MCP responses.
+- Distinguish `logical_module` (a build-system entity), `sv_module` (a
+  SystemVerilog module declaration), and `instance` (an elaborated instance).
+- Full connectivity tracing is outside the MVP; do not replace it with RTL text analysis.
+- RTL read/write and driver/load queries describe source-level semantics, not a
+  netlist. Use Slang's built-in visitor and the shared access index.
+- Diagnostic errors are accepted for analysis on reload. A build exception must
+  not change the active compilation or the latest semantic snapshots.
+- The MCP server does not build semantic snapshots. Selecting `fields` in aggregate
+  inspections avoids computing unrequested sections while retaining identity.
+  Defaults contain parameters plus ports/connections. Legacy compatibility profiles
+  are not needed.
+- Do not suppress RTL errors or missing dependencies. Scope hints indicate only a
+  possible cause; if the top cannot be built, retain the attempted diagnostics and
+  distinguish them from the previous active project.
+- Prefer suitable existing libraries for complex operations: Slang's built-in
+  visitor for AST traversal and GitPython for Git operations in real-world tests.
 
-## Проверки
+## Checks
 
-- `make check` запускает сборку C++, clang-format, строгий clang-tidy, Lizard и CTest.
-  Лимиты: цикломатическая сложность 6, когнитивная 10, 5 локальных переменных,
-  4 параметра, 6 ветвлений, вложенность 3, 35 statements.
-- `make check-benchmarks` проверяет отдельный Python-стенд: Ruff, Pylint, strict mypy,
-  Xenon и pytest. `make check-all` дополнительно проверяет подготовку и компиляцию
-  закреплённых проектов из `benchmarks/cases/projects.json` через C++ сервер.
-  Bender `0.32.1` генерирует sources, include dirs и defines; может потребоваться сеть.
-- Перед завершением изменения запускайте проверки, относящиеся к его области. Для изменений
-  production-кода или зависимостей запускайте `make check-all`, если внешнее окружение доступно.
-- При изменении зависимостей бенчмарков обновляйте `benchmarks/uv.lock`.
+- `make check` builds the C++ code and runs clang-format, strict clang-tidy,
+  Lizard, and CTest. Limits: cyclomatic complexity 6, cognitive complexity 10,
+  5 local variables, 4 parameters, 6 branches, nesting depth 3, and 35 statements.
+- `make check-benchmarks` checks the separate Python harness with Ruff, Pylint,
+  strict mypy, Xenon, and pytest. `make check-all` additionally checks preparation
+  and compilation of the pinned projects in `benchmarks/cases/projects.json`
+  through the C++ server. Bender `0.32.1` generates sources, include directories,
+  and defines; network access may be required.
+- Before finishing a change, run the checks relevant to its scope. For production
+  code or dependency changes, run `make check-all` if the environment is available.
+- Update `benchmarks/uv.lock` when changing benchmark dependencies.
 
-## Неоднозначные ситуации и вопросы разработчику
+## Ambiguity and developer questions
 
-Вопрос разработчику обязателен, если разумные варианты решения приводят к разному внешнему
-поведению, формату данных, публичному API, совместимости или риску потери данных. Не выбирайте
-молча вариант, который трудно отменить.
-
-## Работа с Git
-
-1. Перед началом проверьте `git status --short`. Незнакомые изменения принадлежат
-   разработчику или другому агенту: не откатывайте, не перезаписывайте и не форматируйте их.
-2. Выполняйте каждую самостоятельную задачу в отдельной ветке, созданной от согласованной
-   базовой ветки. Используйте понятное имя, например `codex/trace-connectivity`.
-3. Перед коммитом просмотрите diff, выполните относящиеся проверки и добавляйте в index только
-   файлы задачи. Не используйте `git add .` при наличии посторонних изменений и не обходите
-   hooks через `--no-verify`.
-4. Коммит должен представлять одну законченную правку и иметь краткое точное сообщение. После
-   успешной проверки переключитесь на базовую ветку и выполните merge task-ветки; разрешайте
-   конфликты без потери чужих изменений. Удаляйте task-ветку только после успешного merge.
-5. Не переписывайте историю и не выполняйте `git reset --hard`, `git clean`, `git restore`,
-   `git checkout --`, `git commit --amend`, rebase, force-push, push или создание тегов без
-   явного указания разработчика.
-6. Перед передачей результата проверьте `git diff` и `git status --short`. При изменении
-   зависимостей в `pyproject.toml` обязательно обновляйте `uv.lock`.
+Ask the developer when reasonable options lead to different external behavior,
+public APIs, data formats, compatibility, or risks of data loss. Do not silently
+choose an option that is difficult to reverse.

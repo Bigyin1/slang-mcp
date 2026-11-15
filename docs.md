@@ -1,3 +1,3 @@
-# Справочник MCP
+# MCP reference
 
-Справочник перенесён: [документация инструментов MCP](docs/mcp-reference.md).
+The reference has moved to [MCP tool reference](docs/mcp-reference.md).
