@@ -24,7 +24,8 @@ and `single_unit`: a macro present in the repository is not necessarily active.
 ```
 
 `source_files` is a nonempty ordered list of absolute paths. Include directories
-and `defines` are optional; a null define has no replacement text. The server
+and `defines` are optional; a null define expands to `1` (Slang's default), while
+an empty string supplies an empty replacement. The server
 reads only the selected sources and their includes; it does not discover missing
 modules or packages or automatically expand the analysis scope. Call `project_load`
 again for a different file set or after modifying RTL.
@@ -146,6 +147,10 @@ Here `cpu` must be the loaded top or the complete instance path. If the `cpu`
 module is instantiated as `soc.u_cpu`, use `soc.u_cpu.bank_sel_ff`; module type
 names do not identify an elaborated instance. Package members use `pkg::member`.
 
+`type_reference` is not currently indexed. Port-binding access records cover
+ordinary ports; these records do not establish complete interface connectivity.
+An empty result is not proof that the symbol has no uses.
+
 These are source accesses, not counts of hardware consumers or drivers. Accesses
 inside procedural branches may appear even when parameters make a branch inactive;
 the response does not prove branch reachability. Check conditions and right-hand
@@ -157,8 +162,12 @@ or synthesis behavior for ordinary `always` blocks.
 
 ## Analysis limits
 
-Collections contain `items`, `total_count`, and `truncated`; limits range from
-1 to 500. Missing dependencies can leave types, widths, and hierarchy incomplete.
+Paged semantic collections contain `items`, `total_count`, and `truncated`;
+limits range from 1 to 500. Diagnostics instead use `diagnostics` and
+`returned_count`, with the same count/truncation distinction. `find_symbol`,
+`describe_symbol` and `get_hierarchy` do not have item-count pagination; narrow
+names/scopes and set hierarchy depth to avoid large replies.
+Missing dependencies can leave types, widths, and hierarchy incomplete.
 A successful local query does not establish correctness of the rest of the RTL.
 
 The server uses Slang's AST and a shared lazy source-access index, not a regex

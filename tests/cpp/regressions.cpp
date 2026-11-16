@@ -4,6 +4,40 @@
 #include <catch2/generators/catch_generators.hpp>
 
 namespace slang_mcp::test {
+TEST_CASE("Null and empty configured macro replacements follow Slang semantics") {
+    Project project;
+    project.write(
+        "design.sv",
+        "module top #(parameter int FLAG_VALUE=`FLAG); `EMPTY logic present; endmodule\n");
+    auto arguments = project.arguments();
+    arguments["defines"] = {{"FLAG", nullptr}, {"EMPTY", ""}};
+    SemanticService service(SnapshotPolicy::Disabled);
+    REQUIRE(service.call("project_load", arguments).at("diagnostic_error_count") == 0);
+    const auto result = service.call("inspect_module", {{"sv_module", "top"}});
+    REQUIRE(result.at("parameters").at("parameters").at("items").front().at("integer_value") == 1);
+    REQUIRE(service.call("find_symbol", {{"name", "present"}}).at("match_count") == 1);
+}
+
+TEST_CASE("Batch instance facts apply advertised name and path filters") {
+    Project project;
+    project.write("design.sv", hierarchy_rtl);
+    SemanticService service(SnapshotPolicy::Disabled);
+    REQUIRE(service.call("project_load", project.arguments()).at("diagnostic_error_count") == 0);
+    const auto result = service.call("list_instance_facts", {{"sv_module", "leaf"},
+                                                             {"name", "u_leaf"},
+                                                             {"path_prefix", "top.generated[1]"},
+                                                             {"parameter_names", {"WIDTH"}},
+                                                             {"port_names", {"i"}},
+                                                             {"limit", 1},
+                                                             {"fact_limit", 1}});
+    REQUIRE(result.at("total_count") == 1);
+    REQUIRE_FALSE(result.at("truncated").get<bool>());
+    const auto& item = result.at("items").front();
+    REQUIRE(item.at("instance").at("path") == "top.generated[1].u_leaf");
+    REQUIRE(item.at("parameters").at("items").front().at("integer_value") == 32);
+    REQUIRE(item.at("connections").at("items").front().at("port").at("name") == "i");
+}
+
 TEST_CASE("Preprocessing preserves ordered packages includes and defines") {
     Project project;
     project.write("defs.svh", "`define WIDTH 13\n");
