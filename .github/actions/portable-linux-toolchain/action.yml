@@ -6,7 +6,8 @@ runs:
     - shell: bash
       run: |
         set -euo pipefail
-        dnf -y install ninja-build gcc-toolset-14-libstdc++-static gcc-toolset-14-libatomic-devel
+        dnf -y install ninja-build gcc-toolset-14-libatomic-devel
+        test -f "$(g++ -print-file-name=libstdc++.a)"
         manylinux-interpreters ensure cp310-cp310
         manylinux-install-clang -v 23.1.5.0 -c 80bf99b6afe83420a648a6d0eae0e0cfd6472cdb26577b1c12964fe29884dc06
         echo /opt/clang/bin >> "$GITHUB_PATH"
