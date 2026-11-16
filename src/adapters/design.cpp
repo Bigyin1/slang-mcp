@@ -433,7 +433,7 @@ SymbolReference Design::definition_reference(const std::string& identifier) cons
     return reference(symbol, impl_->manager);
 }
 
-SymbolDescription Design::describe(const std::string& identifier) {
+SymbolDescription Design::describe(const std::string& identifier, int type_depth) {
     const auto& symbol = impl_->resolve(identifier);
     SymbolDescription result;
     result.symbol = reference(symbol, impl_->manager);
@@ -443,7 +443,10 @@ SymbolDescription Design::describe(const std::string& identifier) {
     }
     if (const auto* type = symbol_type(symbol)) {
         result.type = type->toString();
-        result.width = type->getBitWidth();
+        result.width = packed_width(*type);
+        if (type_depth >= 0) {
+            result.type_info = describe_type(*type, type_depth);
+        }
     }
     if (auto* value = symbol.as_if<ast::PortSymbol>()) {
         result.direction = lower(ast::toString(value->direction));

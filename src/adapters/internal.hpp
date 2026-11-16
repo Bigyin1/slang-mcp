@@ -36,6 +36,7 @@ namespace ast = slang::ast;
 [[nodiscard]] SymbolReference reference(const ast::Symbol& symbol,
                                         const slang::SourceManager& manager);
 [[nodiscard]] Width packed_width(const ast::Type& type);
+[[nodiscard]] TypeDescription describe_type(const ast::Type& type, int depth);
 [[nodiscard]] const ast::Type* symbol_type(const ast::Symbol& symbol);
 [[nodiscard]] Text expression_text(const ast::Expression* original);
 [[nodiscard]] Parameter parameter(const ast::ParameterSymbolBase& symbol);

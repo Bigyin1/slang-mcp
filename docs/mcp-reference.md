@@ -72,7 +72,7 @@ a typo can produce the same diagnostic. The original severity is never lowered.
 | Tool | Arguments and semantics |
 | --- | --- |
 | `find_symbol` | `name`: exact short name; returns all matches and `match_count`. |
-| `describe_symbol` | `identifier`: full or unambiguous short name; returns kind, type, width, location, and available symbol details. |
+| `describe_symbol` | `identifier`, optional `type_depth=2` (0–8): identity, type, width, location, signature and bounded `type_info` for arrays, structs and unions. |
 | `list_symbols` | `scope`, optional `kind` and `limit`: direct declarations without recursive traversal. Scope can be a module name, symbol identifier, or exact nested instance/generate path. A top name identical to a module name selects the module's default parameters. |
 | `get_hierarchy` | Optional `root` and `max_depth` (0–50): elaborated instances and active generate blocks. Without depth, returns the entire selected subtree. |
 | `list_instances` | Optional `sv_module`, `name`, `path_prefix`, and `limit`: filter by module type, exact instance name, and path prefix. |
@@ -80,6 +80,51 @@ a typo can produce the same diagnostic. The original severity is never lowered.
 `sv_module` identifies a module/interface declaration; `instance_path` identifies
 an elaborated instance, such as `top.u_fifo`. Ambiguous names produce a controlled
 error; prefer full paths.
+
+### Arrays, structures and unions
+
+Use `describe_symbol` on the base declaration, for example:
+
+```json
+{"identifier":"top.request_queue","type_depth":4}
+```
+
+`type_info` preserves the declared type name and resolves typedefs and effective
+type parameters for its layout. Arrays have ordered `dimensions` and an
+`element_type` describing the type after those dimensions. Fixed dimensions
+include left/right bounds, range and size; packed and unpacked dimensions remain
+distinct. Dynamic, associative and queue dimensions have no runtime
+size. Associative dimensions include `index_type` (`*` for wildcard); bounded
+queues include their declared `max_size`, not their current length. Packed
+dimensions retain their signedness.
+
+Structs and unions expose fields in declaration order, each with a nested
+`type_info`. `bit_offset` is the LSB offset within one packed aggregate; packed
+union fields can overlap. Unpacked offsets are null, since they are not a packed
+layout. `tagged` identifies tagged unions. These descriptions do not enumerate
+array elements, read simulation values or describe simulator memory layout.
+
+`width` consistently means the integral packed width after removing outer
+unpacked array dimensions, including in `describe_symbol`, ports and connections.
+For `logic [7:0] memory[4]`, it is 8; `type_info.total_bits` is 32. Width is null
+for nonintegral or unknown element types. `total_bits` is Slang's static `$bits`,
+or null when unavailable. The `is_signed` flag describes the node's type itself;
+an unpacked array is not signed, even when its packed elements are signed.
+
+`type_depth` counts field/element-type child levels. At zero, identity,
+dimensions and `field_count` remain available. A reply contains at most 128 type
+nodes and 16 dimensions per array node. `truncated` propagates to the root if any
+descendant was omitted; `field_count` includes omitted fields. Increase depth up
+to eight for nested types and use source inspection when size limits are reached.
+Scope members and module signatures retain their existing pagination behavior.
+Detailed type trees are computed by `describe_symbol`; bulk port/connection
+queries retain their compact descriptions.
+
+Selectors such as `request_queue[0]` or `request.data` are not independent indexed
+symbols. Query the base declaration and inspect its type tree. References and
+driver/load queries aggregate accesses to the base signal, without field, element
+or bit-range precision. In `entries[index].data = value`, `entries` is written
+and `index` is read; a compound assignment also reads `entries`.
 
 ## Inspection
 
