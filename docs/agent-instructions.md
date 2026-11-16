@@ -62,3 +62,17 @@ State the analyzed top, configuration and relevant limitations in your answer.
 The release archive includes the full reference in `mcp-reference.md`. The MCP
 tool catalog supplies current argument schemas; the source repository also keeps
 them in `src/contract.json`.
+
+## Inspect a concrete macro invocation
+
+When a wrapper creates modules, instances or signals through macros, use
+`expand_macro` on the actual call: absolute `file`, 1-based physical `line` and
+1-based UTF-8 byte `column` on the backtick/name. It returns expanded token text
+and the active definition location, including nested expansions and pasted names.
+Use the declaration/hierarchy tools to inspect the resulting semantic objects.
+The query uses the loaded snapshot; reload after changes. Missing child modules
+do not necessarily prevent macro inspection, but preprocessing errors at the call
+do. Inactive calls and direct built-ins are not expanded on demand. Repeated include
+contexts can be ambiguous. Macro-generated preprocessing directives are unsupported
+and return an error. Check `truncated`; `max_bytes` defaults to 8192 and can
+be raised to 65536. Read the original source and diagnostics alongside the result.

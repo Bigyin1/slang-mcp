@@ -95,6 +95,7 @@ Json SemanticService::call(const std::string& name, const Json& arguments) {
 }
 
 void SemanticService::register_project_tools() {
+    tools_["expand_macro"] = [this](const Json& args) { return expand_macro(args); };
     tools_["project_load"] = [this](const Json& args) {
         return manager_.load(project_from_arguments(args));
     };

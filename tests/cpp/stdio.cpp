@@ -81,10 +81,10 @@ TEST_CASE("Stdio catalog exposes the focused semantic tools") {
     }
     std::ranges::sort(names);
     REQUIRE(names == std::vector<std::string>{
-                         "describe_symbol", "find_symbol", "get_diagnostics", "get_hierarchy",
-                         "get_references", "get_state_elements", "inspect_instance",
-                         "inspect_module", "list_instance_facts", "list_instances", "list_symbols",
-                         "project_info", "project_load"});
+                         "describe_symbol", "expand_macro", "find_symbol", "get_diagnostics",
+                         "get_hierarchy", "get_references", "get_state_elements",
+                         "inspect_instance", "inspect_module", "list_instance_facts",
+                         "list_instances", "list_symbols", "project_info", "project_load"});
     REQUIRE_THROWS_AS(client->CallTool("project_load_partial", mcp::JsonValue::Object{}),
                       mcp::McpError);
     REQUIRE_THROWS_AS(client->CallTool("semantic_diff", mcp::JsonValue::Object{}), mcp::McpError);
@@ -98,7 +98,7 @@ TEST_CASE("Real stdio MCP publishes the contract and serves semantic queries") {
     options.connect_mode = GENERATE(mcp::ConnectMode::Legacy, mcp::ConnectMode::Auto);
     auto client = mcp::McpClient::Create(transport->Connect(), options);
     const auto tools = client->ListToolsAll().tools;
-    REQUIRE(tools.size() == 13);
+    REQUIRE(tools.size() == 14);
     for (const auto& expected : Json::parse(tool_contract)) {
         const auto tool = std::ranges::find_if(tools, [&](const auto& value) {
             return value.name == expected.at("name").get<std::string>();
@@ -132,6 +132,27 @@ TEST_CASE("Real stdio MCP publishes the contract and serves semantic queries") {
     REQUIRE_FALSE(partial.is_error);
     REQUIRE(Json::parse(partial.structured_content.value().Dump()).at("analysis_scope") ==
             "fragment");
+}
+
+TEST_CASE("Real stdio macro expansion returns generated declarations") {
+    Project project;
+    project.write("design.sv",
+                  "`define DECL(n) logic n``_ff;\nmodule top;\n`DECL(bank_sel)\nendmodule\n");
+    auto client = stdio_client();
+    REQUIRE_FALSE(
+        client->CallTool("project_load", mcp::JsonValue::Parse(project.arguments().dump()))
+            .is_error);
+    const auto result = client->CallTool(
+        "expand_macro",
+        mcp::JsonValue::Parse(
+            Json{{"file", project.path("design.sv").string()}, {"line", 3}, {"column", 1}}.dump()));
+    REQUIRE_FALSE(result.is_error);
+    REQUIRE(result.structured_content.has_value());
+    const auto payload = Json::parse(result.structured_content->Dump());
+    REQUIRE(payload.at("name") == "DECL");
+    REQUIRE(payload.at("expanded_text").get<std::string>().contains("bank_sel_ff"));
+    REQUIRE(payload.at("truncated") == false);
+    REQUIRE(Json::parse(std::get<mcp::TextContent>(result.content.front()).text) == payload);
 }
 
 TEST_CASE("Stdio project load reports the selected compilation unit mode") {

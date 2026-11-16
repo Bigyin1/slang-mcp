@@ -47,4 +47,7 @@ expression_symbols(const ast::Expression& expression);
 [[nodiscard]] std::string direction_kind(ast::ArgumentDirection direction);
 void index_accesses(const ast::InstanceSymbol& instance, const slang::SourceManager& manager,
                     AccessIndex& index);
+[[nodiscard]] MacroExpansion expand_macro(const ast::Compilation& compilation,
+                                          const slang::SourceManager& manager,
+                                          const MacroQuery& query);
 } // namespace slang_mcp::adapters

@@ -81,9 +81,9 @@ configure_file(src/contract.hpp.in generated/contract.hpp @ONLY)
 
 add_library(slang_mcp_core
     src/project.cpp src/semantic_service.cpp src/rtl_queries.cpp
-    src/inspection.cpp src/connectivity.cpp
+    src/inspection.cpp src/connectivity.cpp src/macro_queries.cpp
     src/adapters/design.cpp src/adapters/normalization.cpp
-    src/adapters/access_index.cpp)
+    src/adapters/access_index.cpp src/adapters/macro_expansion.cpp)
 target_compile_features(slang_mcp_core PUBLIC cxx_std_26)
 target_compile_definitions(slang_mcp_core PUBLIC SLANG_MCP_VERSION="${PROJECT_VERSION}")
 target_include_directories(slang_mcp_core PUBLIC src)
@@ -128,7 +128,9 @@ if(BUILD_TESTING)
         GIT_REPOSITORY https://github.com/catchorg/Catch2.git
         GIT_TAG v3.16.1 GIT_SHALLOW TRUE EXCLUDE_FROM_ALL SYSTEM)
     FetchContent_MakeAvailable(Catch2)
-    add_executable(slang_mcp_tests tests/cpp/semantics.cpp tests/cpp/regressions.cpp tests/cpp/stdio.cpp)
+    add_executable(slang_mcp_tests
+        tests/cpp/semantics.cpp tests/cpp/regressions.cpp
+        tests/cpp/stdio.cpp tests/cpp/macros.cpp)
     target_include_directories(slang_mcp_tests PRIVATE tests/cpp "${CMAKE_CURRENT_BINARY_DIR}/generated")
     target_link_libraries(slang_mcp_tests PRIVATE slang_mcp_core Catch2::Catch2WithMain mcp-client)
     target_compile_features(slang_mcp_tests PRIVATE cxx_std_26)

@@ -367,6 +367,10 @@ struct Design::Impl {
 Design::Design(const ProjectConfig& config) : impl_(std::make_unique<Impl>(config)) {}
 Design::~Design() = default;
 
+MacroExpansion Design::expand_macro(const MacroQuery& query) const {
+    return adapters::expand_macro(*impl_->compilation, impl_->manager, query);
+}
+
 const std::vector<Diagnostic>& Design::diagnostics() const {
     return impl_->diagnostic_items;
 }
