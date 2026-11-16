@@ -24,7 +24,8 @@ and `single_unit`: a macro present in the repository is not necessarily active.
 ```
 
 `source_files` is a nonempty ordered list of absolute paths. Include directories
-and `defines` are optional; a null define has no replacement text. The server
+and `defines` are optional; a null define expands to `1` (Slang's default), while
+an empty string supplies an empty replacement. The server
 reads only the selected sources and their includes; it does not discover missing
 modules or packages or automatically expand the analysis scope. Call `project_load`
 again for a different file set or after modifying RTL.
@@ -97,6 +98,12 @@ Unrequested sections are not computed. Name filters select exact names before th
 limit, preserve declaration order, and accept up to 500 names. Missing names do
 not cause errors; an empty list selects zero items.
 
+Large signatures are truncated when their collection exceeds `limit` (100 by
+default, at most 500). Inspect each collection's `truncated` and `total_count`;
+an unfiltered reply is not necessarily the complete module signature. For large
+modules, explicitly filter `parameter_names` and `port_names`. Names beyond the
+first page remain selectable because filtering happens before truncation.
+
 ```json
 {"instance_path":"top.u_fifo","fields":["parameters"],"parameter_names":["DEPTH"]}
 ```
@@ -124,6 +131,26 @@ semantic uses with location, scope, instance, context, and procedural block ID
 when available. Kinds: `read`, `write`, `read_write`, `declaration`, `unknown`,
 `parameter_reference`, `port_connection`, `type_reference`, `instantiation`.
 Both `read` and `write` filters include `read_write` (for example, `count += 1`).
+The filter `kind: "read_write"` returns their union: ordinary reads, ordinary
+writes and read-modify-write accesses, with each recorded site included once.
+Declarations and unknown accesses are excluded. The `kind` of an individual
+returned item still describes that site's precise access: `read_write` on an
+item means a read-modify-write operation, such as `+=`, `++` or an inout argument.
+The `symbol` argument accepts a stable `symbol_id` or the complete elaborated
+`qualified_name` returned by `find_symbol`. For example:
+
+```json
+{"symbol":"cpu.bank_sel_ff","kind":"read"}
+```
+
+Here `cpu` must be the loaded top or the complete instance path. If the `cpu`
+module is instantiated as `soc.u_cpu`, use `soc.u_cpu.bank_sel_ff`; module type
+names do not identify an elaborated instance. Package members use `pkg::member`.
+
+`type_reference` is not currently indexed. Port-binding access records cover
+ordinary ports; these records do not establish complete interface connectivity.
+An empty result is not proof that the symbol has no uses.
+
 These are source accesses, not counts of hardware consumers or drivers. Accesses
 inside procedural branches may appear even when parameters make a branch inactive;
 the response does not prove branch reachability. Check conditions and right-hand
@@ -178,8 +205,12 @@ visiting the retained syntax tree.
 
 ## Analysis limits
 
-Collections contain `items`, `total_count`, and `truncated`; limits range from
-1 to 500. Missing dependencies can leave types, widths, and hierarchy incomplete.
+Paged semantic collections contain `items`, `total_count`, and `truncated`;
+limits range from 1 to 500. Diagnostics instead use `diagnostics` and
+`returned_count`, with the same count/truncation distinction. `find_symbol`,
+`describe_symbol` and `get_hierarchy` do not have item-count pagination; narrow
+names/scopes and set hierarchy depth to avoid large replies.
+Missing dependencies can leave types, widths, and hierarchy incomplete.
 A successful local query does not establish correctness of the rest of the RTL.
 
 The server uses Slang's AST and a shared lazy source-access index, not a regex

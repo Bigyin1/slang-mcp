@@ -2,9 +2,9 @@
 
 CI builds and tests the release executable in a digest-pinned
 `manylinux_2_28_x86_64` container using Clang 23.1.5, LLD and GCC 14's C++ runtime.
-The downloadable archive is flat: `slang_mcp`, agent instructions in `AGENTS.md`,
-README and documentation as Markdown files, and license texts in `LICENSES.md`.
-It contains no directories or source/schema files. A SHA-256 checksum is published
+The downloadable archive contains exactly two files: `slang_mcp` and the
+agent-user instructions in `AGENTS.md`. It contains no directories or other
+documentation/source/schema files. A SHA-256 checksum is published
 alongside the archive. It targets Linux x86-64 with **glibc 2.28 or
 newer**. libstdc++ and libgcc are linked statically, so the target does not need
 the build machine's C++ runtime. glibc remains dynamically linked.

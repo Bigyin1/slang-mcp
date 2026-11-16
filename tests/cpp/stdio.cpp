@@ -104,7 +104,10 @@ TEST_CASE("Real stdio MCP publishes the contract and serves semantic queries") {
             return value.name == expected.at("name").get<std::string>();
         });
         REQUIRE(tool != tools.end());
+        REQUIRE(tool->description.value() == expected.at("description").get<std::string>());
         REQUIRE(Json::parse(tool->input_schema.Dump()) == expected.at("inputSchema"));
+        REQUIRE(tool->output_schema.has_value());
+        REQUIRE(Json::parse(tool->output_schema->Dump()) == expected.at("outputSchema"));
         REQUIRE(tool->annotations.value().read_only_hint.value());
     }
     Project project;
