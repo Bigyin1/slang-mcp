@@ -1,5 +1,40 @@
 # Slang integration and query performance
 
+## Access index optimization
+
+The access index now groups reference positions by symbol ID, preserving traversal
+order without copying reference records into the lookup table. Reference queries
+use this lookup instead of scanning every reference in the design. Source-level
+read/write classification, declaration fallback and module instantiations are
+unchanged.
+
+Public queries no longer construct connectivity edges. The internal connectivity
+query explicitly requests an index with edges; if needed, it replaces the lighter
+index only after a successful rebuild. Connectivity remains outside the public
+tool catalog. The first access query still indexes the entire loaded fragment;
+this change does not implement indexing individual instances on demand.
+
+Measurements on 2026-11-17 use the Release configuration described below and
+RTLMeter OpenTitan at `69bbe91e8a2e911ef0562da2b0abab95dd4bbfc2`, with 643 ordered
+sources, single-unit mode and top `chip_sim_tb` (39,379 elaborated instances).
+The first UART signal reference query through MCP decreased from approximately
+2.50 s to 1.69 s in the initial comparison. Two additional sequential runs without
+concurrent builds measured 2.36–2.64 s before and 1.31–1.38 s after in the adapter
+alone. Steady repeated adapter queries decreased from 9–13 ms to about 2.6 ms;
+the first repeat was slower in both builds. The original index contained
+1,627,605 references and 824,575
+connectivity edges; the public-query index retains the same reference count and
+builds no edges. These are local observations, not an agent benchmark or a
+guarantee for other designs. Peak memory measurements varied too much to claim a
+memory reduction.
+
+All 28 post-load MCP results in the comparison sequence matched the original
+build, including repeated reference queries, symbol searches, module inspection,
+macro expansion, project information and diagnostics. Regression tests compare
+complete reference/procedure records before and after enabling connectivity and
+check replacement on reload. The benchmark harness remains in the ignored
+`benchmarks/` directory.
+
 ## Measured change
 
 Measurements on 2026-11-16 compare v0.1.1 with the hierarchy and instance indexes

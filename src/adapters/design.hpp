@@ -26,7 +26,7 @@ class Design {
     [[nodiscard]] std::vector<Connection> connections(const std::string& path) const;
     [[nodiscard]] std::vector<Reference> references(const std::string& identifier);
     [[nodiscard]] SymbolDescription signal(const std::string& identifier);
-    [[nodiscard]] const AccessIndex& accesses();
+    [[nodiscard]] const AccessIndex& accesses(bool connectivity = false);
     [[nodiscard]] MacroExpansion expand_macro(const MacroQuery& query) const;
 
   private:

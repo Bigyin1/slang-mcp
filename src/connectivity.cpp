@@ -96,7 +96,7 @@ Json SemanticService::trace(const Json& args) {
                         {},
                         0,
                         static_cast<std::size_t>(limit_for(args))};
-    traversal.run(manager_.design().accesses(), direction, depth);
+    traversal.run(manager_.design().accesses(true), direction, depth);
     const bool truncated = !traversal.pending.empty() || traversal.considered >= traversal.limit;
     return {{"query", args.at("signal")},
             {"direction", direction},
