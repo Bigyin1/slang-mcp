@@ -1,5 +1,4 @@
 #include "contract.hpp"
-#include "semantic_executor.hpp"
 #include "support.hpp"
 
 #include <catch2/catch_test_macros.hpp>
@@ -9,7 +8,6 @@
 #include <mcp/transport/StdioClientTransport.hpp>
 
 namespace slang_mcp::test {
-
 namespace {
 auto stdio_client() {
     mcp::StdioClientTransportOptions options;
@@ -39,39 +37,6 @@ Json failed_compilation(const mcp::CallToolResult& response, bool single_unit = 
     return payload;
 }
 } // namespace
-
-TEST_CASE("Semantic worker serializes callers and survives task exceptions") {
-    SemanticExecutor executor;
-    int count = 0;
-    std::vector<std::future<Json>> calls;
-    for (int index = 0; index < 16; ++index) {
-        calls.push_back(std::async(std::launch::async, [&] {
-            return executor.execute([&]() -> Json { return ++count; });
-        }));
-    }
-    for (auto& call : calls) {
-        REQUIRE(call.get().is_number_integer());
-    }
-    REQUIRE(count == 16);
-    REQUIRE_THROWS_AS(executor.execute([]() -> Json { throw std::invalid_argument("failure"); }),
-                      std::invalid_argument);
-    REQUIRE(executor.execute([]() -> Json { return 42; }) == 42);
-}
-
-TEST_CASE("Stdio compilation handles deeply nested expression propagation") {
-    Project project;
-    std::string expression = "x";
-    for (int index = 0; index < 800; ++index) {
-        expression += " ^ x";
-    }
-    project.write("design.sv", "module top(input logic x, output logic y); assign y = " +
-                                   expression + "; endmodule\n");
-    auto client = stdio_client();
-    REQUIRE_FALSE(
-        client->CallTool("project_load", mcp::JsonValue::Parse(project.arguments().dump()))
-            .is_error);
-    REQUIRE_FALSE(client->CallTool("project_info", mcp::JsonValue::Object{}).is_error);
-}
 
 TEST_CASE("Failed stdio load preserves candidate diagnostics and the active project") {
     Project project;

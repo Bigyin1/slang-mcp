@@ -1,7 +1,6 @@
 #include "server.hpp"
 #include "compilation_error.hpp"
 #include "contract.hpp"
-#include "semantic_executor.hpp"
 #include "semantic_service.hpp"
 
 #include <mcp/server/McpServer.hpp>
@@ -11,14 +10,6 @@
 
 namespace slang_mcp {
 namespace {
-struct ThreadedService {
-    SemanticService service{SnapshotPolicy::Disabled};
-    SemanticExecutor executor;
-    Json call(const std::string& name, const Json& arguments) {
-        return executor.execute([&] { return service.call(name, arguments); });
-    }
-};
-
 class DeferredStdioTransport final : public mcp::StdioServerTransport {
   public:
     void Start() override {}
@@ -57,7 +48,7 @@ mcp::CallToolResult compilation_error(const CompilationError& error) {
 }
 
 mcp::CallToolResult
-successful_result(ThreadedService& service, const std::string& name,
+successful_result(SemanticService& service, const std::string& name,
                   const mcp::RequestContext<mcp::CallToolRequestParams>& context) {
     const auto arguments = context.Params().arguments
                                ? Json::parse(context.Params().arguments->Dump())
@@ -69,7 +60,7 @@ successful_result(ThreadedService& service, const std::string& name,
     return result;
 }
 
-mcp::CallToolResult result_for(ThreadedService& service, const std::string& name,
+mcp::CallToolResult result_for(SemanticService& service, const std::string& name,
                                const mcp::RequestContext<mcp::CallToolRequestParams>& context) {
     try {
         return successful_result(service, name, context);
@@ -85,7 +76,7 @@ mcp::CallToolResult result_for(ThreadedService& service, const std::string& name
     }
 }
 
-void register_tools(mcp::McpServer& server, ThreadedService& service) {
+void register_tools(mcp::McpServer& server, SemanticService& service) {
     for (const auto& tool : Json::parse(tool_contract)) {
         const auto name = tool.at("name").get<std::string>();
         mcp::ToolOptions options;
@@ -104,7 +95,7 @@ void register_tools(mcp::McpServer& server, ThreadedService& service) {
 } // namespace
 
 int run_server() {
-    ThreadedService service;
+    SemanticService service(SnapshotPolicy::Disabled);
     mcp::ServerOptions options;
     options.server_info = mcp::Implementation{"slang-mcp", SLANG_MCP_VERSION};
     options.server_instructions =

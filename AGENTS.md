@@ -12,9 +12,6 @@
 ## Architectural boundaries
 
 - Keep MCP handlers thin and delegate to `SemanticService`.
-- Dispatch MCP semantic calls through `SemanticExecutor`, which serializes access
-  on a worker with a 16 MiB stack. SDK request threads can have insufficient stack
-  for recursive Slang analysis. Preserve exception propagation and orderly shutdown.
 - `ProjectManager` owns the active compilation lifecycle.
 - The single public catalog has 14 tools. `project_load` accepts explicit ordered
   source paths; the agent chooses dependencies. `single_unit` defaults to true;
