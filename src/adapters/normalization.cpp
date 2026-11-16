@@ -64,8 +64,8 @@ SymbolReference reference(const ast::Symbol& symbol, const slang::SourceManager&
 
 Width packed_width(const ast::Type& type) {
     const auto* current = &type.getCanonicalType();
-    while (auto* array = current->as_if<ast::FixedSizeUnpackedArrayType>()) {
-        current = &array->elementType.getCanonicalType();
+    while (!current->isPackedArray() && current->getArrayElementType()) {
+        current = &current->getArrayElementType()->getCanonicalType();
     }
     return current->isIntegral() ? Width(current->getBitWidth()) : std::nullopt;
 }
@@ -78,6 +78,9 @@ const ast::Type* symbol_type(const ast::Symbol& symbol) {
         return &value->getType();
     }
     if (auto* value = symbol.as_if<ast::TypeAliasType>()) {
+        return &value->targetType.getType();
+    }
+    if (auto* value = symbol.as_if<ast::TypeParameterSymbol>()) {
         return &value->targetType.getType();
     }
     if (auto* value = symbol.as_if<ast::SubroutineSymbol>()) {

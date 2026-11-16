@@ -30,6 +30,9 @@
   inspections avoids computing unrequested sections while retaining identity.
   Defaults contain parameters plus ports/connections. Legacy compatibility profiles
   are not needed.
+- Detailed array/struct/union layouts are built on demand by `describe_symbol`;
+  keep bulk queries compact. Preserve type depth/node/dimension limits and explicit
+  truncation. Packed element width and static total bits are distinct quantities.
 - Do not suppress RTL errors or missing dependencies. Scope hints indicate only a
   possible cause; if the top cannot be built, retain the attempted diagnostics and
   distinguish them from the previous active project.

@@ -60,6 +60,10 @@ class AccessVisitor : public ast::ASTVisitor<AccessVisitor, ast::VisitFlags::All
         record(expression.symbol, expression.sourceRange.start(), context_);
     }
 
+    void handle(const ast::MemberAccessExpression& expression) {
+        actual(expression.value(), context_);
+    }
+
     void record(const ast::Symbol& symbol, slang::SourceLocation source,
                 const AccessContext& context) {
         index_.references.push_back(

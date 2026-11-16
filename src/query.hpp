@@ -18,6 +18,16 @@ inline int limit_for(const Json& arguments, int fallback = 100) {
     validate_limit(limit);
     return limit;
 }
+inline int type_depth_for(const Json& arguments) {
+    const auto value = arguments.find("type_depth");
+    if (value == arguments.end() || value->is_null()) {
+        return 2;
+    }
+    if (!value->is_number_integer() || *value < 0 || *value > 8) {
+        throw std::invalid_argument("type_depth must be an integer between 0 and 8");
+    }
+    return value->get<int>();
+}
 template <class T, class Predicate>
 std::vector<T> select(const std::vector<T>& values, Predicate predicate) {
     std::vector<T> result;

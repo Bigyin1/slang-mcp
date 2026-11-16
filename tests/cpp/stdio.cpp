@@ -73,6 +73,43 @@ TEST_CASE("First failed stdio load reports diagnostics without creating an activ
     REQUIRE(client->CallTool("project_info", mcp::JsonValue::Object{}).is_error);
 }
 
+TEST_CASE(
+    "Stdio type descriptions validate nested arrays structs and unions against the contract") {
+    Project project;
+    project.write("design.sv", R"sv(
+module top;
+  typedef struct packed {logic [7:0] data; logic valid;} word_t;
+  typedef union packed {word_t word; logic [8:0] raw;} overlay_t;
+  overlay_t entries[4];
+endmodule
+)sv");
+    auto client = stdio_client();
+    REQUIRE_FALSE(
+        client->CallTool("project_load", mcp::JsonValue::Parse(project.arguments().dump()))
+            .is_error);
+    const auto response = client->CallTool(
+        "describe_symbol", mcp::JsonValue::Parse(R"({"identifier":"top.entries","type_depth":4})"));
+    REQUIRE_FALSE(response.is_error);
+    REQUIRE(response.structured_content.has_value());
+    const auto payload = Json::parse(response.structured_content->Dump());
+    REQUIRE(payload.at("width") == 9);
+    REQUIRE(payload.at("type_info").at("total_bits") == 36);
+    REQUIRE(payload.at("type_info").at("element_type").at("kind") == "packed_union");
+    REQUIRE(payload.at("type_info")
+                .at("element_type")
+                .at("fields")
+                .front()
+                .at("type_info")
+                .at("fields")
+                .size() == 2);
+    REQUIRE(Json::parse(std::get<mcp::TextContent>(response.content.front()).text) == payload);
+    REQUIRE_FALSE(
+        client
+            ->CallTool("describe_symbol",
+                       mcp::JsonValue::Parse(R"({"identifier":"top.entries","type_depth":null})"))
+            .is_error);
+}
+
 TEST_CASE("Stdio catalog exposes the focused semantic tools") {
     auto client = stdio_client();
     std::vector<std::string> names;

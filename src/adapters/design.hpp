@@ -16,7 +16,7 @@ class Design {
     [[nodiscard]] std::vector<SymbolReference> definitions() const;
     [[nodiscard]] std::vector<SymbolReference> find_symbols(const std::string& name) const;
     [[nodiscard]] SymbolReference definition_reference(const std::string& identifier) const;
-    [[nodiscard]] SymbolDescription describe(const std::string& identifier);
+    [[nodiscard]] SymbolDescription describe(const std::string& identifier, int type_depth = -1);
     [[nodiscard]] std::vector<SymbolReference> members(const std::string& scope);
     [[nodiscard]] std::vector<HierarchyNode> hierarchy(const Text& root, int depth) const;
     [[nodiscard]] const std::vector<Instance>& instances() const;

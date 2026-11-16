@@ -114,7 +114,7 @@ void SemanticService::register_symbol_tools() {
         return {{"symbols", items}, {"match_count", items.size()}};
     };
     tools_["describe_symbol"] = [this](const Json& args) -> Json {
-        return manager_.design().describe(args.at("identifier"));
+        return manager_.design().describe(args.at("identifier"), type_depth_for(args));
     };
     tools_["get_hierarchy"] = [this](const Json& args) -> Json {
         return {{"roots",

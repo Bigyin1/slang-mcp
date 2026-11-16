@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cstdint>
 #include <map>
+#include <memory>
 #include <optional>
 #include <stdexcept>
 #include <string>
@@ -105,6 +106,55 @@ struct PortDescription {
 };
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_ONLY_SERIALIZE(PortDescription, name, direction, type, width)
 
+struct TypeDimension {
+    std::string kind;
+    Text range, index_type;
+    std::optional<std::int32_t> left, right;
+    Width size, max_size;
+    std::optional<bool> is_signed;
+};
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_ONLY_SERIALIZE(TypeDimension, kind, range, left, right, size,
+                                                  index_type, max_size, is_signed)
+
+struct TypeDescription;
+struct TypeField {
+    std::string name;
+    Width bit_offset;
+    std::shared_ptr<TypeDescription> type_info;
+};
+
+struct TypeDescription {
+    std::string type, kind;
+    Width width, total_bits;
+    bool is_signed = false;
+    bool tagged = false;
+    std::vector<TypeDimension> dimensions;
+    std::shared_ptr<TypeDescription> element_type;
+    std::vector<TypeField> fields;
+    std::size_t field_count = 0;
+    bool truncated = false;
+};
+
+inline void to_json(Json& value, const TypeDescription& item);
+inline void to_json(Json& value, const TypeField& item) {
+    value = {{"name", item.name},
+             {"bit_offset", item.bit_offset},
+             {"type_info", item.type_info ? Json(*item.type_info) : Json(nullptr)}};
+}
+inline void to_json(Json& value, const TypeDescription& item) {
+    value = {{"type", item.type},
+             {"kind", item.kind},
+             {"width", item.width},
+             {"total_bits", item.total_bits},
+             {"is_signed", item.is_signed},
+             {"tagged", item.tagged},
+             {"dimensions", item.dimensions},
+             {"element_type", item.element_type ? Json(*item.element_type) : Json(nullptr)},
+             {"fields", item.fields},
+             {"field_count", item.field_count},
+             {"truncated", item.truncated}};
+}
+
 struct SymbolDescription {
     SymbolReference symbol;
     Text type;
@@ -113,9 +163,10 @@ struct SymbolDescription {
     std::vector<Parameter> parameters;
     std::vector<PortDescription> ports;
     std::vector<SymbolReference> members;
+    std::optional<TypeDescription> type_info;
 };
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_ONLY_SERIALIZE(SymbolDescription, symbol, type, width, direction,
-                                                  parameters, ports, members)
+                                                  parameters, ports, members, type_info)
 
 struct HierarchyNode {
     std::string path, name, kind;

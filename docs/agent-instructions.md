@@ -76,6 +76,14 @@ has succeeded, there is no active design to query.
 - `list_symbols` lists direct members of a known scope with a bounded reply.
   Module names select default members; nested instance/generate paths select
   effective scopes. A default-context member is not an active-instance reference.
+- For arrays, structs and unions, call `describe_symbol` on the base declaration.
+  Its `type_info` gives dimensions, element types, ordered fields and packed field
+  offsets. `width` is packed element width; `total_bits` is the static total size
+  when known. Start with default `type_depth=2`; increase up to 8 if `truncated`
+  indicates omitted nested types. There are also fixed node/dimension budgets;
+  inspect RTL if these are reached. Dynamic array contents and runtime sizes are
+  unavailable. Field/element expressions are not independently resolved, and
+  references aggregate to the base signal. Unpacked offsets are not packed layouts.
 - `get_hierarchy` and `list_instances` locate elaborated instances. Start hierarchy
   requests with a root and small `max_depth`; omitting depth returns the full
   subtree without an item limit. Instance filters are combined with AND;
