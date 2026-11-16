@@ -171,14 +171,16 @@
   },
   {
     "name": "get_references",
-    "description": "Bounded source-level semantic references. kind read or write includes read_write accesses; kind port_connection filters port-binding context. No netlist inference.",
+    "description": "Bounded source-level semantic references. kind read_write returns all reads, writes and read-modify-write accesses without duplicate sites. kind read or write also includes read-modify-write accesses; kind port_connection filters port-binding context. No netlist inference.",
     "inputSchema": {
       "properties": {
         "symbol": {
-          "type": "string"
+          "type": "string",
+          "description": "Stable symbol_id or exact elaborated qualified name, e.g. cpu.bank_sel_ff when cpu is the loaded top. Use the complete instance path within larger tops; a module type name is not an instance path."
         },
         "kind": {
           "type": "string",
+          "description": "read_write selects the union of all read/write accesses. Each returned item's kind retains its precise classification; read_write on an item means a read-modify-write access.",
           "enum": [
             "read",
             "write",
@@ -348,7 +350,7 @@
   },
   {
     "name": "inspect_module",
-    "description": "Module declaration signature and optional elaborated usage sections. Defaults to parameters and ports.",
+    "description": "Module declaration signature and optional elaborated usage sections. Defaults to parameters and ports. Each collection is limited to 100 items by default (maximum 500). For large signatures use parameter_names/port_names; check truncated and total_count.",
     "inputSchema": {
       "properties": {
         "sv_module": {
@@ -356,7 +358,10 @@
         },
         "limit": {
           "default": 100,
-          "type": "integer"
+          "type": "integer",
+          "description": "Maximum items per collection after name filtering; unfiltered large collections are truncated.",
+          "minimum": 1,
+          "maximum": 500
         },
         "fields": {
           "description": "Sections to return; omitted returns parameters and ports. Identity is always included.",
@@ -408,7 +413,7 @@
   },
   {
     "name": "inspect_instance",
-    "description": "Effective instance parameters and resolved source-level port connections, with optional children. Defaults to parameters and connections.",
+    "description": "Effective instance parameters and resolved source-level port connections, with optional children. Defaults to parameters and connections. Each collection is limited to 100 items by default (maximum 500). For large signatures use parameter_names/port_names; check truncated and total_count.",
     "inputSchema": {
       "properties": {
         "instance_path": {
@@ -416,7 +421,10 @@
         },
         "limit": {
           "default": 100,
-          "type": "integer"
+          "type": "integer",
+          "description": "Maximum items per collection after name filtering; unfiltered large collections are truncated.",
+          "minimum": 1,
+          "maximum": 500
         },
         "fields": {
           "description": "Sections to return; omitted returns parameters and connections. Identity is always included.",

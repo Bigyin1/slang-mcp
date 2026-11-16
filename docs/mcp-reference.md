@@ -97,6 +97,12 @@ Unrequested sections are not computed. Name filters select exact names before th
 limit, preserve declaration order, and accept up to 500 names. Missing names do
 not cause errors; an empty list selects zero items.
 
+Large signatures are truncated when their collection exceeds `limit` (100 by
+default, at most 500). Inspect each collection's `truncated` and `total_count`;
+an unfiltered reply is not necessarily the complete module signature. For large
+modules, explicitly filter `parameter_names` and `port_names`. Names beyond the
+first page remain selectable because filtering happens before truncation.
+
 ```json
 {"instance_path":"top.u_fifo","fields":["parameters"],"parameter_names":["DEPTH"]}
 ```
@@ -124,6 +130,22 @@ semantic uses with location, scope, instance, context, and procedural block ID
 when available. Kinds: `read`, `write`, `read_write`, `declaration`, `unknown`,
 `parameter_reference`, `port_connection`, `type_reference`, `instantiation`.
 Both `read` and `write` filters include `read_write` (for example, `count += 1`).
+The filter `kind: "read_write"` returns their union: ordinary reads, ordinary
+writes and read-modify-write accesses, with each recorded site included once.
+Declarations and unknown accesses are excluded. The `kind` of an individual
+returned item still describes that site's precise access: `read_write` on an
+item means a read-modify-write operation, such as `+=`, `++` or an inout argument.
+The `symbol` argument accepts a stable `symbol_id` or the complete elaborated
+`qualified_name` returned by `find_symbol`. For example:
+
+```json
+{"symbol":"cpu.bank_sel_ff","kind":"read"}
+```
+
+Here `cpu` must be the loaded top or the complete instance path. If the `cpu`
+module is instantiated as `soc.u_cpu`, use `soc.u_cpu.bank_sel_ff`; module type
+names do not identify an elaborated instance. Package members use `pkg::member`.
+
 These are source accesses, not counts of hardware consumers or drivers. Accesses
 inside procedural branches may appear even when parameters make a branch inactive;
 the response does not prove branch reachability. Check conditions and right-hand

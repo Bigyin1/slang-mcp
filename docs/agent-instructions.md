@@ -47,6 +47,10 @@ configuration was reproduced or that the fragment is complete.
 
 - Use `find_symbol`, `list_symbols` and `describe_symbol` to locate declarations;
   use `get_references` for source-level references and read/write accesses.
+  Pass the result's stable `symbol_id` or full elaborated `qualified_name` as
+  `symbol`. Do not substitute a module type name for an instance path.
+  Use `kind: "read_write"` to retrieve all reads and writes together; each result
+  retains its precise access kind. This filter excludes declarations and unknowns.
 - Use `get_hierarchy` and `list_instances` to locate elaborated instance paths.
 - Use `inspect_module` for declaration defaults and `inspect_instance` for
   effective instance parameters and connections. Select `fields`,
@@ -54,7 +58,11 @@ configuration was reproduced or that the fragment is complete.
 - Use `list_instance_facts` to compare instances of one module and
   `get_state_elements` for source-level state. These are not netlist queries.
 
-Check truncation and total counts on bounded collections. For constants,
+Each inspection collection defaults to at most 100 items (maximum `limit: 500`).
+For large modules, explicitly select the needed `parameter_names` and `port_names`;
+filters apply before the limit. An unfiltered signature can omit later parameters
+and ports. Check `truncated` and `total_count` in every returned collection before
+treating it as complete. For constants,
 `value` retains the exact SystemVerilog rendering; `integer_value: null` can mean
 an unknown value or a value outside signed 64-bit range.
 

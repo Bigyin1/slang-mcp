@@ -508,6 +508,54 @@ TEST_CASE("Reference direction filters include compound accesses") {
     REQUIRE(result.at("items").front().at("kind") == "read_write");
 }
 
+TEST_CASE("Read write reference filter combines access directions without duplicating sites") {
+    Project project;
+    project.write(
+        "design.sv",
+        "module top; int count; initial begin count = count + 1; count += 2; end endmodule\n");
+    SemanticService service(SnapshotPolicy::Disabled);
+    (void)service.call("project_load", project.arguments());
+    const auto result =
+        service.call("get_references", {{"symbol", "top.count"}, {"kind", "read_write"}});
+    REQUIRE(result.at("total_count") == 3);
+    REQUIRE(result.at("items")[0].at("kind") == "write");
+    REQUIRE(result.at("items")[1].at("kind") == "read");
+    REQUIRE(result.at("items")[2].at("kind") == "read_write");
+    REQUIRE(service.call("get_references", {{"symbol", "top.count"}, {"kind", "read"}})
+                .at("total_count") == 2);
+    REQUIRE(service.call("get_references", {{"symbol", "top.count"}, {"kind", "write"}})
+                .at("total_count") == 2);
+    REQUIRE(service.call("get_references", {{"symbol", "top.count"}, {"kind", "declaration"}})
+                .at("total_count") == 1);
+}
+
+TEST_CASE("References accept qualified register names and stable identifiers") {
+    Project project;
+    project.write("design.sv", R"sv(
+module cpu(input logic clk, input logic next_bank, output logic bank);
+  logic bank_sel_ff;
+  always_ff @(posedge clk) bank_sel_ff <= next_bank;
+  assign bank = bank_sel_ff;
+endmodule
+)sv");
+    auto arguments = project.arguments();
+    arguments["top_module"] = "cpu";
+    SemanticService service(SnapshotPolicy::Disabled);
+    REQUIRE(service.call("project_load", arguments).at("diagnostic_error_count") == 0);
+    const auto symbols = service.call("find_symbol", {{"name", "bank_sel_ff"}});
+    REQUIRE(symbols.at("match_count") == 1);
+    const auto& symbol = symbols.at("symbols").front();
+    REQUIRE(symbol.at("qualified_name") == "cpu.bank_sel_ff");
+    const auto by_name = service.call("get_references", {{"symbol", "cpu.bank_sel_ff"}});
+    REQUIRE(by_name == service.call("get_references", {{"symbol", symbol.at("symbol_id")}}));
+    REQUIRE(service.call("get_references", {{"symbol", "cpu.bank_sel_ff"}, {"kind", "read"}})
+                .at("total_count") == 1);
+    REQUIRE(service.call("get_references", {{"symbol", "cpu.bank_sel_ff"}, {"kind", "write"}})
+                .at("total_count") == 1);
+    REQUIRE(service.call("get_references", {{"symbol", "cpu.bank_sel_ff"}, {"kind", "read_write"}})
+                .at("total_count") == 2);
+}
+
 TEST_CASE("Focused module inspections validate target kind before selecting sections") {
     Project project;
     project.write("design.sv", "package types; endpackage\nmodule top; logic data; endmodule\n");
@@ -543,6 +591,37 @@ TEST_CASE("Focused signature filters apply before bounded pagination") {
     REQUIRE(ports.at(field).at("total_count") == 1);
     REQUIRE(ports.at(field).at("items").size() == 1);
     REQUIRE(ports.at(field).at("truncated") == false);
+}
+
+TEST_CASE("Large module signatures expose truncation and filter before the limit") {
+    Project project;
+    std::string rtl = "module top #(parameter int P0=0";
+    for (int index = 1; index < 120; ++index) {
+        rtl += ", parameter int P" + std::to_string(index) + "=" + std::to_string(index);
+    }
+    rtl += ")(input logic port0";
+    for (int index = 1; index < 120; ++index) {
+        rtl += ", input logic port" + std::to_string(index);
+    }
+    project.write("design.sv", rtl + "); endmodule\n");
+    SemanticService service(SnapshotPolicy::Disabled);
+    (void)service.call("project_load", project.arguments());
+    const auto result = service.call("inspect_module", {{"sv_module", "top"}});
+    const auto& parameters = result.at("parameters").at("parameters");
+    REQUIRE(parameters.at("total_count") == 120);
+    REQUIRE(parameters.at("items").size() == 100);
+    REQUIRE(parameters.at("truncated") == true);
+    REQUIRE(result.at("ports").at("total_count") == 120);
+    REQUIRE(result.at("ports").at("items").size() == 100);
+    REQUIRE(result.at("ports").at("truncated") == true);
+    const auto selected = service.call("inspect_module", {{"sv_module", "top"},
+                                                          {"parameter_names", {"P119"}},
+                                                          {"port_names", {"port119"}},
+                                                          {"limit", 1}});
+    REQUIRE(selected.at("parameters").at("parameters").at("items").front().at("name") == "P119");
+    REQUIRE_FALSE(selected.at("parameters").at("parameters").at("truncated").get<bool>());
+    REQUIRE(selected.at("ports").at("items").front().at("name") == "port119");
+    REQUIRE_FALSE(selected.at("ports").at("truncated").get<bool>());
 }
 
 TEST_CASE("Focused inspections do not evaluate unrequested query sections") {
