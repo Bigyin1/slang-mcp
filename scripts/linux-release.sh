@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Run on Ubuntu 24.04 x86-64 with the toolchain in linux-toolchain/action.yml.
+# Run in the pinned manylinux_2_28 container with portable-linux-toolchain.
 test "$(uname -m)" = x86_64
-export CC=clang-23 CXX=clang++-23
+test "$(getconf GNU_LIBC_VERSION)" = 'glibc 2.28'
+export CI=true CC=clang CXX=clang++
 cmake -S . -B build/linux-release -G Ninja \
   -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON \
-  -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=lld-23
+  -DPython_EXECUTABLE=/opt/python/cp310-cp310/bin/python3 \
+  -DCMAKE_EXE_LINKER_FLAGS='-fuse-ld=lld -static-libstdc++ -static-libgcc'
 cmake --build build/linux-release --parallel 2
 ctest --test-dir build/linux-release --output-on-failure
 
@@ -25,6 +27,8 @@ cp -R docs "$stage/"
 mkdir -p "$stage/src"
 cp src/contract.json "$stage/src/"
 mkdir -p "$stage/licenses"
+# The release embeds the GCC C++ runtime under its runtime library exception.
+cp -R licenses/gcc "$stage/licenses/"
 for dependency in slang mcp_sdk fmt json tomlplusplus boost_regex mimalloc; do
   directory="build/linux-release/_deps/${dependency}-src"
   for license in LICENSE LICENSE.txt LICENSE.MIT LICENSE_1_0.txt COPYING; do
@@ -37,6 +41,7 @@ done
 # Fail if the resulting executable has unresolved shared-library dependencies.
 ldd "$stage/bin/slang_mcp" | tee build/package/ldd.txt
 if grep -q 'not found' build/package/ldd.txt; then exit 1; fi
+scripts/check-linux-abi.sh "$stage/bin/slang_mcp"
 tar -C build/package -czf "dist/linux/$package.tar.gz" "$package"
 (cd dist/linux && sha256sum "$package.tar.gz" > "$package.tar.gz.sha256")
 (cd dist/linux && sha256sum -c "$package.tar.gz.sha256")

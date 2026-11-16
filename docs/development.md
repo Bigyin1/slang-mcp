@@ -14,6 +14,8 @@ project code; dependency sources are excluded. `CLANG_FORMAT`, `CLANG_TIDY`, and
 `LIZARD_EXECUTABLE` can be supplied as CMake cache variables when needed.
 
 Linux CI has separate `linux-x86_64-release` and `linux-x86_64-debug-sanitized`
-jobs. The debug job runs real stdio protocol tests under ASan/UBSan, with Linux
-leak detection enabled. The release job tests and packages the executable.
+jobs. The debug job uses Ubuntu 24.04 and runs real stdio protocol tests under
+ASan/UBSan, with Linux leak detection enabled. The release job runs in the pinned
+manylinux glibc 2.28 container, tests the executable, verifies its ABI requirements
+and packages it with static C++ runtimes.
 `ctest --preset sanitized` runs the same native suite locally.
