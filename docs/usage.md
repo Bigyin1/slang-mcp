@@ -67,8 +67,9 @@ The public API has one explicit-file loader and does not provide connectivity
 traversal or semantic diff.
 
 See [MCP reference](mcp-reference.md) for arguments and result semantics. Input schemas and descriptions
-are retained in [src/contract.json](../src/contract.json). Collections report `items`,
-`total_count`, and `truncated`; limits are between 1 and 500. Every tool advertises the
+are retained in [src/contract.json](../src/contract.json). Paged semantic collections report `items`,
+`total_count`, and `truncated`; limits are between 1 and 500. Symbol search, symbol
+descriptions and hierarchy do not have item-count pagination. Every tool advertises the
 read-only annotation. The server does not write RTL or execute build commands.
 
 Module defaults and effective instance parameters are queried separately. The exact

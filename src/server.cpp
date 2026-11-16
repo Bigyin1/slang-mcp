@@ -82,6 +82,7 @@ void register_tools(mcp::McpServer& server, SemanticService& service) {
         mcp::ToolOptions options;
         options.description = tool.at("description").get<std::string>();
         options.input_schema = mcp::JsonValue::Parse(tool.at("inputSchema").dump());
+        options.output_schema = mcp::JsonValue::Parse(tool.at("outputSchema").dump());
         options.read_only_hint = true;
         options.destructive = false;
         options.open_world_hint = false;

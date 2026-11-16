@@ -15,10 +15,16 @@ Json facts_for(const Json& args, adapters::Design& design, const Json& instance)
             {"connections", page(connections, limit)}};
 }
 
+bool access_matches(const std::string& kind, const std::string& filter) {
+    static const std::set<std::string> accesses = {"read", "write", "read_write"};
+    return accesses.contains(kind) &&
+           (filter == "read_write" || kind == filter || kind == "read_write");
+}
+
 bool reference_matches(const Reference& item, const Text& access, const Text& kind) {
     const auto filter = access.value_or(kind.value_or(""));
-    if (filter == "read" || filter == "write") {
-        return item.kind == filter || item.kind == "read_write";
+    if (filter == "read" || filter == "write" || filter == "read_write") {
+        return access_matches(item.kind, filter);
     }
     return filter.empty() || item.kind == filter || item.context == filter;
 }
