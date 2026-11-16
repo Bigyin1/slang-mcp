@@ -510,9 +510,10 @@ std::vector<Connection> Design::connections(const std::string& path) const {
     return result;
 }
 
-const AccessIndex& Design::accesses() {
-    if (!impl_->access_index) {
+const AccessIndex& Design::accesses(bool connectivity) {
+    if (!impl_->access_index || (connectivity && !impl_->access_index->connectivity)) {
         AccessIndex candidate;
+        candidate.connectivity = connectivity;
         for (const auto& item : instances()) {
             index_accesses(*impl_->raw_instances.at(item.path), impl_->manager, candidate);
         }
@@ -538,14 +539,14 @@ SymbolDescription Design::signal(const std::string& identifier) {
 std::vector<Reference> Design::references(const std::string& identifier) {
     const auto symbol = signal(identifier).symbol;
     std::vector<Reference> result;
-    for (const auto& item : accesses().references) {
-        if (item.symbol.symbol_id == symbol.symbol_id) {
-            result.push_back(item);
+    const auto& index = accesses();
+    if (const auto found = index.references_by_symbol.find(symbol.symbol_id);
+        found != index.references_by_symbol.end()) {
+        for (const auto position : found->second) {
+            result.push_back(index.references[position]);
         }
     }
-    const bool has_declaration =
-        std::ranges::any_of(result, [](const auto& item) { return item.kind == "declaration"; });
-    if (!has_declaration) {
+    if (std::ranges::none_of(result, [](const auto& item) { return item.kind == "declaration"; })) {
         result.insert(result.begin(),
                       {symbol, "declaration", symbol.location, symbol.containing_scope.value_or(""),
                        std::nullopt, "declaration", std::nullopt});

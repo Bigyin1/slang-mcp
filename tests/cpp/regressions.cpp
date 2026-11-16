@@ -4,6 +4,53 @@
 #include <catch2/generators/catch_generators.hpp>
 
 namespace slang_mcp::test {
+TEST_CASE("Reference lookup retains order and contents when connectivity is requested later") {
+    Project project;
+    project.write("design.sv", R"sv(
+module leaf(input logic d, output logic q);
+  always_comb begin q = d; q ^= d; end
+endmodule
+module top(input logic a, output logic b);
+  logic unused;
+  leaf first(.d(a), .q(b));
+  leaf second(.d(first.q), .q());
+endmodule
+)sv");
+    adapters::Design design(project_from_arguments(project.arguments()));
+    const Json before = {{"selected", design.references("top.first.q")},
+                         {"references", design.accesses().references},
+                         {"procedures", design.accesses().procedures},
+                         {"writes", design.accesses().block_writes}};
+    REQUIRE_FALSE(design.accesses().connectivity);
+    REQUIRE(design.accesses().edges.empty());
+    REQUIRE(before.at("selected").size() > 1);
+    REQUIRE_FALSE(design.references("top.unused").empty());
+    REQUIRE_FALSE(design.accesses(true).edges.empty());
+    REQUIRE(Json(design.references("top.first.q")) == before.at("selected"));
+    REQUIRE(Json(design.accesses().references) == before.at("references"));
+    REQUIRE(Json(design.accesses().procedures) == before.at("procedures"));
+    REQUIRE(Json(design.accesses().block_writes) == before.at("writes"));
+    REQUIRE(design.accesses().connectivity);
+}
+
+TEST_CASE("Reference indexes are replaced on reload and retain declaration-only symbols") {
+    Project project;
+    project.write("design.sv", "module top; logic a, b; assign b = a; endmodule");
+    SemanticService service(SnapshotPolicy::Disabled);
+    (void)service.call("project_load", project.arguments());
+    const auto before = service.call("get_references", {{"symbol", "top.a"}, {"kind", "read"}});
+    REQUIRE(before.at("total_count") == 1);
+    project.write("design.sv", "module top; logic a, b; assign a = b; endmodule");
+    (void)service.call("project_reload", {});
+    REQUIRE(
+        service.call("get_references", {{"symbol", "top.a"}, {"kind", "read"}}).at("total_count") ==
+        0);
+    REQUIRE(service.call("get_references", {{"symbol", "top.a"}, {"kind", "write"}})
+                .at("total_count") == 1);
+    REQUIRE(service.call("get_references", {{"symbol", "top"}, {"kind", "declaration"}})
+                .at("total_count") == 1);
+}
+
 TEST_CASE("Null and empty configured macro replacements follow Slang semantics") {
     Project project;
     project.write(

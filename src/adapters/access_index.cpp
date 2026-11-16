@@ -67,6 +67,8 @@ class AccessVisitor : public ast::ASTVisitor<AccessVisitor, ast::VisitFlags::All
              symbol.kind == ast::SymbolKind::Parameter ? "parameter_reference" : context.kind,
              location(source, manager_), context.scope, optional_text(context.instance),
              context.operation, context.block});
+        index_.references_by_symbol[index_.references.back().symbol.symbol_id].push_back(
+            index_.references.size() - 1);
     }
 
     void handle(const ast::ContinuousAssignSymbol& symbol) {
@@ -102,6 +104,9 @@ class AccessVisitor : public ast::ASTVisitor<AccessVisitor, ast::VisitFlags::All
         write.operation = "declaration_assignment";
         record(symbol, symbol.location, write);
         scan(*initializer, context_);
+        if (!index_.connectivity) {
+            return;
+        }
         dependency({expression_symbols(*initializer),
                     {&symbol},
                     "procedural_assignment",
@@ -116,6 +121,13 @@ class AccessVisitor : public ast::ASTVisitor<AccessVisitor, ast::VisitFlags::All
         lvalue(expression.left(), context);
         context.kind = "read";
         scan(expression.right(), context);
+        if (index_.connectivity) {
+            assignment_dependency(expression, context);
+        }
+    }
+
+    void assignment_dependency(const ast::AssignmentExpression& expression,
+                               const AccessContext& context) {
         auto sources = expression_symbols(expression.right());
         const auto targets = expression_symbols(expression.left());
         if (expression.isCompound()) {
@@ -253,6 +265,9 @@ class AccessVisitor : public ast::ASTVisitor<AccessVisitor, ast::VisitFlags::All
 
     void port_edges(const ast::ValueSymbol& actual, const ast::PortSymbol& port,
                     slang::SourceLocation source) {
+        if (!index_.connectivity) {
+            return;
+        }
         const auto from = qualified(actual);
         const auto to = qualified(*port.internalSymbol);
         if (port.direction != ast::ArgumentDirection::Out) {

@@ -6,6 +6,7 @@
 #include <optional>
 #include <stdexcept>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include <nlohmann/json.hpp>
@@ -213,8 +214,10 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_ONLY_SERIALIZE(ConnectivityPath, start, end, 
 
 struct AccessIndex {
     std::vector<Reference> references;
+    std::unordered_map<std::string, std::vector<std::size_t>> references_by_symbol;
     std::vector<Procedure> procedures;
     std::vector<ConnectivityHop> edges;
     std::map<std::string, std::vector<std::string>> block_writes;
+    bool connectivity = false;
 };
 } // namespace slang_mcp
