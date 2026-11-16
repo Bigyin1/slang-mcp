@@ -13,6 +13,7 @@ The C++ integration also draws on [slang-server](https://github.com/hudson-tradi
 - [Load a fragment and use the tools](docs/usage.md)
 - [MCP tool reference](docs/mcp-reference.md)
 - [Architecture and analysis limits](docs/architecture.md)
+- [Performance measurements and Slang integration](docs/performance.md)
 - [Development checks](docs/development.md)
 - [Linux x86-64 release artifacts](docs/releases.md)
 
