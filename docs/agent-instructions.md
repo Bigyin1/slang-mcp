@@ -59,5 +59,6 @@ Check truncation and total counts on bounded collections. For constants,
 an unknown value or a value outside signed 64-bit range.
 
 State the analyzed top, configuration and relevant limitations in your answer.
-The release archive includes the full reference at `docs/mcp-reference.md` and
-the tool schemas at `src/contract.json`.
+The release archive includes the full reference in `mcp-reference.md`. The MCP
+tool catalog supplies current argument schemas; the source repository also keeps
+them in `src/contract.json`.

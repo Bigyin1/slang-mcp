@@ -9,12 +9,13 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-24.04
+    container: quay.io/pypa/manylinux_2_28_x86_64@sha256:d086f64cddcace250ef0f0073583c51b8298159303290a730c9f59bd91edfd2c
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.sha }}
-      - uses: ./.github/actions/linux-toolchain
+      - uses: ./.github/actions/portable-linux-toolchain
       - name: Build and test release artifact
         env:
           RELEASE_TAG: ${{ github.event_name == 'push' && github.ref_name || '' }}

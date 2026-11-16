@@ -13,6 +13,7 @@ jobs:
   linux:
     name: ${{ matrix.name }}
     runs-on: ubuntu-24.04
+    container: ${{ matrix.container }}
     timeout-minutes: 60
     strategy:
       fail-fast: false
@@ -20,12 +21,18 @@ jobs:
         include:
           - name: linux-x86_64-release
             preset: release
+            container: quay.io/pypa/manylinux_2_28_x86_64@sha256:d086f64cddcace250ef0f0073583c51b8298159303290a730c9f59bd91edfd2c
           - name: linux-x86_64-debug-sanitized
             preset: sanitized
+            container: ''
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/linux-toolchain
+        if: matrix.preset == 'sanitized'
+      - uses: ./.github/actions/portable-linux-toolchain
+        if: matrix.preset == 'release'
       - uses: actions/setup-python@v5
+        if: matrix.preset == 'sanitized'
         with:
           python-version: '3.10'
       - name: Install complexity checker
