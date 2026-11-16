@@ -4,6 +4,11 @@ The server exposes one catalog of 14 read-only tools. It does not modify RTL or
 run build commands. The agent selects source files, inspects diagnostics, and
 adds dependencies as needed.
 
+Semantic requests execute serially on a worker with a 16 MiB stack, independently
+of the MCP SDK's request-thread stack. This accommodates recursive Slang analysis
+of larger designs; it does not impose a memory limit or guarantee that arbitrary
+designs fit. Partial analysis remains useful for reducing elaboration cost.
+
 Use source inspection and MCP together. RTL and headers explain expressions,
 conditions, macros, and intent; MCP supplies resolved semantics for the selected
 configuration. For macro-heavy code, check `defines`, include paths, source order,

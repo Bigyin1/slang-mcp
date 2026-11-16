@@ -81,13 +81,14 @@ configure_file(src/contract.hpp.in generated/contract.hpp @ONLY)
 
 add_library(slang_mcp_core
     src/project.cpp src/semantic_service.cpp src/rtl_queries.cpp
-    src/inspection.cpp src/connectivity.cpp src/macro_queries.cpp
+    src/inspection.cpp src/connectivity.cpp src/macro_queries.cpp src/semantic_executor.cpp
     src/adapters/design.cpp src/adapters/normalization.cpp
     src/adapters/access_index.cpp src/adapters/macro_expansion.cpp)
 target_compile_features(slang_mcp_core PUBLIC cxx_std_26)
 target_compile_definitions(slang_mcp_core PUBLIC SLANG_MCP_VERSION="${PROJECT_VERSION}")
 target_include_directories(slang_mcp_core PUBLIC src)
-target_link_libraries(slang_mcp_core PUBLIC nlohmann_json::nlohmann_json PRIVATE slang::slang)
+find_package(Threads REQUIRED)
+target_link_libraries(slang_mcp_core PUBLIC Threads::Threads nlohmann_json::nlohmann_json PRIVATE slang::slang)
 
 add_executable(slang-mcp src/main.cpp src/server.cpp)
 set_target_properties(slang-mcp PROPERTIES OUTPUT_NAME slang_mcp)
