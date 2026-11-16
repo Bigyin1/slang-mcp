@@ -121,6 +121,20 @@ results do not prove absence of uses. Inspect source conditions, expressions and
 port bindings alongside the effective configuration. The server does not expose
 connectivity tracing or semantic diff.
 
+## Inspect a concrete macro invocation
+
+When a wrapper creates modules, instances or signals through macros, use
+`expand_macro` on the actual call: absolute `file`, 1-based physical `line` and
+1-based UTF-8 byte `column` on the backtick/name. It returns expanded token text
+and the active definition location, including nested expansions and pasted names.
+Use the declaration/hierarchy tools to inspect the resulting semantic objects.
+The query uses the loaded snapshot; reload after changes. Missing child modules
+do not necessarily prevent macro inspection, but preprocessing errors at the call
+do. Inactive calls and direct built-ins are not expanded on demand. Repeated include
+contexts can be ambiguous. Macro-generated preprocessing directives are unsupported
+and return an error. Check `truncated`; `max_bytes` defaults to 8192 and can
+be raised to 65536. Read the original source and diagnostics alongside the result.
+
 State the analyzed top, configuration, relevant diagnostics and limitations when
 presenting conclusions. Distinguish established local facts from assumptions about
 missing parents, dependencies or production behavior.

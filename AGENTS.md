@@ -13,7 +13,7 @@
 
 - Keep MCP handlers thin and delegate to `SemanticService`.
 - `ProjectManager` owns the active compilation lifecycle.
-- The single public catalog has 13 tools. `project_load` accepts explicit ordered
+- The single public catalog has 14 tools. `project_load` accepts explicit ordered
   source paths; the agent chooses dependencies. `single_unit` defaults to true;
   false creates a separate compilation unit for each source file. Do not add a
   fictitious `SVBuildProjectProvider`.
@@ -35,6 +35,9 @@
   distinguish them from the previous active project.
 - Prefer suitable existing libraries for complex operations, including Slang's
   built-in visitor for AST traversal.
+- `expand_macro` uses recorded preprocessing metadata and syntax tokens from the
+  active compilation. Do not implement textual substitution or reread files to
+  guess the preprocessor state at a past invocation.
 
 ## Checks
 

@@ -522,5 +522,51 @@
       "destructiveHint": false,
       "openWorldHint": false
     }
+  },
+  {
+    "name": "expand_macro",
+    "description": "Return emitted SystemVerilog token text for one recorded user/configured macro invocation in the active compilation, including nested expansions, substituted arguments and pasted identifiers. Query the backtick or macro name by physical file/line/byte-column. Uses the loaded snapshot without recompiling or rereading source contents; reload after edits. Honors source order, includes, defines and compilation-unit mode. Inactive, undefined, intrinsic or ambiguously repeated include contexts may have no selectable expansion; errors do not change the active design. Inspect diagnostics when RTL is invalid. Returns name, invocation/definition locations, expanded_text, total_bytes and truncated. Preprocessing errors at the selected call are reported as errors, not empty expansions. Include-filename macros return the expanded filename token; macro-generated preprocessing directives are unsupported and return an error.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "file": {
+          "type": "string",
+          "description": "Absolute path to a loaded source or included file containing the invocation."
+        },
+        "line": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647,
+          "description": "1-based physical line in the loaded file, unaffected by `line directives."
+        },
+        "column": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647,
+          "description": "1-based UTF-8 byte column pointing at the invocation backtick or name, not its arguments. Tabs count as one byte; not a display or UTF-16 column."
+        },
+        "max_bytes": {
+          "type": "integer",
+          "default": 8192,
+          "minimum": 1,
+          "maximum": 65536,
+          "description": "Maximum UTF-8 bytes of expanded_text. Returns a valid UTF-8 prefix, total_bytes and truncated. Bounds output size, not syntax-tree traversal."
+        }
+      },
+      "required": [
+        "file",
+        "line",
+        "column"
+      ]
+    },
+    "outputSchema": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
   }
 ]

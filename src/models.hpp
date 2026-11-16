@@ -40,6 +40,22 @@ struct SourceLocation {
 };
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_ONLY_SERIALIZE(SourceLocation, filename, line, column)
 
+struct MacroQuery {
+    std::string file;
+    int line, column;
+    int max_bytes = 8192;
+};
+
+struct MacroExpansion {
+    std::string name;
+    SourceLocation invocation, definition;
+    std::string expanded_text;
+    std::size_t total_bytes = 0;
+    bool truncated = false;
+};
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_ONLY_SERIALIZE(MacroExpansion, name, invocation, definition,
+                                                  expanded_text, total_bytes, truncated)
+
 struct Diagnostic {
     std::string severity, code, message;
     SourceLocation location;

@@ -31,5 +31,6 @@ class SemanticService {
     [[nodiscard]] Json inspect_instance(const Json& args);
     [[nodiscard]] Json inspect_module(const Json& args);
     [[nodiscard]] Json diagnostics(const Json& args, bool grouped);
+    [[nodiscard]] Json expand_macro(const Json& args);
 };
 } // namespace slang_mcp

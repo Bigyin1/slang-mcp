@@ -44,6 +44,7 @@ Public catalog:
 | Hierarchy | `get_hierarchy`, `list_instances` |
 | Inspection | `inspect_module`, `inspect_instance`, `list_instance_facts` |
 | State | `get_state_elements` |
+| Preprocessing | `expand_macro` |
 
 Use `inspect_module` for declaration defaults and `inspect_instance` for effective
 instance values. Select sections and exact parameter/port names to bound replies:

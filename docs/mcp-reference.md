@@ -1,6 +1,6 @@
 # MCP reference
 
-The server exposes one catalog of 13 read-only tools. It does not modify RTL or
+The server exposes one catalog of 14 read-only tools. It does not modify RTL or
 run build commands. The agent selects source files, inspects diagnostics, and
 adds dependencies as needed.
 
@@ -159,6 +159,49 @@ sides in RTL using the effective parameters.
 `get_state_elements(sv_module, limit=100)` returns signals written in `always_ff`,
 with type, width, block ID, and location. It does not infer reset behavior, latches,
 or synthesis behavior for ordinary `always` blocks.
+
+## Macro expansion
+
+`expand_macro(file, line, column, max_bytes=8192)` returns the recorded expansion
+of one user/configured macro invocation in the active compilation. Use the absolute
+path of a loaded source or included file, a 1-based physical line, and a 1-based
+UTF-8 byte column on the invocation's backtick/name. Tabs count as one byte;
+coordinates ignore SystemVerilog `line remapping. Point at the invocation rather
+than its definition or arguments.
+
+```json
+{"file":"/work/wrapper.sv","line":42,"column":3,"max_bytes":8192}
+```
+
+The result contains `name`, physical `invocation` and `definition` locations,
+`expanded_text`, `total_bytes` and `truncated`. The text renders emitted syntax
+tokens, with nested calls, actual arguments, stringification and pasted identifiers
+already handled by Slang. This covers macros that generate complete modules,
+instances or signals. Whitespace/comments are retained where available; this is
+token rendering, not byte-for-byte original source or a promise of valid standalone RTL.
+For a macro used as an include filename, the result is the expanded filename token,
+not the contents of the included file. Macros that themselves generate preprocessing
+directives are currently rejected explicitly.
+
+The query uses the loaded snapshot without recompiling or rereading source contents.
+Includes, configured defines, source order, redefinitions and `single_unit` are
+therefore those of the active project. Reload after edits; after a failed load,
+queries still refer to the previous successful project. Partial designs with
+missing child modules can still expose recorded expansions. Inspect diagnostics
+when syntax/semantic errors are present. Preprocessing errors at the selected
+invocation produce an error rather than a misleading empty successful expansion.
+
+Only recorded user/configured invocations are selectable. Inactive branches,
+undefined macros, direct intrinsic built-ins and `undef` directives are not expanded
+on demand; load the appropriate configuration to inspect an inactive branch.
+Repeated inclusions of the same file/position are rejected as ambiguous instead
+of selecting an arbitrary preprocessing context. An intentionally empty macro
+returns empty text with zero bytes and no truncation.
+
+`max_bytes` ranges from 1 to 65,536 and bounds the UTF-8 output prefix without
+splitting a code point. `total_bytes` counts the entire rendered expansion;
+increase the bound if `truncated` is true. This limits output, not the cost of
+visiting the retained syntax tree.
 
 ## Analysis limits
 
