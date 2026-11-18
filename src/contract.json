@@ -1,7 +1,7 @@
 [
   {
     "name": "project_load",
-    "description": "Compile and activate one standalone SystemVerilog top from an explicit ordered file set. Replaces the active project; repeat after edits or configuration changes. Missing dependencies and recoverable RTL errors remain diagnostics. If compilation fails, the previous project stays active; a compilation_failed reply carries attempted-candidate diagnostics and an attempt_id for get_diagnostics. Returns file/configuration and diagnostic counts. Inspect get_diagnostics before using semantic results; completeness is not verified.",
+    "description": "Compile and activate one standalone SystemVerilog top from an explicit ordered file set. Missing dependencies and recoverable RTL errors remain diagnostics. A successful load already reports the elaborated tops, compilation-unit mode, configuration counts and diagnostic counts. Call get_diagnostics when a diagnostic can affect the answer. If compilation fails, the previous project stays active and the reply carries candidate diagnostics and an attempt_id for get_diagnostics. Completeness remains unverified. Load again after source edits or configuration changes.",
     "inputSchema": {
       "properties": {
         "top_module": {
@@ -61,9 +61,26 @@
   },
   {
     "name": "project_info",
-    "description": "Return the active source files, includes, defines, tops, compilation-unit mode, metadata, Slang version and load summary without recompiling. Requires an active project. After a failed load this still describes the previous successful load.",
+    "description": "Check the active compilation without recompiling. By default returns a compact summary with tops, compilation-unit mode, file/configuration and diagnostic counts, metadata and Slang version. A successful project_load already returns the load summary. Set section to page through one configuration list as items, returned_count, total_count, truncated and next_cursor. Requires an active project. After a failed load this still describes the previous successful load.",
     "inputSchema": {
-      "properties": {},
+      "properties": {
+        "section": {
+          "type": "string",
+          "enum": ["source_files", "include_directories", "defines"],
+          "description": "Select one list. Source files and include directories retain their supplied order. Defines are sorted by name, with bare names for null values and NAME=value for strings."
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 500,
+          "default": 100,
+          "description": "Maximum items per page. Requires section. The reply size limit can shorten the page."
+        },
+        "cursor": {
+          "type": "string",
+          "description": "Continue with next_cursor and the same section while the compilation is active. Null next_cursor marks the last page."
+        }
+      },
       "type": "object"
     },
     "outputSchema": {
@@ -481,7 +498,7 @@
   },
   {
     "name": "list_instances",
-    "description": "Return active elaborated module/interface instances as items, total_count and truncated, including the top. Optional filters are combined with AND before the limit. Generate containers are shown by get_hierarchy instead. No offset pagination; narrow the filters for large result sets.",
+    "description": "Return active elaborated module/interface instances as items, total_count and truncated, including the top. To count one module type, set sv_module and limit=1 and read total_count. For descendants of one branch, add a path_prefix such as top.u1. with the final dot as the path separator. All filters apply before counting and limiting results. Generate containers are available through get_hierarchy. Narrow filters when you need individual instances beyond the limit.",
     "inputSchema": {
       "properties": {
         "sv_module": {

@@ -131,7 +131,7 @@ void SemanticService::register_project_tools() {
         return manager_.load(project_from_arguments(args));
     };
     tools_["project_reload"] = [this](const Json&) { return manager_.reload(); };
-    tools_["project_info"] = [this](const Json&) { return manager_.info(); };
+    tools_["project_info"] = [this](const Json& args) { return manager_.info(args); };
     tools_["semantic_diff"] = [this](const Json& args) { return manager_.diff(limit_for(args)); };
     tools_["get_diagnostics"] = [this](const Json& args) { return diagnostics(args, false); };
     tools_["summarize_diagnostics_by_code"] = [this](const Json& args) {

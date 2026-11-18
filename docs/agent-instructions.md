@@ -46,28 +46,28 @@ local declarations, parameters, ports, available hierarchy and source accesses
 can still be inspected. Unresolved portions may have unavailable or unreliable
 types, widths and connections.
 
-Do not expand to the full design merely because dependencies are missing. Add
-only files needed for the current question, then reload and check diagnostics.
-Treat boundary-related errors as limitations of the selected fragment, not as
-proof of RTL defects or permission to ignore errors. A missing-dependency hint
-can also indicate a typo. Some missing packages or syntax errors prevent top
-elaboration entirely; then the failed-load rules below apply and the attempted
-fragment does not become the active design.
+If an unavailable child module lies outside the question, use the facts Slang
+can establish in the loaded top and report the unresolved boundary. A
+missing-dependency hint can also indicate a typo. If the question depends on the
+missing child, add only the needed files, then reload and check diagnostics.
 
 ## Check diagnostics and the active configuration
 
-After a successful load, use `get_diagnostics` before trusting unresolved types,
-widths or hierarchy. Missing definitions can be expected at fragment boundaries,
-but a `possible_missing_dependency` hint does not establish that an error is
-harmless. Report unresolved dependencies and syntax/type errors affecting the answer.
-Zero diagnostics do not prove completeness or reproduce a production configuration.
+Start with the successful `project_load` reply. It already reports elaborated
+tops, compilation-unit mode, file count and diagnostic counts. Call
+`get_diagnostics` when errors or warnings could affect the answer. Use
+`summary: true` for an overview, then filter by file or code if needed. Even a
+load with zero diagnostics has unverified completeness.
 
-A failed load preserves the previous active design. A reply with
-`status: "compilation_failed"` contains diagnostics and an `attempt_id`.
-Pass that ID to `get_diagnostics` to filter or page through the failed
-compilation. For a quick overview, use `summary: true` to group diagnostics by
-code. Without an attempt ID, queries use the last successful load. Use
-`project_info` to verify active files and options.
+If a syntax error prevents the selected top from building, the
+`compilation_failed` reply gives an `attempt_id`. Pass that ID to
+`get_diagnostics` to inspect the failed attempt. Semantic queries still use the
+previous active design, if one exists.
+
+Call `project_info` when you need to check which configuration is active. Its
+default reply is compact. Request `section: "source_files"`,
+`section: "include_directories"` or `section: "defines"` for the corresponding
+list and follow `next_cursor` as needed.
 
 ## Choose the query that answers the question
 
@@ -90,8 +90,10 @@ code. Without an attempt ID, queries use the last successful load. Use
   the top and its direct children. Expand a node with `has_children` using its
   path as `root`. Pass `next_cursor` with the original filters for more nodes
   at the same depth.
-- To count instances of one module, call `list_instances` with `sv_module`
-  and `limit: 1` and read `total_count`. For their effective parameters, use
+- To count instances of one type, call `list_instances` with `sv_module`
+  and `limit: 1` and read `total_count`, even if `truncated` is true. To count
+  descendants of one branch, add its instance path with a final dot, for example
+  `path_prefix: "top.u1."` to count below `top.u1`. For effective parameters, use
   `list_instance_facts` with `fields: ["parameters"]` and the needed
   `parameter_names`. Copy returned instance paths exactly.
 - `inspect_module` returns standalone declaration defaults. `inspect_instance`

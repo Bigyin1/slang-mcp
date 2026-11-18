@@ -38,6 +38,51 @@ Json failed_compilation(const mcp::CallToolResult& response, bool single_unit = 
 }
 } // namespace
 
+TEST_CASE("Stdio project info keeps configuration cursors tied to the active load") {
+    Project project;
+    project.write("design.sv", "module top; endmodule\n");
+    project.write("empty.sv", "// Empty compilation source.\n");
+    auto client = stdio_client();
+    const auto load = mcp::JsonValue::Parse(Json{
+        {"source_files", {project.path("design.sv").string(), project.path("empty.sv").string()}},
+        {"top_module", "top"}}
+                                                .dump());
+    REQUIRE_FALSE(client->CallTool("project_load", load).is_error);
+    const auto info = client->CallTool("project_info", mcp::JsonValue::Object{});
+    REQUIRE_FALSE(info.is_error);
+    const auto compact = Json::parse(info.structured_content->Dump());
+    REQUIRE(compact.size() == 5);
+    REQUIRE(compact.at("summary").at("source_file_count") == 2);
+    const auto first = client->CallTool(
+        "project_info", mcp::JsonValue::Parse(R"({"section":"source_files","limit":1})"));
+    REQUIRE_FALSE(first.is_error);
+    const auto page = Json::parse(first.structured_content->Dump());
+    REQUIRE(page.at("items") == Json::array({project.path("design.sv").string()}));
+    REQUIRE(page.at("returned_count") == 1);
+    REQUIRE(page.at("total_count") == 2);
+    REQUIRE(page.at("truncated") == true);
+
+    const auto cursor = page.at("next_cursor");
+    const auto continuation =
+        mcp::JsonValue::Parse(Json{{"section", "source_files"}, {"cursor", cursor}}.dump());
+    REQUIRE(client
+                ->CallTool(
+                    "project_info",
+                    mcp::JsonValue::Parse(Json{{"section", "defines"}, {"cursor", cursor}}.dump()))
+                .is_error);
+    auto broken = Json::parse(load.Dump());
+    broken["top_module"] = "missing";
+    REQUIRE(client->CallTool("project_load", mcp::JsonValue::Parse(broken.dump())).is_error);
+    const auto continued = client->CallTool("project_info", continuation);
+    REQUIRE_FALSE(continued.is_error);
+    const auto last = Json::parse(continued.structured_content->Dump());
+    REQUIRE(last.at("items") == Json::array({project.path("empty.sv").string()}));
+    REQUIRE(last.at("truncated") == false);
+    REQUIRE(last.at("next_cursor").is_null());
+    REQUIRE_FALSE(client->CallTool("project_load", load).is_error);
+    REQUIRE(client->CallTool("project_info", continuation).is_error);
+}
+
 TEST_CASE("Failed stdio load preserves candidate diagnostics and the active project") {
     Project project;
     project.write("design.sv", "module top; logic preserved; endmodule\n");

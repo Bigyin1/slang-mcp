@@ -1,4 +1,5 @@
 #include "project.hpp"
+#include "pagination.hpp"
 #include "query.hpp"
 
 #include <filesystem>
@@ -41,6 +42,16 @@ bool parse_single_unit(const Json& arguments) {
         throw std::invalid_argument("single_unit must be a boolean");
     }
     return value->get<bool>();
+}
+
+void validate_configuration_page(const Json& arguments) {
+    const auto limit = arguments.value("limit", Json(100));
+    if (!limit.is_number_integer() || limit < 1 || limit > 500) {
+        throw std::invalid_argument("limit must be an integer between 1 and 500");
+    }
+    if (!arguments.value("cursor", Json("")).is_string()) {
+        throw std::invalid_argument("cursor must be a string");
+    }
 }
 
 Json nullable(const std::map<std::string, std::string>& values, const std::string& key) {
@@ -197,21 +208,41 @@ Json ProjectManager::summary() {
     return result;
 }
 
-Json ProjectManager::info() {
+Json ProjectManager::info(const Json& arguments) {
     (void)design();
+    if (arguments.contains("section")) {
+        return configuration_page(arguments);
+    }
+    if (arguments.contains("limit") || arguments.contains("cursor")) {
+        throw std::invalid_argument("limit and cursor require a project_info section");
+    }
+    return {{"summary", summary()},
+            {"single_unit", config_.single_unit},
+            {"configured_top_modules", config_.top_modules},
+            {"metadata", config_.metadata},
+            {"slang_version", design().version()}};
+}
+
+Json ProjectManager::configuration_page(const Json& arguments) const {
+    validate_configuration_page(arguments);
+    const auto section = text_option(arguments, "section");
+    const Pagination page(arguments, "project_info", revision());
+    if (section == "source_files") {
+        return page.render(config_.source_files, "items", std::identity{});
+    }
+    if (section == "include_directories") {
+        return page.render(config_.include_directories, "items", std::identity{});
+    }
+    if (section != "defines") {
+        throw std::invalid_argument(
+            "section must be source_files, include_directories, or defines");
+    }
     std::vector<std::string> defines;
     defines.reserve(config_.defines.size());
     for (const auto& [name, value] : config_.defines) {
         defines.push_back(value ? name + "=" + *value : name);
     }
-    return {{"summary", summary()},
-            {"source_files", config_.source_files},
-            {"single_unit", config_.single_unit},
-            {"include_directories", config_.include_directories},
-            {"defines", defines},
-            {"configured_top_modules", config_.top_modules},
-            {"metadata", config_.metadata},
-            {"slang_version", design().version()}};
+    return page.render(defines, "items", std::identity{});
 }
 
 Json ProjectManager::analysis_context() const {

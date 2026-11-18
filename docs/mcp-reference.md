@@ -57,8 +57,16 @@ cannot, the MCP response has `isError: true` and JSON containing
 those of the previous active project; this context includes the selected
 `single_unit`. Semantic queries use the previous successful load, if any.
 
-`project_info()` returns active sources, includes, defines, tops, `single_unit`,
-metadata, Slang version, and a summary without recompiling.
+`project_info()` returns the active load summary, configured tops, `single_unit`,
+metadata and Slang version without recompiling. To verify the supplied configuration,
+request `section: "source_files"`, `"include_directories"` or `"defines"`. Each
+section returns a page of strings with `items`, `returned_count`, `total_count`,
+`truncated` and `next_cursor`. Pass `limit` (default 100, maximum 500) and `cursor`
+only with `section`. Files retain their supplied order and duplicates, include
+directories retain their search order, and defines appear in name order as
+`NAME` (null) or `NAME=value` (including `NAME=` for an empty value). Continue
+with the same section until `next_cursor` is null. A successful load expires
+the cursor. A failed load preserves the active configuration and its cursors.
 
 `get_diagnostics` accepts `severity`, exact `file` and `code` filters, and
 returns `diagnostics`, counts, a continuation cursor, and the analysis context.
