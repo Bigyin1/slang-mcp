@@ -73,6 +73,25 @@ TEST_CASE("First failed stdio load reports diagnostics without creating an activ
     REQUIRE(client->CallTool("project_info", mcp::JsonValue::Object{}).is_error);
 }
 
+TEST_CASE("Symbol lookup errors include candidates or a module-to-instance hint") {
+    Project project;
+    project.write("design.sv", "module leaf(input logic d); endmodule\n"
+                               "module top(input logic a); leaf u(.d(a)); endmodule\n");
+    auto client = stdio_client();
+    REQUIRE_FALSE(
+        client->CallTool("project_load", mcp::JsonValue::Parse(project.arguments().dump()))
+            .is_error);
+    const auto ambiguous =
+        client->CallTool("describe_symbol", mcp::JsonValue::Parse(R"({"identifier":"top.u.d"})"));
+    REQUIRE(ambiguous.is_error);
+    REQUIRE(Json::parse(ambiguous.structured_content->Dump()).at("candidates").size() == 2);
+    const auto wrong_module =
+        client->CallTool("get_references", mcp::JsonValue::Parse(R"({"symbol":"leaf.d"})"));
+    REQUIRE(wrong_module.is_error);
+    REQUIRE(Json::parse(wrong_module.structured_content->Dump()).at("suggested_tool") ==
+            "list_instances");
+}
+
 TEST_CASE(
     "Stdio type descriptions validate nested arrays structs and unions against the contract") {
     Project project;

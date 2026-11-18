@@ -2,6 +2,7 @@
 #include "compilation_error.hpp"
 #include "contract.hpp"
 #include "semantic_service.hpp"
+#include "symbol_lookup_error.hpp"
 
 #include <mcp/server/McpServer.hpp>
 #include <mcp/transport/StdioServerTransport.hpp>
@@ -23,6 +24,19 @@ mcp::CallToolResult tool_error(const std::string& message) {
     result.is_error = true;
     result.content.push_back(mcp::TextContent{"text", message});
     return result;
+}
+
+mcp::CallToolResult structured_error(const Json& payload) {
+    const auto encoded = payload.dump();
+    auto result = tool_error(encoded);
+    result.structured_content = mcp::JsonValue::Parse(encoded);
+    return result;
+}
+
+mcp::CallToolResult lookup_error(const SymbolLookupError& error) {
+    auto payload = error.details;
+    payload["message"] = error.what();
+    return structured_error(payload);
 }
 
 mcp::CallToolResult compilation_error(const CompilationError& error) {
@@ -66,6 +80,8 @@ mcp::CallToolResult result_for(SemanticService& service, const std::string& name
         return successful_result(service, name, context);
     } catch (const CompilationError& error) {
         return compilation_error(error);
+    } catch (const SymbolLookupError& error) {
+        return lookup_error(error);
     } catch (const std::invalid_argument& error) {
         return tool_error(error.what());
     } catch (const Json::exception& error) {

@@ -147,7 +147,7 @@
   },
   {
     "name": "describe_symbol",
-    "description": "Describe one indexed symbol by symbol_id, full qualified name or unambiguous short name. Returns identity, available type/width/direction, members and signature details. type_info describes arrays, struct/union fields, packed field offsets and static total_bits; type_depth defaults to 2 (0–8). Type trees are bounded to 128 nodes and 16 dimensions per array node; truncated propagates omitted descendants. Width is the integral packed-element width after outer unpacked array layers, not total array size; nonintegral widths are null. Existing scope/signature lists are unpaginated. Module signatures may use a representative active instance; prefer inspect_module for defaults and inspect_instance for effective values. Field/element expressions such as signal.field or memory[0] are not independently resolved; inspect the base declaration and its type_info.",
+    "description": "Describe one indexed symbol by symbol_id, full qualified name or unambiguous short name. Returns identity, available type/width/direction, members and signature details. type_info describes arrays, struct/union fields, packed field offsets and static total_bits; type_depth defaults to 2 (0–8). Type trees are bounded to 128 nodes and 16 dimensions per array node; truncated propagates omitted descendants. Width is the integral packed-element width after outer unpacked array layers, not total array size; nonintegral widths are null. Existing scope/signature lists are unpaginated. Module signatures may use a representative active instance; prefer inspect_module for defaults and inspect_instance for effective values. Field/element expressions such as signal.field or memory[0] are not independently resolved; inspect the base declaration and its type_info. An ambiguous lookup returns candidate symbol IDs when available.",
     "inputSchema": {
       "properties": {
         "identifier": {
@@ -376,7 +376,7 @@
   },
   {
     "name": "get_references",
-    "description": "Return bounded source-level declarations and indexed uses of a symbol as items, total_count and truncated. Omitted kind includes all recorded categories. read_write selects all reads/writes once; item kinds remain precise. Port bindings are ordinary-port actual accesses, not netlist connectivity. System-call accesses can be unknown; inactive procedural branches can still contribute. Empty results do not prove no uses: indexing is incomplete, and type_reference is not currently populated. Aggregate accesses are reported for the base signal, not individual fields/elements or bit ranges; selectors of written elements are reads.",
+    "description": "Return bounded source-level declarations and indexed uses of a symbol as items, total_count and truncated. Omitted kind includes all recorded categories. read_write selects all reads/writes once; item kinds remain precise. Port bindings are ordinary-port actual accesses, not netlist connectivity. System-call accesses can be unknown; inactive procedural branches can still contribute. Empty results do not prove no uses: indexing is incomplete, and type_reference is not currently populated. Aggregate accesses are reported for the base signal, not individual fields/elements or bit ranges; selectors of written elements are reads. An ambiguous lookup returns candidate symbol IDs when available.",
     "inputSchema": {
       "properties": {
         "symbol": {
@@ -496,7 +496,7 @@
   },
   {
     "name": "list_instance_facts",
-    "description": "Return bounded facts for matching active instances of one module/interface type: each item has instance, effective parameters and resolved port connections. limit bounds instances; fact_limit separately bounds each nested parameter/connection collection. Counts/truncation are reported at each level. Optional name/path_prefix filters use list_instances semantics; this is not every instance if truncated.",
+    "description": "Return bounded facts for matching active instances of one module/interface type: each item has instance, effective parameters and resolved port connections. limit bounds instances; fact_limit separately bounds each nested parameter/connection collection. Counts/truncation are reported at each level. Optional name/path_prefix filters use list_instances semantics; this is not every instance if truncated. Use fields to request only parameters or only connections. Effective parameters include is_overridden.",
     "inputSchema": {
       "properties": {
         "sv_module": {
@@ -540,6 +540,16 @@
         "path_prefix": {
           "type": "string",
           "description": "Optional literal full-path prefix, combined with the other filters."
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "parameters",
+              "connections"
+            ]
+          },
+          "description": "Sections to return and compute. Omit for both. An empty array returns only instance identities."
         }
       },
       "required": [
@@ -655,7 +665,7 @@
   },
   {
     "name": "inspect_instance",
-    "description": "Inspect one active elaborated instance using its effective parameters. Returns instance identity plus selected sections; defaults are parameters and source-level port connections. Optional children lists direct child instances, including those within generate scopes. Unrequested sections are not evaluated. Each collection defaults to 100 items (maximum 500); filter parameter/port names and check total_count/truncated.",
+    "description": "Inspect one active elaborated instance using its effective parameters. Returns instance identity plus selected sections; defaults are parameters and source-level port connections. Optional children lists direct child instances, including those within generate scopes. Unrequested sections are not evaluated. Each collection defaults to 100 items (maximum 500); filter parameter/port names and check total_count/truncated. Effective parameters report is_overridden. A connection expression preserves the full actual, e.g. req.addr, while symbols identifies referenced declarations, e.g. req.",
     "inputSchema": {
       "properties": {
         "instance_path": {

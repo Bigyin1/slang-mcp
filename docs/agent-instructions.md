@@ -73,6 +73,7 @@ has succeeded, there is no active design to query.
 - `find_symbol` searches exact short declaration names. Narrow repeated names
   with `scope` and use `next_cursor` if more matches are needed. Use `symbol_id`
   or a full elaborated path for `get_references` and `describe_symbol`.
+  On ambiguity, choose a returned candidate ID.
 - `list_symbols` lists direct members of a known scope with a bounded reply.
   Module names select default members; nested instance/generate paths select
   effective scopes. A default-context member is not an active-instance reference.
@@ -89,13 +90,18 @@ has succeeded, there is no active design to query.
   path as `root`. Pass `next_cursor` with the original filters for more nodes
   at the same depth.
 - To count instances of one module, call `list_instances` with `sv_module`
-  and `limit: 1` and read `total_count`.
+  and `limit: 1` and read `total_count`. For their effective parameters, use
+  `list_instance_facts` with `fields: ["parameters"]` and the needed
+  `parameter_names`. Copy returned instance paths exactly.
 - `inspect_module` returns standalone declaration defaults. `inspect_instance`
   returns effective instance parameters and resolved port connections. Prefer
   these focused tools for signatures; `describe_symbol` lists are unbounded and
   its module signature details may come from a representative active instance.
-- `list_instance_facts` compares instances of one module type. `limit` bounds
-  instances and `fact_limit` bounds their parameter and connection lists.
+- The effective parameter flag `is_overridden` records an override even when
+  its value equals the declaration default. For connections, read `expression`
+  for the actual (such as `req.addr` or `bus[i]`) and `symbols` for referenced
+  declarations (such as `req`, or `bus` and `i`). A concatenation `{a,b}`
+  can refer to multiple declarations.
 - `get_state_elements` reports signal/block writes in `always_ff` across active
   instances of a module type. It does not infer resets, latches, physical storage
   or state from ordinary `always`/`initial` processes.

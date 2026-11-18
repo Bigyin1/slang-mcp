@@ -79,7 +79,8 @@ a typo can produce the same diagnostic. The original severity is never lowered.
 
 `sv_module` identifies a module/interface declaration; `instance_path` identifies
 an elaborated instance, such as `top.u_fifo`. Ambiguous names produce a controlled
-error; prefer full paths.
+error with candidate IDs when available. For a module name used in place of
+an instance path, the error can suggest `list_instances`.
 
 ### Arrays, structures and unions
 
@@ -156,18 +157,22 @@ first page remain selectable because filtering happens before truncation.
 Parameters retain their exact SystemVerilog representation in `value`. The
 `integer_value` convenience field is null for type parameters, X/Z, and constants
 outside signed 64-bit range. Module parameters have `value_kind: "declared_default"`;
-instance parameters have `"effective"`.
+instance parameters have `"effective"`. `is_overridden` indicates that Slang
+applied an override, including for type parameters and overrides equal to defaults.
 
 Connections contain the formal port, actual expression, resolved base symbols,
-actual type/width, and location. Their `kind` is `signal`, `expression`,
+actual type/width, and location. `expression` shows the actual, while `symbols`
+lists its referenced declarations. For example, `bus[i]` may reference both
+`bus` and `i`, and `{a,b}` may reference both `a` and `b`. Their `kind` is `signal`, `expression`,
 `unconnected`, or `interface`. For example, expression `request.address` and
 base symbol `request` describe different aspects of a connection. Expression text
 and symbol lists are bounded; truncation indicators are included in the response.
 
-`list_instance_facts(sv_module, parameter_names?, port_names?, limit=100,
+`list_instance_facts(sv_module, fields?, parameter_names?, port_names?, limit=100,
 fact_limit=100)` returns parameters and connections for multiple instances of
 one module type in a single call. `limit` bounds instances and `fact_limit` bounds
-each nested collection. This reduces repeated requests for individual paths.
+each nested collection. Use `fields: ["parameters"]` or `["connections"]`
+to compute only that section. Omit `fields` for both, or pass `[]` for identities.
 
 ## References and state
 

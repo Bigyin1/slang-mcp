@@ -3,16 +3,46 @@
 
 namespace slang_mcp {
 namespace {
-Json facts_for(const Json& args, adapters::Design& design, const Json& instance) {
+struct FactSelection {
+    const Json& args;
+    int limit = option(args, "fact_limit", 100);
+    std::set<std::string> fields =
+        option(args, "fields", std::set<std::string>{"parameters", "connections"});
+
+    void validate() const {
+        validate_limit(limit);
+        for (const auto& field : fields) {
+            if (field != "parameters" && field != "connections") {
+                throw std::invalid_argument("unknown instance facts field: " + field);
+            }
+        }
+    }
+};
+
+Json parameter_facts(adapters::Design& design, const std::string& path,
+                     const FactSelection& selection) {
+    return page(named(design.parameters(path, true), selection.args, "parameter_names",
+                      [](const auto& item) { return item.name; }),
+                selection.limit);
+}
+
+Json connection_facts(adapters::Design& design, const std::string& path,
+                      const FactSelection& selection) {
+    return page(named(design.connections(path), selection.args, "port_names",
+                      [](const auto& item) { return item.port.name; }),
+                selection.limit);
+}
+
+Json facts_for(const FactSelection& selection, adapters::Design& design, const Json& instance) {
     const auto path = instance.at("path").get<std::string>();
-    const auto parameters = named(design.parameters(path, true), args, "parameter_names",
-                                  [](const auto& item) { return item.name; });
-    const auto connections = named(design.connections(path), args, "port_names",
-                                   [](const auto& item) { return item.port.name; });
-    const auto limit = option(args, "fact_limit", 100);
-    return {{"instance", instance},
-            {"parameters", page(parameters, limit)},
-            {"connections", page(connections, limit)}};
+    Json result = {{"instance", instance}};
+    if (selection.fields.contains("parameters")) {
+        result["parameters"] = parameter_facts(design, path, selection);
+    }
+    if (selection.fields.contains("connections")) {
+        result["connections"] = connection_facts(design, path, selection);
+    }
+    return result;
 }
 
 bool access_matches(const std::string& kind, const std::string& filter) {
@@ -94,10 +124,10 @@ Json SemanticService::list_instances(const Json& args) {
 Json SemanticService::instance_facts(const Json& args) {
     auto instances = list_instances(args);
     std::vector<Json> result;
-    const auto fact_limit = option(args, "fact_limit", 100);
-    validate_limit(fact_limit);
+    const FactSelection selection{args};
+    selection.validate();
     for (const auto& instance : instances.at("items")) {
-        result.push_back(facts_for(args, manager_.design(), instance));
+        result.push_back(facts_for(selection, manager_.design(), instance));
     }
     instances["items"] = std::move(result);
     return instances;

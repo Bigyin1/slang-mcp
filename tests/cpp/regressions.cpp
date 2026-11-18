@@ -457,6 +457,29 @@ TEST_CASE("Search cursors survive a failed load but expire after a successful lo
     REQUIRE_THROWS_AS(service.call("find_symbol", args), std::invalid_argument);
 }
 
+TEST_CASE("Batch instance facts preserve equal-valued overrides and omit unselected sections") {
+    Project project;
+    project.write("design.sv", R"sv(
+module leaf #(parameter int N=8, parameter type T=logic) (input T value);
+endmodule
+module top(input logic a);
+  leaf plain(.value(a));
+  leaf #(.N(8), .T(logic)) configured(.value(a));
+endmodule
+)sv");
+    SemanticService service(SnapshotPolicy::Disabled);
+    (void)service.call("project_load", project.arguments());
+    const auto facts =
+        service.call("list_instance_facts", {{"sv_module", "leaf"}, {"fields", {"parameters"}}});
+    REQUIRE(facts.at("total_count") == 2);
+    REQUIRE_FALSE(facts.at("items").front().contains("connections"));
+    for (const auto index : {0, 1}) {
+        for (const auto& parameter : facts.at("items")[index].at("parameters").at("items")) {
+            REQUIRE(parameter.at("is_overridden") == (index == 1));
+        }
+    }
+}
+
 TEST_CASE("Partial loading preserves local facts despite missing child implementations") {
     Project project;
     project.write("fragment.sv", R"sv(

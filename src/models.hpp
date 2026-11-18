@@ -77,9 +77,10 @@ struct Parameter {
     Text value;
     bool is_local = false;
     std::optional<std::int64_t> integer_value;
+    bool is_overridden = false;
 };
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_ONLY_SERIALIZE(Parameter, name, type, value, is_local,
-                                                  integer_value)
+                                                  integer_value, is_overridden)
 
 struct Port {
     std::string name, direction, type;
