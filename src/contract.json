@@ -1,7 +1,7 @@
 [
   {
     "name": "project_load",
-    "description": "Compile and activate one standalone SystemVerilog top from an explicit ordered file set. Replaces the active project; repeat after edits or configuration changes. Missing dependencies and recoverable RTL errors remain diagnostics. If compilation fails, the previous project stays active; a compilation_failed reply carries attempted-candidate diagnostics. Returns file/configuration and diagnostic counts. Inspect get_diagnostics before using semantic results; completeness is not verified.",
+    "description": "Compile and activate one standalone SystemVerilog top from an explicit ordered file set. Missing dependencies and recoverable RTL errors remain diagnostics. A successful load already reports the elaborated tops, compilation-unit mode, configuration counts and diagnostic counts. Call get_diagnostics when a diagnostic can affect the answer. If compilation fails, the previous project stays active and the reply carries candidate diagnostics and an attempt_id for get_diagnostics. Completeness remains unverified. Load again after source edits or configuration changes.",
     "inputSchema": {
       "properties": {
         "top_module": {
@@ -61,9 +61,26 @@
   },
   {
     "name": "project_info",
-    "description": "Return the active source files, includes, defines, tops, compilation-unit mode, metadata, Slang version and load summary without recompiling. Requires an active project. After a failed load this still describes the previous successful load.",
+    "description": "Check the active compilation without recompiling. By default returns a compact summary with tops, compilation-unit mode, file/configuration and diagnostic counts, metadata and Slang version. A successful project_load already returns the load summary. Set section to page through one configuration list as items, returned_count, total_count, truncated and next_cursor. Requires an active project. After a failed load this still describes the previous successful load.",
     "inputSchema": {
-      "properties": {},
+      "properties": {
+        "section": {
+          "type": "string",
+          "enum": ["source_files", "include_directories", "defines"],
+          "description": "Select one list. Source files and include directories retain their supplied order. Defines are sorted by name, with bare names for null values and NAME=value for strings."
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 500,
+          "default": 100,
+          "description": "Maximum items per page. Requires section. The reply size limit can shorten the page."
+        },
+        "cursor": {
+          "type": "string",
+          "description": "Continue with next_cursor and the same section while the compilation is active. Null next_cursor marks the last page."
+        }
+      },
       "type": "object"
     },
     "outputSchema": {
@@ -78,19 +95,41 @@
   },
   {
     "name": "get_diagnostics",
-    "description": "Return active-compilation Slang diagnostics and analysis context. Returns diagnostics, returned_count, total_count and truncated; severity filtering precedes truncation. UnknownModule/UnknownClassOrPackage scope hints mean possible missing dependencies, not harmless errors. After a failed load this reports the previous active project, not the candidate diagnostics carried by the failed-load reply.",
+    "description": "Return Slang diagnostics, analysis context and pagination. Filters are applied before counting. summary=true returns groups by code rather than individual diagnostics. UnknownModule and UnknownClassOrPackage may indicate a missing dependency or a typo. Use the attempt_id from a failed project_load to query that attempt separately from the active project.",
     "inputSchema": {
       "properties": {
         "limit": {
-          "default": 100,
           "type": "integer",
+          "default": 100,
           "minimum": 1,
           "maximum": 500,
-          "description": "Maximum items per selected collection after filtering. Default 100; range 1–500. total_count is the number before truncation, not the returned item count."
+          "description": "Maximum items per page. Defaults to 100. The reply size limit can shorten the page."
         },
         "severity": {
           "type": "string",
           "description": "Optional case-insensitive exact severity: ignored, note, warning, error or fatal. Omit to include all severities."
+        },
+        "file": {
+          "type": "string",
+          "description": "Exact diagnostic location filename as reported by Slang."
+        },
+        "code": {
+          "type": "string",
+          "description": "Exact Slang diagnostic code, such as UnknownModule."
+        },
+        "summary": {
+          "type": "boolean",
+          "default": false,
+          "description": "Group matching diagnostics by code and severity."
+        },
+        "attempt_id": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "ID from the latest failed compilation. A successful or newer failed compilation expires the ID."
+        },
+        "cursor": {
+          "type": "string",
+          "description": "Use next_cursor from the previous page with the same filters and compilation. Null next_cursor marks the last page."
         }
       },
       "type": "object"
@@ -107,12 +146,27 @@
   },
   {
     "name": "find_symbol",
-    "description": "Find indexed declarations by exact short name in the active compilation. Returns symbols with symbol_id, qualified_name, kind and location, plus match_count. No substring/wildcard search and no result limit. Multiple instances can yield multiple matches; use list_symbols with a known scope to bound results.",
+    "description": "Find indexed declarations by exact short name. Returns symbols, exact match_count, returned_count, truncated and next_cursor. Pass symbol_id to downstream queries to avoid name ambiguity.",
     "inputSchema": {
       "properties": {
         "name": {
           "type": "string",
           "description": "Nonempty exact short declaration name, such as bank_sel_ff; not a qualified path."
+        },
+        "scope": {
+          "type": "string",
+          "description": "Optional exact qualified scope prefix at a hierarchy or package boundary, e.g. top.u_cpu or types_pkg. Searches descendants of that scope."
+        },
+        "limit": {
+          "type": "integer",
+          "default": 100,
+          "minimum": 1,
+          "maximum": 500,
+          "description": "Maximum items per page. Defaults to 100. The reply size limit can shorten the page."
+        },
+        "cursor": {
+          "type": "string",
+          "description": "Use next_cursor from the previous page with the same filters and compilation. Null next_cursor marks the last page."
         }
       },
       "required": [
@@ -132,7 +186,7 @@
   },
   {
     "name": "describe_symbol",
-    "description": "Describe one indexed symbol by symbol_id, full qualified name or unambiguous short name. Returns identity, available type/width/direction, members and signature details. type_info describes arrays, struct/union fields, packed field offsets and static total_bits; type_depth defaults to 2 (0–8). Type trees are bounded to 128 nodes and 16 dimensions per array node; truncated propagates omitted descendants. Width is the integral packed-element width after outer unpacked array layers, not total array size; nonintegral widths are null. Existing scope/signature lists are unpaginated. Module signatures may use a representative active instance; prefer inspect_module for defaults and inspect_instance for effective values. Field/element expressions such as signal.field or memory[0] are not independently resolved; inspect the base declaration and its type_info.",
+    "description": "Describe one indexed symbol by symbol_id, full qualified name or unambiguous short name. Returns identity, available type/width/direction, members and signature details. type_info describes arrays, struct/union fields, packed field offsets and static total_bits; type_depth defaults to 2 (0–8). Type trees are bounded to 128 nodes and 16 dimensions per array node; truncated propagates omitted descendants. Width is the integral packed-element width after outer unpacked array layers, not total array size; nonintegral widths are null. Existing scope/signature lists are unpaginated. Module signatures may use a representative active instance; prefer inspect_module for defaults and inspect_instance for effective values. Field/element expressions such as signal.field or memory[0] are not independently resolved; inspect the base declaration and its type_info. An ambiguous lookup returns candidate symbol IDs when available.",
     "inputSchema": {
       "properties": {
         "identifier": {
@@ -321,7 +375,7 @@
   },
   {
     "name": "get_hierarchy",
-    "description": "Return roots containing the active elaborated instance/array and generate hierarchy. Uninstantiated generate branches are omitted. Select root and max_depth to bound the reply: omitting max_depth returns the complete subtree with no item-count limit or truncation metadata.",
+    "description": "Return an elaborated hierarchy page as flat items with path, parent, kind, sv_module and has_children. Omits inactive generate branches. Starts at the top and one child level by default. Follow next_cursor to read more nodes at the requested depth. Use root to expand a node with has_children.",
     "inputSchema": {
       "properties": {
         "root": {
@@ -330,9 +384,21 @@
         },
         "max_depth": {
           "type": "integer",
-          "description": "Maximum child levels from each selected root: 0 returns root identity only; explicit values are 0 through 50. Omit for unlimited depth.",
+          "default": 1,
           "minimum": 0,
-          "maximum": 50
+          "maximum": 50,
+          "description": "Maximum child levels below each selected root. 0 returns root identity. Defaults to 1."
+        },
+        "limit": {
+          "type": "integer",
+          "default": 100,
+          "minimum": 1,
+          "maximum": 500,
+          "description": "Maximum items per page. Defaults to 100. The reply size limit can shorten the page."
+        },
+        "cursor": {
+          "type": "string",
+          "description": "Use next_cursor from the previous page with the same filters and compilation. Null next_cursor marks the last page."
         }
       },
       "type": "object"
@@ -349,7 +415,7 @@
   },
   {
     "name": "get_references",
-    "description": "Return bounded source-level declarations and indexed uses of a symbol as items, total_count and truncated. Omitted kind includes all recorded categories. read_write selects all reads/writes once; item kinds remain precise. Port bindings are ordinary-port actual accesses, not netlist connectivity. System-call accesses can be unknown; inactive procedural branches can still contribute. Empty results do not prove no uses: indexing is incomplete, and type_reference is not currently populated. Aggregate accesses are reported for the base signal, not individual fields/elements or bit ranges; selectors of written elements are reads.",
+    "description": "Return bounded source-level declarations and indexed uses of a symbol as items, total_count and truncated. Omitted kind includes all recorded categories. read_write selects all reads/writes once; item kinds remain precise. Port bindings are ordinary-port actual accesses, not netlist connectivity. System-call accesses can be unknown; inactive procedural branches can still contribute. Empty results do not prove no uses: indexing is incomplete, and type_reference is not currently populated. Aggregate accesses are reported for the base signal, not individual fields/elements or bit ranges; selectors of written elements are reads. An ambiguous lookup returns candidate symbol IDs when available.",
     "inputSchema": {
       "properties": {
         "symbol": {
@@ -432,7 +498,7 @@
   },
   {
     "name": "list_instances",
-    "description": "Return active elaborated module/interface instances as items, total_count and truncated, including the top. Optional filters are combined with AND before the limit. Generate containers are shown by get_hierarchy instead. No offset pagination; narrow the filters for large result sets.",
+    "description": "Return active elaborated module/interface instances as items, total_count and truncated, including the top. To count one module type, set sv_module and limit=1 and read total_count. For descendants of one branch, add a path_prefix such as top.u1. with the final dot as the path separator. All filters apply before counting and limiting results. Generate containers are available through get_hierarchy. Narrow filters when you need individual instances beyond the limit.",
     "inputSchema": {
       "properties": {
         "sv_module": {
@@ -469,7 +535,7 @@
   },
   {
     "name": "list_instance_facts",
-    "description": "Return bounded facts for matching active instances of one module/interface type: each item has instance, effective parameters and resolved port connections. limit bounds instances; fact_limit separately bounds each nested parameter/connection collection. Counts/truncation are reported at each level. Optional name/path_prefix filters use list_instances semantics; this is not every instance if truncated.",
+    "description": "Return bounded facts for matching active instances of one module/interface type: each item has instance, effective parameters and resolved port connections. limit bounds instances; fact_limit separately bounds each nested parameter/connection collection. Counts/truncation are reported at each level. Optional name/path_prefix filters use list_instances semantics; this is not every instance if truncated. Use fields to request only parameters or only connections. Effective parameters include is_overridden.",
     "inputSchema": {
       "properties": {
         "sv_module": {
@@ -513,6 +579,16 @@
         "path_prefix": {
           "type": "string",
           "description": "Optional literal full-path prefix, combined with the other filters."
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "parameters",
+              "connections"
+            ]
+          },
+          "description": "Sections to return and compute. Omit for both. An empty array returns only instance identities."
         }
       },
       "required": [
@@ -628,7 +704,7 @@
   },
   {
     "name": "inspect_instance",
-    "description": "Inspect one active elaborated instance using its effective parameters. Returns instance identity plus selected sections; defaults are parameters and source-level port connections. Optional children lists direct child instances, including those within generate scopes. Unrequested sections are not evaluated. Each collection defaults to 100 items (maximum 500); filter parameter/port names and check total_count/truncated.",
+    "description": "Inspect one active elaborated instance using its effective parameters. Returns instance identity plus selected sections; defaults are parameters and source-level port connections. Optional children lists direct child instances, including those within generate scopes. Unrequested sections are not evaluated. Each collection defaults to 100 items (maximum 500); filter parameter/port names and check total_count/truncated. Effective parameters report is_overridden. A connection expression preserves the full actual, e.g. req.addr, while symbols identifies referenced declarations, e.g. req.",
     "inputSchema": {
       "properties": {
         "instance_path": {

@@ -1,7 +1,8 @@
 #include "server.hpp"
-#include "compilation_error.hpp"
 #include "contract.hpp"
+#include "pagination.hpp"
 #include "semantic_service.hpp"
+#include "symbol_lookup_error.hpp"
 
 #include <mcp/server/McpServer.hpp>
 #include <mcp/transport/StdioServerTransport.hpp>
@@ -25,26 +26,34 @@ mcp::CallToolResult tool_error(const std::string& message) {
     return result;
 }
 
-mcp::CallToolResult compilation_error(const CompilationError& error) {
-    const auto diagnostics = page(error.diagnostics);
-    const Json payload = {{"status", "compilation_failed"},
-                          {"message", error.what()},
-                          {"diagnostics", diagnostics.items},
-                          {"returned_count", diagnostics.items.size()},
-                          {"total_count", diagnostics.total_count},
-                          {"truncated", diagnostics.truncated},
-                          {"analysis",
-                           {{"context", "attempted_candidate"},
-                            {"analysis_scope", error.analysis_scope},
-                            {"completeness", "not_verified"},
-                            {"top_modules", error.requested_top_modules},
-                            {"single_unit", error.single_unit},
-                            {"source_file_count", error.source_file_count}}},
-                          {"requested_top_modules", error.requested_top_modules},
-                          {"active_project_unchanged", true}};
-    auto result = tool_error(payload.dump());
-    result.structured_content = mcp::JsonValue::Parse(payload.dump());
+mcp::CallToolResult structured_error(const Json& payload) {
+    const auto encoded = payload.dump();
+    auto result = tool_error(encoded);
+    result.structured_content = mcp::JsonValue::Parse(encoded);
     return result;
+}
+
+mcp::CallToolResult lookup_error(const SymbolLookupError& error) {
+    auto payload = error.details;
+    payload["message"] = error.what();
+    return structured_error(payload);
+}
+
+mcp::CallToolResult compilation_error(const CompilationError& error) {
+    const Json args = {{"attempt_id", error.attempt_id}};
+    const Pagination page(args, "get_diagnostics", error.attempt_id);
+    const Json metadata = {{"status", "compilation_failed"},
+                           {"message", error.what()},
+                           {"attempt_id", error.attempt_id},
+                           {"analysis", error.context()},
+                           {"requested_top_modules", error.requested_top_modules},
+                           {"active_project_unchanged", true}};
+    try {
+        return structured_error(
+            page.render(error.diagnostics, "diagnostics", std::identity{}, metadata));
+    } catch (const std::invalid_argument&) {
+        return structured_error(metadata);
+    }
 }
 
 mcp::CallToolResult
@@ -66,6 +75,8 @@ mcp::CallToolResult result_for(SemanticService& service, const std::string& name
         return successful_result(service, name, context);
     } catch (const CompilationError& error) {
         return compilation_error(error);
+    } catch (const SymbolLookupError& error) {
+        return lookup_error(error);
     } catch (const std::invalid_argument& error) {
         return tool_error(error.what());
     } catch (const Json::exception& error) {

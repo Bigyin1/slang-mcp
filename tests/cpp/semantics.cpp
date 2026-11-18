@@ -16,13 +16,47 @@ TEST_CASE("Project lifecycle and nested hierarchy") {
                 .at("slang_version")
                 .get<std::string>()
                 .starts_with("12.1."));
-    REQUIRE(service.call("get_hierarchy", {}).at("roots").front().at("path") == "top");
+    REQUIRE(service.call("get_hierarchy", {}).at("items").front().at("path") == "top");
     REQUIRE(service.call("describe_instance", {{"path", "top.u_b.u_c"}}).at("sv_module") == "leaf");
     REQUIRE(service.call("list_instances", {{"sv_module", "leaf"}}).at("total_count") == 4);
     REQUIRE(service.call("get_hierarchy", {{"root", "top.u_b"}, {"max_depth", 1}})
-                .at("roots")
+                .at("items")
                 .front()
                 .at("path") == "top.u_b");
+}
+
+TEST_CASE("Project configuration pages preserve the supplied values") {
+    Project project;
+    project.write("top.sv", "module top; endmodule\n");
+    project.write("empty.sv", "// Empty compilation source.\n");
+    const auto root = project.path("top.sv").parent_path();
+    const auto other = project.path("empty.sv").string();
+    std::filesystem::create_directory(root / "headers");
+    const Json sources = {other, project.path("top.sv").string(), other};
+    const Json includes = {(root / "headers").string(), root.string()};
+    SemanticService service(SnapshotPolicy::Disabled);
+    (void)service.call("project_load",
+                       {{"top_module", "top"},
+                        {"source_files", sources},
+                        {"include_directories", includes},
+                        {"defines", {{"FLAG", nullptr}, {"EMPTY", ""}, {"RHS", "2"}}}});
+    REQUIRE(service.call("project_info", {{"section", "source_files"}}).at("items") == sources);
+    REQUIRE(service.call("project_info", {{"section", "include_directories"}}).at("items") ==
+            includes);
+    REQUIRE(service.call("project_info", {{"section", "defines"}}).at("items") ==
+            Json::array({"EMPTY=", "FLAG", "RHS=2"}));
+}
+
+TEST_CASE("Project info validates configuration page arguments") {
+    Project project;
+    project.write("design.sv", hierarchy_rtl);
+    SemanticService service(SnapshotPolicy::Disabled);
+    (void)service.call("project_load", project.arguments());
+    const auto invalid = GENERATE(
+        R"({"limit":1})", R"({"cursor":"page"})", R"({"section":"unknown"})", R"({"section":null})",
+        R"({"section":"source_files","limit":0})", R"({"section":"source_files","limit":501})",
+        R"({"section":"source_files","limit":1.5})", R"({"section":"source_files","cursor":null})");
+    REQUIRE_THROWS_AS(service.call("project_info", Json::parse(invalid)), std::invalid_argument);
 }
 
 TEST_CASE("Declared defaults remain separate from effective instance parameters") {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "adapters/design.hpp"
+#include "compilation_error.hpp"
 #include <cstdint>
 
 namespace slang_mcp {
@@ -12,11 +13,15 @@ class ProjectManager {
         : snapshot_policy_(snapshots) {}
     [[nodiscard]] Json load(ProjectConfig config);
     [[nodiscard]] Json reload();
-    [[nodiscard]] Json info();
+    [[nodiscard]] Json info(const Json& arguments);
     [[nodiscard]] Json summary();
     [[nodiscard]] Json analysis_context() const;
     [[nodiscard]] Json diff(int limit) const;
     [[nodiscard]] adapters::Design& design();
+    [[nodiscard]] std::uint64_t revision() const {
+        return revision_;
+    }
+    [[nodiscard]] const CompilationError& failed_attempt(std::uint64_t id) const;
 
   private:
     using Snapshot = std::map<std::string, std::string>;
@@ -25,6 +30,11 @@ class ProjectManager {
     Snapshot snapshot_;
     std::optional<Snapshot> previous_;
     SnapshotPolicy snapshot_policy_;
+    std::uint64_t revision_ = 0;
+    std::uint64_t attempt_id_ = 0;
+    std::optional<CompilationError> failure_;
+    [[nodiscard]] Json configuration_page(const Json& arguments) const;
+    [[nodiscard]] std::unique_ptr<adapters::Design> build(const ProjectConfig& config);
     [[nodiscard]] static Snapshot snapshot(adapters::Design& design);
 };
 

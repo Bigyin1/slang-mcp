@@ -46,33 +46,35 @@ local declarations, parameters, ports, available hierarchy and source accesses
 can still be inspected. Unresolved portions may have unavailable or unreliable
 types, widths and connections.
 
-Do not expand to the full design merely because dependencies are missing. Add
-only files needed for the current question, then reload and check diagnostics.
-Treat boundary-related errors as limitations of the selected fragment, not as
-proof of RTL defects or permission to ignore errors. A missing-dependency hint
-can also indicate a typo. Some missing packages or syntax errors prevent top
-elaboration entirely; then the failed-load rules below apply and the attempted
-fragment does not become the active design.
+If an unavailable child module lies outside the question, use the facts Slang
+can establish in the loaded top and report the unresolved boundary. A
+missing-dependency hint can also indicate a typo. If the question depends on the
+missing child, add only the needed files, then reload and check diagnostics.
 
 ## Check diagnostics and the active configuration
 
-After a successful load, use `get_diagnostics` before trusting unresolved types,
-widths or hierarchy. Missing definitions can be expected at fragment boundaries,
-but a `possible_missing_dependency` hint does not establish that an error is
-harmless. Report unresolved dependencies and syntax/type errors affecting the answer.
-Zero diagnostics do not prove completeness or reproduce a production configuration.
+Start with the successful `project_load` reply. It already reports elaborated
+tops, compilation-unit mode, file count and diagnostic counts. Call
+`get_diagnostics` when errors or warnings could affect the answer. Use
+`summary: true` for an overview, then filter by file or code if needed. Even a
+load with zero diagnostics has unverified completeness.
 
-A failed load preserves the previous active design. A reply with
-`status: "compilation_failed"` contains diagnostics for the attempted candidate.
-Subsequent queries, including `get_diagnostics`, still address the previous
-successful load. Use `project_info` to verify active files and options; if no load
-has succeeded, there is no active design to query.
+If a syntax error prevents the selected top from building, the
+`compilation_failed` reply gives an `attempt_id`. Pass that ID to
+`get_diagnostics` to inspect the failed attempt. Semantic queries still use the
+previous active design, if one exists.
+
+Call `project_info` when you need to check which configuration is active. Its
+default reply is compact. Request `section: "source_files"`,
+`section: "include_directories"` or `section: "defines"` for the corresponding
+list and follow `next_cursor` as needed.
 
 ## Choose the query that answers the question
 
-- `find_symbol` searches exact short declaration names and returns all matches.
-  Select the correct instance when names repeat. Use current `symbol_id` or full
-  elaborated `qualified_name` for `get_references` and `describe_symbol`.
+- `find_symbol` searches exact short declaration names. Narrow repeated names
+  with `scope` and use `next_cursor` if more matches are needed. Use `symbol_id`
+  or a full elaborated path for `get_references` and `describe_symbol`.
+  On ambiguity, choose a returned candidate ID.
 - `list_symbols` lists direct members of a known scope with a bounded reply.
   Module names select default members; nested instance/generate paths select
   effective scopes. A default-context member is not an active-instance reference.
@@ -84,16 +86,25 @@ has succeeded, there is no active design to query.
   inspect RTL if these are reached. Dynamic array contents and runtime sizes are
   unavailable. Field/element expressions are not independently resolved, and
   references aggregate to the base signal. Unpacked offsets are not packed layouts.
-- `get_hierarchy` and `list_instances` locate elaborated instances. Start hierarchy
-  requests with a root and small `max_depth`; omitting depth returns the full
-  subtree without an item limit. Instance filters are combined with AND;
-  `path_prefix` is a literal string prefix, not a hierarchy-boundary match.
+- `get_hierarchy` returns a page of nodes with parent paths. By default it shows
+  the top and its direct children. Expand a node with `has_children` using its
+  path as `root`. Pass `next_cursor` with the original filters for more nodes
+  at the same depth.
+- To count instances of one type, call `list_instances` with `sv_module`
+  and `limit: 1` and read `total_count`, even if `truncated` is true. To count
+  descendants of one branch, add its instance path with a final dot, for example
+  `path_prefix: "top.u1."` to count below `top.u1`. For effective parameters, use
+  `list_instance_facts` with `fields: ["parameters"]` and the needed
+  `parameter_names`. Copy returned instance paths exactly.
 - `inspect_module` returns standalone declaration defaults. `inspect_instance`
   returns effective instance parameters and resolved port connections. Prefer
   these focused tools for signatures; `describe_symbol` lists are unbounded and
   its module signature details may come from a representative active instance.
-- `list_instance_facts` compares instances of one module type. `limit` bounds
-  instances; `fact_limit` separately bounds their parameter and connection lists.
+- The effective parameter flag `is_overridden` records an override even when
+  its value equals the declaration default. For connections, read `expression`
+  for the actual (such as `req.addr` or `bus[i]`) and `symbols` for referenced
+  declarations (such as `req`, or `bus` and `i`). A concatenation `{a,b}`
+  can refer to multiple declarations.
 - `get_state_elements` reports signal/block writes in `always_ff` across active
   instances of a module type. It does not infer resets, latches, physical storage
   or state from ordinary `always`/`initial` processes.
@@ -102,8 +113,8 @@ Use `fields` to compute only needed inspection sections. For large signatures,
 explicitly filter `parameter_names` and `port_names`; filters apply before limits.
 Inspection collections default to 100 items and accept `limit` from 1 to 500.
 Always inspect `total_count` and `truncated` in each nested collection before
-using it as a complete inventory. There is no offset pagination: narrow names or
-instance filters when results are too large. Missing requested names are ignored;
+using it as a complete inventory. Narrow names or instance filters for truncated
+inspection sections. Missing requested names are ignored;
 verify the returned names rather than assuming every requested item exists.
 
 For constants, `value` retains exact SystemVerilog rendering. `integer_value: null`

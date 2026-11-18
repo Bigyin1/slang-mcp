@@ -143,8 +143,8 @@ Text expression_text(const ast::Expression* original) {
 
 Parameter parameter(const ast::ParameterSymbolBase& symbol) {
     if (auto* type = symbol.symbol.as_if<ast::TypeParameterSymbol>()) {
-        return {std::string(type->name), "type", type->targetType.getType().toString(),
-                type->isLocalParam(), std::nullopt};
+        return {std::string(type->name), "type",       type->targetType.getType().toString(),
+                type->isLocalParam(),    std::nullopt, type->isOverridden()};
     }
     const auto& value = symbol.symbol.as<ast::ParameterSymbol>();
     const auto& constant = value.getValue();
@@ -152,8 +152,12 @@ Parameter parameter(const ast::ParameterSymbolBase& symbol) {
     if (constant.isInteger() && !constant.integer().hasUnknown()) {
         integer = constant.integer().as<std::int64_t>();
     }
-    return {std::string(value.name), value.getType().toString(), constant.toString(),
-            value.isLocalParam(), integer};
+    return {std::string(value.name),
+            value.getType().toString(),
+            constant.toString(),
+            value.isLocalParam(),
+            integer,
+            value.isOverridden()};
 }
 
 Port port(const ast::Symbol& symbol, const slang::SourceManager& manager) {

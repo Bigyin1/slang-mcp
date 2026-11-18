@@ -1,4 +1,5 @@
 #include "semantic_service.hpp"
+#include "pagination.hpp"
 #include "query.hpp"
 
 #include <cctype>
@@ -23,31 +24,31 @@ Text diagnostic_severity(const Json& args) {
 int hierarchy_depth(const Json& args) {
     const auto depth = args.find("max_depth");
     if (depth == args.end() || depth->is_null()) {
-        return -1;
+        return 1;
     }
-    const auto value = depth->get<int>();
-    if (value < 0 || value > 50) {
+    if (!depth->is_number_integer() || *depth < 0 || *depth > 50) {
         throw std::invalid_argument("max_depth must be between 0 and 50");
     }
-    return value;
+    return depth->get<int>();
 }
 
-Json diagnostic_group(const std::string& code, const std::vector<Diagnostic>& items) {
+using DiagnosticRefs = std::vector<std::reference_wrapper<const Diagnostic>>;
+
+Json diagnostic_group(const std::string& code, const DiagnosticRefs& items) {
     std::map<std::string, int> counts;
     for (const auto& item : items) {
-        ++counts[item.severity];
+        ++counts[item.get().severity];
     }
     return {{"code", code},
             {"count", items.size()},
             {"severity_counts", counts},
-            {"example_message", items.front().message},
-            {"first_location", items.front().location}};
+            {"first_location", items.front().get().location}};
 }
 
-std::vector<Json> diagnostic_groups(const std::vector<Diagnostic>& diagnostics) {
-    std::map<std::string, std::vector<Diagnostic>> groups;
+std::vector<Json> diagnostic_groups(const DiagnosticRefs& diagnostics) {
+    std::map<std::string, DiagnosticRefs> groups;
     for (const auto& item : diagnostics) {
-        groups[item.code].push_back(item);
+        groups[item.get().code].push_back(item);
     }
     std::vector<Json> result;
     result.reserve(groups.size());
@@ -66,16 +67,46 @@ Json diagnostic_with_scope_hint(const Diagnostic& diagnostic) {
     return result;
 }
 
-Json diagnostic_page(const std::vector<Diagnostic>& diagnostics, int limit) {
-    const auto selected = page(diagnostics, limit);
-    Json items = Json::array();
-    for (const auto& item : selected.items) {
-        items.push_back(diagnostic_with_scope_hint(item));
+struct DiagnosticFilter {
+    Text severity, file, code;
+
+    bool operator()(const Diagnostic& item) const {
+        return (!severity || item.severity == *severity) &&
+               (!file || item.location.filename == file) && (!code || item.code == *code);
     }
-    return {{"diagnostics", items},
-            {"returned_count", items.size()},
-            {"total_count", selected.total_count},
-            {"truncated", selected.truncated}};
+};
+
+DiagnosticRefs filtered_diagnostics(const std::vector<Diagnostic>& diagnostics, const Json& args) {
+    DiagnosticRefs result;
+    const DiagnosticFilter filter{diagnostic_severity(args), text_option(args, "file"),
+                                  text_option(args, "code")};
+    std::ranges::copy_if(diagnostics, std::back_inserter(result), filter);
+    return result;
+}
+
+std::uint64_t diagnostic_attempt_id(const Json& args) {
+    if (!args.contains("attempt_id")) {
+        return 0;
+    }
+    const auto& id = args.at("attempt_id");
+    if (!id.is_number_integer() || id <= 0) {
+        throw std::invalid_argument("attempt_id must be a positive integer");
+    }
+    return id.get<std::uint64_t>();
+}
+
+struct DiagnosticSource {
+    const std::vector<Diagnostic>& records;
+    Json analysis;
+    std::uint64_t revision;
+};
+
+DiagnosticSource diagnostic_source(ProjectManager& manager, std::uint64_t id) {
+    if (id == 0) {
+        return {manager.design().diagnostics(), manager.analysis_context(), manager.revision()};
+    }
+    const auto& attempt = manager.failed_attempt(id);
+    return {attempt.diagnostics, attempt.context(), id};
 }
 } // namespace
 SemanticService::SemanticService(SnapshotPolicy snapshots) : manager_(snapshots) {
@@ -100,7 +131,7 @@ void SemanticService::register_project_tools() {
         return manager_.load(project_from_arguments(args));
     };
     tools_["project_reload"] = [this](const Json&) { return manager_.reload(); };
-    tools_["project_info"] = [this](const Json&) { return manager_.info(); };
+    tools_["project_info"] = [this](const Json& args) { return manager_.info(args); };
     tools_["semantic_diff"] = [this](const Json& args) { return manager_.diff(limit_for(args)); };
     tools_["get_diagnostics"] = [this](const Json& args) { return diagnostics(args, false); };
     tools_["summarize_diagnostics_by_code"] = [this](const Json& args) {
@@ -109,17 +140,11 @@ void SemanticService::register_project_tools() {
 }
 
 void SemanticService::register_symbol_tools() {
-    tools_["find_symbol"] = [this](const Json& args) -> Json {
-        auto items = manager_.design().find_symbols(args.at("name"));
-        return {{"symbols", items}, {"match_count", items.size()}};
-    };
+    tools_["find_symbol"] = [this](const Json& args) { return find_symbol(args); };
     tools_["describe_symbol"] = [this](const Json& args) -> Json {
         return manager_.design().describe(args.at("identifier"), type_depth_for(args));
     };
-    tools_["get_hierarchy"] = [this](const Json& args) -> Json {
-        return {{"roots",
-                 manager_.design().hierarchy(text_option(args, "root"), hierarchy_depth(args))}};
-    };
+    tools_["get_hierarchy"] = [this](const Json& args) { return hierarchy(args); };
     tools_["describe_instance"] = [this](const Json& args) { return describe_instance(args); };
     tools_["list_symbols"] = [this](const Json& args) -> Json {
         const auto kind = text_option(args, "kind");
@@ -159,16 +184,30 @@ void SemanticService::register_inspection_tools() {
     tools_["inspect_module"] = [this](const Json& args) { return inspect_module(args); };
 }
 
+Json SemanticService::find_symbol(const Json& args) {
+    const Pagination page(args, "find_symbol", manager_.revision());
+    const auto items = manager_.design().find_symbols(args.at("name"), text_option(args, "scope"));
+    return page.render(items, "symbols", [](auto item) -> const auto& { return item.get(); },
+                       {{"match_count", items.size()}});
+}
+
+Json SemanticService::hierarchy(const Json& args) {
+    auto& design = manager_.design();
+    const Pagination page(args, "get_hierarchy", manager_.revision());
+    const auto positions =
+        design.hierarchy_positions(text_option(args, "root"), hierarchy_depth(args));
+    return page.render(positions, "items",
+                       [&](auto index) { return design.hierarchy_entry(index); });
+}
+
 Json SemanticService::diagnostics(const Json& args, bool grouped) {
-    const auto severity = diagnostic_severity(args);
-    const auto selected = select(manager_.design().diagnostics(), [&](const auto& item) {
-        return !severity || item.severity == *severity;
-    });
-    if (!grouped) {
-        auto result = diagnostic_page(selected, limit_for(args));
-        result["analysis"] = manager_.analysis_context();
-        return result;
+    const auto source = diagnostic_source(manager_, diagnostic_attempt_id(args));
+    const Pagination page(args, "get_diagnostics", source.revision);
+    const auto selected = filtered_diagnostics(source.records, args);
+    const Json metadata = {{"analysis", source.analysis}};
+    if (grouped || option(args, "summary", false)) {
+        return page.render(diagnostic_groups(selected), "items", std::identity{}, metadata);
     }
-    return page(diagnostic_groups(selected), limit_for(args));
+    return page.render(selected, "diagnostics", diagnostic_with_scope_hint, metadata);
 }
 } // namespace slang_mcp

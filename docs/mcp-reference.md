@@ -51,17 +51,29 @@ diagnostics do not prove that the production configuration was reproduced.
 
 Syntax and semantic errors are accepted as long as Slang can build the top. If it
 cannot, the MCP response has `isError: true` and JSON containing
-`status: "compilation_failed"`, the first 100 diagnostics, `total_count`,
-`truncated`, and `active_project_unchanged: true`. The value
+`status: "compilation_failed"`, up to 100 diagnostics, `attempt_id`,
+`total_count`, `truncated`, and `active_project_unchanged: true`. The value
 `analysis.context: "attempted_candidate"` distinguishes diagnostics from the failed attempt from
 those of the previous active project; this context includes the selected
-`single_unit`. Subsequent queries refer to the previous successful load, if any.
+`single_unit`. Semantic queries use the previous successful load, if any.
 
-`project_info()` returns active sources, includes, defines, tops, `single_unit`,
-metadata, Slang version, and a summary without recompiling.
+`project_info()` returns the active load summary, configured tops, `single_unit`,
+metadata and Slang version without recompiling. To verify the supplied configuration,
+request `section: "source_files"`, `"include_directories"` or `"defines"`. Each
+section returns a page of strings with `items`, `returned_count`, `total_count`,
+`truncated` and `next_cursor`. Pass `limit` (default 100, maximum 500) and `cursor`
+only with `section`. Files retain their supplied order and duplicates, include
+directories retain their search order, and defines appear in name order as
+`NAME` (null) or `NAME=value` (including `NAME=` for an empty value). Continue
+with the same section until `next_cursor` is null. A successful load expires
+the cursor. A failed load preserves the active configuration and its cursors.
 
-`get_diagnostics(severity?, limit=100)` returns diagnostics, `returned_count`,
-`total_count`, `truncated`, and the analysis context. Severities are `ignored`,
+`get_diagnostics` accepts `severity`, exact `file` and `code` filters, and
+returns `diagnostics`, counts, a continuation cursor, and the analysis context.
+Use `summary: true` for paged `items` grouped by code with severity counts.
+Use the `attempt_id` from a failed load to inspect its diagnostics even without
+an active project. A newer compilation replaces or clears that attempt.
+Severities are `ignored`,
 `note`, `warning`, `error`, and `fatal`. UnknownModule and UnknownClassOrPackage
 receive `scope_hint: "possible_missing_dependency"`; other diagnostics receive
 `"unclassified"`. This is a possible cause, not proof that the error is harmless:
@@ -71,15 +83,16 @@ a typo can produce the same diagnostic. The original severity is never lowered.
 
 | Tool | Arguments and semantics |
 | --- | --- |
-| `find_symbol` | `name`: exact short name; returns all matches and `match_count`. |
+| `find_symbol` | Exact short `name`, optional qualified `scope`. Returns paged `symbols` and exact `match_count`. |
 | `describe_symbol` | `identifier`, optional `type_depth=2` (0–8): identity, type, width, location, signature and bounded `type_info` for arrays, structs and unions. |
 | `list_symbols` | `scope`, optional `kind` and `limit`: direct declarations without recursive traversal. Scope can be a module name, symbol identifier, or exact nested instance/generate path. A top name identical to a module name selects the module's default parameters. |
-| `get_hierarchy` | Optional `root` and `max_depth` (0–50): elaborated instances and active generate blocks. Without depth, returns the entire selected subtree. |
+| `get_hierarchy` | Optional `root` and `max_depth` (0–50, default 1). Paged `items` contain flat nodes with `path`, `parent`, `kind`, `sv_module`, and `has_children`. |
 | `list_instances` | Optional `sv_module`, `name`, `path_prefix`, and `limit`: filter by module type, exact instance name, and path prefix. |
 
 `sv_module` identifies a module/interface declaration; `instance_path` identifies
 an elaborated instance, such as `top.u_fifo`. Ambiguous names produce a controlled
-error; prefer full paths.
+error with candidate IDs when available. For a module name used in place of
+an instance path, the error can suggest `list_instances`.
 
 ### Arrays, structures and unions
 
@@ -156,18 +169,22 @@ first page remain selectable because filtering happens before truncation.
 Parameters retain their exact SystemVerilog representation in `value`. The
 `integer_value` convenience field is null for type parameters, X/Z, and constants
 outside signed 64-bit range. Module parameters have `value_kind: "declared_default"`;
-instance parameters have `"effective"`.
+instance parameters have `"effective"`. `is_overridden` indicates that Slang
+applied an override, including for type parameters and overrides equal to defaults.
 
 Connections contain the formal port, actual expression, resolved base symbols,
-actual type/width, and location. Their `kind` is `signal`, `expression`,
+actual type/width, and location. `expression` shows the actual, while `symbols`
+lists its referenced declarations. For example, `bus[i]` may reference both
+`bus` and `i`, and `{a,b}` may reference both `a` and `b`. Their `kind` is `signal`, `expression`,
 `unconnected`, or `interface`. For example, expression `request.address` and
 base symbol `request` describe different aspects of a connection. Expression text
 and symbol lists are bounded; truncation indicators are included in the response.
 
-`list_instance_facts(sv_module, parameter_names?, port_names?, limit=100,
+`list_instance_facts(sv_module, fields?, parameter_names?, port_names?, limit=100,
 fact_limit=100)` returns parameters and connections for multiple instances of
 one module type in a single call. `limit` bounds instances and `fact_limit` bounds
-each nested collection. This reduces repeated requests for individual paths.
+each nested collection. Use `fields: ["parameters"]` or `["connections"]`
+to compute only that section. Omit `fields` for both, or pass `[]` for identities.
 
 ## References and state
 
@@ -252,9 +269,11 @@ visiting the retained syntax tree.
 
 Paged semantic collections contain `items`, `total_count`, and `truncated`;
 limits range from 1 to 500. Diagnostics instead use `diagnostics` and
-`returned_count`, with the same count/truncation distinction. `find_symbol`,
-`describe_symbol` and `get_hierarchy` do not have item-count pagination; narrow
-names/scopes and set hierarchy depth to avoid large replies.
+`returned_count`, with the same count/truncation distinction. For
+`find_symbol`, `get_hierarchy`, and `get_diagnostics`, pass `next_cursor` as
+`cursor` with the same filters to continue. A null cursor marks the last page.
+An active-project cursor expires when another project loads successfully.
+The 1 MiB reply size cap can shorten a page.
 Missing dependencies can leave types, widths, and hierarchy incomplete.
 A successful local query does not establish correctness of the rest of the RTL.
 
