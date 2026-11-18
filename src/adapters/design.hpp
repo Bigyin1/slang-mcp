@@ -1,6 +1,7 @@
 #pragma once
 
 #include "models.hpp"
+#include <functional>
 #include <memory>
 
 namespace slang_mcp::adapters {
@@ -14,11 +15,14 @@ class Design {
     [[nodiscard]] std::vector<std::string> tops() const;
     [[nodiscard]] std::string version() const;
     [[nodiscard]] std::vector<SymbolReference> definitions() const;
-    [[nodiscard]] std::vector<SymbolReference> find_symbols(const std::string& name) const;
+    [[nodiscard]] std::vector<std::reference_wrapper<const SymbolReference>>
+    find_symbols(const std::string& name, const Text& scope) const;
     [[nodiscard]] SymbolReference definition_reference(const std::string& identifier) const;
     [[nodiscard]] SymbolDescription describe(const std::string& identifier, int type_depth = -1);
     [[nodiscard]] std::vector<SymbolReference> members(const std::string& scope);
     [[nodiscard]] std::vector<HierarchyNode> hierarchy(const Text& root, int depth) const;
+    [[nodiscard]] std::vector<std::size_t> hierarchy_positions(const Text& root, int depth) const;
+    [[nodiscard]] HierarchyEntry hierarchy_entry(std::size_t position) const;
     [[nodiscard]] const std::vector<Instance>& instances() const;
     [[nodiscard]] Instance instance(const std::string& query) const;
     [[nodiscard]] std::vector<Port> ports(const std::string& module);

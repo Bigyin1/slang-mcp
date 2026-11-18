@@ -147,6 +147,7 @@ Json ProjectManager::load(ProjectConfig config) {
     design_ = std::move(candidate);
     snapshot_ = std::move(next_snapshot);
     previous_ = std::move(previous);
+    ++revision_;
     return summary();
 }
 

@@ -70,9 +70,9 @@ has succeeded, there is no active design to query.
 
 ## Choose the query that answers the question
 
-- `find_symbol` searches exact short declaration names and returns all matches.
-  Select the correct instance when names repeat. Use current `symbol_id` or full
-  elaborated `qualified_name` for `get_references` and `describe_symbol`.
+- `find_symbol` searches exact short declaration names. Narrow repeated names
+  with `scope` and use `next_cursor` if more matches are needed. Use `symbol_id`
+  or a full elaborated path for `get_references` and `describe_symbol`.
 - `list_symbols` lists direct members of a known scope with a bounded reply.
   Module names select default members; nested instance/generate paths select
   effective scopes. A default-context member is not an active-instance reference.
@@ -84,16 +84,18 @@ has succeeded, there is no active design to query.
   inspect RTL if these are reached. Dynamic array contents and runtime sizes are
   unavailable. Field/element expressions are not independently resolved, and
   references aggregate to the base signal. Unpacked offsets are not packed layouts.
-- `get_hierarchy` and `list_instances` locate elaborated instances. Start hierarchy
-  requests with a root and small `max_depth`; omitting depth returns the full
-  subtree without an item limit. Instance filters are combined with AND;
-  `path_prefix` is a literal string prefix, not a hierarchy-boundary match.
+- `get_hierarchy` returns a page of nodes with parent paths. By default it shows
+  the top and its direct children. Expand a node with `has_children` using its
+  path as `root`. Pass `next_cursor` with the original filters for more nodes
+  at the same depth.
+- To count instances of one module, call `list_instances` with `sv_module`
+  and `limit: 1` and read `total_count`.
 - `inspect_module` returns standalone declaration defaults. `inspect_instance`
   returns effective instance parameters and resolved port connections. Prefer
   these focused tools for signatures; `describe_symbol` lists are unbounded and
   its module signature details may come from a representative active instance.
 - `list_instance_facts` compares instances of one module type. `limit` bounds
-  instances; `fact_limit` separately bounds their parameter and connection lists.
+  instances and `fact_limit` bounds their parameter and connection lists.
 - `get_state_elements` reports signal/block writes in `always_ff` across active
   instances of a module type. It does not infer resets, latches, physical storage
   or state from ordinary `always`/`initial` processes.
@@ -102,8 +104,8 @@ Use `fields` to compute only needed inspection sections. For large signatures,
 explicitly filter `parameter_names` and `port_names`; filters apply before limits.
 Inspection collections default to 100 items and accept `limit` from 1 to 500.
 Always inspect `total_count` and `truncated` in each nested collection before
-using it as a complete inventory. There is no offset pagination: narrow names or
-instance filters when results are too large. Missing requested names are ignored;
+using it as a complete inventory. Narrow names or instance filters for truncated
+inspection sections. Missing requested names are ignored;
 verify the returned names rather than assuming every requested item exists.
 
 For constants, `value` retains exact SystemVerilog rendering. `integer_value: null`

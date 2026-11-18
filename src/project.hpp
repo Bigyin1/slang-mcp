@@ -17,6 +17,9 @@ class ProjectManager {
     [[nodiscard]] Json analysis_context() const;
     [[nodiscard]] Json diff(int limit) const;
     [[nodiscard]] adapters::Design& design();
+    [[nodiscard]] std::uint64_t revision() const {
+        return revision_;
+    }
 
   private:
     using Snapshot = std::map<std::string, std::string>;
@@ -25,6 +28,7 @@ class ProjectManager {
     Snapshot snapshot_;
     std::optional<Snapshot> previous_;
     SnapshotPolicy snapshot_policy_;
+    std::uint64_t revision_ = 0;
     [[nodiscard]] static Snapshot snapshot(adapters::Design& design);
 };
 

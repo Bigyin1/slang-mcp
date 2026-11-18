@@ -1,4 +1,5 @@
 #include "semantic_service.hpp"
+#include "pagination.hpp"
 #include "query.hpp"
 
 #include <cctype>
@@ -23,13 +24,12 @@ Text diagnostic_severity(const Json& args) {
 int hierarchy_depth(const Json& args) {
     const auto depth = args.find("max_depth");
     if (depth == args.end() || depth->is_null()) {
-        return -1;
+        return 1;
     }
-    const auto value = depth->get<int>();
-    if (value < 0 || value > 50) {
+    if (!depth->is_number_integer() || *depth < 0 || *depth > 50) {
         throw std::invalid_argument("max_depth must be between 0 and 50");
     }
-    return value;
+    return depth->get<int>();
 }
 
 Json diagnostic_group(const std::string& code, const std::vector<Diagnostic>& items) {
@@ -109,17 +109,11 @@ void SemanticService::register_project_tools() {
 }
 
 void SemanticService::register_symbol_tools() {
-    tools_["find_symbol"] = [this](const Json& args) -> Json {
-        auto items = manager_.design().find_symbols(args.at("name"));
-        return {{"symbols", items}, {"match_count", items.size()}};
-    };
+    tools_["find_symbol"] = [this](const Json& args) { return find_symbol(args); };
     tools_["describe_symbol"] = [this](const Json& args) -> Json {
         return manager_.design().describe(args.at("identifier"), type_depth_for(args));
     };
-    tools_["get_hierarchy"] = [this](const Json& args) -> Json {
-        return {{"roots",
-                 manager_.design().hierarchy(text_option(args, "root"), hierarchy_depth(args))}};
-    };
+    tools_["get_hierarchy"] = [this](const Json& args) { return hierarchy(args); };
     tools_["describe_instance"] = [this](const Json& args) { return describe_instance(args); };
     tools_["list_symbols"] = [this](const Json& args) -> Json {
         const auto kind = text_option(args, "kind");
@@ -157,6 +151,22 @@ void SemanticService::register_inspection_tools() {
     tools_["inspect_signal"] = [this](const Json& args) { return inspect_signal(args); };
     tools_["inspect_instance"] = [this](const Json& args) { return inspect_instance(args); };
     tools_["inspect_module"] = [this](const Json& args) { return inspect_module(args); };
+}
+
+Json SemanticService::find_symbol(const Json& args) {
+    const Pagination page(args, "find_symbol", manager_.revision());
+    const auto items = manager_.design().find_symbols(args.at("name"), text_option(args, "scope"));
+    return page.render(items, "symbols", [](auto item) -> const auto& { return item.get(); },
+                       {{"match_count", items.size()}});
+}
+
+Json SemanticService::hierarchy(const Json& args) {
+    auto& design = manager_.design();
+    const Pagination page(args, "get_hierarchy", manager_.revision());
+    const auto positions =
+        design.hierarchy_positions(text_option(args, "root"), hierarchy_depth(args));
+    return page.render(positions, "items",
+                       [&](auto index) { return design.hierarchy_entry(index); });
 }
 
 Json SemanticService::diagnostics(const Json& args, bool grouped) {

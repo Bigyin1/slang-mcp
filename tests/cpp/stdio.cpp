@@ -162,7 +162,7 @@ TEST_CASE("Real stdio MCP publishes the contract and serves semantic queries") {
     const auto hierarchy = client->CallTool("get_hierarchy", mcp::JsonValue::Object{});
     REQUIRE_FALSE(hierarchy.is_error);
     REQUIRE(
-        Json::parse(hierarchy.structured_content.value().Dump()).at("roots").front().at("path") ==
+        Json::parse(hierarchy.structured_content.value().Dump()).at("items").front().at("path") ==
         "top");
     const auto partial = client->CallTool(
         "project_load",

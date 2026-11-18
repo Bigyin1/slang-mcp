@@ -71,10 +71,10 @@ a typo can produce the same diagnostic. The original severity is never lowered.
 
 | Tool | Arguments and semantics |
 | --- | --- |
-| `find_symbol` | `name`: exact short name; returns all matches and `match_count`. |
+| `find_symbol` | Exact short `name`, optional qualified `scope`. Returns paged `symbols` and exact `match_count`. |
 | `describe_symbol` | `identifier`, optional `type_depth=2` (0–8): identity, type, width, location, signature and bounded `type_info` for arrays, structs and unions. |
 | `list_symbols` | `scope`, optional `kind` and `limit`: direct declarations without recursive traversal. Scope can be a module name, symbol identifier, or exact nested instance/generate path. A top name identical to a module name selects the module's default parameters. |
-| `get_hierarchy` | Optional `root` and `max_depth` (0–50): elaborated instances and active generate blocks. Without depth, returns the entire selected subtree. |
+| `get_hierarchy` | Optional `root` and `max_depth` (0–50, default 1). Paged `items` contain flat nodes with `path`, `parent`, `kind`, `sv_module`, and `has_children`. |
 | `list_instances` | Optional `sv_module`, `name`, `path_prefix`, and `limit`: filter by module type, exact instance name, and path prefix. |
 
 `sv_module` identifies a module/interface declaration; `instance_path` identifies
@@ -252,9 +252,11 @@ visiting the retained syntax tree.
 
 Paged semantic collections contain `items`, `total_count`, and `truncated`;
 limits range from 1 to 500. Diagnostics instead use `diagnostics` and
-`returned_count`, with the same count/truncation distinction. `find_symbol`,
-`describe_symbol` and `get_hierarchy` do not have item-count pagination; narrow
-names/scopes and set hierarchy depth to avoid large replies.
+`returned_count`, with the same count/truncation distinction. For
+`find_symbol`, and `get_hierarchy`, pass `next_cursor` as
+`cursor` with the same filters to continue. A null cursor marks the last page.
+An active-project cursor expires when another project loads successfully.
+The 1 MiB reply size cap can shorten a page.
 Missing dependencies can leave types, widths, and hierarchy incomplete.
 A successful local query does not establish correctness of the rest of the RTL.
 

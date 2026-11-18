@@ -107,12 +107,27 @@
   },
   {
     "name": "find_symbol",
-    "description": "Find indexed declarations by exact short name in the active compilation. Returns symbols with symbol_id, qualified_name, kind and location, plus match_count. No substring/wildcard search and no result limit. Multiple instances can yield multiple matches; use list_symbols with a known scope to bound results.",
+    "description": "Find indexed declarations by exact short name. Returns symbols, exact match_count, returned_count, truncated and next_cursor. Pass symbol_id to downstream queries to avoid name ambiguity.",
     "inputSchema": {
       "properties": {
         "name": {
           "type": "string",
           "description": "Nonempty exact short declaration name, such as bank_sel_ff; not a qualified path."
+        },
+        "scope": {
+          "type": "string",
+          "description": "Optional exact qualified scope prefix at a hierarchy or package boundary, e.g. top.u_cpu or types_pkg. Searches descendants of that scope."
+        },
+        "limit": {
+          "type": "integer",
+          "default": 100,
+          "minimum": 1,
+          "maximum": 500,
+          "description": "Maximum items per page. Defaults to 100. The reply size limit can shorten the page."
+        },
+        "cursor": {
+          "type": "string",
+          "description": "Use next_cursor from the previous page with the same filters and compilation. Null next_cursor marks the last page."
         }
       },
       "required": [
@@ -321,7 +336,7 @@
   },
   {
     "name": "get_hierarchy",
-    "description": "Return roots containing the active elaborated instance/array and generate hierarchy. Uninstantiated generate branches are omitted. Select root and max_depth to bound the reply: omitting max_depth returns the complete subtree with no item-count limit or truncation metadata.",
+    "description": "Return an elaborated hierarchy page as flat items with path, parent, kind, sv_module and has_children. Omits inactive generate branches. Starts at the top and one child level by default. Follow next_cursor to read more nodes at the requested depth. Use root to expand a node with has_children.",
     "inputSchema": {
       "properties": {
         "root": {
@@ -330,9 +345,21 @@
         },
         "max_depth": {
           "type": "integer",
-          "description": "Maximum child levels from each selected root: 0 returns root identity only; explicit values are 0 through 50. Omit for unlimited depth.",
+          "default": 1,
           "minimum": 0,
-          "maximum": 50
+          "maximum": 50,
+          "description": "Maximum child levels below each selected root. 0 returns root identity. Defaults to 1."
+        },
+        "limit": {
+          "type": "integer",
+          "default": 100,
+          "minimum": 1,
+          "maximum": 500,
+          "description": "Maximum items per page. Defaults to 100. The reply size limit can shorten the page."
+        },
+        "cursor": {
+          "type": "string",
+          "description": "Use next_cursor from the previous page with the same filters and compilation. Null next_cursor marks the last page."
         }
       },
       "type": "object"

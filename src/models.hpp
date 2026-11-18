@@ -176,6 +176,14 @@ struct HierarchyNode {
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_ONLY_SERIALIZE(HierarchyNode, path, name, kind, sv_module,
                                                   children)
 
+struct HierarchyEntry {
+    std::string path, name, kind;
+    Text parent, sv_module;
+    bool has_children;
+};
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_ONLY_SERIALIZE(HierarchyEntry, path, name, kind, parent,
+                                                  sv_module, has_children)
+
 struct Instance {
     std::string path, name, sv_module;
     SourceLocation location;

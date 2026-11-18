@@ -1,3 +1,4 @@
+#include "compilation_error.hpp"
 #include "support.hpp"
 
 #include <catch2/catch_test_macros.hpp>
@@ -365,49 +366,26 @@ TEST_CASE(
     REQUIRE(parameter.at("integer_value").is_null());
     REQUIRE(parameter.at("value") == "128'hfedcba98765432100123456789abcdef");
 }
-TEST_CASE("Omitting hierarchy depth preserves the complete hierarchy beyond fifty levels") {
-    Project project;
-    std::string rtl = "module stage_0; endmodule\n";
-    for (int index = 1; index <= 55; ++index) {
-        rtl += "module stage_" + std::to_string(index) + "; stage_" + std::to_string(index - 1) +
-               " u(); endmodule\n";
-    }
-    project.write("design.sv", rtl + "module top; stage_55 u(); endmodule\n");
-    SemanticService service;
-    (void)service.call("project_load", project.arguments());
-    auto node = service.call("get_hierarchy", {}).at("roots").front();
-    for (int index = 0; index < 56; ++index) {
-        node = Json(node.at("children").front());
-    }
-    REQUIRE(node.at("sv_module") == "stage_0");
-    REQUIRE_THROWS_AS(service.call("get_hierarchy", {{"max_depth", -1}}), std::invalid_argument);
-}
-TEST_CASE("Hierarchy child indexes preserve order and requested depth") {
+TEST_CASE("Flat hierarchy preserves ordering and reports children beyond the depth limit") {
     Project project;
     project.write("design.sv", hierarchy_rtl);
     SemanticService service;
     (void)service.call("project_load", project.arguments());
-    const auto root = service.call("get_hierarchy", {{"max_depth", 1}}).at("roots").front();
-    REQUIRE(root.at("children").size() == 3);
-    REQUIRE(root.at("children")[0].at("path") == "top.u_a");
-    REQUIRE(root.at("children")[1].at("path") == "top.u_b");
-    REQUIRE(root.at("children")[2].at("path") == "top.generated");
-    for (const auto& child : root.at("children")) {
-        REQUIRE(child.at("children").empty());
-    }
+    const auto items = service.call("get_hierarchy", {}).at("items");
+    REQUIRE(items.size() == 4);
+    REQUIRE(items[0].at("path") == "top");
+    REQUIRE(items[0].at("parent").is_null());
+    REQUIRE(items[1].at("path") == "top.u_a");
+    REQUIRE(items[2].at("path") == "top.u_b");
+    REQUIRE(items[3].at("path") == "top.generated");
+    REQUIRE(items[3].at("has_children") == true);
+    REQUIRE_THROWS_AS(service.call("get_hierarchy", {{"max_depth", -1}}), std::invalid_argument);
     const auto depth = GENERATE(0, 1, 2);
     const auto generated =
         service.call("get_hierarchy", {{"root", "top.generated"}, {"max_depth", depth}})
-            .at("roots")
-            .front();
-    if (depth == 0) {
-        REQUIRE(generated.at("children").empty());
-        return;
-    }
-    REQUIRE(generated.at("children").size() == 2);
-    REQUIRE(generated.at("children")[0].at("path") == "top.generated[0]");
-    REQUIRE(generated.at("children")[1].at("path") == "top.generated[1]");
-    REQUIRE(generated.at("children")[0].at("children").size() == (depth == 1 ? 0 : 1));
+            .at("items");
+    REQUIRE(generated.size() == (depth * 2 + 1));
+    REQUIRE(generated[0].at("parent") == "top");
 }
 
 TEST_CASE("Reload replaces hierarchy and exact instance indexes") {
@@ -421,7 +399,7 @@ TEST_CASE("Reload replaces hierarchy and exact instance indexes") {
     project.write("design.sv",
                   "module replacement; endmodule\nmodule top; replacement u(); endmodule\n");
     (void)service.call("project_load", project.arguments());
-    REQUIRE(service.call("get_hierarchy", {}).at("roots").front().at("children").size() == 1);
+    REQUIRE(service.call("get_hierarchy", {}).at("items").size() == 2);
     REQUIRE(service.call("inspect_instance", {{"instance_path", "top.u"}})
                 .at("instance")
                 .at("sv_module") == "replacement");
@@ -429,6 +407,54 @@ TEST_CASE("Reload replaces hierarchy and exact instance indexes") {
                       std::invalid_argument);
     REQUIRE_THROWS_AS(service.call("get_hierarchy", {{"root", "top.generated"}}),
                       std::invalid_argument);
+}
+
+TEST_CASE("A wide generate can be read across hierarchy pages") {
+    Project project;
+    project.write("design.sv", R"sv(
+module leaf; logic mark; endmodule
+module top;
+  for(genvar i=0; i<140; i++) begin : g
+    leaf u();
+  end
+endmodule
+)sv");
+    SemanticService service(SnapshotPolicy::Disabled);
+    (void)service.call("project_load", project.arguments());
+    Json args = {{"root", "top.g"}};
+    const auto first = service.call("get_hierarchy", args);
+    REQUIRE(first.at("total_count") == 141);
+    REQUIRE(first.at("returned_count") == 100);
+    args["cursor"] = first.at("next_cursor");
+    const auto second = service.call("get_hierarchy", args);
+    REQUIRE(second.at("items").front().at("path") == "top.g[99]");
+    REQUIRE(second.at("items").back().at("path") == "top.g[139]");
+    REQUIRE(second.at("next_cursor").is_null());
+    REQUIRE(
+        service.call("find_symbol", {{"name", "mark"}, {"scope", "top.g[1]"}}).at("match_count") ==
+        1);
+}
+
+TEST_CASE("Search cursors survive a failed load but expire after a successful load") {
+    Project project;
+    project.write("design.sv", "module leaf; logic mark; endmodule\n"
+                               "module top; leaf a(); leaf b(); endmodule\n");
+    SemanticService service(SnapshotPolicy::Disabled);
+    (void)service.call("project_load", project.arguments());
+    Json args = {{"name", "mark"}, {"limit", 1}};
+    args["cursor"] = service.call("find_symbol", args).at("next_cursor");
+    REQUIRE(args.at("cursor").is_string());
+    REQUIRE_THROWS_AS(
+        service.call("find_symbol", {{"name", "other"}, {"cursor", args.at("cursor")}}),
+        std::invalid_argument);
+    REQUIRE_THROWS_AS(
+        service.call("project_load", {{"source_files", {project.path("design.sv").string()}},
+                                      {"top_module", "missing"}}),
+        CompilationError);
+    REQUIRE(service.call("find_symbol", args).at("symbols").front().at("qualified_name") ==
+            "top.b.mark");
+    (void)service.call("project_load", project.arguments());
+    REQUIRE_THROWS_AS(service.call("find_symbol", args), std::invalid_argument);
 }
 
 TEST_CASE("Partial loading preserves local facts despite missing child implementations") {

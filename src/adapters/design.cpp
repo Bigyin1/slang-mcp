@@ -29,6 +29,18 @@ bool matches_name(const SymbolReference& symbol, const std::string& query) {
     return symbol.qualified_name == query || symbol.name == query;
 }
 
+bool within_scope(const SymbolReference& symbol, const Text& scope) {
+    if (!scope) {
+        return true;
+    }
+    const auto path = std::string_view(symbol.qualified_name);
+    if (!path.starts_with(*scope)) {
+        return false;
+    }
+    const auto suffix = path.substr(scope->size());
+    return suffix.starts_with('.') || suffix.starts_with('[') || suffix.starts_with("::");
+}
+
 bool signal_reference(const SymbolReference& symbol, const std::string& query) {
     return symbol.qualified_name == query && (symbol.kind == "variable" || symbol.kind == "net");
 }
@@ -203,6 +215,7 @@ struct Design::Impl {
     std::map<std::string, const ast::InstanceSymbol*> raw_instances;
     std::vector<HierarchyRecord> hierarchy;
     std::map<std::string, std::vector<std::size_t>> hierarchy_children;
+    std::map<std::string, std::size_t> hierarchy_by_path;
     std::map<std::string, std::unique_ptr<ast::Compilation>> defaults;
     std::optional<AccessIndex> access_index;
 
@@ -241,6 +254,7 @@ struct Design::Impl {
         hierarchy = std::move(records);
         for (std::size_t index = 0; index < hierarchy.size(); ++index) {
             hierarchy_children[hierarchy[index].parent].push_back(index);
+            hierarchy_by_path.emplace(hierarchy[index].node.path, index);
         }
     }
 
@@ -362,6 +376,20 @@ struct Design::Impl {
         }
         return result;
     }
+
+    void collect_positions(std::size_t position, std::vector<std::size_t>& result,
+                           int depth) const {
+        result.push_back(position);
+        if (depth == 0) {
+            return;
+        }
+        if (const auto children = hierarchy_children.find(hierarchy[position].node.path);
+            children != hierarchy_children.end()) {
+            for (const auto child : children->second) {
+                collect_positions(child, result, depth - 1);
+            }
+        }
+    }
 };
 
 Design::Design(const ProjectConfig& config) : impl_(std::make_unique<Impl>(config)) {}
@@ -390,13 +418,15 @@ std::vector<std::string> Design::tops() const {
     return result;
 }
 
-std::vector<SymbolReference> Design::find_symbols(const std::string& name) const {
+std::vector<std::reference_wrapper<const SymbolReference>>
+Design::find_symbols(const std::string& name, const Text& scope) const {
     if (name.empty()) {
         throw std::invalid_argument("name must not be empty");
     }
-    std::vector<SymbolReference> result;
-    std::ranges::copy_if(impl_->symbols, std::back_inserter(result),
-                         [&](const auto& item) { return item.name == name; });
+    std::vector<std::reference_wrapper<const SymbolReference>> result;
+    std::ranges::copy_if(impl_->symbols, std::back_inserter(result), [&](const auto& item) {
+        return item.name == name && within_scope(item, scope);
+    });
     return result;
 }
 
@@ -471,6 +501,29 @@ std::vector<HierarchyNode> Design::hierarchy(const Text& root, int depth) const 
 
 const std::vector<Instance>& Design::instances() const {
     return impl_->instance_items;
+}
+
+std::vector<std::size_t> Design::hierarchy_positions(const Text& root, int depth) const {
+    std::vector<std::size_t> result;
+    if (root) {
+        const auto position = impl_->hierarchy_by_path.find(*root);
+        if (position == impl_->hierarchy_by_path.end()) {
+            throw std::invalid_argument("unknown hierarchy root: " + *root);
+        }
+        impl_->collect_positions(position->second, result, depth);
+    } else {
+        for (const auto position : impl_->hierarchy_children.at("")) {
+            impl_->collect_positions(position, result, depth);
+        }
+    }
+    return result;
+}
+
+HierarchyEntry Design::hierarchy_entry(std::size_t position) const {
+    const auto& record = impl_->hierarchy.at(position);
+    return {record.node.path,      record.node.name,
+            record.node.kind,      optional_text(record.parent),
+            record.node.sv_module, impl_->hierarchy_children.contains(record.node.path)};
 }
 
 Instance Design::instance(const std::string& query) const {

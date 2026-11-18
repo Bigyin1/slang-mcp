@@ -16,11 +16,11 @@ TEST_CASE("Project lifecycle and nested hierarchy") {
                 .at("slang_version")
                 .get<std::string>()
                 .starts_with("12.1."));
-    REQUIRE(service.call("get_hierarchy", {}).at("roots").front().at("path") == "top");
+    REQUIRE(service.call("get_hierarchy", {}).at("items").front().at("path") == "top");
     REQUIRE(service.call("describe_instance", {{"path", "top.u_b.u_c"}}).at("sv_module") == "leaf");
     REQUIRE(service.call("list_instances", {{"sv_module", "leaf"}}).at("total_count") == 4);
     REQUIRE(service.call("get_hierarchy", {{"root", "top.u_b"}, {"max_depth", 1}})
-                .at("roots")
+                .at("items")
                 .front()
                 .at("path") == "top.u_b");
 }
