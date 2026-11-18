@@ -1,6 +1,6 @@
 #include "server.hpp"
-#include "compilation_error.hpp"
 #include "contract.hpp"
+#include "pagination.hpp"
 #include "semantic_service.hpp"
 #include "symbol_lookup_error.hpp"
 
@@ -40,25 +40,20 @@ mcp::CallToolResult lookup_error(const SymbolLookupError& error) {
 }
 
 mcp::CallToolResult compilation_error(const CompilationError& error) {
-    const auto diagnostics = page(error.diagnostics);
-    const Json payload = {{"status", "compilation_failed"},
-                          {"message", error.what()},
-                          {"diagnostics", diagnostics.items},
-                          {"returned_count", diagnostics.items.size()},
-                          {"total_count", diagnostics.total_count},
-                          {"truncated", diagnostics.truncated},
-                          {"analysis",
-                           {{"context", "attempted_candidate"},
-                            {"analysis_scope", error.analysis_scope},
-                            {"completeness", "not_verified"},
-                            {"top_modules", error.requested_top_modules},
-                            {"single_unit", error.single_unit},
-                            {"source_file_count", error.source_file_count}}},
-                          {"requested_top_modules", error.requested_top_modules},
-                          {"active_project_unchanged", true}};
-    auto result = tool_error(payload.dump());
-    result.structured_content = mcp::JsonValue::Parse(payload.dump());
-    return result;
+    const Json args = {{"attempt_id", error.attempt_id}};
+    const Pagination page(args, "get_diagnostics", error.attempt_id);
+    const Json metadata = {{"status", "compilation_failed"},
+                           {"message", error.what()},
+                           {"attempt_id", error.attempt_id},
+                           {"analysis", error.context()},
+                           {"requested_top_modules", error.requested_top_modules},
+                           {"active_project_unchanged", true}};
+    try {
+        return structured_error(
+            page.render(error.diagnostics, "diagnostics", std::identity{}, metadata));
+    } catch (const std::invalid_argument&) {
+        return structured_error(metadata);
+    }
 }
 
 mcp::CallToolResult

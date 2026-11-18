@@ -51,17 +51,21 @@ diagnostics do not prove that the production configuration was reproduced.
 
 Syntax and semantic errors are accepted as long as Slang can build the top. If it
 cannot, the MCP response has `isError: true` and JSON containing
-`status: "compilation_failed"`, the first 100 diagnostics, `total_count`,
-`truncated`, and `active_project_unchanged: true`. The value
+`status: "compilation_failed"`, up to 100 diagnostics, `attempt_id`,
+`total_count`, `truncated`, and `active_project_unchanged: true`. The value
 `analysis.context: "attempted_candidate"` distinguishes diagnostics from the failed attempt from
 those of the previous active project; this context includes the selected
-`single_unit`. Subsequent queries refer to the previous successful load, if any.
+`single_unit`. Semantic queries use the previous successful load, if any.
 
 `project_info()` returns active sources, includes, defines, tops, `single_unit`,
 metadata, Slang version, and a summary without recompiling.
 
-`get_diagnostics(severity?, limit=100)` returns diagnostics, `returned_count`,
-`total_count`, `truncated`, and the analysis context. Severities are `ignored`,
+`get_diagnostics` accepts `severity`, exact `file` and `code` filters, and
+returns `diagnostics`, counts, a continuation cursor, and the analysis context.
+Use `summary: true` for paged `items` grouped by code with severity counts.
+Use the `attempt_id` from a failed load to inspect its diagnostics even without
+an active project. A newer compilation replaces or clears that attempt.
+Severities are `ignored`,
 `note`, `warning`, `error`, and `fatal`. UnknownModule and UnknownClassOrPackage
 receive `scope_hint: "possible_missing_dependency"`; other diagnostics receive
 `"unclassified"`. This is a possible cause, not proof that the error is harmless:
@@ -258,7 +262,7 @@ visiting the retained syntax tree.
 Paged semantic collections contain `items`, `total_count`, and `truncated`;
 limits range from 1 to 500. Diagnostics instead use `diagnostics` and
 `returned_count`, with the same count/truncation distinction. For
-`find_symbol`, and `get_hierarchy`, pass `next_cursor` as
+`find_symbol`, `get_hierarchy`, and `get_diagnostics`, pass `next_cursor` as
 `cursor` with the same filters to continue. A null cursor marks the last page.
 An active-project cursor expires when another project loads successfully.
 The 1 MiB reply size cap can shorten a page.

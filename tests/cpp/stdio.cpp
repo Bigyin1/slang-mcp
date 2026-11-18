@@ -65,12 +65,38 @@ TEST_CASE("First failed stdio load reports diagnostics without creating an activ
     Project project;
     project.write("design.sv", "module broken(input logic ; endmodule\n");
     auto client = stdio_client();
-    (void)failed_compilation(client->CallTool(
+    const auto failed = failed_compilation(client->CallTool(
         "project_load",
         mcp::JsonValue::Parse(
             Json{{"source_files", {project.path("design.sv").string()}}, {"top_module", "top"}}
                 .dump())));
     REQUIRE(client->CallTool("project_info", mcp::JsonValue::Object{}).is_error);
+    const auto args = mcp::JsonValue::Parse(
+        Json{{"attempt_id", failed.at("attempt_id")}, {"summary", true}, {"severity", "error"}}
+            .dump());
+    const auto summary = client->CallTool("get_diagnostics", args);
+    REQUIRE_FALSE(summary.is_error);
+    REQUIRE(Json::parse(summary.structured_content->Dump()).at("analysis") ==
+            failed.at("analysis"));
+}
+
+TEST_CASE("Stdio can continue diagnostics from a failed candidate after the first hundred") {
+    Project project;
+    std::string source;
+    for (int index = 0; index < 130; ++index) {
+        source += "`include \"not_found_" + std::to_string(index) + ".svh\"\n";
+    }
+    project.write("design.sv", source);
+    auto client = stdio_client();
+    const auto failed = failed_compilation(
+        client->CallTool("project_load", mcp::JsonValue::Parse(project.arguments().dump())));
+    REQUIRE(failed.at("returned_count") == 100);
+    const auto page = client->CallTool(
+        "get_diagnostics", mcp::JsonValue::Parse(Json{{"attempt_id", failed.at("attempt_id")},
+                                                      {"cursor", failed.at("next_cursor")}}
+                                                     .dump()));
+    REQUIRE_FALSE(page.is_error);
+    REQUIRE(Json::parse(page.structured_content->Dump()).at("returned_count") >= 30);
 }
 
 TEST_CASE("Symbol lookup errors include candidates or a module-to-instance hint") {

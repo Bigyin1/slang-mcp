@@ -32,22 +32,23 @@ int hierarchy_depth(const Json& args) {
     return depth->get<int>();
 }
 
-Json diagnostic_group(const std::string& code, const std::vector<Diagnostic>& items) {
+using DiagnosticRefs = std::vector<std::reference_wrapper<const Diagnostic>>;
+
+Json diagnostic_group(const std::string& code, const DiagnosticRefs& items) {
     std::map<std::string, int> counts;
     for (const auto& item : items) {
-        ++counts[item.severity];
+        ++counts[item.get().severity];
     }
     return {{"code", code},
             {"count", items.size()},
             {"severity_counts", counts},
-            {"example_message", items.front().message},
-            {"first_location", items.front().location}};
+            {"first_location", items.front().get().location}};
 }
 
-std::vector<Json> diagnostic_groups(const std::vector<Diagnostic>& diagnostics) {
-    std::map<std::string, std::vector<Diagnostic>> groups;
+std::vector<Json> diagnostic_groups(const DiagnosticRefs& diagnostics) {
+    std::map<std::string, DiagnosticRefs> groups;
     for (const auto& item : diagnostics) {
-        groups[item.code].push_back(item);
+        groups[item.get().code].push_back(item);
     }
     std::vector<Json> result;
     result.reserve(groups.size());
@@ -66,16 +67,46 @@ Json diagnostic_with_scope_hint(const Diagnostic& diagnostic) {
     return result;
 }
 
-Json diagnostic_page(const std::vector<Diagnostic>& diagnostics, int limit) {
-    const auto selected = page(diagnostics, limit);
-    Json items = Json::array();
-    for (const auto& item : selected.items) {
-        items.push_back(diagnostic_with_scope_hint(item));
+struct DiagnosticFilter {
+    Text severity, file, code;
+
+    bool operator()(const Diagnostic& item) const {
+        return (!severity || item.severity == *severity) &&
+               (!file || item.location.filename == file) && (!code || item.code == *code);
     }
-    return {{"diagnostics", items},
-            {"returned_count", items.size()},
-            {"total_count", selected.total_count},
-            {"truncated", selected.truncated}};
+};
+
+DiagnosticRefs filtered_diagnostics(const std::vector<Diagnostic>& diagnostics, const Json& args) {
+    DiagnosticRefs result;
+    const DiagnosticFilter filter{diagnostic_severity(args), text_option(args, "file"),
+                                  text_option(args, "code")};
+    std::ranges::copy_if(diagnostics, std::back_inserter(result), filter);
+    return result;
+}
+
+std::uint64_t diagnostic_attempt_id(const Json& args) {
+    if (!args.contains("attempt_id")) {
+        return 0;
+    }
+    const auto& id = args.at("attempt_id");
+    if (!id.is_number_integer() || id <= 0) {
+        throw std::invalid_argument("attempt_id must be a positive integer");
+    }
+    return id.get<std::uint64_t>();
+}
+
+struct DiagnosticSource {
+    const std::vector<Diagnostic>& records;
+    Json analysis;
+    std::uint64_t revision;
+};
+
+DiagnosticSource diagnostic_source(ProjectManager& manager, std::uint64_t id) {
+    if (id == 0) {
+        return {manager.design().diagnostics(), manager.analysis_context(), manager.revision()};
+    }
+    const auto& attempt = manager.failed_attempt(id);
+    return {attempt.diagnostics, attempt.context(), id};
 }
 } // namespace
 SemanticService::SemanticService(SnapshotPolicy snapshots) : manager_(snapshots) {
@@ -170,15 +201,13 @@ Json SemanticService::hierarchy(const Json& args) {
 }
 
 Json SemanticService::diagnostics(const Json& args, bool grouped) {
-    const auto severity = diagnostic_severity(args);
-    const auto selected = select(manager_.design().diagnostics(), [&](const auto& item) {
-        return !severity || item.severity == *severity;
-    });
-    if (!grouped) {
-        auto result = diagnostic_page(selected, limit_for(args));
-        result["analysis"] = manager_.analysis_context();
-        return result;
+    const auto source = diagnostic_source(manager_, diagnostic_attempt_id(args));
+    const Pagination page(args, "get_diagnostics", source.revision);
+    const auto selected = filtered_diagnostics(source.records, args);
+    const Json metadata = {{"analysis", source.analysis}};
+    if (grouped || option(args, "summary", false)) {
+        return page.render(diagnostic_groups(selected), "items", std::identity{}, metadata);
     }
-    return page(diagnostic_groups(selected), limit_for(args));
+    return page.render(selected, "diagnostics", diagnostic_with_scope_hint, metadata);
 }
 } // namespace slang_mcp

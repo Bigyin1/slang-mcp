@@ -22,5 +22,12 @@ class CompilationError final : public std::invalid_argument {
     const std::string analysis_scope;
     const std::size_t source_file_count;
     const bool single_unit;
+    std::uint64_t attempt_id = 0;
+
+    [[nodiscard]] Json context() const {
+        return {{"context", "attempted_candidate"}, {"analysis_scope", analysis_scope},
+                {"completeness", "not_verified"},   {"top_modules", requested_top_modules},
+                {"single_unit", single_unit},       {"source_file_count", source_file_count}};
+    }
 };
 } // namespace slang_mcp

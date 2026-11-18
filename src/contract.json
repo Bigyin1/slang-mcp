@@ -1,7 +1,7 @@
 [
   {
     "name": "project_load",
-    "description": "Compile and activate one standalone SystemVerilog top from an explicit ordered file set. Replaces the active project; repeat after edits or configuration changes. Missing dependencies and recoverable RTL errors remain diagnostics. If compilation fails, the previous project stays active; a compilation_failed reply carries attempted-candidate diagnostics. Returns file/configuration and diagnostic counts. Inspect get_diagnostics before using semantic results; completeness is not verified.",
+    "description": "Compile and activate one standalone SystemVerilog top from an explicit ordered file set. Replaces the active project; repeat after edits or configuration changes. Missing dependencies and recoverable RTL errors remain diagnostics. If compilation fails, the previous project stays active; a compilation_failed reply carries attempted-candidate diagnostics and an attempt_id for get_diagnostics. Returns file/configuration and diagnostic counts. Inspect get_diagnostics before using semantic results; completeness is not verified.",
     "inputSchema": {
       "properties": {
         "top_module": {
@@ -78,19 +78,41 @@
   },
   {
     "name": "get_diagnostics",
-    "description": "Return active-compilation Slang diagnostics and analysis context. Returns diagnostics, returned_count, total_count and truncated; severity filtering precedes truncation. UnknownModule/UnknownClassOrPackage scope hints mean possible missing dependencies, not harmless errors. After a failed load this reports the previous active project, not the candidate diagnostics carried by the failed-load reply.",
+    "description": "Return Slang diagnostics, analysis context and pagination. Filters are applied before counting. summary=true returns groups by code rather than individual diagnostics. UnknownModule and UnknownClassOrPackage may indicate a missing dependency or a typo. Use the attempt_id from a failed project_load to query that attempt separately from the active project.",
     "inputSchema": {
       "properties": {
         "limit": {
-          "default": 100,
           "type": "integer",
+          "default": 100,
           "minimum": 1,
           "maximum": 500,
-          "description": "Maximum items per selected collection after filtering. Default 100; range 1–500. total_count is the number before truncation, not the returned item count."
+          "description": "Maximum items per page. Defaults to 100. The reply size limit can shorten the page."
         },
         "severity": {
           "type": "string",
           "description": "Optional case-insensitive exact severity: ignored, note, warning, error or fatal. Omit to include all severities."
+        },
+        "file": {
+          "type": "string",
+          "description": "Exact diagnostic location filename as reported by Slang."
+        },
+        "code": {
+          "type": "string",
+          "description": "Exact Slang diagnostic code, such as UnknownModule."
+        },
+        "summary": {
+          "type": "boolean",
+          "default": false,
+          "description": "Group matching diagnostics by code and severity."
+        },
+        "attempt_id": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "ID from the latest failed compilation. A successful or newer failed compilation expires the ID."
+        },
+        "cursor": {
+          "type": "string",
+          "description": "Use next_cursor from the previous page with the same filters and compilation. Null next_cursor marks the last page."
         }
       },
       "type": "object"

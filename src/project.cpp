@@ -137,7 +137,7 @@ Json ProjectManager::load(ProjectConfig config) {
     for (const auto& include : config.include_directories) {
         validate_path(include, true);
     }
-    auto candidate = std::make_unique<adapters::Design>(config);
+    auto candidate = build(config);
     auto next_snapshot =
         snapshot_policy_ == SnapshotPolicy::Track ? snapshot(*candidate) : Snapshot{};
     auto previous = design_ && config_.logical_module == config.logical_module
@@ -148,7 +148,25 @@ Json ProjectManager::load(ProjectConfig config) {
     snapshot_ = std::move(next_snapshot);
     previous_ = std::move(previous);
     ++revision_;
+    failure_.reset();
     return summary();
+}
+
+std::unique_ptr<adapters::Design> ProjectManager::build(const ProjectConfig& config) {
+    try {
+        return std::make_unique<adapters::Design>(config);
+    } catch (CompilationError& error) {
+        error.attempt_id = ++attempt_id_;
+        failure_.emplace(error);
+        throw;
+    }
+}
+
+const CompilationError& ProjectManager::failed_attempt(std::uint64_t id) const {
+    if (!failure_ || failure_->attempt_id != id) {
+        throw std::invalid_argument("unknown or expired compilation attempt");
+    }
+    return *failure_;
 }
 
 Json ProjectManager::reload() {

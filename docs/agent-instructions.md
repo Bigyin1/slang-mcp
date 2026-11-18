@@ -63,10 +63,11 @@ harmless. Report unresolved dependencies and syntax/type errors affecting the an
 Zero diagnostics do not prove completeness or reproduce a production configuration.
 
 A failed load preserves the previous active design. A reply with
-`status: "compilation_failed"` contains diagnostics for the attempted candidate.
-Subsequent queries, including `get_diagnostics`, still address the previous
-successful load. Use `project_info` to verify active files and options; if no load
-has succeeded, there is no active design to query.
+`status: "compilation_failed"` contains diagnostics and an `attempt_id`.
+Pass that ID to `get_diagnostics` to filter or page through the failed
+compilation. For a quick overview, use `summary: true` to group diagnostics by
+code. Without an attempt ID, queries use the last successful load. Use
+`project_info` to verify active files and options.
 
 ## Choose the query that answers the question
 
