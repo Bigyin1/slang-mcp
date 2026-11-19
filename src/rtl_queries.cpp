@@ -1,4 +1,4 @@
-#include "query.hpp"
+#include "pagination.hpp"
 #include "semantic_service.hpp"
 
 namespace slang_mcp {
@@ -133,8 +133,8 @@ Json SemanticService::instance_facts(const Json& args) {
     return instances;
 }
 
-Json SemanticService::references(const Json& args, const Text& access) {
-    const auto identifier = args.at(access ? "signal" : "symbol").get<std::string>();
+namespace {
+Text reference_kind(const Json& args) {
     const auto kind = text_option(args, "kind");
     static const std::set<std::string> kinds = {"read",
                                                 "write",
@@ -148,9 +148,20 @@ Json SemanticService::references(const Json& args, const Text& access) {
     if (kind && !kinds.contains(*kind)) {
         throw std::invalid_argument("unknown reference kind: " + *kind);
     }
-    return page(select(manager_.design().references(identifier),
-                       [&](const auto& item) { return reference_matches(item, access, kind); }),
-                limit_for(args));
+    return kind;
+}
+} // namespace
+
+Json SemanticService::references(const Json& args, const Text& access) {
+    const auto identifier = args.at(access ? "signal" : "symbol").get<std::string>();
+    const auto kind = reference_kind(args);
+    auto items = select(manager_.design().references(identifier),
+                        [&](const auto& item) { return reference_matches(item, access, kind); });
+    if (access) {
+        return page(std::move(items), limit_for(args));
+    }
+    return Pagination(args, "get_references", manager_.revision())
+        .render(items, "items", std::identity{});
 }
 
 Json SemanticService::procedures(const Json& args) {

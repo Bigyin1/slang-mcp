@@ -188,7 +188,7 @@ to compute only that section. Omit `fields` for both, or pass `[]` for identitie
 
 ## References and state
 
-`get_references(symbol, kind?, limit=100)` returns the symbol's declaration and
+`get_references(symbol, kind?, limit=100, cursor?)` returns the symbol's declaration and
 semantic uses with location, scope, instance, context, and procedural block ID
 when available. Kinds: `read`, `write`, `read_write`, `declaration`, `unknown`,
 `parameter_reference`, `port_connection`, `type_reference`, `instantiation`.
@@ -270,7 +270,7 @@ visiting the retained syntax tree.
 Paged semantic collections contain `items`, `total_count`, and `truncated`;
 limits range from 1 to 500. Diagnostics instead use `diagnostics` and
 `returned_count`, with the same count/truncation distinction. For
-`find_symbol`, `get_hierarchy`, and `get_diagnostics`, pass `next_cursor` as
+`find_symbol`, `get_hierarchy`, `get_references`, and `get_diagnostics`, pass `next_cursor` as
 `cursor` with the same filters to continue. A null cursor marks the last page.
 An active-project cursor expires when another project loads successfully.
 The 1 MiB reply size cap can shorten a page.

@@ -132,6 +132,7 @@ together, excluding declarations and unknowns. Each result retains its precise
 kind: `read_write` on an item means a combined access such as `+=`, `++` or an
 inout/ref argument. The `read` and `write` filters each include combined accesses.
 Omit `kind` to inspect all recorded categories, including unknown accesses.
+Follow `next_cursor` with the same `symbol` and `kind` to read further pages.
 
 References are source-level accesses, not hardware fan-in/fan-out. System calls
 can have unknown effects, procedural branches can contribute even when their

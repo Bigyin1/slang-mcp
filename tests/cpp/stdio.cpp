@@ -163,6 +163,61 @@ TEST_CASE("Symbol lookup errors include candidates or a module-to-instance hint"
             "list_instances");
 }
 
+namespace {
+void write_reference_fixture(const Project& project) {
+    std::string rtl = "module top(input logic src, output wire [512:0] dst);\n";
+    for (int index = 0; index < 513; ++index) {
+        rtl += "assign dst[" + std::to_string(index) + "] = src;\n";
+    }
+    project.write("design.sv", rtl + "endmodule\n");
+}
+
+Json reference_page(mcp::McpClient& client, const Json& arguments) {
+    const auto result = client.CallTool("get_references", mcp::JsonValue::Parse(arguments.dump()));
+    REQUIRE_FALSE(result.is_error);
+    return Json::parse(result.structured_content->Dump());
+}
+
+void check_reference_lines(const Json& page, int first, int count) {
+    REQUIRE(page.at("total_count") == 513);
+    REQUIRE(page.at("returned_count") == count);
+    REQUIRE(page.at("items").size() == static_cast<std::size_t>(count));
+    for (const auto& item : page.at("items")) {
+        REQUIRE(item.at("location").at("line") == first++);
+    }
+}
+} // namespace
+
+TEST_CASE("Stdio reference pages preserve order and belong to the active compilation") {
+    Project project;
+    write_reference_fixture(project);
+    auto client = stdio_client();
+    const auto load = mcp::JsonValue::Parse(project.arguments().dump());
+    REQUIRE_FALSE(client->CallTool("project_load", load).is_error);
+    Json query = {{"symbol", "top.src"}, {"kind", "read"}, {"limit", 500}};
+    const auto first = reference_page(*client, query);
+    check_reference_lines(first, 2, 500);
+    REQUIRE(first.at("truncated") == true);
+    query["cursor"] = first.at("next_cursor");
+    query["limit"] = 20;
+    auto wrong = query;
+    wrong["kind"] = "write";
+    REQUIRE(client->CallTool("get_references", mcp::JsonValue::Parse(wrong.dump())).is_error);
+    auto broken = project.arguments();
+    broken["top_module"] = "missing";
+    REQUIRE(client->CallTool("project_load", mcp::JsonValue::Parse(broken.dump())).is_error);
+    const auto last = reference_page(*client, query);
+    check_reference_lines(last, 502, 13);
+    REQUIRE(last.at("next_cursor").is_null());
+    REQUIRE(last.at("truncated") == false);
+    REQUIRE_FALSE(client->CallTool("project_load", load).is_error);
+    REQUIRE(client->CallTool("get_references", mcp::JsonValue::Parse(query.dump())).is_error);
+    const auto empty = reference_page(*client, {{"symbol", "top.src"}, {"kind", "write"}});
+    REQUIRE(empty.at("items").empty());
+    REQUIRE(empty.at("total_count") == 0);
+    REQUIRE(empty.at("next_cursor").is_null());
+}
+
 TEST_CASE(
     "Stdio type descriptions validate nested arrays structs and unions against the contract") {
     Project project;

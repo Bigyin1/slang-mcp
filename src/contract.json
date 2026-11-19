@@ -415,7 +415,7 @@
   },
   {
     "name": "get_references",
-    "description": "Return bounded source-level declarations and indexed uses of a symbol as items, total_count and truncated. Omitted kind includes all recorded categories. read_write selects all reads/writes once; item kinds remain precise. Port bindings are ordinary-port actual accesses, not netlist connectivity. System-call accesses can be unknown; inactive procedural branches can still contribute. Empty results do not prove no uses: indexing is incomplete, and type_reference is not currently populated. Aggregate accesses are reported for the base signal, not individual fields/elements or bit ranges; selectors of written elements are reads. An ambiguous lookup returns candidate symbol IDs when available.",
+    "description": "Return bounded source-level declarations and indexed uses of a symbol as items, returned_count, total_count, truncated and next_cursor. Follow next_cursor with the same symbol and kind until it is null. Omitted kind includes all recorded categories. read_write selects all reads/writes once; item kinds remain precise. Port bindings are ordinary-port actual accesses, not netlist connectivity. System-call accesses can be unknown; inactive procedural branches can still contribute. Empty results do not prove no uses: indexing is incomplete, and type_reference is not currently populated. Aggregate accesses are reported for the base signal, not individual fields/elements or bit ranges; selectors of written elements are reads. An ambiguous lookup returns candidate symbol IDs when available.",
     "inputSchema": {
       "properties": {
         "symbol": {
@@ -436,6 +436,10 @@
             "type_reference",
             "instantiation"
           ]
+        },
+        "cursor": {
+          "type": "string",
+          "description": "Continuation from next_cursor for the same symbol, kind and active compilation. The page limit may change."
         },
         "limit": {
           "default": 100,
