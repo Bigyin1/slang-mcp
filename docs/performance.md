@@ -1,5 +1,47 @@
 # Slang integration and query performance
 
+## Reference paging and JSON project manifests
+
+Direct stdio checks used the local macOS arm64 Release build with Clang 23.1.5
+and Slang 12.1. On the pinned RTLMeter OpenTitan configuration below,
+`get_references` returned all 3,442 instantiations of `prim_flop` in seven
+pages. Comparing the returned paths with Slang's instance inventory verified
+the ordering and count. The full fixture had four compilation errors.
+
+On CVA6 and iDMA, the inline and manifest forms returned equal load summaries,
+ordered source lists, diagnostic records and the selected instance facts. The
+fact queries covered both CVA6 TLB instances and all eight iDMA FIFOs. The
+same request selects the same sources in either form.
+
+| Fixture | Sources | Inline arguments | Manifest arguments |
+| --- | ---: | ---: | ---: |
+| CVA6 | 212 | 26,298 bytes | 84 bytes |
+| iDMA | 308 | 41,284 bytes | 81 bytes |
+
+The byte counts include UTF-8 JSON argument keys and paths. Absolute workspace
+path lengths affect the comparison. A separate wrapper test removed an explicit
+child definition. Both partial-loading forms reported the same missing-module
+diagnostic and retained the same local signal width and write reference as the
+complete input.
+
+### Repeated reference lookup
+
+Five alternating pairs compared the same Release build before and after
+resolving a reference target without constructing its full symbol description.
+Each series used a fresh OpenTitan compilation. The table reports the median
+of the five per-series medians after discarding the first two rounds.
+
+| Query | Adapter before | Adapter after | MCP stdio before | MCP stdio after |
+| --- | ---: | ---: | ---: | ---: |
+| UART signal | 2.78 ms | 0.15 ms | 12.74 ms | 12.69 ms |
+| UART port by ID | 4.37 ms | 1.74 ms | 12.84 ms | 12.87 ms |
+| `prim_flop` instantiations | 2.51 ms | 2.20 ms | 13.34 ms | 13.49 ms |
+
+The adapter's first reference query still took about 1.56–1.57 s at the
+median, including access-index construction. Warm adapter queries improved in
+each of the five pairs. The wire results were identical, and the stdio timings
+showed no consistent practical gain.
+
 ## Access index optimization
 
 The access index now groups reference positions by symbol ID, preserving traversal
