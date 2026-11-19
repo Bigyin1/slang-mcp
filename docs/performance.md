@@ -1,28 +1,12 @@
 # Slang integration and query performance
 
-## Reference paging and JSON project manifests
+## Reference paging and repeated lookup
 
 Direct stdio checks used the local macOS arm64 Release build with Clang 23.1.5
 and Slang 12.1. On the pinned RTLMeter OpenTitan configuration below,
 `get_references` returned all 3,442 instantiations of `prim_flop` in seven
 pages. Comparing the returned paths with Slang's instance inventory verified
 the ordering and count. The full fixture had four compilation errors.
-
-On CVA6 and iDMA, the inline and manifest forms returned equal load summaries,
-ordered source lists, diagnostic records and the selected instance facts. The
-fact queries covered both CVA6 TLB instances and all eight iDMA FIFOs. The
-same request selects the same sources in either form.
-
-| Fixture | Sources | Inline arguments | Manifest arguments |
-| --- | ---: | ---: | ---: |
-| CVA6 | 212 | 26,298 bytes | 84 bytes |
-| iDMA | 308 | 41,284 bytes | 81 bytes |
-
-The byte counts include UTF-8 JSON argument keys and paths. Absolute workspace
-path lengths affect the comparison. A separate wrapper test removed an explicit
-child definition. Both partial-loading forms reported the same missing-module
-diagnostic and retained the same local signal width and write reference as the
-complete input.
 
 ### Repeated reference lookup
 
