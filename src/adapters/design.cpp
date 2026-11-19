@@ -536,6 +536,10 @@ SymbolDescription Design::describe(const std::string& identifier, int type_depth
     return result;
 }
 
+std::optional<SymbolOrigin> Design::symbol_origin(const std::string& identifier) const {
+    return macro_origin(*impl_->compilation, impl_->manager, impl_->resolve(identifier).location);
+}
+
 std::vector<HierarchyNode> Design::hierarchy(const Text& root, int depth) const {
     std::vector<HierarchyNode> result;
     for (const auto& item : impl_->hierarchy) {

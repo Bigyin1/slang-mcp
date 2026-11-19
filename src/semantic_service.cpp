@@ -142,7 +142,13 @@ void SemanticService::register_project_tools() {
 void SemanticService::register_symbol_tools() {
     tools_["find_symbol"] = [this](const Json& args) { return find_symbol(args); };
     tools_["describe_symbol"] = [this](const Json& args) -> Json {
-        return manager_.design().describe(args.at("identifier"), type_depth_for(args));
+        const auto identifier = args.at("identifier").get<std::string>();
+        auto& design = manager_.design();
+        Json result = design.describe(identifier, type_depth_for(args));
+        if (option(args, "include_origin", false)) {
+            result["origin"] = design.symbol_origin(identifier);
+        }
+        return result;
     };
     tools_["get_hierarchy"] = [this](const Json& args) { return hierarchy(args); };
     tools_["describe_instance"] = [this](const Json& args) { return describe_instance(args); };

@@ -51,4 +51,7 @@ void index_accesses(const ast::InstanceSymbol& instance, const slang::SourceMana
 [[nodiscard]] MacroExpansion expand_macro(const ast::Compilation& compilation,
                                           const slang::SourceManager& manager,
                                           const MacroQuery& query);
+[[nodiscard]] std::optional<SymbolOrigin> macro_origin(const ast::Compilation& compilation,
+                                                       const slang::SourceManager& manager,
+                                                       slang::SourceLocation symbol);
 } // namespace slang_mcp::adapters

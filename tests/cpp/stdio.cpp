@@ -163,6 +163,37 @@ TEST_CASE("Symbol lookup errors include candidates or a module-to-instance hint"
             "list_instances");
 }
 
+TEST_CASE("Stdio symbol origin is opt-in and uses the active physical snapshot") {
+    Project project;
+    project.write("design.sv", "`define DECL(n) logic n``_ff;\nmodule top;\n"
+                               "`line 81 \"virtual.sv\" 0\n`DECL(data)\nlogic plain;\nendmodule\n");
+    auto client = stdio_client();
+    const auto load = mcp::JsonValue::Parse(project.arguments().dump());
+    REQUIRE_FALSE(client->CallTool("project_load", load).is_error);
+    const auto ordinary = client->CallTool(
+        "describe_symbol",
+        mcp::JsonValue::Parse(R"({"identifier":"top.plain","include_origin":true})"));
+    REQUIRE_FALSE(ordinary.is_error);
+    REQUIRE(Json::parse(ordinary.structured_content->Dump()).at("origin").is_null());
+    const auto omitted = client->CallTool("describe_symbol",
+                                          mcp::JsonValue::Parse(R"({"identifier":"top.data_ff"})"));
+    REQUIRE_FALSE(Json::parse(omitted.structured_content->Dump()).contains("origin"));
+    const auto query =
+        mcp::JsonValue::Parse(R"({"identifier":"top.data_ff","include_origin":true})");
+    const auto result = client->CallTool("describe_symbol", query);
+    REQUIRE_FALSE(result.is_error);
+    const auto origin = Json::parse(result.structured_content->Dump()).at("origin");
+    REQUIRE(origin.at("invocation").at("filename") ==
+            std::filesystem::canonical(project.path("design.sv")).string());
+    REQUIRE(origin.at("invocation").at("line") == 4);
+    REQUIRE(origin.at("macros").at(0).at("definition").at("line") == 1);
+    project.write("design.sv", "module broken; endmodule\n");
+    REQUIRE(client->CallTool("project_load", load).is_error);
+    const auto retained = client->CallTool("describe_symbol", query);
+    REQUIRE_FALSE(retained.is_error);
+    REQUIRE(Json::parse(retained.structured_content->Dump()).at("origin") == origin);
+}
+
 namespace {
 void write_reference_fixture(const Project& project) {
     std::string rtl = "module top(input logic src, output wire [512:0] dst);\n";

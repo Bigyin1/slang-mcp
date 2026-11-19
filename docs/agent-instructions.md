@@ -143,6 +143,13 @@ connectivity tracing or semantic diff.
 
 ## Inspect a concrete macro invocation
 
+If you start with the name of a generated declaration, call `describe_symbol`
+with `include_origin: true`. Read `origin.invocation` for the physical source
+location and `origin.macros` for the outer-to-inner chain and definition locations.
+`origin.include_sites` identifies which inclusion led to that invocation.
+Check `origin.complete` before relying on the whole chain. Ordinary declarations
+return `origin: null` when requested.
+
 When a wrapper creates modules, instances or signals through macros, use
 `expand_macro` on the actual call: absolute `file`, 1-based physical `line` and
 1-based UTF-8 byte `column` on the backtick/name. It returns expanded token text

@@ -19,6 +19,7 @@ class Design {
     find_symbols(const std::string& name, const Text& scope) const;
     [[nodiscard]] SymbolReference definition_reference(const std::string& identifier) const;
     [[nodiscard]] SymbolDescription describe(const std::string& identifier, int type_depth = -1);
+    [[nodiscard]] std::optional<SymbolOrigin> symbol_origin(const std::string& identifier) const;
     [[nodiscard]] std::vector<SymbolReference> members(const std::string& scope);
     [[nodiscard]] std::vector<HierarchyNode> hierarchy(const Text& root, int depth) const;
     [[nodiscard]] std::vector<std::size_t> hierarchy_positions(const Text& root, int depth) const;

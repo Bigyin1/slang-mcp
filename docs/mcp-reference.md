@@ -84,7 +84,7 @@ a typo can produce the same diagnostic. The original severity is never lowered.
 | Tool | Arguments and semantics |
 | --- | --- |
 | `find_symbol` | Exact short `name`, optional qualified `scope`. Returns paged `symbols` and exact `match_count`. |
-| `describe_symbol` | `identifier`, optional `type_depth=2` (0–8): identity, type, width, location, signature and bounded `type_info` for arrays, structs and unions. |
+| `describe_symbol` | `identifier`, optional `type_depth=2` (0–8) and `include_origin=false`. Returns identity, type, width, location, signature and bounded `type_info` for arrays, structs and unions. |
 | `list_symbols` | `scope`, optional `kind` and `limit`: direct declarations without recursive traversal. Scope can be a module name, symbol identifier, or exact nested instance/generate path. A top name identical to a module name selects the module's default parameters. |
 | `get_hierarchy` | Optional `root` and `max_depth` (0–50, default 1). Paged `items` contain flat nodes with `path`, `parent`, `kind`, `sv_module`, and `has_children`. |
 | `list_instances` | Optional `sv_module`, `name`, `path_prefix`, and `limit`: filter by module type, exact instance name, and path prefix. |
@@ -95,6 +95,12 @@ error with candidate IDs when available. For a module name used in place of
 an instance path, the error can suggest `list_instances`.
 
 ### Arrays, structures and unions
+
+Set `include_origin: true` to request the physical macro invocation,
+the outer-to-inner macro chain, and the ordered include sites of the invocation.
+Macro definitions carry physical locations when available. An ordinary
+declaration returns `origin: null`. A false `complete` indicates that part of the
+chain or a definition could not be recovered.
 
 Use `describe_symbol` on the base declaration, for example:
 
