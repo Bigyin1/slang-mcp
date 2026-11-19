@@ -26,6 +26,47 @@ median, including access-index construction. Warm adapter queries improved in
 each of the five pairs. The wire results were identical, and the stdio timings
 showed no consistent practical gain.
 
+## Macro origin agent comparison
+
+The baseline uses the reference-pagination and lookup changes at `018a362`.
+The candidate adds opt-in macro provenance to `describe_symbol` and explains
+the argument in the agent guide. We used local stdio and the same Clang 23.1.5
+Release configuration with Slang 12.1 for both binaries. Direct probes checked
+that existing semantic fields and diagnostics matched across both binaries and
+that the benchmark candidate and final build returned identical provenance.
+
+GPT-5.6 Terra Max received the same SystemVerilog fragment and question in
+each pair. The agent could read source files in both groups. Each task had
+three repetitions per group, with the starting group alternating. The tasks
+ran concurrently with a ten-minute limit per run. The AXI fragment used the
+original `axi_pkg.sv`, `axi_xp.sv` and `axi/typedef.svh` from the local PULP AXI
+fixture. The two synthetic tasks covered a pasted signal name and a header
+included twice with distinct macro state and a missing child module.
+
+All 18 runs completed. The table gives semantic accuracy, total MCP calls
+across the three runs, mean tokens in thousands, and per-run wall times in
+seconds. Both groups reported the correct include sites in the partial
+fixture as `wrapper.sv:line` strings. Scoring accepted those values as their
+equivalent line numbers. Strict JSON comparison gives five correct baseline
+answers and six correct candidate answers.
+
+| Task | Build | Correct facts | MCP calls | Uncached input | Output | Wall times |
+| --- | --- | ---: | ---: | ---: | ---: | --- |
+| Wrapper | Baseline | 3/3 | 13 | 26.1 | 2.7 | 80, 80, 96 |
+| Wrapper | Candidate | 3/3 | 10 | 24.5 | 1.6 | 56, 60, 48 |
+| PULP AXI | Baseline | 2/3 | 12 | 37.3 | 4.0 | 156, 115, 86 |
+| PULP AXI | Candidate | 3/3 | 12 | 30.1 | 2.3 | 74, 81, 58 |
+| Repeated include | Baseline | 3/3 | 20 | 25.7 | 3.0 | 94, 98, 82 |
+| Repeated include | Candidate | 3/3 | 14 | 23.2 | 2.2 | 98, 70, 64 |
+
+In all nine candidate runs the agent requested `include_origin`. The AXI
+baseline once attributed `xbar_req_t` to `AXI_TYPEDEF_ALL_CT` at line 119.
+The candidate identified `AXI_TYPEDEF_REQ_T` at line 84 in all three runs.
+Each AXI baseline run used two shell calls that searched or read RTL content.
+Each candidate run used one. File inventories and instruction discovery are
+excluded from that count. The results support exposing origin in the existing
+tool. The small sample leaves the overall effect on time and tokens uncertain.
+
 ## Access index optimization
 
 The access index now groups reference positions by symbol ID, preserving traversal
