@@ -14,7 +14,11 @@ defines and source order from the design's real build configuration when possibl
 Start with the smallest fragment that can answer the question; add dependencies
 only as needed. The server will not expand the file set automatically.
 
-Call `project_load`, for example:
+When an existing JSON configuration already lists the needed files, call
+`project_load` with only `{"manifest": "/work/config.json"}`. The file has the
+same keys as the inline example. Relative source and include paths resolve from
+the configuration's directory. For a smaller fragment, pass the chosen files
+inline:
 
 ```json
 {

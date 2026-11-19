@@ -38,6 +38,62 @@ Json failed_compilation(const mcp::CallToolResult& response, bool single_unit = 
 }
 } // namespace
 
+TEST_CASE("Stdio project manifests preserve source order and recoverable diagnostics") {
+    Project project;
+    std::filesystem::create_directory(project.path("include"));
+    project.write("include/width.svh", "`define LOCAL_WIDTH 3\n");
+    project.write("first.sv", "`include \"width.svh\"\n");
+    project.write("design.sv", "module top;\n"
+                               "`ifdef LOCAL_WIDTH\n"
+                               "localparam WIDTH = `LOCAL_WIDTH;\n"
+                               "`else\n"
+                               "localparam WIDTH = `DEFAULT_WIDTH;\n"
+                               "`endif\n"
+                               "absent child(); endmodule\n");
+    const auto single_unit = GENERATE(true, false);
+    const Json config = {{"source_files", {"first.sv", "design.sv"}},
+                         {"top_module", "top"},
+                         {"include_directories", {"include"}},
+                         {"defines", {{"DEFAULT_WIDTH", "9"}}},
+                         {"single_unit", single_unit}};
+    project.write("config.json", config.dump());
+    auto client = stdio_client();
+    const auto load =
+        mcp::JsonValue::Parse(Json{{"manifest", project.path("config.json").string()}}.dump());
+    const auto result = client->CallTool("project_load", load);
+    REQUIRE_FALSE(result.is_error);
+    REQUIRE(Json::parse(result.structured_content->Dump()).at("diagnostic_error_count") > 0);
+    const auto description = client->CallTool(
+        "inspect_instance",
+        mcp::JsonValue::Parse(
+            R"({"instance_path":"top","fields":["parameters"],"parameter_names":["WIDTH"]})"));
+    REQUIRE_FALSE(description.is_error);
+    REQUIRE(Json::parse(description.structured_content->Dump())
+                .at("parameters")
+                .at("parameters")
+                .at("items")
+                .at(0)
+                .at("integer_value") == (single_unit ? 3 : 9));
+}
+
+TEST_CASE("Invalid stdio manifests preserve the active design") {
+    Project project;
+    project.write("design.sv", "module top; endmodule\n");
+    project.write("broken.json", "{broken");
+    auto client = stdio_client();
+    REQUIRE_FALSE(
+        client->CallTool("project_load", mcp::JsonValue::Parse(project.arguments().dump()))
+            .is_error);
+    const auto variant = GENERATE(0, 1, 2);
+    Json args = {
+        {"manifest", project.path(variant == 1 ? "missing.json" : "broken.json").string()}};
+    if (variant == 2) {
+        args["single_unit"] = false;
+    }
+    REQUIRE(client->CallTool("project_load", mcp::JsonValue::Parse(args.dump())).is_error);
+    REQUIRE_FALSE(client->CallTool("project_info", mcp::JsonValue::Object{}).is_error);
+}
+
 TEST_CASE("Stdio project info keeps configuration cursors tied to the active load") {
     Project project;
     project.write("design.sv", "module top; endmodule\n");

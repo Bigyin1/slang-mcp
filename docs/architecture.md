@@ -11,7 +11,8 @@ simulation or formal proof. State discovery covers `always_ff` only. Reloading i
 a complete rebuild; symbol search is exact-name only.
 
 For a fragment, call `project_load` with ordered absolute `source_files`,
-`top_module`, and optional `include_directories`, `defines` and `single_unit`. This compiles the
+`top_module`, and optional `include_directories`, `defines` and `single_unit`,
+or point `manifest` at a JSON file containing the configuration. This compiles the
 selected files and their includes without discovering missing dependencies or
 loading the rest of the project. Add dependencies explicitly in a subsequent load.
 Local queries remain available with diagnostics; the load summary identifies

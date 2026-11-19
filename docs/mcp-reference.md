@@ -11,7 +11,7 @@ and `single_unit`: a macro present in the repository is not necessarily active.
 
 ## Loading and diagnostics
 
-`project_load` requires `source_files` and `top_module`:
+For inline `project_load` requests, supply `source_files` and `top_module`:
 
 ```json
 {
@@ -29,6 +29,11 @@ an empty string supplies an empty replacement. The server
 reads only the selected sources and their includes; it does not discover missing
 modules or packages or automatically expand the analysis scope. Call `project_load`
 again for a different file set or after modifying RTL.
+
+For a JSON configuration on disk, pass only
+`{"manifest": "/work/config.json"}`. The file contains the same configuration
+keys as the inline example. Relative source and include paths in the file resolve
+from its directory. Each invocation reads the file again.
 
 `single_unit` is an optional boolean, defaulting to `true`:
 

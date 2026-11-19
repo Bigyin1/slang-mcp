@@ -3,6 +3,7 @@
 #include "query.hpp"
 
 #include <filesystem>
+#include <fstream>
 #include <set>
 
 namespace slang_mcp {
@@ -109,9 +110,7 @@ std::vector<Json> changes_between(const std::map<std::string, std::string>& prev
     }
     return result;
 }
-} // namespace
-
-ProjectConfig project_from_arguments(const Json& arguments) {
+ProjectConfig project_from_values(const Json& arguments) {
     ProjectConfig result;
     result.logical_module = arguments.at("top_module").get<std::string>();
     if (trim(result.logical_module).empty()) {
@@ -132,6 +131,43 @@ ProjectConfig project_from_arguments(const Json& arguments) {
                        {"dependency_resolution", "provided_files_only"},
                        {"completeness", "not_verified"}};
     return result;
+}
+
+void resolve_manifest_paths(std::vector<std::string>& paths,
+                            const std::filesystem::path& directory) {
+    for (auto& path : paths) {
+        if (!path.empty() && std::filesystem::path(path).is_relative()) {
+            path = (directory / path).string();
+        }
+    }
+}
+
+ProjectConfig project_from_manifest(const Json& arguments) {
+    if (arguments.size() != 1) {
+        throw std::invalid_argument("pass manifest alone or use inline project configuration");
+    }
+    const auto name = arguments.at("manifest").get<std::string>();
+    validate_path(name, false);
+    std::ifstream input(name);
+    if (!input) {
+        throw std::invalid_argument("cannot open project manifest: " + name);
+    }
+    const auto values = Json::parse(input, nullptr, false);
+    if (!values.is_object() || values.contains("manifest")) {
+        throw std::invalid_argument("expected a JSON project configuration in manifest: " + name);
+    }
+    auto config = project_from_values(values);
+    const auto directory = std::filesystem::path(name).parent_path();
+    resolve_manifest_paths(config.source_files, directory);
+    resolve_manifest_paths(config.include_directories, directory);
+    config.metadata["load_format"] = "json_manifest";
+    return config;
+}
+} // namespace
+
+ProjectConfig project_from_arguments(const Json& arguments) {
+    return arguments.contains("manifest") ? project_from_manifest(arguments)
+                                          : project_from_values(arguments);
 }
 
 adapters::Design& ProjectManager::design() {

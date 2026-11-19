@@ -1,7 +1,7 @@
 [
   {
     "name": "project_load",
-    "description": "Compile and activate one standalone SystemVerilog top from an explicit ordered file set. Missing dependencies and recoverable RTL errors remain diagnostics. A successful load already reports the elaborated tops, compilation-unit mode, configuration counts and diagnostic counts. Call get_diagnostics when a diagnostic can affect the answer. If compilation fails, the previous project stays active and the reply carries candidate diagnostics and an attempt_id for get_diagnostics. Completeness remains unverified. Load again after source edits or configuration changes.",
+    "description": "Compile and activate one standalone SystemVerilog top from an explicit ordered file set supplied inline or in a JSON manifest. Missing dependencies and recoverable RTL errors remain diagnostics. A successful load already reports the elaborated tops, compilation-unit mode, configuration counts and diagnostic counts. Call get_diagnostics when a diagnostic can affect the answer. If compilation fails, the previous project stays active and the reply carries candidate diagnostics and an attempt_id for get_diagnostics. Completeness remains unverified. Load again after source edits or configuration changes.",
     "inputSchema": {
       "properties": {
         "top_module": {
@@ -41,13 +41,32 @@
           "type": "boolean",
           "default": true,
           "description": "Default true: files share macros and compilation-unit declarations in source order. False: separate compilation unit per file; configured defines/includes apply to every unit. Independent of fragment size."
+        },
+        "manifest": {
+          "type": "string",
+          "description": "Absolute path to a JSON file containing the inline configuration keys. Pass manifest by itself. Inside the file, source_files and include_directories may be relative to its directory."
         }
       },
-      "required": [
-        "source_files",
-        "top_module"
-      ],
-      "type": "object"
+      "type": "object",
+      "oneOf": [
+        {
+          "required": [
+            "manifest"
+          ],
+          "maxProperties": 1
+        },
+        {
+          "required": [
+            "source_files",
+            "top_module"
+          ],
+          "not": {
+            "required": [
+              "manifest"
+            ]
+          }
+        }
+      ]
     },
     "outputSchema": {
       "additionalProperties": true,
