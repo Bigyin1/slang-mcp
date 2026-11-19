@@ -19,7 +19,7 @@ The C++ integration also draws on [slang-server](https://github.com/hudson-tradi
 | See a macro expansion at its invocation | `expand_macro` |
 
 Configure your MCP client to run `slang_mcp` over stdio. The server runs without
-Python. The Linux x86-64 archive includes `AGENTS.md` with guidance for using
+Python. The Linux x86-64 archive includes `slang-mcp.md` with guidance for using
 the tools. [Download the latest release](https://github.com/Bigyin1/slang-mcp/releases/latest).
 
 ## Documentation
