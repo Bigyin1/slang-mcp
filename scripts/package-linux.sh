@@ -11,16 +11,17 @@ package="slang-mcp-${version}-linux-x86_64"
 stage=$(mktemp -d)
 trap 'rm -rf "$stage"' EXIT
 cp "$build_directory/slang_mcp" "$stage/slang_mcp"
-cp docs/agent-instructions.md "$stage/AGENTS.md"
-(cd "$stage" && tar -czf "$output_directory/$package.tar.gz" slang_mcp AGENTS.md)
+guide=slang-mcp.md
+cp docs/agent-instructions.md "$stage/$guide"
+(cd "$stage" && tar -czf "$output_directory/$package.tar.gz" slang_mcp "$guide")
 checksum=(sha256sum)
 if ! command -v sha256sum >/dev/null; then checksum=(shasum -a 256); fi
 (cd "$output_directory" && "${checksum[@]}" "$package.tar.gz" > "$package.tar.gz.sha256")
 (cd "$output_directory" && "${checksum[@]}" -c "$package.tar.gz.sha256")
 tar -tzf "$output_directory/$package.tar.gz" | grep -Fx slang_mcp
-tar -tzf "$output_directory/$package.tar.gz" | grep -Fx AGENTS.md
+tar -tzf "$output_directory/$package.tar.gz" | grep -Fx "$guide"
 tar -tzf "$output_directory/$package.tar.gz" | while IFS= read -r member; do
-  if [[ "$member" != slang_mcp && "$member" != AGENTS.md ]]; then
+  if [[ "$member" != slang_mcp && "$member" != "$guide" ]]; then
     echo "Unexpected archive entry: $member" >&2
     exit 1
   fi
