@@ -308,6 +308,29 @@ struct Design::Impl {
         return *raw_symbols.at(matches.front().get().symbol_id);
     }
 
+    std::string signal_identifier(const std::string& query) const {
+        const auto item = std::ranges::find_if(
+            symbols, [&](const auto& symbol) { return signal_reference(symbol, query); });
+        if (item != symbols.end()) {
+            return item->symbol_id;
+        }
+        const auto* port = resolve(query).as_if<ast::PortSymbol>();
+        if (port && port->internalSymbol) {
+            return reference(*port->internalSymbol, manager).symbol_id;
+        }
+        return query;
+    }
+
+    SymbolReference identity(const ast::Symbol& symbol, const std::string& query) const {
+        const auto saved = default_symbols.find(query);
+        return saved == default_symbols.end() ? reference(symbol, manager) : saved->second;
+    }
+
+    SymbolReference signal_identity(const std::string& identifier) const {
+        const auto query = signal_identifier(identifier);
+        return identity(resolve(query), query);
+    }
+
     [[noreturn]] void unknown_symbol(const std::string& query) const {
         const auto dot = query.find('.');
         const auto module = query.substr(0, dot);
@@ -497,11 +520,7 @@ SymbolReference Design::definition_reference(const std::string& identifier) cons
 SymbolDescription Design::describe(const std::string& identifier, int type_depth) {
     const auto& symbol = impl_->resolve(identifier);
     SymbolDescription result;
-    result.symbol = reference(symbol, impl_->manager);
-    if (const auto item = impl_->default_symbols.find(identifier);
-        item != impl_->default_symbols.end()) {
-        result.symbol = item->second;
-    }
+    result.symbol = impl_->identity(symbol, identifier);
     if (const auto* type = symbol_type(symbol)) {
         result.type = type->toString();
         result.width = packed_width(*type);
@@ -515,6 +534,10 @@ SymbolDescription Design::describe(const std::string& identifier, int type_depth
     result.members = members(identifier);
     impl_->describe_signature(result, symbol);
     return result;
+}
+
+std::optional<SymbolOrigin> Design::symbol_origin(const std::string& identifier) const {
+    return macro_origin(*impl_->compilation, impl_->manager, impl_->resolve(identifier).location);
 }
 
 std::vector<HierarchyNode> Design::hierarchy(const Text& root, int depth) const {
@@ -610,21 +633,11 @@ const AccessIndex& Design::accesses(bool connectivity) {
 }
 
 SymbolDescription Design::signal(const std::string& identifier) {
-    if (const auto item = std::ranges::find_if(
-            impl_->symbols,
-            [&](const auto& symbol) { return signal_reference(symbol, identifier); });
-        item != impl_->symbols.end()) {
-        return describe(item->symbol_id);
-    }
-    const auto& raw = impl_->resolve(identifier);
-    if (auto* port = raw.as_if<ast::PortSymbol>(); port && port->internalSymbol) {
-        return describe(reference(*port->internalSymbol, impl_->manager).symbol_id);
-    }
-    return describe(identifier);
+    return describe(impl_->signal_identifier(identifier));
 }
 
 std::vector<Reference> Design::references(const std::string& identifier) {
-    const auto symbol = signal(identifier).symbol;
+    const auto symbol = impl_->signal_identity(identifier);
     std::vector<Reference> result;
     const auto& index = accesses();
     if (const auto found = index.references_by_symbol.find(symbol.symbol_id);

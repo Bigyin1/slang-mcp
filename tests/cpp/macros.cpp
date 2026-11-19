@@ -38,6 +38,17 @@ TEST_CASE("Macro expansion reports macro-created modules and pasted signal names
     REQUIRE_FALSE(result.at("truncated").get<bool>());
     REQUIRE(result.at("total_bytes") == result.at("expanded_text").get<std::string>().size());
     REQUIRE(service.call("describe_symbol", {{"identifier", "cpu.bank_sel_ff"}}).at("width") == 2);
+    const auto described = service.call(
+        "describe_symbol", {{"identifier", "cpu.bank_sel_ff"}, {"include_origin", true}});
+    const auto& origin = described.at("origin");
+    REQUIRE(origin.at("complete") == true);
+    REQUIRE(origin.at("invocation").at("line") == 3);
+    REQUIRE(origin.at("invocation").at("column") == 1);
+    REQUIRE(origin.at("macros").size() == 2);
+    REQUIRE(origin.at("macros").at(0).at("name") == "WRAP");
+    REQUIRE(origin.at("macros").at(0).at("definition").at("line") == 2);
+    REQUIRE(origin.at("macros").at(1).at("name") == "DECL");
+    REQUIRE(origin.at("macros").at(1).at("definition").at("line") == 1);
 }
 
 TEST_CASE("Macro expansion uses active definitions from includes and redefinitions") {
@@ -225,6 +236,30 @@ TEST_CASE("Repeated includes with different macro state are reported as ambiguou
                      {{"file", project.path("body.svh").string()}, {"line", 1}, {"column", 8}}),
         "macro invocation has multiple preprocessing contexts; query an unambiguous source "
         "invocation");
+}
+
+TEST_CASE("Symbol origin keeps the active definition and the physical include occurrence") {
+    Project project;
+    project.write("body.svh", "`DECL(`NAME)\n");
+    project.write("design.sv",
+                  "`define DECL(n) logic [2:0] n``_ff;\n`define NAME first\nmodule top;\n"
+                  "`include \"body.svh\"\n`undef NAME\n`undef DECL\n"
+                  "`define DECL(n) logic [6:0] n``_ff;\n`define NAME second\n"
+                  "`include \"body.svh\"\nendmodule\n");
+    auto args = project.arguments();
+    args["include_directories"] = {project.path("").string()};
+    SemanticService service(SnapshotPolicy::Disabled);
+    REQUIRE(service.call("project_load", args).at("diagnostic_error_count") == 0);
+    const auto first =
+        service.call("describe_symbol", {{"identifier", "top.first_ff"}, {"include_origin", true}});
+    const auto second = service.call("describe_symbol",
+                                     {{"identifier", "top.second_ff"}, {"include_origin", true}});
+    REQUIRE(first.at("width") == 3);
+    REQUIRE(second.at("width") == 7);
+    REQUIRE(first.at("origin").at("include_sites").at(0).at("line") == 4);
+    REQUIRE(second.at("origin").at("include_sites").at(0).at("line") == 9);
+    REQUIRE(first.at("origin").at("macros").at(0).at("definition").at("line") == 1);
+    REQUIRE(second.at("origin").at("macros").at(0).at("definition").at("line") == 7);
 }
 
 TEST_CASE("Macro expansion reads the active snapshot and refreshes only after a successful load") {

@@ -58,6 +58,21 @@ struct MacroExpansion {
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_ONLY_SERIALIZE(MacroExpansion, name, invocation, definition,
                                                   expanded_text, total_bytes, truncated)
 
+struct MacroOriginFrame {
+    std::string name;
+    std::optional<SourceLocation> definition;
+};
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_ONLY_SERIALIZE(MacroOriginFrame, name, definition)
+
+struct SymbolOrigin {
+    SourceLocation invocation;
+    std::vector<MacroOriginFrame> macros;
+    std::vector<SourceLocation> include_sites;
+    bool complete = true;
+};
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_ONLY_SERIALIZE(SymbolOrigin, invocation, macros, include_sites,
+                                                  complete)
+
 struct Diagnostic {
     std::string severity, code, message;
     SourceLocation location;

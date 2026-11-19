@@ -132,6 +132,7 @@ together, excluding declarations and unknowns. Each result retains its precise
 kind: `read_write` on an item means a combined access such as `+=`, `++` or an
 inout/ref argument. The `read` and `write` filters each include combined accesses.
 Omit `kind` to inspect all recorded categories, including unknown accesses.
+Follow `next_cursor` with the same `symbol` and `kind` to read further pages.
 
 References are source-level accesses, not hardware fan-in/fan-out. System calls
 can have unknown effects, procedural branches can contribute even when their
@@ -141,6 +142,13 @@ port bindings alongside the effective configuration. The server does not expose
 connectivity tracing or semantic diff.
 
 ## Inspect a concrete macro invocation
+
+If you start with the name of a generated declaration, call `describe_symbol`
+with `include_origin: true`. Read `origin.invocation` for the physical source
+location and `origin.macros` for the outer-to-inner chain and definition locations.
+`origin.include_sites` identifies which inclusion led to that invocation.
+Check `origin.complete` before relying on the whole chain. Ordinary declarations
+return `origin: null` when requested.
 
 When a wrapper creates modules, instances or signals through macros, use
 `expand_macro` on the actual call: absolute `file`, 1-based physical `line` and

@@ -186,12 +186,17 @@
   },
   {
     "name": "describe_symbol",
-    "description": "Describe one indexed symbol by symbol_id, full qualified name or unambiguous short name. Returns identity, available type/width/direction, members and signature details. type_info describes arrays, struct/union fields, packed field offsets and static total_bits; type_depth defaults to 2 (0–8). Type trees are bounded to 128 nodes and 16 dimensions per array node; truncated propagates omitted descendants. Width is the integral packed-element width after outer unpacked array layers, not total array size; nonintegral widths are null. Existing scope/signature lists are unpaginated. Module signatures may use a representative active instance; prefer inspect_module for defaults and inspect_instance for effective values. Field/element expressions such as signal.field or memory[0] are not independently resolved; inspect the base declaration and its type_info. An ambiguous lookup returns candidate symbol IDs when available.",
+    "description": "Describe one indexed symbol by symbol_id, full qualified name or unambiguous short name. Returns identity, available type/width/direction, members and signature details. type_info describes arrays, struct/union fields, packed field offsets and static total_bits; type_depth defaults to 2 (0–8). Type trees are bounded to 128 nodes and 16 dimensions per array node; truncated propagates omitted descendants. Width is the integral packed-element width after outer unpacked array layers, not total array size; nonintegral widths are null. Existing scope/signature lists are unpaginated. Module signatures may use a representative active instance; prefer inspect_module for defaults and inspect_instance for effective values. Field/element expressions such as signal.field or memory[0] are not independently resolved; inspect the base declaration and its type_info. Set include_origin to trace a macro-generated declaration to its source invocation and active macro definitions. An ambiguous lookup returns candidate symbol IDs when available.",
     "inputSchema": {
       "properties": {
         "identifier": {
           "type": "string",
           "description": "Identifier from current query results, full qualified name, or unique short name. Ambiguous or unknown names fail; this is not an arbitrary SystemVerilog expression. Prefer symbol_id if a port and internal variable share a qualified name; ambiguous identifiers fail."
+        },
+        "include_origin": {
+          "type": "boolean",
+          "default": false,
+          "description": "Return origin for this declaration: physical macro invocation, macro chain and include sites, with complete indicating whether Slang provided the chain and definitions. Ordinary declarations return origin: null."
         },
         "type_depth": {
           "type": [
@@ -213,6 +218,10 @@
       "type": "object",
       "additionalProperties": true,
       "properties": {
+        "origin": {
+          "type": ["object", "null"],
+          "description": "Optional macro provenance. invocation has filename, line, and column. macros lists the outermost macro first; each item has name and definition (location or null). include_sites lists physical include directives from the outermost file to the invocation. complete indicates whether the recorded chain and definitions were recovered."
+        },
         "width": {
           "type": [
             "integer",
@@ -415,7 +424,7 @@
   },
   {
     "name": "get_references",
-    "description": "Return bounded source-level declarations and indexed uses of a symbol as items, total_count and truncated. Omitted kind includes all recorded categories. read_write selects all reads/writes once; item kinds remain precise. Port bindings are ordinary-port actual accesses, not netlist connectivity. System-call accesses can be unknown; inactive procedural branches can still contribute. Empty results do not prove no uses: indexing is incomplete, and type_reference is not currently populated. Aggregate accesses are reported for the base signal, not individual fields/elements or bit ranges; selectors of written elements are reads. An ambiguous lookup returns candidate symbol IDs when available.",
+    "description": "Return bounded source-level declarations and indexed uses of a symbol as items, returned_count, total_count, truncated and next_cursor. Follow next_cursor with the same symbol and kind until it is null. Omitted kind includes all recorded categories. read_write selects all reads/writes once; item kinds remain precise. Port bindings are ordinary-port actual accesses, not netlist connectivity. System-call accesses can be unknown; inactive procedural branches can still contribute. Empty results do not prove no uses: indexing is incomplete, and type_reference is not currently populated. Aggregate accesses are reported for the base signal, not individual fields/elements or bit ranges; selectors of written elements are reads. An ambiguous lookup returns candidate symbol IDs when available.",
     "inputSchema": {
       "properties": {
         "symbol": {
@@ -436,6 +445,10 @@
             "type_reference",
             "instantiation"
           ]
+        },
+        "cursor": {
+          "type": "string",
+          "description": "Continuation from next_cursor for the same symbol, kind and active compilation. The page limit may change."
         },
         "limit": {
           "default": 100,

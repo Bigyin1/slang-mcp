@@ -215,6 +215,118 @@ void validate(const MacroQuery& query) {
         throw std::invalid_argument("max_bytes must be between 1 and 65536");
     }
 }
+
+// Expansion buffers point back to the first token of the active definition's
+// body. The buffer and offset distinguish redefinitions and repeated includes.
+using DefinitionLocations = std::map<slang::SourceLocation, slang::SourceLocation>;
+
+struct DefinitionSearch : slang::syntax::SyntaxVisitor<DefinitionSearch> {
+    DefinitionLocations& definitions;
+
+    void record(const slang::syntax::DefineDirectiveSyntax& definition) {
+        if (definition.body.empty()) {
+            return;
+        }
+        const auto target = definitions.find(definition.body[0].location());
+        if (target != definitions.end()) {
+            target->second = definition.name.location();
+        }
+    }
+
+    void visit_trivia(const slang::parsing::Trivia& trivia) {
+        using slang::parsing::TriviaKind;
+        if (trivia.kind == TriviaKind::Directive) {
+            if (const auto* define =
+                    trivia.syntax()->as_if<slang::syntax::DefineDirectiveSyntax>()) {
+                record(*define);
+            }
+        }
+        if (trivia.kind == TriviaKind::SkippedTokens) {
+            for (const auto token : trivia.getSkippedTokens()) {
+                visitToken(token);
+            }
+        }
+        if (trivia.kind == TriviaKind::SkippedSyntax) {
+            trivia.syntax()->visit(*this);
+        }
+    }
+
+    // NOLINTNEXTLINE(bugprone-derived-method-shadowing-base-method)
+    void visitToken(slang::parsing::Token token) {
+        for (const auto& trivia : token.trivia()) {
+            visit_trivia(trivia);
+        }
+    }
+
+    void visit_tree(const slang::syntax::SyntaxTree& tree) {
+        for (const auto& reference : tree.getMacroRefs()) {
+            record(*reference.definition);
+        }
+        for (const auto* definition : tree.getDefinedMacros()) {
+            record(*definition);
+        }
+        tree.root().visit(*this);
+    }
+};
+
+constexpr std::size_t origin_limit = 16;
+
+struct OriginTrace {
+    const slang::SourceManager& manager;
+    SymbolOrigin result;
+    std::vector<slang::SourceLocation> bodies;
+
+    void collect_frames(slang::SourceLocation loc) {
+        std::size_t steps = 0;
+        while (manager.isMacroLoc(loc) && steps < origin_limit) {
+            if (!manager.isMacroArgLoc(loc)) {
+                auto name = std::string(manager.getMacroName(loc));
+                result.macros.push_back({std::move(name), std::nullopt});
+                bodies.push_back(manager.getOriginalLoc({loc.buffer(), 0}));
+            }
+            loc = manager.getExpansionLoc(loc);
+            ++steps;
+        }
+        result.complete = steps < origin_limit && !bodies.empty();
+        std::ranges::reverse(result.macros);
+        std::ranges::reverse(bodies);
+    }
+
+    void collect_includes(slang::SourceLocation loc) {
+        while (manager.isIncludedFileLoc(loc) && result.include_sites.size() < origin_limit) {
+            const auto site = manager.getIncludedFrom(loc.buffer());
+            result.include_sites.push_back(physical_location(manager, site));
+            loc = manager.getFullyExpandedLoc(site);
+        }
+        result.complete = result.complete && result.include_sites.size() < origin_limit;
+        std::ranges::reverse(result.include_sites);
+    }
+
+    void find_definitions(const ast::Compilation& compilation, slang::BufferID use) {
+        DefinitionLocations definitions;
+        for (const auto body : bodies) {
+            definitions.try_emplace(body);
+        }
+        DefinitionSearch search{{}, definitions};
+        for (const auto& tree : compilation.getSyntaxTrees()) {
+            if (std::ranges::contains(tree->getSourceBufferIds(), use)) {
+                search.visit_tree(*tree);
+            }
+        }
+        apply_definitions(definitions);
+    }
+
+    void apply_definitions(const DefinitionLocations& definitions) {
+        for (std::size_t index = 0; index < bodies.size(); ++index) {
+            const auto definition = physical_location(manager, definitions.at(bodies[index]));
+            if (definition.filename) {
+                result.macros[index].definition = definition;
+            } else {
+                result.complete = false;
+            }
+        }
+    }
+};
 } // namespace
 
 MacroExpansion expand_macro(const ast::Compilation& compilation,
@@ -240,5 +352,19 @@ MacroExpansion expand_macro(const ast::Compilation& compilation,
             std::move(visitor.text.text),
             visitor.text.total,
             visitor.text.capped};
+}
+
+std::optional<SymbolOrigin> macro_origin(const ast::Compilation& compilation,
+                                         const slang::SourceManager& manager,
+                                         slang::SourceLocation symbol) {
+    if (!manager.isMacroLoc(symbol)) {
+        return std::nullopt;
+    }
+    const auto invocation = manager.getFullyExpandedLoc(symbol);
+    OriginTrace trace{manager, {physical_location(manager, invocation), {}, {}}, {}};
+    trace.collect_frames(symbol);
+    trace.collect_includes(invocation);
+    trace.find_definitions(compilation, invocation.buffer());
+    return std::move(trace.result);
 }
 } // namespace slang_mcp::adapters
