@@ -68,13 +68,29 @@ directories retain their search order, and defines appear in name order as
 with the same section until `next_cursor` is null. A successful load expires
 the cursor. A failed load preserves the active configuration and its cursors.
 
-`get_diagnostics` accepts `severity`, exact `file` and `code` filters, and
+Pass `file` instead of `section` to inspect one absolute path. The response gives
+the canonical `file` and two flags. `is_source` means it was an explicit source.
+`is_included` means that Slang selected it as an include target. Both flags
+are false for a file outside the active fragment. Follow `next_cursor` with the
+same file to continue a page.
+
+The paged `items` cover active include directives originating in the file or
+resolved to it. Each item has a physical `directive` location (1-based line and
+UTF-8 byte column), the `requested` header spelling without delimiters, and
+`resolved_file`. A null target means Slang did not record a resolved file for
+that directive. Records preserve preprocessing order and repeated occurrences,
+including a resolved header skipped by an include-once guard. Use
+`get_diagnostics` for include errors.
+
+`get_diagnostics` accepts `severity`, `file` and exact `code` filters, and
 returns `diagnostics`, counts, a continuation cursor, and the analysis context.
+Use an absolute physical path or the exact filename shown in a diagnostic.
 Use `summary: true` for paged `items` grouped by code with severity counts.
 Use the `attempt_id` from a failed load to inspect its diagnostics even without
 an active project. A newer compilation replaces or clears that attempt.
 Severities are `ignored`,
-`note`, `warning`, `error`, and `fatal`. UnknownModule and UnknownClassOrPackage
+`note`, `warning`, `error`, and `fatal`. UnknownModule, UnknownClassOrPackage,
+and CouldNotOpenIncludeFile
 receive `scope_hint: "possible_missing_dependency"`; other diagnostics receive
 `"unclassified"`. This is a possible cause, not proof that the error is harmless:
 a typo can produce the same diagnostic. The original severity is never lowered.

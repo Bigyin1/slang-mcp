@@ -61,7 +61,7 @@
   },
   {
     "name": "project_info",
-    "description": "Check the active compilation without recompiling. By default returns a compact summary with tops, compilation-unit mode, file/configuration and diagnostic counts, metadata and Slang version. A successful project_load already returns the load summary. Set section to page through one configuration list as items, returned_count, total_count, truncated and next_cursor. Requires an active project. After a failed load this still describes the previous successful load.",
+    "description": "Check the active compilation without recompiling. The default is a compact project summary. Use section to page through a configuration list, or file to see whether a file participated and which include directives refer to or originate in it. Requires an active project. After a failed load this still describes the previous successful load.",
     "inputSchema": {
       "properties": {
         "section": {
@@ -69,16 +69,20 @@
           "enum": ["source_files", "include_directories", "defines"],
           "description": "Select one list. Source files and include directories retain their supplied order. Defines are sorted by name, with bare names for null values and NAME=value for strings."
         },
+        "file": {
+          "type": "string",
+          "description": "Absolute path. Returns canonical file, is_source (explicit source), is_included (resolved include target), and paged items for active include directives from or to this file, in preprocessing order. Each item has directive (physical filename, line and byte column), requested (header spelling without delimiters) and resolved_file (absolute path or null if Slang recorded no target). Repeated inclusions are retained. Both flags are false outside the loaded fragment. Mutually exclusive with section."
+        },
         "limit": {
           "type": "integer",
           "minimum": 1,
           "maximum": 500,
           "default": 100,
-          "description": "Maximum items per page. Requires section. The reply size limit can shorten the page."
+          "description": "Maximum items per page. Requires section or file. The reply size limit can shorten the page."
         },
         "cursor": {
           "type": "string",
-          "description": "Continue with next_cursor and the same section while the compilation is active. Null next_cursor marks the last page."
+          "description": "Continue with next_cursor and the same section or file while the compilation is active. Null next_cursor marks the last page."
         }
       },
       "type": "object"
@@ -95,7 +99,7 @@
   },
   {
     "name": "get_diagnostics",
-    "description": "Return Slang diagnostics, analysis context and pagination. Filters are applied before counting. summary=true returns groups by code rather than individual diagnostics. UnknownModule and UnknownClassOrPackage may indicate a missing dependency or a typo. Use the attempt_id from a failed project_load to query that attempt separately from the active project.",
+    "description": "Return Slang diagnostics, analysis context and pagination. Filters are applied before counting. summary=true returns groups by code rather than individual diagnostics. UnknownModule, UnknownClassOrPackage and CouldNotOpenIncludeFile may indicate a missing dependency or a typo. Use the attempt_id from a failed project_load to query that attempt separately from the active project.",
     "inputSchema": {
       "properties": {
         "limit": {
@@ -111,7 +115,7 @@
         },
         "file": {
           "type": "string",
-          "description": "Exact diagnostic location filename as reported by Slang."
+          "description": "Absolute path to the physical file, such as a path supplied to project_load, or the exact diagnostic location filename reported by Slang."
         },
         "code": {
           "type": "string",

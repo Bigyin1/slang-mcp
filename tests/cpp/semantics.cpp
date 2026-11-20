@@ -59,6 +59,96 @@ TEST_CASE("Project info validates configuration page arguments") {
     REQUIRE_THROWS_AS(service.call("project_info", Json::parse(invalid)), std::invalid_argument);
 }
 
+TEST_CASE("File diagnostics accept physical paths even with a line directive") {
+    Project project;
+    project.write("design.sv", "module top;\n`line 40 \"virtual.sv\" 0\n"
+                               "`include \"absent.svh\"\nendmodule\n");
+    SemanticService service(SnapshotPolicy::Disabled);
+    auto args = project.arguments();
+    (void)service.call("project_load", args);
+    const auto path = project.path("design.sv").string();
+    const Json filter = {{"file", path}, {"code", "CouldNotOpenIncludeFile"}};
+    const auto response = service.call("get_diagnostics", filter);
+    REQUIRE(response.at("total_count") == 1);
+    const auto& diagnostic = response.at("diagnostics").front();
+    REQUIRE(diagnostic.at("scope_hint") == "possible_missing_dependency");
+    REQUIRE(diagnostic.at("severity") == "error");
+    REQUIRE(diagnostic.at("location").at("line") == 40);
+    REQUIRE(service.call("get_diagnostics", {{"file", diagnostic.at("location").at("filename")}})
+                .at("diagnostics") == response.at("diagnostics"));
+    args["top_module"] = "missing";
+    try {
+        (void)service.call("project_load", args);
+        FAIL("expected compilation failure");
+    } catch (const CompilationError& error) {
+        auto failed_filter = filter;
+        failed_filter["attempt_id"] = error.attempt_id;
+        REQUIRE(service.call("get_diagnostics", failed_filter).at("diagnostics") ==
+                response.at("diagnostics"));
+    }
+}
+
+TEST_CASE("File context reports which header actually won include search") {
+    Project project;
+    project.write("design.sv", "module top;\n`include \"width.svh\"\nendmodule\n");
+    const auto first = project.path("first");
+    const auto second = project.path("second");
+    std::filesystem::create_directory(first);
+    std::filesystem::create_directory(second);
+    project.write("first/width.svh", "localparam int W = 8;\n");
+    project.write("second/width.svh", "localparam int W = 16;\n");
+    auto args = project.arguments();
+    SemanticService service(SnapshotPolicy::Disabled);
+    const Json query = {{"file", project.path("design.sv").string()}};
+    const auto reverse = GENERATE(false, true);
+    args["include_directories"] =
+        reverse ? Json{second.string(), first.string()} : Json{first.string(), second.string()};
+    REQUIRE(service.call("project_load", args).at("diagnostic_error_count") == 0);
+    const auto context = service.call("project_info", query);
+    REQUIRE(context.at("is_source") == true);
+    REQUIRE(context.at("is_included") == false);
+    REQUIRE(context.at("items").front().at("resolved_file") ==
+            std::filesystem::canonical((reverse ? second : first) / "width.svh").string());
+    REQUIRE(service.call("get_parameters", {{"target", "top"}})
+                .at("parameters")
+                .at("items")
+                .front()
+                .at("integer_value") == (reverse ? 16 : 8));
+    const auto outside = service.call(
+        "project_info", {{"file", ((reverse ? first : second) / "width.svh").string()}});
+    REQUIRE(outside.at("is_source") == false);
+    REQUIRE(outside.at("is_included") == false);
+    REQUIRE(outside.at("items").empty());
+}
+
+TEST_CASE("File context keeps repeated includes, skips inactive directives and pages occurrences") {
+    Project project;
+    project.write("design.sv", "module top;\n`include \"shared.svh\"\n"
+                               "`include \"shared.svh\"\n`ifdef NEVER_DEFINED\n"
+                               "`include \"inactive.svh\"\n`endif\n"
+                               "`include \"absent.svh\"\nendmodule\n");
+    project.write("shared.svh", "`pragma once\nlocalparam int W = 8;\n");
+    SemanticService service(SnapshotPolicy::Disabled);
+    (void)service.call("project_load", project.arguments());
+    const auto file = project.path("shared.svh").string();
+    const auto first = service.call("project_info", {{"file", file}, {"limit", 1}});
+    REQUIRE(first.at("is_source") == false);
+    REQUIRE(first.at("is_included") == true);
+    REQUIRE(first.at("total_count") == 2);
+    REQUIRE(first.at("items").front().at("directive").at("line") == 2);
+    const Json next = {{"file", file}, {"cursor", first.at("next_cursor")}};
+    REQUIRE(service.call("project_info", next).at("items").front().at("directive").at("line") == 3);
+    const auto source =
+        service.call("project_info", {{"file", project.path("design.sv").string()}});
+    REQUIRE(source.at("total_count") == 3);
+    REQUIRE(source.at("items").back().at("requested") == "absent.svh");
+    REQUIRE(source.at("items").back().at("resolved_file").is_null());
+    project.write("design.sv", "module top; endmodule\n");
+    REQUIRE(service.call("project_info", next).at("total_count") == 2);
+    (void)service.call("project_load", project.arguments());
+    REQUIRE_THROWS_AS(service.call("project_info", next), std::invalid_argument);
+}
+
 TEST_CASE("Declared defaults remain separate from effective instance parameters") {
     Project project;
     project.write("design.sv", hierarchy_rtl);

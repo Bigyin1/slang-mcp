@@ -76,8 +76,22 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_ONLY_SERIALIZE(SymbolOrigin, invocation, macr
 struct Diagnostic {
     std::string severity, code, message;
     SourceLocation location;
+    Text physical_file;
 };
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_ONLY_SERIALIZE(Diagnostic, severity, code, message, location)
+
+struct FileInclude {
+    SourceLocation directive;
+    std::string requested;
+    Text resolved_file;
+};
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_ONLY_SERIALIZE(FileInclude, directive, requested, resolved_file)
+
+struct FileContext {
+    bool is_source = false;
+    bool is_included = false;
+    std::vector<FileInclude> includes;
+};
 
 struct SymbolReference {
     std::string symbol_id, name, qualified_name, kind;
