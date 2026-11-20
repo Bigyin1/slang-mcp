@@ -84,7 +84,7 @@ add_library(slang_mcp_core
     src/inspection.cpp src/connectivity.cpp src/macro_queries.cpp
     src/adapters/design.cpp src/adapters/normalization.cpp
     src/adapters/access_index.cpp src/adapters/macro_expansion.cpp
-    src/adapters/type_description.cpp)
+    src/adapters/type_description.cpp src/adapters/file_context.cpp)
 target_compile_features(slang_mcp_core PUBLIC cxx_std_26)
 target_compile_definitions(slang_mcp_core PUBLIC SLANG_MCP_VERSION="${PROJECT_VERSION}")
 target_include_directories(slang_mcp_core PUBLIC src)

@@ -14,17 +14,6 @@ std::string_view source_text(const slang::SourceManager& manager, slang::BufferI
     return text;
 }
 
-std::vector<std::size_t> line_starts(std::string_view text) {
-    std::vector<std::size_t> result{0};
-    for (std::size_t index = 0; index < text.size(); ++index) {
-        if (text[index] == '\n' ||
-            (text[index] == '\r' && (index + 1 == text.size() || text[index + 1] != '\n'))) {
-            result.push_back(index + 1);
-        }
-    }
-    return result;
-}
-
 std::size_t query_offset(std::string_view text, const MacroQuery& query) {
     const auto starts = line_starts(text);
     const auto row = static_cast<std::size_t>(query.line - 1);
@@ -56,13 +45,7 @@ SourceLocation physical_location(const slang::SourceManager& manager, slang::Sou
     if (!loc) {
         return {};
     }
-    const auto starts = line_starts(source_text(manager, loc.buffer()));
-    const auto row =
-        static_cast<std::size_t>(std::ranges::upper_bound(starts, loc.offset()) - starts.begin());
-    const auto& path = manager.getFullPath(loc.buffer());
-    return {path.empty() ? optional_text(std::string(manager.getRawFileName(loc.buffer())))
-                         : Text(path.string()),
-            row, loc.offset() - starts[row - 1] + 1};
+    return physical_file_location(manager, loc, line_starts(source_text(manager, loc.buffer())));
 }
 
 struct MacroMatch {

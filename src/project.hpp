@@ -34,6 +34,7 @@ class ProjectManager {
     std::uint64_t attempt_id_ = 0;
     std::optional<CompilationError> failure_;
     [[nodiscard]] Json configuration_page(const Json& arguments) const;
+    [[nodiscard]] Json file_context_page(const Json& arguments);
     [[nodiscard]] std::unique_ptr<adapters::Design> build(const ProjectConfig& config);
     [[nodiscard]] static Snapshot snapshot(adapters::Design& design);
 };

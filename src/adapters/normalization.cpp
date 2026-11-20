@@ -38,6 +38,28 @@ SourceLocation location(slang::SourceLocation source, const slang::SourceManager
             manager.getColumnNumber(source)};
 }
 
+std::vector<std::size_t> line_starts(std::string_view text) {
+    std::vector<std::size_t> result{0};
+    for (std::size_t index = 0; index < text.size(); ++index) {
+        if (text[index] == '\n' ||
+            (text[index] == '\r' && (index + 1 == text.size() || text[index + 1] != '\n'))) {
+            result.push_back(index + 1);
+        }
+    }
+    return result;
+}
+
+SourceLocation physical_file_location(const slang::SourceManager& manager,
+                                      slang::SourceLocation loc,
+                                      std::span<const std::size_t> starts) {
+    const auto row =
+        static_cast<std::size_t>(std::ranges::upper_bound(starts, loc.offset()) - starts.begin());
+    const auto& path = manager.getFullPath(loc.buffer());
+    return {path.empty() ? optional_text(std::string(manager.getRawFileName(loc.buffer())))
+                         : Text(path.string()),
+            row, loc.offset() - starts[row - 1] + 1};
+}
+
 std::string qualified(const ast::Symbol& symbol) {
     auto result = symbol.getHierarchicalPath();
     if (result.empty()) {

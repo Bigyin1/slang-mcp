@@ -31,6 +31,13 @@ namespace ast = slang::ast;
 [[nodiscard]] Text parent_path(const std::string& path);
 [[nodiscard]] SourceLocation location(slang::SourceLocation source,
                                       const slang::SourceManager& manager);
+[[nodiscard]] std::vector<std::size_t> line_starts(std::string_view text);
+[[nodiscard]] SourceLocation physical_file_location(const slang::SourceManager& manager,
+                                                    slang::SourceLocation loc,
+                                                    std::span<const std::size_t> starts);
+[[nodiscard]] FileContext file_context(const ast::Compilation& compilation,
+                                       const slang::SourceManager& manager,
+                                       const std::string& file);
 [[nodiscard]] std::string qualified(const ast::Symbol& symbol);
 [[nodiscard]] std::string kind(const ast::Symbol& symbol);
 [[nodiscard]] SymbolReference reference(const ast::Symbol& symbol,

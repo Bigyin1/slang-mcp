@@ -69,6 +69,18 @@ default reply is compact. Request `section: "source_files"`,
 `section: "include_directories"` or `section: "defines"` for the corresponding
 list and follow `next_cursor` as needed.
 
+If you start with a source file or a header, pass its absolute path as `file`
+to `project_info`. Check `is_source` and `is_included` to see if the file
+participated. The list shows active includes from and to the file. Compare
+`requested` with `resolved_file` when multiple directories contain the same
+header name. For a missing include, check the directive and include search paths.
+
+After editing RTL or changing the source list, defines, or include directories,
+call `project_load` with the intended fragment and configuration. Check
+`get_diagnostics` with the absolute path of the edited file, then check
+`get_diagnostics(summary: true)` across the fragment for errors in its consumers
+or elsewhere.
+
 ## Choose the query that answers the question
 
 - `find_symbol` searches exact short declaration names. Narrow repeated names

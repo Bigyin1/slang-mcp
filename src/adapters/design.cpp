@@ -116,8 +116,12 @@ struct IndexVisitor : ast::ASTVisitor<IndexVisitor> {
     }
 };
 
+// Slang records the selected buffer for skipped include-once headers only with a callback.
+constexpr auto record_skipped_headers = [](slang::BufferID, bool, bool) {};
+
 slang::Bag compilation_options(const ProjectConfig& config) {
     slang::parsing::PreprocessorOptions parser;
+    parser.bufferChangeCB = record_skipped_headers;
     parser.additionalIncludePaths.assign(config.include_directories.begin(),
                                          config.include_directories.end());
     for (const auto& define : config.defines) {
@@ -176,10 +180,12 @@ std::vector<Diagnostic> diagnostics(ast::Compilation& compilation, slang::Source
     slang::DiagnosticEngine engine(manager);
     std::vector<Diagnostic> result;
     for (const auto& diagnostic : compilation.getAllDiagnostics()) {
+        const auto physical = manager.getFullyExpandedLoc(diagnostic.location);
         result.push_back(
             {lower(slang::toString(engine.getSeverity(diagnostic.code, diagnostic.location))),
              std::string(slang::toString(diagnostic.code)), engine.formatMessage(diagnostic),
-             location(diagnostic.location, manager)});
+             location(diagnostic.location, manager),
+             optional_text(manager.getFullPath(physical.buffer()).string())});
     }
     return result;
 }
@@ -455,6 +461,10 @@ MacroExpansion Design::expand_macro(const MacroQuery& query) const {
 
 const std::vector<Diagnostic>& Design::diagnostics() const {
     return impl_->diagnostic_items;
+}
+
+FileContext Design::file_context(const std::string& file) const {
+    return adapters::file_context(*impl_->compilation, impl_->manager, file);
 }
 
 std::string Design::version() const {

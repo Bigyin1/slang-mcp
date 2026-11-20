@@ -1,5 +1,6 @@
 #include "project.hpp"
 #include "pagination.hpp"
+#include "paths.hpp"
 #include "query.hpp"
 
 #include <filesystem>
@@ -210,17 +211,38 @@ Json ProjectManager::summary() {
 
 Json ProjectManager::info(const Json& arguments) {
     (void)design();
+    if (arguments.contains("file")) {
+        return file_context_page(arguments);
+    }
     if (arguments.contains("section")) {
         return configuration_page(arguments);
     }
     if (arguments.contains("limit") || arguments.contains("cursor")) {
-        throw std::invalid_argument("limit and cursor require a project_info section");
+        throw std::invalid_argument("limit and cursor require a project_info section or file");
     }
     return {{"summary", summary()},
             {"single_unit", config_.single_unit},
             {"configured_top_modules", config_.top_modules},
             {"metadata", config_.metadata},
             {"slang_version", design().version()}};
+}
+
+Json ProjectManager::file_context_page(const Json& arguments) {
+    validate_configuration_page(arguments);
+    if (arguments.contains("section")) {
+        throw std::invalid_argument("specify only one of project_info file and section");
+    }
+    const auto file = text_option(arguments, "file");
+    const auto canonical = file ? canonical_absolute_path(*file) : std::nullopt;
+    if (!canonical) {
+        throw std::invalid_argument("file must be a resolvable absolute path");
+    }
+    const Pagination page(arguments, "project_info", revision());
+    const auto context = design().file_context(*canonical);
+    return page.render(context.includes, "items", std::identity{},
+                       {{"file", canonical},
+                        {"is_source", context.is_source},
+                        {"is_included", context.is_included}});
 }
 
 Json ProjectManager::configuration_page(const Json& arguments) const {

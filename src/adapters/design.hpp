@@ -12,6 +12,7 @@ class Design {
     Design(const Design&) = delete;
     Design& operator=(const Design&) = delete;
     [[nodiscard]] const std::vector<Diagnostic>& diagnostics() const;
+    [[nodiscard]] FileContext file_context(const std::string& file) const;
     [[nodiscard]] std::vector<std::string> tops() const;
     [[nodiscard]] std::string version() const;
     [[nodiscard]] std::vector<SymbolReference> definitions() const;

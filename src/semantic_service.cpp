@@ -1,5 +1,6 @@
 #include "semantic_service.hpp"
 #include "pagination.hpp"
+#include "paths.hpp"
 #include "query.hpp"
 
 #include <cctype>
@@ -59,8 +60,9 @@ std::vector<Json> diagnostic_groups(const DiagnosticRefs& diagnostics) {
 }
 
 Json diagnostic_with_scope_hint(const Diagnostic& diagnostic) {
-    // An unresolved name can also be a typo; this never downgrades severity.
-    static const std::set<std::string> unresolved = {"UnknownModule", "UnknownClassOrPackage"};
+    // An unresolved name or include can also be a typo.
+    static const std::set<std::string> unresolved = {"UnknownModule", "UnknownClassOrPackage",
+                                                     "CouldNotOpenIncludeFile"};
     Json result = diagnostic;
     result["scope_hint"] =
         unresolved.contains(diagnostic.code) ? "possible_missing_dependency" : "unclassified";
@@ -68,18 +70,24 @@ Json diagnostic_with_scope_hint(const Diagnostic& diagnostic) {
 }
 
 struct DiagnosticFilter {
-    Text severity, file, code;
+    Text severity, file, code, physical_file;
+
+    [[nodiscard]] bool matches_file(const Diagnostic& item) const {
+        return !file || item.location.filename == file ||
+               (physical_file && item.physical_file == physical_file);
+    }
 
     bool operator()(const Diagnostic& item) const {
-        return (!severity || item.severity == *severity) &&
-               (!file || item.location.filename == file) && (!code || item.code == *code);
+        return (!severity || item.severity == *severity) && matches_file(item) &&
+               (!code || item.code == *code);
     }
 };
 
 DiagnosticRefs filtered_diagnostics(const std::vector<Diagnostic>& diagnostics, const Json& args) {
     DiagnosticRefs result;
-    const DiagnosticFilter filter{diagnostic_severity(args), text_option(args, "file"),
-                                  text_option(args, "code")};
+    const auto file = text_option(args, "file");
+    const DiagnosticFilter filter{diagnostic_severity(args), file, text_option(args, "code"),
+                                  file ? canonical_absolute_path(*file) : std::nullopt};
     std::ranges::copy_if(diagnostics, std::back_inserter(result), filter);
     return result;
 }
